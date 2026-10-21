@@ -1,0 +1,70 @@
+[
+	{
+		"feature": "plan",
+		"caption": "A source folder with three Zim pages, mapped paths and reported sections.",
+		"note": "Overview.md",
+		"eval": "(async()=>{const p = app.plugins.plugins['zim-notebook-import']; window.__zimModal?.close(); app.setting.close();p.pro.signOut(); const old=app.vault.getAbstractFileByPath('Demo import'); if(old) await app.vault.delete(old,true); const m=p.openImport(); m.contentEl.querySelector('[aria-label=\"Source folder\"]').value='Zim Notebook Import/Source'; m.contentEl.querySelector('[aria-label=\"Source folder\"]').dispatchEvent(new Event('input',{bubbles:true})); m.contentEl.querySelector('[aria-label=\"New destination folder\"]').value='Demo import'; m.contentEl.querySelector('[aria-label=\"New destination folder\"]').dispatchEvent(new Event('input',{bubbles:true})); await m.review();window.__zimModal=m; return 'ok';})()",
+		"wait": 500,
+		"zoom": 0.8
+	},
+	{
+		"feature": "conversion",
+		"caption": "Headings, lists, tasks, emphasis, code and mapped page links in the imported garden note.",
+		"eval": "(async()=>{const p = app.plugins.plugins['zim-notebook-import']; window.__zimModal?.close(); app.setting.close();if(!app.vault.getAbstractFileByPath('Demo import')) await p.writeImport(await p.prepare('Zim Notebook Import/Source','Demo import')); await app.workspace.getLeaf().openFile(app.vault.getFileByPath('Demo import/Project.md')); return 'ok';})()",
+		"wait": 700,
+		"zoom": 0.6
+	},
+	{
+		"feature": "properties",
+		"caption": "Original source path and creation date in note properties.",
+		"eval": "(async()=>{const p = app.plugins.plugins['zim-notebook-import']; window.__zimModal?.close(); app.setting.close();await app.workspace.getLeaf().openFile(app.vault.getFileByPath('Demo import/Reference/Soil.md')); return 'ok';})()",
+		"wait": 700
+	},
+	{
+		"feature": "report",
+		"caption": "The report lists the unresolved link, source image and table sections.",
+		"eval": "(async()=>{const p = app.plugins.plugins['zim-notebook-import']; window.__zimModal?.close(); app.setting.close();await app.workspace.getLeaf().openFile(app.vault.getFileByPath('Demo import/Zim import report.md')); return 'ok';})()",
+		"wait": 700
+	},
+	{
+		"feature": "saved-rules",
+		"caption": "Pro saves a source folder with flat output and hyphenated page names.",
+		"eval": "(async()=>{const p = app.plugins.plugins['zim-notebook-import']; window.__zimModal?.close(); app.setting.close();p.pro.opts.http = async () => ({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('zim-notebook-import-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow();await p.saveRules('Zim Notebook Import/Source','Later garden import',{folders:'flat',names:'hyphens'}); window.__zimModal=p.openImport(); return 'ok';})()",
+		"wait": 500,
+		"after": "app.plugins.plugins['zim-notebook-import'].pro.signOut(); 'ok'"
+	},
+	{
+		"feature": "later-preview",
+		"caption": "Pro compares changed source text with the first import.",
+		"eval": "(async()=>{const p = app.plugins.plugins['zim-notebook-import']; window.__zimModal?.close(); app.setting.close();p.pro.opts.http = async () => ({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('zim-notebook-import-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow();const f=app.vault.getFileByPath('Zim Notebook Import/Source/Project.txt'); window.__zimSource=await app.vault.read(f); await app.vault.modify(f,window.__zimSource+'\\nNew planting date: next Saturday.\\n'); const changes=await p.laterPreview(); const m=p.openImport(); window.__zimModal=m; m.showChanges(changes); return 'ok';})()",
+		"wait": 500,
+		"after": "(async()=>{const p=app.plugins.plugins['zim-notebook-import']; await app.vault.modify(app.vault.getFileByPath('Zim Notebook Import/Source/Project.txt'),window.__zimSource); window.__zimModal?.close(); p.pro.signOut(); return 'ok';})()"
+	},
+	{
+		"feature": "settings",
+		"caption": "The GitHub Sponsors controls and the free source workflow.",
+		"eval": "(async()=>{const p = app.plugins.plugins['zim-notebook-import']; window.__zimModal?.close(); app.setting.close();p.pro.signOut(); app.setting.open(); app.setting.openTabById('zim-notebook-import'); return 'ok';})()",
+		"after": "app.setting.close(); 'ok'"
+	},
+	{
+		"feature": "zim-notebook-import",
+		"caption": "Review the source plan, open the imported garden note, and read the report.",
+		"frames": [
+			{
+				"note": "Overview.md",
+				"eval": "(async()=>{const p = app.plugins.plugins['zim-notebook-import']; window.__zimModal?.close(); app.setting.close();p.pro.signOut(); const old=app.vault.getAbstractFileByPath('Demo import'); if(old) await app.vault.delete(old,true); const m=p.openImport(); m.contentEl.querySelector('[aria-label=\"Source folder\"]').value='Zim Notebook Import/Source'; m.contentEl.querySelector('[aria-label=\"Source folder\"]').dispatchEvent(new Event('input',{bubbles:true})); m.contentEl.querySelector('[aria-label=\"New destination folder\"]').value='Demo import'; m.contentEl.querySelector('[aria-label=\"New destination folder\"]').dispatchEvent(new Event('input',{bubbles:true})); await m.review();window.__zimModal=m; return 'ok';})()",
+				"hold": 1800,
+				"zoom": 0.8
+			},
+			{
+				"eval": "(async()=>{const p = app.plugins.plugins['zim-notebook-import']; window.__zimModal?.close(); app.setting.close();if(!app.vault.getAbstractFileByPath('Demo import')) await p.writeImport(await p.prepare('Zim Notebook Import/Source','Demo import')); await app.workspace.getLeaf().openFile(app.vault.getFileByPath('Demo import/Project.md')); return 'ok';})()",
+				"hold": 1800,
+				"zoom": 0.8
+			},
+			{
+				"eval": "(async()=>{const p = app.plugins.plugins['zim-notebook-import']; window.__zimModal?.close(); app.setting.close();await app.workspace.getLeaf().openFile(app.vault.getFileByPath('Demo import/Zim import report.md')); return 'ok';})()",
+				"hold": 1800
+			}
+		]
+	}
+]

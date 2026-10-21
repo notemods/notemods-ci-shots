@@ -1,0 +1,1364 @@
+{
+ "slug": "zim-notebook-import",
+ "module": "src/core",
+ "function": "planZimImport",
+ "note": "Full plan results. Bodies, mapped paths, properties, issue locations and conflicts are compared exactly.",
+ "cases": [
+  {
+   "name": "headers title and creation date",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "Content-Type: text/x-zim-wiki\nWiki-Format: zim 0.4\nCreation-Date: 2020-05-02T12:30:00+00:00\n\n====== Title ======"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "# Title",
+      "properties": {
+       "zim_source": "Source/Page.txt",
+       "zim_created": "2020-05-02T12:30:00+00:00"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "zim 0.6 header written by current Zim",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "Content-Type: text/x-zim-wiki\nWiki-Format: zim 0.6\nCreation-Date: 2020-05-02T12:30:00+00:00\n\n====== Title ======"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "# Title",
+      "properties": {
+       "zim_source": "Source/Page.txt",
+       "zim_created": "2020-05-02T12:30:00+00:00"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "five equals becomes second heading",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "===== Section ====="
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "## Section",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "two equals becomes fifth heading",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "== Detail =="
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "##### Detail",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "child link uses current page",
+   "args": [
+    [
+     {
+      "path": "Source/Topic.txt",
+      "text": "[[+Child]]"
+     },
+     {
+      "path": "Source/Topic/Child.txt",
+      "text": "child"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Topic.txt",
+      "path": "Output/Topic.md",
+      "body": "[[Output/Topic/Child]]",
+      "properties": {
+       "zim_source": "Source/Topic.txt"
+      }
+     },
+     {
+      "source": "Source/Topic/Child.txt",
+      "path": "Output/Topic/Child.md",
+      "body": "child",
+      "properties": {
+       "zim_source": "Source/Topic/Child.txt"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "absolute namespace preserves label",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "[[:Area:Page|Label]]"
+     },
+     {
+      "path": "Source/Area/Page.txt",
+      "text": "target"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Area/Page.txt",
+      "path": "Output/Area/Page.md",
+      "body": "target",
+      "properties": {
+       "zim_source": "Source/Area/Page.txt"
+      }
+     },
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "[[Output/Area/Page|Label]]",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "nearest sibling wins over root",
+   "args": [
+    [
+     {
+      "path": "Source/Area/Page.txt",
+      "text": "[[Target]]"
+     },
+     {
+      "path": "Source/Area/Target.txt",
+      "text": "near"
+     },
+     {
+      "path": "Source/Target.txt",
+      "text": "far"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Area/Page.txt",
+      "path": "Output/Area/Page.md",
+      "body": "[[Output/Area/Target]]",
+      "properties": {
+       "zim_source": "Source/Area/Page.txt"
+      }
+     },
+     {
+      "source": "Source/Area/Target.txt",
+      "path": "Output/Area/Target.md",
+      "body": "near",
+      "properties": {
+       "zim_source": "Source/Area/Target.txt"
+      }
+     },
+     {
+      "source": "Source/Target.txt",
+      "path": "Output/Target.md",
+      "body": "far",
+      "properties": {
+       "zim_source": "Source/Target.txt"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "parent namespace lookup",
+   "args": [
+    [
+     {
+      "path": "Source/Area/Deep/Page.txt",
+      "text": "[[Target]]"
+     },
+     {
+      "path": "Source/Area/Target.txt",
+      "text": "parent"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Area/Deep/Page.txt",
+      "path": "Output/Area/Deep/Page.md",
+      "body": "[[Output/Area/Target]]",
+      "properties": {
+       "zim_source": "Source/Area/Deep/Page.txt"
+      }
+     },
+     {
+      "source": "Source/Area/Target.txt",
+      "path": "Output/Area/Target.md",
+      "body": "parent",
+      "properties": {
+       "zim_source": "Source/Area/Target.txt"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "first component anchors the namespace",
+   "args": [
+    [
+     {
+      "path": "Source/Zim/Examples/Linking/Relative.txt",
+      "text": "[[Examples:Calendar]]"
+     },
+     {
+      "path": "Source/Zim/Examples/Calendar.txt",
+      "text": "calendar"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Zim/Examples/Calendar.txt",
+      "path": "Output/Zim/Examples/Calendar.md",
+      "body": "calendar",
+      "properties": {
+       "zim_source": "Source/Zim/Examples/Calendar.txt"
+      }
+     },
+     {
+      "source": "Source/Zim/Examples/Linking/Relative.txt",
+      "path": "Output/Zim/Examples/Linking/Relative.md",
+      "body": "[[Output/Zim/Examples/Calendar]]",
+      "properties": {
+       "zim_source": "Source/Zim/Examples/Linking/Relative.txt"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "unrelated duplicate names remain unresolved",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "[[Target]]"
+     },
+     {
+      "path": "Source/A/Target.txt",
+      "text": "one"
+     },
+     {
+      "path": "Source/B/Target.txt",
+      "text": "two"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/A/Target.txt",
+      "path": "Output/A/Target.md",
+      "body": "one",
+      "properties": {
+       "zim_source": "Source/A/Target.txt"
+      }
+     },
+     {
+      "source": "Source/B/Target.txt",
+      "path": "Output/B/Target.md",
+      "body": "two",
+      "properties": {
+       "zim_source": "Source/B/Target.txt"
+      }
+     },
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "[[Target]]",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [
+     {
+      "source": "Source/Page.txt",
+      "line": 1,
+      "kind": "link",
+      "detail": "[[Target]]"
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "ambiguous case variants remain unresolved",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "[[TaRgEt]]"
+     },
+     {
+      "path": "Source/TARGET.txt",
+      "text": "one"
+     },
+     {
+      "path": "Source/Target.txt",
+      "text": "two"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "[[TaRgEt]]",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     },
+     {
+      "source": "Source/TARGET.txt",
+      "path": "Output/TARGET.md",
+      "body": "one",
+      "properties": {
+       "zim_source": "Source/TARGET.txt"
+      }
+     },
+     {
+      "source": "Source/Target.txt",
+      "path": "Output/Target.md",
+      "body": "two",
+      "properties": {
+       "zim_source": "Source/Target.txt"
+      }
+     }
+    ],
+    "issues": [
+     {
+      "source": "Source/Page.txt",
+      "line": 1,
+      "kind": "link",
+      "detail": "[[TaRgEt]]"
+     }
+    ],
+    "conflicts": [
+     "Output collision: Source/TARGET.txt and Source/Target.txt -> Output/Target.md"
+    ]
+   }
+  },
+  {
+   "name": "lists keep line order and depth",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "1. First\n2. Second\n* Parent\n\t* Child"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "1. First\n2. Second\n* Parent\n\t* Child",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "code is fenced and not parsed",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "'''\n[[Missing]] //raw//\n'''"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "```\n[[Missing]] //raw//\n```",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "embedded fences remain inside code",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "'''\n```\n'''"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "````\n```\n````",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "image section preserved",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "{{./photo.png}} //raw//"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "{{./photo.png}} //raw//",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [
+     {
+      "source": "Source/Page.txt",
+      "line": 1,
+      "kind": "syntax",
+      "detail": "{{./photo.png}} //raw//"
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "table section preserved",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "| Name | **Value** |\n| Item | //raw// |"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "| Name | **Value** |\n| Item | //raw// |",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [
+     {
+      "source": "Source/Page.txt",
+      "line": 1,
+      "kind": "syntax",
+      "detail": "| Name | **Value** |"
+     },
+     {
+      "source": "Source/Page.txt",
+      "line": 2,
+      "kind": "syntax",
+      "detail": "| Item | //raw// |"
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "unsupported extension stays at source",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "body"
+     },
+     {
+      "path": "Source/photo.png",
+      "text": ""
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "body",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [
+     {
+      "source": "Source/photo.png",
+      "line": 0,
+      "kind": "extension",
+      "detail": "Source file retained; this extension is not converted."
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "case insensitive output conflict",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "one"
+     },
+     {
+      "path": "Source/page.txt",
+      "text": "two"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "one",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     },
+     {
+      "source": "Source/page.txt",
+      "path": "Output/page.md",
+      "body": "two",
+      "properties": {
+       "zim_source": "Source/page.txt"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": [
+     "Output collision: Source/Page.txt and Source/page.txt -> Output/page.md"
+    ]
+   }
+  },
+  {
+   "name": "existing note stops the batch",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "body"
+     }
+    ],
+    "Source",
+    "Output",
+    [
+     "Output/Page.md"
+    ]
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "body",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": [
+     "Destination exists: Output",
+     "Existing path: Output/Page.md (Source/Page.txt)"
+    ]
+   }
+  },
+  {
+   "name": "Unicode paths and text preserved",
+   "args": [
+    [
+     {
+      "path": "Source/日本語.txt",
+      "text": "====== 日本語 ======\nCafé tiếng Việt"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/日本語.txt",
+      "path": "Output/日本語.md",
+      "body": "# 日本語\nCafé tiếng Việt",
+      "properties": {
+       "zim_source": "Source/日本語.txt"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "bold and italic text",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "**Bold** and //italic//"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "**Bold** and *italic*",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "underline stays verbatim",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "__word__"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "__word__",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [
+     {
+      "source": "Source/Page.txt",
+      "line": 1,
+      "kind": "syntax",
+      "detail": "__word__"
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "checkbox states become tasks",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "[ ] Open\n[*] Done\n[x] Dismissed\n[>] Moved\n[<] Returned"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "- [ ] Open\n- [x] Done\n- [c] Dismissed\n- [>] Moved\n- [<] Returned",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "nested checkboxes keep tab depth",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "[ ] Parent\n\t[*] Child\n\t\t[ ] Grandchild"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "- [ ] Parent\n\t- [x] Child\n\t\t- [ ] Grandchild",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "checkbox text keeps links and emphasis",
+   "args": [
+    [
+     {
+      "path": "Source/Topic.txt",
+      "text": "[ ] See [[+Child|the child]] and //soft// ''code''"
+     },
+     {
+      "path": "Source/Topic/Child.txt",
+      "text": "child"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Topic.txt",
+      "path": "Output/Topic.md",
+      "body": "- [ ] See [[Output/Topic/Child|the child]] and *soft* ` code `",
+      "properties": {
+       "zim_source": "Source/Topic.txt"
+      }
+     },
+     {
+      "source": "Source/Topic/Child.txt",
+      "path": "Output/Topic/Child.md",
+      "body": "child",
+      "properties": {
+       "zim_source": "Source/Topic/Child.txt"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "checkbox with unsupported content stays verbatim",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "[ ] Water __now__"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "[ ] Water __now__",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [
+     {
+      "source": "Source/Page.txt",
+      "line": 1,
+      "kind": "syntax",
+      "detail": "[ ] Water __now__"
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "checkbox without text stays verbatim",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "[ ]"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "[ ]",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [
+     {
+      "source": "Source/Page.txt",
+      "line": 1,
+      "kind": "syntax",
+      "detail": "[ ]"
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "checkbox in a line stays verbatim",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "Task [ ] inline"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "Task [ ] inline",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [
+     {
+      "source": "Source/Page.txt",
+      "line": 1,
+      "kind": "syntax",
+      "detail": "Task [ ] inline"
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "left arrow checkbox in a line stays verbatim",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "Task [<] inline"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "Task [<] inline",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [
+     {
+      "source": "Source/Page.txt",
+      "line": 1,
+      "kind": "syntax",
+      "detail": "Task [<] inline"
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "space indented checkbox stays verbatim",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "  [ ] Task"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "  [ ] Task",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [
+     {
+      "source": "Source/Page.txt",
+      "line": 1,
+      "kind": "syntax",
+      "detail": "  [ ] Task"
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "checkbox inside code block stays code",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "'''\n[ ] Task\n'''"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "```\n[ ] Task\n```",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "unclosed code stays verbatim",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "'''\nraw"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "'''\nraw",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [
+     {
+      "source": "Source/Page.txt",
+      "line": 1,
+      "kind": "code",
+      "detail": "Unclosed code block"
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "unsupported header keeps page text",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "Content-Type: text/x-zim-wiki\nWiki-Format: zim 0.9\n\n====== Keep ======"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "Content-Type: text/x-zim-wiki\nWiki-Format: zim 0.9\n\n====== Keep ======",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [
+     {
+      "source": "Source/Page.txt",
+      "line": 1,
+      "kind": "format",
+      "detail": "Unsupported or incomplete Zim header; page retained verbatim."
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "CRLF source supported",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "Content-Type: text/x-zim-wiki\r\nWiki-Format: zim 0.4\r\nCreation-Date: 2020-05-02T12:30:00+00:00\r\n\r\n====== Title ======"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "# Title",
+      "properties": {
+       "zim_source": "Source/Page.txt",
+       "zim_created": "2020-05-02T12:30:00+00:00"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "spaces decode from underscores",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "[[:My Page]]"
+     },
+     {
+      "path": "Source/My_Page.txt",
+      "text": "target"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/My_Page.txt",
+      "path": "Output/My Page.md",
+      "body": "target",
+      "properties": {
+       "zim_source": "Source/My_Page.txt"
+      }
+     },
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "[[Output/My Page]]",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "flat hyphen rule updates links",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "[[:Area:My Page]]"
+     },
+     {
+      "path": "Source/Area/My_Page.txt",
+      "text": "target"
+     }
+    ],
+    "Source",
+    "Output",
+    [],
+    {
+     "folders": "flat",
+     "names": "hyphens"
+    }
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Area/My_Page.txt",
+      "path": "Output/My-Page.md",
+      "body": "target",
+      "properties": {
+       "zim_source": "Source/Area/My_Page.txt"
+      }
+     },
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "[[Output/My-Page]]",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "URL remains verbatim and is reported",
+   "args": [
+    [
+     {
+      "path": "Source/Page.txt",
+      "text": "[[https://example.test/a|Site]]"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/Page.txt",
+      "path": "Output/Page.md",
+      "body": "[[https://example.test/a|Site]]",
+      "properties": {
+       "zim_source": "Source/Page.txt"
+      }
+     }
+    ],
+    "issues": [
+     {
+      "source": "Source/Page.txt",
+      "line": 1,
+      "kind": "link",
+      "detail": "[[https://example.test/a|Site]]"
+     }
+    ],
+    "conflicts": []
+   }
+  },
+  {
+   "name": "safe reserved file name",
+   "args": [
+    [
+     {
+      "path": "Source/CON.txt",
+      "text": "text"
+     }
+    ],
+    "Source",
+    "Output",
+    []
+   ],
+   "expected": {
+    "notes": [
+     {
+      "source": "Source/CON.txt",
+      "path": "Output/_CON.md",
+      "body": "text",
+      "properties": {
+       "zim_source": "Source/CON.txt"
+      }
+     }
+    ],
+    "issues": [],
+    "conflicts": []
+   }
+  }
+ ]
+}
