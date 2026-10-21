@@ -1,0 +1,732 @@
+{
+ "slug": "pocket-note-quiz",
+ "module": "products/pocket-note-quiz/src/quiz.ts",
+ "function": "parseQuestions",
+ "cases": [
+  {
+   "name": "Two questions with answers",
+   "function": "parseQuestions",
+   "args": [
+    "What is ATP?\nEnergy carrier\n\nWhat is DNA?\nGenetic code"
+   ],
+   "expected": [
+    {
+     "path": "",
+     "line": 0,
+     "question": "What is ATP?",
+     "answer": "Energy carrier",
+     "mark": null
+    },
+    {
+     "path": "",
+     "line": 3,
+     "question": "What is DNA?",
+     "answer": "Genetic code",
+     "mark": null
+    }
+   ]
+  },
+  {
+   "name": "Question in fenced code is excluded",
+   "function": "parseQuestions",
+   "args": [
+    "```js\nwhat?\n```\n\nReal?\nyes"
+   ],
+   "expected": [
+    {
+     "path": "",
+     "line": 4,
+     "question": "Real?",
+     "answer": "yes",
+     "mark": null
+    }
+   ]
+  },
+  {
+   "name": "Question without an answer",
+   "function": "parseQuestions",
+   "args": [
+    "Empty?\n\nNext?\na"
+   ],
+   "expected": [
+    {
+     "path": "",
+     "line": 0,
+     "question": "Empty?",
+     "answer": "",
+     "mark": null
+    },
+    {
+     "path": "",
+     "line": 2,
+     "question": "Next?",
+     "answer": "a",
+     "mark": null
+    }
+   ]
+  },
+  {
+   "name": "Empty answer display",
+   "function": "answerText",
+   "args": [
+    ""
+   ],
+   "expected": "(no answer)"
+  },
+  {
+   "name": "Apply original emoji strings",
+   "function": "applyMarks",
+   "args": [
+    "What is ATP?\nEnergy carrier\n\nWhat is DNA?\nGenetic code",
+    [
+     {
+      "path": "",
+      "line": 0,
+      "question": "What is ATP?",
+      "answer": "Energy carrier",
+      "mark": null,
+      "result": "correct"
+     },
+     {
+      "path": "",
+      "line": 3,
+      "question": "What is DNA?",
+      "answer": "Genetic code",
+      "mark": null,
+      "result": "wrong"
+     }
+    ]
+   ],
+   "expected": {
+    "text": "What is ATP?✅\nEnergy carrier\n\nWhat is DNA?❌\nGenetic code",
+    "applied": 2,
+    "skipped": 0
+   }
+  },
+  {
+   "name": "Replace old mark",
+   "function": "applyMarks",
+   "args": [
+    "What is ATP?✅\nEnergy carrier",
+    [
+     {
+      "path": "",
+      "line": 0,
+      "question": "What is ATP?",
+      "answer": "Energy carrier",
+      "mark": null,
+      "result": "wrong"
+     }
+    ]
+   ],
+   "expected": {
+    "text": "What is ATP?❌\nEnergy carrier",
+    "applied": 1,
+    "skipped": 0
+   }
+  },
+  {
+   "name": "Changed question is skipped",
+   "function": "applyMarks",
+   "args": [
+    "What is ATP?\nEnergy carrier\n\nWhat is RNA?\nGenetic code",
+    [
+     {
+      "path": "",
+      "line": 0,
+      "question": "What is ATP?",
+      "answer": "Energy carrier",
+      "mark": null,
+      "result": "correct"
+     },
+     {
+      "path": "",
+      "line": 3,
+      "question": "What is DNA?",
+      "answer": "Genetic code",
+      "mark": null,
+      "result": "wrong"
+     }
+    ]
+   ],
+   "expected": {
+    "text": "What is ATP?✅\nEnergy carrier\n\nWhat is RNA?\nGenetic code",
+    "applied": 1,
+    "skipped": 1
+   }
+  },
+  {
+   "name": "Only wrong",
+   "function": "filterQuestions",
+   "args": [
+    [
+     {
+      "path": "",
+      "line": 0,
+      "question": "ATP?",
+      "answer": "Energy",
+      "mark": null
+     },
+     {
+      "path": "",
+      "line": 3,
+      "question": "DNA?",
+      "answer": "Code",
+      "mark": "wrong"
+     }
+    ],
+    "wrong"
+   ],
+   "expected": [
+    {
+     "path": "",
+     "line": 3,
+     "question": "DNA?",
+     "answer": "Code",
+     "mark": "wrong"
+    }
+   ]
+  },
+  {
+   "name": "Clear marks",
+   "function": "clearMarks",
+   "args": [
+    "ATP?✅\nEnergy\n\nDNA?❌\nCode"
+   ],
+   "expected": "ATP?\nEnergy\n\nDNA?\nCode"
+  },
+  {
+   "name": "Custom marker",
+   "function": "parseQuestions",
+   "args": [
+    "Plain?\nNo\n\nQ: ATP\nEnergy",
+    "Q:"
+   ],
+   "expected": [
+    {
+     "path": "",
+     "line": 3,
+     "question": "Q: ATP",
+     "answer": "Energy",
+     "mark": null
+    }
+   ]
+  },
+  {
+   "name": "Tilde fenced question is excluded",
+   "function": "parseQuestions",
+   "args": [
+    "~~~\nQ?\n~~~\n\nA?\nAnswer"
+   ],
+   "expected": [
+    {
+     "path": "",
+     "line": 4,
+     "question": "A?",
+     "answer": "Answer",
+     "mark": null
+    }
+   ]
+  },
+  {
+   "name": "Fence close must have same type",
+   "function": "parseQuestions",
+   "args": [
+    "```\n~~~\nQ?\n```"
+   ],
+   "expected": []
+  },
+  {
+   "name": "Short fence cannot close long fence",
+   "function": "parseQuestions",
+   "args": [
+    "````\n```\nQ?\n````"
+   ],
+   "expected": []
+  },
+  {
+   "name": "Unclosed fence is excluded",
+   "function": "parseQuestions",
+   "args": [
+    "```\nQ?"
+   ],
+   "expected": []
+  },
+  {
+   "name": "Fence across blank answer lines",
+   "function": "parseQuestions",
+   "args": [
+    "A?\n```\nx\n\nCode?\n```\n\nB?\ny"
+   ],
+   "expected": [
+    {
+     "path": "",
+     "line": 0,
+     "question": "A?",
+     "answer": "```\nx",
+     "mark": null
+    },
+    {
+     "path": "",
+     "line": 7,
+     "question": "B?",
+     "answer": "y",
+     "mark": null
+    }
+   ]
+  },
+  {
+   "name": "Frontmatter is excluded",
+   "function": "parseQuestions",
+   "args": [
+    "---\nquestion: why?\n---\n\nReal?\nA"
+   ],
+   "expected": [
+    {
+     "path": "",
+     "line": 4,
+     "question": "Real?",
+     "answer": "A",
+     "mark": null
+    }
+   ]
+  },
+  {
+   "name": "Whitespace blank ends answer",
+   "function": "parseQuestions",
+   "args": [
+    "A?\na\n  \nB?\nb"
+   ],
+   "expected": [
+    {
+     "path": "",
+     "line": 0,
+     "question": "A?",
+     "answer": "a",
+     "mark": null
+    },
+    {
+     "path": "",
+     "line": 3,
+     "question": "B?",
+     "answer": "b",
+     "mark": null
+    }
+   ]
+  },
+  {
+   "name": "Question marker in an answer stays answer",
+   "function": "parseQuestions",
+   "args": [
+    "A?\nMaybe?\nNo"
+   ],
+   "expected": [
+    {
+     "path": "",
+     "line": 0,
+     "question": "A?",
+     "answer": "Maybe?\nNo",
+     "mark": null
+    }
+   ]
+  },
+  {
+   "name": "CRLF parse",
+   "function": "parseQuestions",
+   "args": [
+    "A?\r\na\r\n\r\nB?\r\nb"
+   ],
+   "expected": [
+    {
+     "path": "",
+     "line": 0,
+     "question": "A?",
+     "answer": "a",
+     "mark": null
+    },
+    {
+     "path": "",
+     "line": 3,
+     "question": "B?",
+     "answer": "b",
+     "mark": null
+    }
+   ]
+  },
+  {
+   "name": "CRLF apply keeps other bytes",
+   "function": "applyMarks",
+   "args": [
+    "A?\r\na\r\n\r\n",
+    [
+     {
+      "path": "",
+      "line": 0,
+      "question": "A?",
+      "answer": "a",
+      "mark": null,
+      "result": "correct"
+     }
+    ]
+   ],
+   "expected": {
+    "text": "A?✅\r\na\r\n\r\n",
+    "applied": 1,
+    "skipped": 0
+   }
+  },
+  {
+   "name": "Mixed line endings apply",
+   "function": "applyMarks",
+   "args": [
+    "A?\r\na\n\r\nKeep\r",
+    [
+     {
+      "path": "",
+      "line": 0,
+      "question": "A?",
+      "answer": "a",
+      "mark": null,
+      "result": "wrong"
+     }
+    ]
+   ],
+   "expected": {
+    "text": "A?❌\r\na\n\r\nKeep\r",
+    "applied": 1,
+    "skipped": 0
+   }
+  },
+  {
+   "name": "Clear marks leaves answer emoji",
+   "function": "clearMarks",
+   "args": [
+    "A?✅\n✅ answer ❌\n\n```\nCode?❌\n```"
+   ],
+   "expected": "A?\n✅ answer ❌\n\n```\nCode?❌\n```"
+  },
+  {
+   "name": "Only unmarked",
+   "function": "filterQuestions",
+   "args": [
+    [
+     {
+      "path": "",
+      "line": 0,
+      "question": "A?",
+      "answer": "",
+      "mark": "correct"
+     },
+     {
+      "path": "",
+      "line": 2,
+      "question": "B?",
+      "answer": "",
+      "mark": null
+     }
+    ],
+    "unmarked"
+   ],
+   "expected": [
+    {
+     "path": "",
+     "line": 2,
+     "question": "B?",
+     "answer": "",
+     "mark": null
+    }
+   ]
+  },
+  {
+   "name": "All filter retains marked cards",
+   "function": "filterQuestions",
+   "args": [
+    [
+     {
+      "path": "",
+      "line": 0,
+      "question": "ATP?",
+      "answer": "Energy",
+      "mark": null
+     },
+     {
+      "path": "",
+      "line": 3,
+      "question": "DNA?",
+      "answer": "Code",
+      "mark": "wrong"
+     }
+    ],
+    "all"
+   ],
+   "expected": [
+    {
+     "path": "",
+     "line": 0,
+     "question": "ATP?",
+     "answer": "Energy",
+     "mark": null
+    },
+    {
+     "path": "",
+     "line": 3,
+     "question": "DNA?",
+     "answer": "Code",
+     "mark": "wrong"
+    }
+   ]
+  },
+  {
+   "name": "Empty filter result",
+   "function": "filterQuestions",
+   "args": [
+    [
+     {
+      "path": "",
+      "line": 0,
+      "question": "A?",
+      "answer": "",
+      "mark": "correct"
+     }
+    ],
+    "wrong"
+   ],
+   "expected": []
+  },
+  {
+   "name": "Score counts correct and wrong",
+   "function": "score",
+   "args": [
+    [
+     {
+      "path": "",
+      "line": 0,
+      "question": "What is ATP?",
+      "answer": "Energy carrier",
+      "mark": null,
+      "result": "correct"
+     },
+     {
+      "path": "",
+      "line": 3,
+      "question": "What is DNA?",
+      "answer": "Genetic code",
+      "mark": null,
+      "result": "wrong"
+     }
+    ]
+   ],
+   "expected": {
+    "correct": 1,
+    "wrong": 1,
+    "total": 2
+   }
+  },
+  {
+   "name": "Empty score",
+   "function": "score",
+   "args": [
+    []
+   ],
+   "expected": {
+    "correct": 0,
+    "wrong": 0,
+    "total": 0
+   }
+  },
+  {
+   "name": "Blank marker has no questions",
+   "function": "parseQuestions",
+   "args": [
+    "A?\na",
+    ""
+   ],
+   "expected": []
+  },
+  {
+   "name": "Trailing question without newline",
+   "function": "parseQuestions",
+   "args": [
+    "End?"
+   ],
+   "expected": [
+    {
+     "path": "",
+     "line": 0,
+     "question": "End?",
+     "answer": "",
+     "mark": null
+    }
+   ]
+  },
+  {
+   "name": "Indent and trailing spaces retained",
+   "function": "parseQuestions",
+   "args": [
+    "  Q?  \n  answer  "
+   ],
+   "expected": [
+    {
+     "path": "",
+     "line": 0,
+     "question": "  Q?  ",
+     "answer": "  answer  ",
+     "mark": null
+    }
+   ]
+  },
+  {
+   "name": "File path in card",
+   "function": "parseQuestions",
+   "args": [
+    "A?\na",
+    "?",
+    "Study/Biology.md"
+   ],
+   "expected": [
+    {
+     "path": "Study/Biology.md",
+     "line": 0,
+     "question": "A?",
+     "answer": "a",
+     "mark": null
+    }
+   ]
+  },
+  {
+   "name": "Repeated trailing marks are replaced",
+   "function": "applyMarks",
+   "args": [
+    "A?✅❌✅\na",
+    [
+     {
+      "path": "",
+      "line": 0,
+      "question": "A?",
+      "answer": "a",
+      "mark": null,
+      "result": "wrong"
+     }
+    ]
+   ],
+   "expected": {
+    "text": "A?❌\na",
+    "applied": 1,
+    "skipped": 0
+   }
+  },
+  {
+   "name": "Internal emoji is part of question",
+   "function": "parseQuestions",
+   "args": [
+    "Is ✅ correct?❌\nyes"
+   ],
+   "expected": [
+    {
+     "path": "",
+     "line": 0,
+     "question": "Is ✅ correct?",
+     "answer": "yes",
+     "mark": "wrong"
+    }
+   ]
+  },
+  {
+   "name": "Deleted question is skipped",
+   "function": "applyMarks",
+   "args": [
+    "a",
+    [
+     {
+      "path": "",
+      "line": 0,
+      "question": "A?",
+      "answer": "",
+      "mark": null,
+      "result": "correct"
+     }
+    ]
+   ],
+   "expected": {
+    "text": "a",
+    "applied": 0,
+    "skipped": 1
+   }
+  },
+  {
+   "name": "Moved question is skipped",
+   "function": "applyMarks",
+   "args": [
+    "intro\nA?\na",
+    [
+     {
+      "path": "",
+      "line": 0,
+      "question": "A?",
+      "answer": "a",
+      "mark": null,
+      "result": "correct"
+     }
+    ]
+   ],
+   "expected": {
+    "text": "intro\nA?\na",
+    "applied": 0,
+    "skipped": 1
+   }
+  },
+  {
+   "name": "Folder includes descendant",
+   "function": "inFolder",
+   "args": [
+    "Study/Biology/a.md",
+    "Study"
+   ],
+   "expected": true
+  },
+  {
+   "name": "Folder excludes prefix sibling",
+   "function": "inFolder",
+   "args": [
+    "Study-other/a.md",
+    "Study"
+   ],
+   "expected": false
+  },
+  {
+   "name": "Root folder includes note",
+   "function": "inFolder",
+   "args": [
+    "a.md",
+    ""
+   ],
+   "expected": true
+  },
+  {
+   "name": "Dated report stays local",
+   "function": "scoreReport",
+   "args": [
+    [
+     {
+      "path": "Study/a.md",
+      "line": 0,
+      "question": "What is ATP?",
+      "answer": "Energy carrier",
+      "mark": null,
+      "result": "correct"
+     },
+     {
+      "path": "Study/a.md",
+      "line": 3,
+      "question": "What is DNA?",
+      "answer": "Genetic code",
+      "mark": null,
+      "result": "wrong"
+     }
+    ],
+    "2026-10-13T08:00:00.000Z"
+   ],
+   "expected": "# Pocket Note Quiz score\n\nDate: 2026-10-13T08:00:00.000Z\n\nCorrect: 1\nWrong: 1\nTotal: 2\n\n## Source notes\n\n- Study/a.md\n"
+  }
+ ]
+}
