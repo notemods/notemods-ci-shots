@@ -1,0 +1,43 @@
+.bme-table-view {
+  padding: 16px;
+  overflow: auto;
+  height: 100%;
+}
+
+.bme-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.bme-table-view table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.bme-table-view th,
+.bme-table-view td {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.bme-table-view .bme-selected {
+  background: var(--background-modifier-hover);
+}
+
+.bme-hint {
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}
+
+.bme-preview pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 32vh;
+  overflow: auto;
+  padding: 12px;
+  background: var(--background-secondary);
+}
