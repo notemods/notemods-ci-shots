@@ -1,0 +1,140 @@
+name: shots
+# Real Obsidian (latest) on ubuntu-latest under Xvfb: build plugins/<slug>, load it, run every qa.json entry,
+# save docs/<feature>.png and docs/<feature>.gif, then run the plugin's own e2e spec if it has one.
+# Branch p/<slug> (or p/<slug>--<tag>) holds plugins/<slug>/. Artifact: shots-<slug>.
+on:
+  push:
+    branches: ["p/**"]
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "Plugin slug; the run checks out branch p/<slug>"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shots-${{ inputs.slug || github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  shots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      OBSIDIAN_CACHE: ${{ github.workspace }}/.obsidian-cache
+      OUT_DIR: ${{ github.workspace }}/out
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.slug && format('p/{0}', inputs.slug) || github.ref }}
+
+      - name: Slug
+        env:
+          INPUT_SLUG: ${{ inputs.slug }}
+        run: |
+          ref="${INPUT_SLUG:-${GITHUB_REF_NAME#p/}}"
+          slug="${ref%%--*}"
+          [[ "$slug" =~ ^[a-z0-9-]+$ ]] || { echo "bad slug '$slug'"; exit 1; }
+          [ -f "plugins/$slug/manifest.json" ] || { echo "plugins/$slug/manifest.json missing"; exit 1; }
+          echo "SLUG=$slug" >> "$GITHUB_ENV"
+          echo "PLUGIN_DIR=$GITHUB_WORKSPACE/plugins/$slug" >> "$GITHUB_ENV"
+          echo "VAULT_DIR=$RUNNER_TEMP/vault" >> "$GITHUB_ENV"
+          mkdir -p out
+          echo "slug $slug, commit $(git rev-parse HEAD), $(git log -1 --format=%s)" | tee out/run.log
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: npm 11
+        run: npm install -g npm@11 >/dev/null && npm --version
+
+      - name: Tools (Xvfb, herbstluftwm, ffmpeg, pngquant)
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -q -y xvfb herbstluftwm ffmpeg pngquant >/dev/null
+
+      - name: Build the plugin
+        working-directory: plugins/${{ env.SLUG }}
+        run: |
+          { if [ -f package-lock.json ]; then npm ci --no-audit --no-fund; else npm install --no-audit --no-fund; fi
+            npm run build
+            ls -la main.js manifest.json; } 2>&1 | tee -a "$OUT_DIR/run.log"
+
+      - name: Install the shots runner
+        working-directory: ci
+        run: npm install --no-audit --no-fund 2>&1 | tail -3
+
+      - name: Cache Obsidian downloads
+        uses: actions/cache@v4
+        with:
+          path: .obsidian-cache
+          key: obsidian-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: obsidian-${{ runner.os }}-
+
+      - name: Virtual display
+        run: |
+          echo "DISPLAY=:99" >> "$GITHUB_ENV"
+          Xvfb :99 -screen 0 1600x1200x24 +extension GLX -noreset &
+          sleep 1
+          DISPLAY=:99 herbstluftwm &
+          sleep 1
+          # Floating windows keep the size that the app asks for (1200x760 content).
+          DISPLAY=:99 herbstclient rule floating=on
+          DISPLAY=:99 herbstclient set focus_stealing_prevention false || true
+
+      - name: Vault from docs/sample-notes
+        run: node ci/make-vault.mjs "$PLUGIN_DIR" "$VAULT_DIR" | tee -a "$OUT_DIR/run.log"
+
+      - name: Screenshots (qa.json in real Obsidian)
+        id: shots
+        working-directory: ci
+        run: npx wdio run ./wdio.shots.conf.mjs 2>&1 | tee -a "$OUT_DIR/run.log"
+
+      - name: PNG and GIF limits
+        id: media
+        if: always() && steps.shots.outcome != 'skipped'
+        run: bash ci/media.sh "$OUT_DIR" 2>&1 | tee -a "$OUT_DIR/run.log"
+
+      - name: Plugin e2e spec (earliest and latest)
+        id: e2e
+        if: always() && steps.shots.outcome != 'skipped'
+        working-directory: plugins/${{ env.SLUG }}
+        env:
+          OBSIDIAN_VERSIONS: "earliest/earliest latest/latest"
+        run: |
+          if [ ! -f wdio.conf.mts ] || [ ! -d test/e2e ]; then echo "no e2e spec" | tee "$OUT_DIR/e2e.log"; exit 0; fi
+          npx wdio run ./wdio.conf.mts 2>&1 | tee "$OUT_DIR/e2e.log"
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### shots $SLUG"
+            echo "- shots: ${{ steps.shots.outcome }}, media: ${{ steps.media.outcome }}, e2e: ${{ steps.e2e.outcome }}"
+            echo "- png: $(ls out/docs/*.png 2>/dev/null | wc -l), gif: $(ls out/docs/*.gif 2>/dev/null | wc -l)"
+            grep -E '^\[shots\]|^media:|FAIL|Error' out/run.log | head -60 | sed 's/^/    /'
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "RESULT shots=${{ steps.shots.outcome }} media=${{ steps.media.outcome }} e2e=${{ steps.e2e.outcome }}" | tee -a out/run.log
+
+      - name: Upload
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shots-${{ env.SLUG }}
+          path: |
+            out/docs/*.png
+            out/docs/*.gif
+            out/frames/
+            out/run.log
+            out/e2e.log
+            out/results.json
+          if-no-files-found: warn
+          retention-days: 14

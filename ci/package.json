@@ -1,0 +1,19 @@
+{
+	"name": "notemods-ci-shots",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"description": "Takes README screenshots of an Obsidian plugin in a real Obsidian on Linux CI (wdio-obsidian-service).",
+	"license": "MIT",
+	"devDependencies": {
+		"@wdio/cli": "9.32.0",
+		"@wdio/globals": "9.32.0",
+		"@wdio/local-runner": "9.32.0",
+		"@wdio/mocha-framework": "9.32.0",
+		"obsidian": "1.14.4",
+		"obsidian-launcher": "3.3.0",
+		"wdio-obsidian-reporter": "3.3.0",
+		"wdio-obsidian-service": "3.3.0",
+		"webdriverio": "9.32.0"
+	}
+}
