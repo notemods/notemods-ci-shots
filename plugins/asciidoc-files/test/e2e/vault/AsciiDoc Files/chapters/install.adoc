@@ -1,0 +1,14 @@
+= Install the tools
+
+You need Python 3.11 or later and the Tidewater command line tool.
+
+. Install Python from your package manager.
+. Install the tool:
++
+[source,console]
+----
+$ pipx install tidewater
+----
+. Check the version with `tidewater --version`.
+
+IMPORTANT: Use the same tool version as the build server.

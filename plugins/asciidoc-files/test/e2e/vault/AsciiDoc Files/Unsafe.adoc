@@ -1,0 +1,9 @@
+= Unsafe input
+
+++++
+<img src="missing.png" onerror="window.adocXss = 1">
+<script>window.adocXss = 2;</script>
+<a href="javascript:window.adocXss = 3">bad link</a>
+++++
+
+link:javascript:window.adocXss=4[Another bad link]

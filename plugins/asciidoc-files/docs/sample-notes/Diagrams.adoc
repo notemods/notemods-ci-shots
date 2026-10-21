@@ -1,0 +1,27 @@
+= Release flow
+
+== From source to release
+
+The diagram shows the checks before a release.
+
+[mermaid]
+----
+flowchart LR
+    A[Edit source] --> B[Run tests]
+    B --> C{Checks pass?}
+    C -->|Yes| D[Prepare release]
+    C -->|No| A
+----
+
+== Review and approval
+
+The owner checks the result before the release goes live.
+
+[source,mermaid]
+----
+sequenceDiagram
+    Writer->>Factory: Send the source
+    Factory->>Factory: Build and check
+    Factory->>Owner: Show the result
+    Owner->>Factory: Approve the release
+----
