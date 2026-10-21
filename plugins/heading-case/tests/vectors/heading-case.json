@@ -1,0 +1,231 @@
+{
+ "slug": "heading-case",
+ "module": "src/core",
+ "function": "convertHeadingText",
+ "note": "args = [heading text without the leading #, mode, keep list]; expected = converted text.",
+ "cases": [
+  {
+   "name": "sentence case lowers ordinary words",
+   "args": [
+    "Getting Started With The API",
+    "sentence",
+    []
+   ],
+   "expected": "Getting started with the API"
+  },
+  {
+   "name": "title case keeps short words lower",
+   "args": [
+    "the lord of the rings",
+    "title",
+    []
+   ],
+   "expected": "The Lord of the Rings"
+  },
+  {
+   "name": "title case capitalizes a short last word",
+   "args": [
+    "what are you looking for",
+    "title",
+    []
+   ],
+   "expected": "What Are You Looking For"
+  },
+  {
+   "name": "title case capitalizes after a colon",
+   "args": [
+    "testing: a practical guide",
+    "title",
+    []
+   ],
+   "expected": "Testing: A Practical Guide"
+  },
+  {
+   "name": "sentence case capitalizes after a colon",
+   "args": [
+    "Testing: A Practical Guide",
+    "sentence",
+    []
+   ],
+   "expected": "Testing: A practical guide"
+  },
+  {
+   "name": "mixed-case words stay as written",
+   "args": [
+    "Using iPhone And macOS With JavaScript",
+    "sentence",
+    []
+   ],
+   "expected": "Using iPhone and macOS with JavaScript"
+  },
+  {
+   "name": "keep list holds names and phrases",
+   "args": [
+    "Trip To New York With Anna",
+    "sentence",
+    [
+     "New York",
+     "Anna"
+    ]
+   ],
+   "expected": "Trip to New York with Anna"
+  },
+  {
+   "name": "keep list fixes the spelling",
+   "args": [
+    "using github actions",
+    "title",
+    [
+     "GitHub"
+    ]
+   ],
+   "expected": "Using GitHub Actions"
+  },
+  {
+   "name": "inline code is untouched",
+   "args": [
+    "Run `npm Install` First",
+    "sentence",
+    []
+   ],
+   "expected": "Run `npm Install` first"
+  },
+  {
+   "name": "wikilinks are untouched",
+   "args": [
+    "Notes On [[Project Plan]] And Ideas",
+    "sentence",
+    []
+   ],
+   "expected": "Notes on [[Project Plan]] and ideas"
+  },
+  {
+   "name": "link text changes but the URL does not",
+   "args": [
+    "Read [The Full Guide](https://example.com/The-Guide) Today",
+    "sentence",
+    []
+   ],
+   "expected": "Read [the full guide](https://example.com/The-Guide) today"
+  },
+  {
+   "name": "all-caps headings are re-cased, kept acronyms stay",
+   "args": [
+    "GETTING STARTED WITH NASA DATA",
+    "sentence",
+    [
+     "NASA"
+    ]
+   ],
+   "expected": "Getting started with NASA data"
+  },
+  {
+   "name": "the pronoun I stays capital",
+   "args": [
+    "What I Learned And Why I'm Here",
+    "sentence",
+    []
+   ],
+   "expected": "What I learned and why I'm here"
+  },
+  {
+   "name": "hyphenated compounds in title case",
+   "args": [
+    "a step-by-step guide to in-depth testing",
+    "title",
+    []
+   ],
+   "expected": "A Step-by-Step Guide to In-Depth Testing"
+  },
+  {
+   "name": "hyphenated compounds in sentence case",
+   "args": [
+    "A Step-By-Step Guide",
+    "sentence",
+    []
+   ],
+   "expected": "A step-by-step guide"
+  },
+  {
+   "name": "numbers and words with digits stay",
+   "args": [
+    "Top 10 Tips For 3D Printing In 2026",
+    "sentence",
+    []
+   ],
+   "expected": "Top 10 tips for 3D printing in 2026"
+  },
+  {
+   "name": "tags and block ids stay",
+   "args": [
+    "Weekly Review #Work ^abc123",
+    "sentence",
+    []
+   ],
+   "expected": "Weekly review #Work ^abc123"
+  },
+  {
+   "name": "emphasis markers are kept",
+   "args": [
+    "The **Big** Picture",
+    "sentence",
+    []
+   ],
+   "expected": "The **big** picture"
+  },
+  {
+   "name": "title case is idempotent",
+   "args": [
+    "The Lord of the Rings",
+    "title",
+    []
+   ],
+   "expected": "The Lord of the Rings"
+  },
+  {
+   "name": "leading quote does not hide the first word",
+   "args": [
+    "\"Hello World\" Explained",
+    "sentence",
+    []
+   ],
+   "expected": "\"Hello world\" explained"
+  },
+  {
+   "name": "CJK text has no case and is left alone",
+   "args": [
+    "日本語 Notes",
+    "sentence",
+    []
+   ],
+   "expected": "日本語 notes"
+  },
+  {
+   "name": "vs stays lower in title case",
+   "args": [
+    "cats vs dogs",
+    "title",
+    []
+   ],
+   "expected": "Cats vs Dogs"
+  },
+  {
+   "name": "title case capitalizes after a question mark",
+   "args": [
+    "why? because it works",
+    "title",
+    []
+   ],
+   "expected": "Why? Because It Works"
+  },
+  {
+   "name": "verb particles up and off are capitalized in title case",
+   "args": [
+    "how to set up and kick off a project",
+    "title",
+    []
+   ],
+   "expected": "How to Set Up and Kick Off a Project"
+  }
+ ]
+}

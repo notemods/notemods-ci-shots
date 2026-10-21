@@ -1,0 +1,50 @@
+[
+	{
+		"feature": "before",
+		"caption": "A note whose headings mix three styles.",
+		"note": "Team handbook draft.md",
+		"zoom": 0.8,
+		"eval": "const p = app.plugins.plugins['heading-case']; p.settings.keepWords = 'Obsidian, Markdown, GitHub, New York'; p.settings.selectionOnly = true; void p.saveSettings(); const e = app.workspace.activeEditor.editor; e.setCursor({ line: 0, ch: 0 }); e.scrollTo(0, 0); 'ok'",
+		"commands": []
+	},
+	{
+		"feature": "sentence-case",
+		"caption": "Convert headings to sentence case. GitHub and New York come from the keep list, macOS, iPhone, API and 3D are kept on their own.",
+		"note": "Team handbook draft.md",
+		"zoom": 0.8,
+		"eval": "const e = app.workspace.activeEditor.editor; e.setCursor({ line: 0, ch: 0 }); e.scrollTo(0, 0); 'ok'",
+		"commands": ["heading-case:convert-headings-sentence-case"]
+	},
+	{
+		"feature": "title-case",
+		"caption": "Convert headings to title case. Short words stay lowercase unless they open the heading or follow a colon.",
+		"note": "Team handbook draft.md",
+		"zoom": 0.8,
+		"eval": "const e = app.workspace.activeEditor.editor; e.setCursor({ line: 0, ch: 0 }); e.scrollTo(0, 0); 'ok'",
+		"commands": ["heading-case:convert-headings-title-case"]
+	},
+	{
+		"feature": "selected-lines",
+		"caption": "With text selected, only the headings on the selected lines change.",
+		"note": "Trip report.md",
+		"eval": "const e = app.workspace.activeEditor.editor; let i = 0; while (i < e.lineCount() && !e.getLine(i).startsWith('## The First')) i++; e.focus(); e.setSelection({ line: i, ch: 0 }, { line: i + 4, ch: e.getLine(i + 4).length }); 'ok'",
+		"commands": ["heading-case:convert-headings-sentence-case"]
+	},
+	{
+		"feature": "settings",
+		"caption": "The keep list and the selected lines switch.",
+		"eval": "app.setting.open(); app.setting.openTabById('heading-case'); 'ok'",
+		"after": "app.setting.close(); 'ok'",
+		"commands": []
+	},
+	{
+		"feature": "heading-case",
+		"caption": "One command fixes every heading in the note, and one undo brings them back.",
+		"frames": [
+			{ "note": "Team handbook draft.md", "zoom": 0.8, "eval": "const e = app.workspace.activeEditor.editor; e.setCursor({ line: 0, ch: 0 }); e.scrollTo(0, 0); 'ok'", "hold": 2200 },
+			{ "commands": ["heading-case:convert-headings-sentence-case"], "zoom": 0.8, "hold": 2600 },
+			{ "eval": "app.workspace.activeEditor.editor.undo(); 'ok'", "zoom": 0.8, "hold": 1600 },
+			{ "commands": ["heading-case:convert-headings-title-case"], "zoom": 0.8, "hold": 2600 }
+		]
+	}
+]
