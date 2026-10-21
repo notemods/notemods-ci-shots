@@ -1,0 +1,11 @@
+filters:
+  and:
+    - 'file.inFolder("Tag Properties")'
+    - 'if(note["topics"].isType("list"), note["topics"].filter(if(value.isType("string"), value.trim().replace(/^#/, "").lower() == "research", false)).length > 0, false)'
+views:
+  - type: table
+    name: Research topics
+    order:
+      - file.name
+      - topics
+      - company
