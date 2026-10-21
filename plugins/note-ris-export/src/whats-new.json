@@ -1,0 +1,27 @@
+{
+	"id": "note-ris-export",
+	"name": "Note RIS Export",
+	"version": "1.1.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea."
+	],
+	"tip": "If your notes keep the title in paper_title, set the title key to paper_title in the settings. The other RIS fields work the same way.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Note RIS Export is one of over 100 small plugins that I make. Thank you for using it in your research notes.",
+	"related": [
+		{
+			"id": "bibliography-path-audit",
+			"name": "Bibliography Path Audit",
+			"blurb": "Find invalid local bibliography paths saved in citation tool settings."
+		},
+		{
+			"id": "local-citation-page-jump",
+			"name": "Local Citation Page Jump",
+			"blurb": "Open a local PDF at the page number given in an existing citation."
+		},
+		{
+			"id": "retraction-review-queue",
+			"name": "Retraction Review Queue",
+			"blurb": "Match a local notice list to reference notes and linked manuscripts for review."
+		}
+	]
+}
