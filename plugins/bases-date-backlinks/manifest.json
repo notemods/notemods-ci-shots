@@ -1,0 +1,11 @@
+{
+	"id": "bases-date-backlinks",
+	"name": "Date Property Backlinks",
+	"version": "1.2.0",
+	"minAppVersion": "1.13.4",
+	"description": "Show notes whose date properties match a daily note in an auto-built Bases view.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}

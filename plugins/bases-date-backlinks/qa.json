@@ -1,0 +1,53 @@
+[
+	{
+		"feature": "daily-date-backlinks",
+		"caption": "A daily note with its matching date and date-time notes in one Bases view.",
+		"note": "2026-10-21.md",
+		"wait": 1400,
+		"eval": "const path = app.workspace.getActiveFile().parent.path + '/Date Property Backlinks.base'; const base = app.vault.getFileByPath(path); if (base && !app.vault.getFileByPath('Date Property Backlinks.base')) await app.vault.rename(base, 'Date Property Backlinks.base'); 'shared Base at vault root'"
+	},
+	{
+		"feature": "template-setup",
+		"caption": "Preview the one-time change to the configured daily notes template.",
+		"note": "2026-10-21.md",
+		"eval": "const path = app.vault.configDir + '/daily-notes.json'; const template = app.workspace.getActiveFile().parent.path + '/Templates/Daily'; await app.vault.adapter.write(path, JSON.stringify({template,format:'YYYY-MM-DD'})); window.__dateBacklinksTemplatePreview = await app.plugins.plugins['bases-date-backlinks'].previewTemplate(); if (!document.querySelector('.bases-date-backlinks-preview')) throw new Error('Template preview did not open'); 'preview'",
+		"after": "window.__dateBacklinksTemplatePreview?.close(); delete window.__dateBacklinksTemplatePreview; if (document.querySelector('.modal-container')) throw new Error('Template preview did not close'); 'closed'",
+		"wait": 1000
+	},
+	{
+		"feature": "automatic-daily-view",
+		"caption": "An existing daily note shows its date matches without an embed in its text.",
+		"note": "Archive/2026-10-22.md",
+		"eval": "if (document.querySelector('.modal-container')) throw new Error('A modal is blocking the screenshot'); await app.plugins.plugins['bases-date-backlinks'].setAutoShow(true); await new Promise((r) => setTimeout(r, 1000)); const el = document.querySelector('.bases-date-backlinks-auto'); const rect = el?.getBoundingClientRect(); if (!rect || rect.height <= 0 || rect.bottom > window.innerHeight) throw new Error('Automatic view is outside the viewport'); 'automatic view visible'",
+		"after": "await app.plugins.plugins['bases-date-backlinks'].setAutoShow(false); 'automatic view off'",
+		"wait": 1400
+	},
+	{
+		"feature": "follow-daily-date",
+		"caption": "The shared view follows the date of the daily note that contains it.",
+		"note": "2026-10-22.md",
+		"wait": 1400
+	},
+	{
+		"feature": "pro-rollups",
+		"caption": "Pro matches date properties and ranges across a monthly window.",
+		"note": "2026-10-21.md",
+		"eval": "if (document.querySelector('.modal-container')) throw new Error('A modal is blocking the screenshot'); const p = app.plugins.plugins['bases-date-backlinks']; p.pro.isPro = () => true; const base = app.metadataCache.getFirstLinkpathDest('Date Property Backlinks.base', app.workspace.getActiveFile().path); if (!base) throw new Error('Sample Base not found'); await app.vault.process(base, (t) => t.replace('rollupPeriod: day', 'rollupPeriod: month')); await new Promise((r) => setTimeout(r, 900)); if (![...document.querySelectorAll('.bases-date-backlinks-list a')].some((a) => a.textContent === 'Weekly plan')) throw new Error('Range match missing from monthly preview'); if (![...document.querySelectorAll('.bases-date-backlinks-list a')].some((a) => a.textContent === 'Workshop invitation')) throw new Error('Extra property match missing from monthly preview'); 'monthly preview'",
+		"after": "const p = app.plugins.plugins['bases-date-backlinks']; const base = app.metadataCache.getFirstLinkpathDest('Date Property Backlinks.base', app.workspace.getActiveFile().path); await app.vault.process(base, (t) => t.replace('rollupPeriod: month', 'rollupPeriod: day')); delete p.pro.isPro; await p.pro.signOut(); 'ok'",
+		"wait": 1200
+	},
+	{
+		"feature": "date-property-backlinks",
+		"caption": "One shared view follows the current daily note and lists matching notes.",
+		"frames": [
+			{
+				"note": "2026-10-21.md",
+				"hold": 1600
+			},
+			{
+				"note": "2026-10-22.md",
+				"hold": 1600
+			}
+		]
+	}
+]
