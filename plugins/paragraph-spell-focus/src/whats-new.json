@@ -1,0 +1,33 @@
+{
+	"id": "paragraph-spell-focus",
+	"name": "Paragraph Spell Focus",
+	"version": "1.2.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Adds native spelling focus for the active paragraph.",
+		"Adds Pro section scope and saved folder rules."
+	],
+	"changes_user": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"The plugin settings now end with a More from NoteMods card. You can turn this tab off there."
+	],
+	"tip": "Assign a hotkey to Toggle paragraph spelling focus in Obsidian to switch focus on and off while you write.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Paragraph Spell Focus is one of over 100 small plugins that I make. Thank you for writing with it.",
+	"related": [
+		{
+			"id": "visual-line-numbers",
+			"name": "Visual Line Numbers",
+			"blurb": "Show a line number for each wrapped row in the editor."
+		},
+		{
+			"id": "fixation-reader",
+			"name": "Fixation Reader",
+			"blurb": "Bold the first letters of words in Reading view to guide the eye through long text."
+		},
+		{
+			"id": "revision-session-marks",
+			"name": "Revision Session Marks",
+			"blurb": "Save a writing baseline and turn later edits into a new CriticMarkup review note."
+		}
+	]
+}
