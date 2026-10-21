@@ -42,14 +42,29 @@ async function takeErrors() {
 	return browser.executeObsidian(() => window.__shotsErrors.splice(0));
 }
 
+// Same contract as `obsidian eval code=...`: a script whose completion value is logged. Code with a top-level
+// await (the Obsidian CLI accepts it) runs as the body of an async function instead.
 async function evalInApp(code, label) {
-	const out = await browser.executeObsidian(async (_obs, src) => {
-		try {
-			const value = await (0, eval)(src);
-			return { ok: true, value: value === undefined ? 'undefined' : String(value).slice(0, 200) };
-		} catch (e) {
-			return { ok: false, error: e && e.stack ? e.stack : String(e) };
-		}
+	const out = await browser.executeObsidian((_obs, src) => {
+		const fmt = (e) => (e && e.stack ? e.stack : String(e));
+		return Promise.resolve()
+			.then(() => {
+				if (!/\bawait\b/.test(src)) return (0, eval)(src);
+				const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
+				const lines = src.trim().replace(/;\s*$/, '').split(';');
+				const last = lines.pop();
+				let fn;
+				try {
+					fn = new AsyncFunction(`${lines.join(';')};\nreturn (${last});`);
+				} catch {
+					fn = new AsyncFunction(src); // last statement is not an expression: no completion value
+				}
+				return fn();
+			})
+			.then(
+				(value) => ({ ok: true, value: value === undefined ? 'undefined' : String(value).slice(0, 200) }),
+				(e) => ({ ok: false, error: fmt(e) }),
+			);
 	}, code);
 	if (!out.ok) throw new Error(`${label} threw: ${out.error}`);
 	log(`${label} => ${out.value}`);
