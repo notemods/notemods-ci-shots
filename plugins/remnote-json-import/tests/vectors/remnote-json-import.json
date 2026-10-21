@@ -1,0 +1,667 @@
+{
+ "slug": "remnote-json-import",
+ "module": "remnote-json-import/src/importer",
+ "function": "planImport",
+ "cases": [
+  {
+   "name": "Text creates one note",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "paths": [
+     "RemNote import/A--e40c292c0002b5c4.md"
+    ],
+    "bodies": [
+     "# A\n\nA\n"
+    ],
+    "count": 1
+   }
+  },
+  {
+   "name": "Key and value are separate paragraphs",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"value\": [\"Answer\"]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "bodies": [
+     "# A\n\nA\n\nAnswer\n"
+    ]
+   }
+  },
+  {
+   "name": "Bold text becomes Markdown",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [[{\"i\": \"m\", \"text\": \"Strong\", \"b\": true}]]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "bodies": [
+     "# Strong\n\n**Strong**\n"
+    ]
+   }
+  },
+  {
+   "name": "Italic text becomes Markdown",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [[{\"i\": \"m\", \"text\": \"Soft\", \"it\": true}]]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "bodies": [
+     "# Soft\n\n*Soft*\n"
+    ]
+   }
+  },
+  {
+   "name": "Combined emphasis becomes Markdown",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"value\": [{\"text\": \"Both\", \"bold\": true, \"italic\": true}]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "bodies": [
+     "# A\n\nA\n\n***Both***\n"
+    ]
+   }
+  },
+  {
+   "name": "References resolve from the value",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"value\": [{\"i\": \"q\", \"_id\": \"b\"}]}, {\"_id\": \"b\", \"key\": [\"B\"]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "bodies": [
+     "# A\n\nA\n\n[[RemNote import/B--e70c2de50002b5c7|B]]\n",
+     "# B\n\nB\n"
+    ]
+   }
+  },
+  {
+   "name": "Parent ID adds child and parent links",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"children\": [\"b\"]}, {\"_id\": \"b\", \"key\": [\"B\"], \"parent\": \"a\"}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "bodies": [
+     "# A\n\nA\n\nChildren:\n- [[RemNote import/B--e70c2de50002b5c7|B]]\n",
+     "# B\n\nB\n\nParent: [[RemNote import/A--e40c292c0002b5c4|A]]\n"
+    ]
+   }
+  },
+  {
+   "name": "Children infer a missing parent",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"children\": [\"b\"]}, {\"_id\": \"b\", \"key\": [\"B\"]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "bodies": [
+     "# A\n\nA\n\nChildren:\n- [[RemNote import/B--e70c2de50002b5c7|B]]\n",
+     "# B\n\nB\n\nParent: [[RemNote import/A--e40c292c0002b5c4|A]]\n"
+    ]
+   }
+  },
+  {
+   "name": "Missing Rem reference is reported",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"value\": [{\"i\": \"q\", \"_id\": \"missing\"}]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "bodies": [
+     "# A\n\nA\n\n[Missing Rem: missing]\n"
+    ],
+    "warningTypes": [
+     "missing-reference"
+    ]
+   }
+  },
+  {
+   "name": "Missing parent is reported",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"parent\": \"gone\"}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "warningTypes": [
+     "missing-parent",
+     "missing-reference"
+    ]
+   }
+  },
+  {
+   "name": "Missing child is reported",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"children\": [\"gone\"]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "warningTypes": [
+     "missing-child"
+    ]
+   }
+  },
+  {
+   "name": "Unknown fragment is visible and reported",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"value\": [{\"i\": \"cloze\", \"text\": \"Secret\"}]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "bodies": [
+     "# A\n\nA\n\n[Unsupported content]\n"
+    ],
+    "warningTypes": [
+     "object-cloze"
+    ]
+   }
+  },
+  {
+   "name": "Images are not embedded",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"value\": [{\"content\": {\"imageUrl\": \"https://example.invalid/image.png\"}}]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "bodies": [
+     "# A\n\nA\n\n[Unsupported image]\n"
+    ],
+    "warningTypes": [
+     "media"
+    ]
+   }
+  },
+  {
+   "name": "Local files are not copied",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"value\": [\"%LOCAL_FILE%test.pdf\"]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "bodies": [
+     "# A\n\nA\n\n[Unsupported local file]\n"
+    ],
+    "warningTypes": [
+     "media"
+    ]
+   }
+  },
+  {
+   "name": "Reserved filename characters are removed",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A/B: C?\"]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "paths": [
+     "RemNote import/A B C--e40c292c0002b5c4.md"
+    ]
+   }
+  },
+  {
+   "name": "Unicode names are kept",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"日記 café\"]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "paths": [
+     "RemNote import/日記 café--e40c292c0002b5c4.md"
+    ]
+   }
+  },
+  {
+   "name": "Same titles have distinct source tags",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"]}, {\"_id\": \"b\", \"key\": [\"A\"]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "paths": [
+     "RemNote import/A--e40c292c0002b5c4.md",
+     "RemNote import/A--e70c2de50002b5c7.md"
+    ]
+   }
+  },
+  {
+   "name": "Empty title has a fallback",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"\"]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "paths": [
+     "RemNote import/Untitled--e40c292c0002b5c4.md"
+    ],
+    "bodies": [
+     "# Untitled\n\n\n"
+    ]
+   }
+  },
+  {
+   "name": "Device names have a safe prefix",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"CON\"]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "paths": [
+     "RemNote import/_CON--e40c292c0002b5c4.md"
+    ]
+   }
+  },
+  {
+   "name": "Literal Markdown stays text",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"value\": [\"**bold** <img src=x> [[x]]\"]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "bodies": [
+     "# A\n\nA\n\n\\*\\*bold\\*\\* \\<img src=x\\> \\[\\[x\\]\\]\n"
+    ]
+   }
+  },
+  {
+   "name": "Malformed JSON is rejected",
+   "args": [
+    "{",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "error": "not valid JSON"
+   }
+  },
+  {
+   "name": "Missing docs is rejected",
+   "args": [
+    "{}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "error": "docs array"
+   }
+  },
+  {
+   "name": "Duplicate source IDs are rejected",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"]}, {\"_id\": \"a\", \"key\": [\"A\"]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "error": "Duplicate source ID"
+   }
+  },
+  {
+   "name": "Missing source ID is rejected",
+   "args": [
+    "{\"docs\": [{\"key\": [\"A\"]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "error": "needs a nonempty source"
+   }
+  },
+  {
+   "name": "Parent cycles are rejected",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"parent\": \"b\"}, {\"_id\": \"b\", \"key\": [\"B\"], \"parent\": \"a\"}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "error": "Parent cycle"
+   }
+  },
+  {
+   "name": "Invalid reference lists are rejected",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"references\": [1]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "error": "Invalid references"
+   }
+  },
+  {
+   "name": "Empty exports create zero notes",
+   "args": [
+    "{\"docs\": []}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "paths": [],
+    "count": 0
+   }
+  },
+  {
+   "name": "Dot segments in folders are rejected",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"]}]}",
+    {
+     "folder": "../private",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "error": "new vault folder"
+   }
+  },
+  {
+   "name": "Layout folder and prefix change paths",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"]}]}",
+    {
+     "folder": "Archive/Import",
+     "prefix": "Note ",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "paths": [
+     "Archive/Import/Note A--e40c292c0002b5c4.md"
+    ]
+   }
+  },
+  {
+   "name": "A grouped subtree is one document",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"children\": [\"b\"]}, {\"_id\": \"b\", \"key\": [\"B\"], \"parent\": \"a\"}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": [
+      "a"
+     ]
+    }
+   ],
+   "expected": {
+    "paths": [
+     "RemNote import/A--e40c292c0002b5c4.md"
+    ],
+    "noteIds": [
+     [
+      "a",
+      "b"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "A grouped target uses a section anchor",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"children\": [\"b\"]}, {\"_id\": \"b\", \"key\": [\"B\"], \"parent\": \"a\"}, {\"_id\": \"c\", \"key\": [\"C\"], \"value\": [{\"i\": \"q\", \"_id\": \"b\"}]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": [
+      "a"
+     ]
+    }
+   ],
+   "expected": {
+    "paths": [
+     "RemNote import/A--e40c292c0002b5c4.md",
+     "RemNote import/C--e60c2c520002b5c6.md"
+    ],
+    "bodiesTail": "# C\n\nC\n\n[[RemNote import/A--e40c292c0002b5c4#Rem e70c2de50002b5c7|B]]\n"
+   }
+  },
+  {
+   "name": "Overlapping selected subtrees are rejected",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"children\": [\"b\"]}, {\"_id\": \"b\", \"key\": [\"B\"], \"parent\": \"a\"}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": [
+      "a",
+      "b"
+     ]
+    }
+   ],
+   "expected": {
+    "error": "subtrees overlap"
+   }
+  },
+  {
+   "name": "Unknown subtree roots are rejected",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": [
+      "z"
+     ]
+    }
+   ],
+   "expected": {
+    "error": "not in this export"
+   }
+  },
+  {
+   "name": "Unsupported record types are reported",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"type\": 6}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "warningTypes": [
+     "record-type-6"
+    ]
+   }
+  },
+  {
+   "name": "Unsupported relations are reported",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"portalsIn\": [\"b\"]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "warningTypes": [
+     "portalsIn"
+    ]
+   }
+  },
+  {
+   "name": "Reference ID lists create note links",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"references\": [\"b\"]}, {\"_id\": \"b\", \"key\": [\"B\"]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "bodies": [
+     "# A\n\nA\n\nReferences:\n- [[RemNote import/B--e70c2de50002b5c7|B]]\n",
+     "# B\n\nB\n"
+    ]
+   }
+  },
+  {
+   "name": "Text strings are accepted as keys",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": \"A\"}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "bodies": [
+     "# A\n\nA\n"
+    ]
+   }
+  },
+  {
+   "name": "A leading byte order mark is accepted",
+   "args": [
+    "﻿{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "count": 1
+   }
+  },
+  {
+   "name": "Extra emphasis flags are reported",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"value\": [{\"i\": \"m\", \"text\": \"X\", \"color\": \"red\"}]}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "warningTypes": [
+     "format-options"
+    ]
+   }
+  },
+  {
+   "name": "A malformed value is rejected",
+   "args": [
+    "{\"docs\": [{\"_id\": \"a\", \"key\": [\"A\"], \"value\": {\"x\": 1}}]}",
+    {
+     "folder": "RemNote import",
+     "prefix": "",
+     "groupRoots": []
+    }
+   ],
+   "expected": {
+    "error": "Invalid value"
+   }
+  }
+ ],
+ "note": "Expected fields select exact projections of the import plan. Error cases select a message fragment."
+}

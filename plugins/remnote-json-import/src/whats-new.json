@@ -1,0 +1,27 @@
+{
+	"id": "remnote-json-import",
+	"name": "RemNote JSON Import",
+	"version": "1.1.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea."
+	],
+	"tip": "Open Import report.md in the output folder to see each missing reference and unsupported item.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. RemNote JSON Import is one of over 100 small plugins that I make. Thank you for moving your notes into Obsidian with it.",
+	"related": [
+		{
+			"id": "opml-note-import",
+			"name": "OPML Note Import",
+			"blurb": "Convert outline exports into ordered Markdown notes."
+		},
+		{
+			"id": "cherrytree-import",
+			"name": "CherryTree Import",
+			"blurb": "Import unencrypted CherryTree XML, links and PNGs."
+		},
+		{
+			"id": "zettelkasten-archive-import",
+			"name": "Zettelkasten Archive Import",
+			"blurb": "Convert version 3.8 Zettelkasten archives into notes with keywords, links, and note sequences."
+		}
+	]
+}

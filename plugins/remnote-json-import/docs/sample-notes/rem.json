@@ -1,0 +1,96 @@
+{
+  "exportVersion": 2,
+  "name": "Biology sample",
+  "docs": [
+    {
+      "_id": "biology",
+      "key": [
+        "Biology study"
+      ],
+      "value": [
+        "A small study plan with parent links and source references."
+      ],
+      "children": [
+        "cells",
+        "dna",
+        "diagram",
+        "reading"
+      ]
+    },
+    {
+      "_id": "cells",
+      "parent": "biology",
+      "key": [
+        "Cells"
+      ],
+      "value": [
+        {
+          "i": "m",
+          "text": "Cells",
+          "b": true
+        },
+        " contain ",
+        {
+          "i": "q",
+          "_id": "dna"
+        },
+        "."
+      ],
+      "children": [
+        "mitosis"
+      ]
+    },
+    {
+      "_id": "dna",
+      "parent": "biology",
+      "key": [
+        "DNA"
+      ],
+      "value": [
+        "DNA carries genetic information."
+      ]
+    },
+    {
+      "_id": "mitosis",
+      "parent": "cells",
+      "key": [
+        "Mitosis"
+      ],
+      "value": [
+        "Compare the stages with ",
+        {
+          "i": "q",
+          "_id": "missing-lab"
+        },
+        "."
+      ]
+    },
+    {
+      "_id": "diagram",
+      "parent": "biology",
+      "key": [
+        "Lab diagram"
+      ],
+      "value": [
+        {
+          "content": {
+            "imageUrl": "https://example.invalid/lab.png"
+          }
+        }
+      ]
+    },
+    {
+      "_id": "reading",
+      "parent": "biology",
+      "key": [
+        "Reading list"
+      ],
+      "value": [
+        {
+          "i": "portal",
+          "_id": "archive"
+        }
+      ]
+    }
+  ]
+}

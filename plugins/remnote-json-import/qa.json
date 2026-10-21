@@ -1,0 +1,64 @@
+[
+  {
+    "feature": "preview",
+    "caption": "Preview six source Rems and three warnings before import.",
+    "note": "Start.md",
+    "eval": "(async () => { const p = app.plugins.plugins['remnote-json-import']; for (const m of [...p.modals]) m.close(); const source = await app.vault.read(app.vault.getAbstractFileByPath('RemNote JSON Import/rem.json')); p.pro.signOut(); p.settings.presets = []; window.__rniSource = source; window.__rniFolder = 'Biology import '+Date.now(); p.openImport(); const m = [...p.modals].pop(); m.text = source; m.contentEl.querySelector('textarea').value = source; m.contentEl.querySelector('textarea').rows = 2; m.setLayout({folder:window.__rniFolder,prefix:'',groupRoots:[]}); m.showPreview(); return 'ok'; })()",
+    "zoom": 0.85,
+    "wait": 500
+  },
+  {
+    "feature": "links",
+    "caption": "The imported Cells note has a parent link, a DNA reference and a child link.",
+    "eval": "(async () => { const p = app.plugins.plugins['remnote-json-import']; for (const m of [...p.modals]) m.close(); const source = await app.vault.read(app.vault.getAbstractFileByPath('RemNote JSON Import/rem.json')); p.pro.signOut(); await p.importText(source,{folder:window.__rniFolder,prefix:'',groupRoots:[]}); const root = app.vault.getAbstractFileByPath(window.__rniFolder); const file = root.children.find(f => f.name.startsWith('Cells--')); await app.workspace.getLeaf(false).openFile(file,{state:{mode:'preview'}}); return 'ok'; })()",
+    "zoom": 1,
+    "wait": 700
+  },
+  {
+    "feature": "report",
+    "caption": "The report lists a missing reference and unsupported image and portal objects.",
+    "eval": "(async () => { const p = app.plugins.plugins['remnote-json-import']; for (const m of [...p.modals]) m.close(); const source = await app.vault.read(app.vault.getAbstractFileByPath('RemNote JSON Import/rem.json')); await app.workspace.getLeaf(false).openFile(app.vault.getAbstractFileByPath(window.__rniFolder+'/Import report.md'),{state:{mode:'preview'}}); return 'ok'; })()",
+    "wait": 700
+  },
+  {
+    "feature": "presets",
+    "caption": "Save a layout preset with a filename prefix and subtree root.",
+    "eval": "(async () => { const p = app.plugins.plugins['remnote-json-import']; for (const m of [...p.modals]) m.close(); const source = await app.vault.read(app.vault.getAbstractFileByPath('RemNote JSON Import/rem.json')); p.pro.opts.http = async () => ({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('remnote-json-import-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow(); await p.savePreset('Biology document',{folder:'Biology documents',prefix:'Study ',groupRoots:['biology']}); p.openImport(); const m = [...p.modals].pop(); m.text = source; m.contentEl.querySelector('textarea').value = source; m.contentEl.querySelector('textarea').rows = 2; m.setLayout(p.applyPreset('Biology document')); m.showPreview(); return 'ok'; })()",
+    "zoom": 0.85,
+    "wait": 500
+  },
+  {
+    "feature": "changes",
+    "caption": "Compare a later export with the last complete import.",
+    "eval": "(async () => { const p = app.plugins.plugins['remnote-json-import']; for (const m of [...p.modals]) m.close(); const source = await app.vault.read(app.vault.getAbstractFileByPath('RemNote JSON Import/rem.json')); p.pro.opts.http = async () => ({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('remnote-json-import-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow(); p.openImport(); const m = [...p.modals].pop(); m.text = source; m.contentEl.querySelector('textarea').value = source; m.contentEl.querySelector('textarea').rows = 2; m.text = \"{\\\"docs\\\": [{\\\"_id\\\": \\\"biology\\\", \\\"key\\\": [\\\"Biology study\\\"], \\\"value\\\": [\\\"A revised study plan.\\\"], \\\"children\\\": [\\\"cells\\\", \\\"dna\\\", \\\"diagram\\\", \\\"reading\\\"]}, {\\\"_id\\\": \\\"cells\\\", \\\"parent\\\": \\\"biology\\\", \\\"key\\\": [\\\"Cells\\\"], \\\"value\\\": [{\\\"i\\\": \\\"m\\\", \\\"text\\\": \\\"Cells\\\", \\\"b\\\": true}, \\\" contain \\\", {\\\"i\\\": \\\"q\\\", \\\"_id\\\": \\\"dna\\\"}, \\\".\\\"], \\\"children\\\": [\\\"mitosis\\\"]}, {\\\"_id\\\": \\\"dna\\\", \\\"parent\\\": \\\"biology\\\", \\\"key\\\": [\\\"DNA\\\"], \\\"value\\\": [\\\"DNA carries genetic information.\\\"]}, {\\\"_id\\\": \\\"new-lab\\\", \\\"key\\\": [\\\"New lab\\\"]}]}\"; m.contentEl.querySelector('textarea').value = m.text; m.contentEl.querySelectorAll('button').forEach(b=>{if(b.textContent==='Pro change preview') b.click();}); return 'ok'; })()",
+    "zoom": 0.85,
+    "wait": 500
+  },
+  {
+    "feature": "grouped",
+    "caption": "A selected subtree becomes one document with source sections and links.",
+    "eval": "(async () => { const p = app.plugins.plugins['remnote-json-import']; for (const m of [...p.modals]) m.close(); const source = await app.vault.read(app.vault.getAbstractFileByPath('RemNote JSON Import/rem.json')); p.pro.opts.http = async () => ({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('remnote-json-import-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow(); const folder = 'Grouped biology '+Date.now(); const result = await p.importText(source,{folder,prefix:'Study ',groupRoots:['biology']}); await app.workspace.getLeaf(false).openFile(app.vault.getAbstractFileByPath(result.written[0]),{state:{mode:'preview'}}); p.pro.signOut(); return 'ok'; })()",
+    "wait": 700
+  },
+  {
+    "feature": "walkthrough",
+    "caption": "Preview, import and read linked notes and the report.",
+    "frames": [
+      {
+        "note": "Start.md",
+        "eval": "(async () => { const p = app.plugins.plugins['remnote-json-import']; for (const m of [...p.modals]) m.close(); const source = await app.vault.read(app.vault.getAbstractFileByPath('RemNote JSON Import/rem.json')); p.pro.signOut(); p.settings.presets = []; window.__rniSource = source; window.__rniFolder = 'Biology import '+Date.now(); p.openImport(); const m = [...p.modals].pop(); m.text = source; m.contentEl.querySelector('textarea').value = source; m.contentEl.querySelector('textarea').rows = 2; m.setLayout({folder:window.__rniFolder,prefix:'',groupRoots:[]}); m.showPreview(); return 'ok'; })()",
+        "zoom": 0.85,
+        "hold": 1600
+      },
+      {
+        "eval": "(async () => { const p = app.plugins.plugins['remnote-json-import']; for (const m of [...p.modals]) m.close(); const source = await app.vault.read(app.vault.getAbstractFileByPath('RemNote JSON Import/rem.json')); p.pro.signOut(); const result = await p.importText(source,{folder:window.__rniFolder,prefix:'',groupRoots:[]}); await app.workspace.getLeaf(false).openFile(app.vault.getAbstractFileByPath(result.written[1]),{state:{mode:'preview'}}); return 'ok'; })()",
+        "zoom": 1,
+        "hold": 1800
+      },
+      {
+        "eval": "(async () => { const p = app.plugins.plugins['remnote-json-import']; for (const m of [...p.modals]) m.close(); const source = await app.vault.read(app.vault.getAbstractFileByPath('RemNote JSON Import/rem.json')); await app.workspace.getLeaf(false).openFile(app.vault.getAbstractFileByPath(window.__rniFolder+'/Import report.md'),{state:{mode:'preview'}}); return 'ok'; })()",
+        "hold": 1800
+      }
+    ]
+  }
+]
