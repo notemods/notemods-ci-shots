@@ -1,0 +1,84 @@
+.kanban-draft-vault-modal {
+	width: min(760px, 90vw);
+}
+
+.kanban-draft-vault-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--size-4-2);
+	margin-block: var(--size-4-3);
+}
+
+.kanban-draft-vault-toolbar [role="status"] {
+	flex: 1;
+	color: var(--text-muted);
+}
+
+.kanban-draft-vault-toolbar button[hidden] {
+	display: none;
+}
+
+.kanban-draft-vault-modal input[type="search"],
+.kanban-draft-vault-text {
+	width: 100%;
+	margin-block: var(--size-4-2);
+}
+
+.kanban-draft-vault-text {
+	min-height: 80px;
+	resize: vertical;
+	font-family: var(--font-text);
+}
+
+.kanban-draft-vault-draft {
+	padding: var(--size-4-3);
+	margin-block: var(--size-4-3);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	background: var(--background-secondary);
+}
+
+.kanban-draft-vault-board {
+	overflow-wrap: anywhere;
+}
+
+.kanban-draft-vault-context,
+.kanban-draft-vault-count {
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+}
+
+.kanban-draft-vault-version {
+	border-top: 1px solid var(--background-modifier-border);
+	margin-top: var(--size-4-3);
+	padding-top: var(--size-4-2);
+}
+
+.kanban-draft-vault-limit {
+	display: flex;
+	justify-content: space-between;
+	gap: var(--size-4-2);
+	margin-block: var(--size-4-3);
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}

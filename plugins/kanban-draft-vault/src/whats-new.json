@@ -1,0 +1,32 @@
+{
+	"id": "kanban-draft-vault",
+	"name": "Kanban Draft Vault",
+	"version": "1.1.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"The retention limits dialog no longer applies a limit of 1 and removes saved drafts."
+	],
+	"changes_user": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Apply limits with an empty field now asks for a number instead of deleting saved drafts."
+	],
+	"tip": "Run Open draft recovery to find text kept from a new-card form closed with Escape or a click outside.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Kanban Draft Vault is one of over 100 small plugins that I make. Thank you for using it to keep your card drafts safe.",
+	"related": [
+		{
+			"id": "kanban-embed",
+			"name": "Kanban Embed",
+			"blurb": "Use a Kanban board inside a project or daily note."
+		},
+		{
+			"id": "bases-task-rows",
+			"name": "Bases Task Rows",
+			"blurb": "See each task from the notes in a base as a separate row."
+		},
+		{
+			"id": "task-date-links",
+			"name": "Task Date Links",
+			"blurb": "Link completed tasks to their daily notes for backlinks."
+		}
+	]
+}

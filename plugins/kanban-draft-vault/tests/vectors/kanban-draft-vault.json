@@ -1,0 +1,1323 @@
+{
+ "slug": "kanban-draft-vault",
+ "module": "products/kanban-draft-vault/src/model",
+ "function": "captureDraft",
+ "cases": [
+  {
+   "name": "Case 1 saves the board path and captured Todo label",
+   "args": [
+    {
+     "drafts": [],
+     "limits": {}
+    },
+    {
+     "id": "one",
+     "board": "Board A.md",
+     "lane": "Todo",
+     "text": "Call Ana",
+     "at": 100
+    },
+    false
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "one",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "Call Ana",
+      "updatedAt": 100,
+      "versions": []
+     }
+    ],
+    "limits": {}
+   },
+   "function": "captureDraft",
+   "acceptance_case": 1
+  },
+  {
+   "name": "Case 2 keeps two lines in their original order",
+   "args": [
+    {
+     "drafts": [],
+     "limits": {}
+    },
+    {
+     "id": "one",
+     "board": "Board A.md",
+     "lane": "Todo",
+     "text": "Call Ana\nAsk about the plan",
+     "at": 100
+    },
+    false
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "one",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "Call Ana\nAsk about the plan",
+      "updatedAt": 100,
+      "versions": []
+     }
+    ],
+    "limits": {}
+   },
+   "function": "captureDraft",
+   "acceptance_case": 2
+  },
+  {
+   "name": "Case 3 restores a saved draft after a normal reload",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      }
+     ],
+     "limits": {}
+    }
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "one",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "Call Ana",
+      "updatedAt": 100,
+      "versions": []
+     }
+    ],
+    "limits": {}
+   },
+   "function": "normalizeSettings",
+   "acceptance_case": 3
+  },
+  {
+   "name": "Case 4 keeps separate owner boards during a tab change",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      }
+     ],
+     "limits": {}
+    },
+    {
+     "id": "two",
+     "board": "Board B.md",
+     "lane": "Todo",
+     "text": "Review budget",
+     "at": 101
+    },
+    false
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "two",
+      "board": "Board B.md",
+      "lane": "Todo",
+      "text": "Review budget",
+      "updatedAt": 101,
+      "versions": []
+     },
+     {
+      "id": "one",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "Call Ana",
+      "updatedAt": 100,
+      "versions": []
+     }
+    ],
+    "limits": {}
+   },
+   "function": "captureDraft",
+   "acceptance_case": 4
+  },
+  {
+   "name": "Case 5 duplicate lane labels have separate record identities",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      }
+     ],
+     "limits": {}
+    },
+    {
+     "id": "two",
+     "board": "Board A.md",
+     "lane": "Todo",
+     "text": "Send agenda",
+     "at": 101
+    },
+    false
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "two",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "Send agenda",
+      "updatedAt": 101,
+      "versions": []
+     },
+     {
+      "id": "one",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "Call Ana",
+      "updatedAt": 100,
+      "versions": []
+     }
+    ],
+    "limits": {}
+   },
+   "function": "captureDraft",
+   "acceptance_case": 5
+  },
+  {
+   "name": "Case 6 clearing after a successful submission keeps a copy-only record",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      }
+     ],
+     "limits": {}
+    },
+    {
+     "id": "one",
+     "board": "Board A.md",
+     "lane": "Todo",
+     "text": "",
+     "at": 100
+    },
+    false
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "one",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "Call Ana",
+      "updatedAt": 100,
+      "versions": []
+     }
+    ],
+    "limits": {}
+   },
+   "function": "captureDraft",
+   "acceptance_case": 6
+  },
+  {
+   "name": "Case 7 empty update retains the last nonempty draft",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      }
+     ],
+     "limits": {}
+    },
+    {
+     "id": "one",
+     "board": "Board A.md",
+     "lane": "Todo",
+     "text": "\n  ",
+     "at": 100
+    },
+    false
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "one",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "Call Ana",
+      "updatedAt": 100,
+      "versions": []
+     }
+    ],
+    "limits": {}
+   },
+   "function": "captureDraft",
+   "acceptance_case": 7
+  },
+  {
+   "name": "Case 8 the clipboard fallback has complete Unicode and multiline text",
+   "args": [
+    {
+     "drafts": [],
+     "limits": {}
+    },
+    {
+     "id": "one",
+     "board": "Board A.md",
+     "lane": "Todo",
+     "text": "Call Ana\nAsk about café ☕\n  Keep spacing",
+     "at": 100
+    },
+    false
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "one",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "Call Ana\nAsk about café ☕\n  Keep spacing",
+      "updatedAt": 100,
+      "versions": []
+     }
+    ],
+    "limits": {}
+   },
+   "function": "captureDraft",
+   "acceptance_case": 8
+  },
+  {
+   "name": "Case 9 explicit dismissal removes the record",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      },
+      {
+       "id": "two",
+       "board": "Board B.md",
+       "lane": "Todo",
+       "text": "Review budget",
+       "updatedAt": 101,
+       "versions": []
+      }
+     ],
+     "limits": {}
+    },
+    "one"
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "two",
+      "board": "Board B.md",
+      "lane": "Todo",
+      "text": "Review budget",
+      "updatedAt": 101,
+      "versions": []
+     }
+    ],
+    "limits": {}
+   },
+   "function": "dismissDraft",
+   "acceptance_case": 9
+  },
+  {
+   "name": "Case 10 newest complete text replaces an older capture",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call",
+       "updatedAt": 100,
+       "versions": []
+      }
+     ],
+     "limits": {}
+    },
+    {
+     "id": "one",
+     "board": "Board A.md",
+     "lane": "Todo",
+     "text": "Call Ana\nAsk about the plan",
+     "at": 102
+    },
+    false
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "one",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "Call Ana\nAsk about the plan",
+      "updatedAt": 102,
+      "versions": []
+     }
+    ],
+    "limits": {}
+   },
+   "function": "captureDraft",
+   "acceptance_case": 10
+  },
+  {
+   "name": "Whitespace does not create a record",
+   "args": [
+    {
+     "drafts": [],
+     "limits": {}
+    },
+    {
+     "id": "one",
+     "board": "Board A.md",
+     "lane": "Todo",
+     "text": " \n\t",
+     "at": 100
+    },
+    false
+   ],
+   "expected": {
+    "drafts": [],
+    "limits": {}
+   },
+   "function": "captureDraft"
+  },
+  {
+   "name": "Exact leading and trailing spacing is retained",
+   "args": [
+    {
+     "drafts": [],
+     "limits": {}
+    },
+    {
+     "id": "one",
+     "board": "Board A.md",
+     "lane": "Todo",
+     "text": "  Call Ana  \n",
+     "at": 100
+    },
+    false
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "one",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "  Call Ana  \n",
+      "updatedAt": 100,
+      "versions": []
+     }
+    ],
+    "limits": {}
+   },
+   "function": "captureDraft"
+  },
+  {
+   "name": "A record cannot move to a different owner board",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      }
+     ],
+     "limits": {}
+    },
+    {
+     "id": "one",
+     "board": "Board B.md",
+     "lane": "Todo",
+     "text": "Call Ana",
+     "at": 100
+    },
+    false
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "one",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "Call Ana",
+      "updatedAt": 100,
+      "versions": []
+     }
+    ],
+    "limits": {}
+   },
+   "function": "captureDraft"
+  },
+  {
+   "name": "A captured label stays as context after a lane rename",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      }
+     ],
+     "limits": {}
+    },
+    {
+     "id": "one",
+     "board": "Board A.md",
+     "lane": "Next",
+     "text": "Call Ana tomorrow",
+     "at": 101
+    },
+    false
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "one",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "Call Ana tomorrow",
+      "updatedAt": 101,
+      "versions": []
+     }
+    ],
+    "limits": {}
+   },
+   "function": "captureDraft"
+  },
+  {
+   "name": "A repeated unchanged text does not add a version",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      }
+     ],
+     "limits": {}
+    },
+    {
+     "id": "one",
+     "board": "Board A.md",
+     "lane": "Todo",
+     "text": "Call Ana",
+     "at": 102
+    },
+    true
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "one",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "Call Ana",
+      "updatedAt": 100,
+      "versions": []
+     }
+    ],
+    "limits": {}
+   },
+   "function": "captureDraft"
+  },
+  {
+   "name": "Pro keeps the previous draft text as a saved version",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      }
+     ],
+     "limits": {}
+    },
+    {
+     "id": "one",
+     "board": "Board A.md",
+     "lane": "Todo",
+     "text": "Call Ana tomorrow",
+     "at": 101
+    },
+    true
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "one",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "Call Ana tomorrow",
+      "updatedAt": 101,
+      "versions": [
+       {
+        "text": "Call Ana",
+        "capturedAt": 100
+       }
+      ]
+     }
+    ],
+    "limits": {}
+   },
+   "function": "captureDraft"
+  },
+  {
+   "name": "Free capture does not make a history version",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      }
+     ],
+     "limits": {}
+    },
+    {
+     "id": "one",
+     "board": "Board A.md",
+     "lane": "Todo",
+     "text": "Call Ana tomorrow",
+     "at": 101
+    },
+    false
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "one",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "Call Ana tomorrow",
+      "updatedAt": 101,
+      "versions": []
+     }
+    ],
+    "limits": {}
+   },
+   "function": "captureDraft"
+  },
+  {
+   "name": "Pro count limits keep the newest draft for a board",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      }
+     ],
+     "limits": {
+      "Board A.md": {
+       "drafts": 1,
+       "days": 30,
+       "versions": 2
+      }
+     }
+    },
+    {
+     "id": "two",
+     "board": "Board A.md",
+     "lane": "Todo",
+     "text": "Send agenda",
+     "at": 101
+    },
+    true
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "two",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "Send agenda",
+      "updatedAt": 101,
+      "versions": []
+     }
+    ],
+    "limits": {
+     "Board A.md": {
+      "drafts": 1,
+      "days": 30,
+      "versions": 2
+     }
+    }
+   },
+   "function": "captureDraft"
+  },
+  {
+   "name": "Free capture leaves stored limits inactive",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      }
+     ],
+     "limits": {
+      "Board A.md": {
+       "drafts": 1,
+       "days": 30,
+       "versions": 2
+      }
+     }
+    },
+    {
+     "id": "two",
+     "board": "Board A.md",
+     "lane": "Todo",
+     "text": "Send agenda",
+     "at": 101
+    },
+    false
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "two",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "Send agenda",
+      "updatedAt": 101,
+      "versions": []
+     },
+     {
+      "id": "one",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "Call Ana",
+      "updatedAt": 100,
+      "versions": []
+     }
+    ],
+    "limits": {
+     "Board A.md": {
+      "drafts": 1,
+      "days": 30,
+      "versions": 2
+     }
+    }
+   },
+   "function": "captureDraft"
+  },
+  {
+   "name": "Pro age retention removes an expired draft",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      },
+      {
+       "id": "two",
+       "board": "Board B.md",
+       "lane": "Todo",
+       "text": "Review budget",
+       "updatedAt": 101,
+       "versions": []
+      }
+     ],
+     "limits": {
+      "Board A.md": {
+       "drafts": 100,
+       "days": 1,
+       "versions": 10
+      }
+     }
+    },
+    86400101,
+    true
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "two",
+      "board": "Board B.md",
+      "lane": "Todo",
+      "text": "Review budget",
+      "updatedAt": 101,
+      "versions": []
+     }
+    ],
+    "limits": {
+     "Board A.md": {
+      "drafts": 100,
+      "days": 1,
+      "versions": 10
+     }
+    }
+   },
+   "function": "retain"
+  },
+  {
+   "name": "Free does not apply age retention",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      }
+     ],
+     "limits": {}
+    },
+    9000000000,
+    false
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "one",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "Call Ana",
+      "updatedAt": 100,
+      "versions": []
+     }
+    ],
+    "limits": {}
+   },
+   "function": "retain"
+  },
+  {
+   "name": "Search matches a board path",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      },
+      {
+       "id": "two",
+       "board": "Board B.md",
+       "lane": "Todo",
+       "text": "Review budget",
+       "updatedAt": 101,
+       "versions": []
+      }
+     ],
+     "limits": {}
+    },
+    "board b",
+    true
+   ],
+   "expected": [
+    {
+     "id": "two",
+     "board": "Board B.md",
+     "lane": "Todo",
+     "text": "Review budget",
+     "updatedAt": 101,
+     "versions": []
+    }
+   ],
+   "function": "findDrafts"
+  },
+  {
+   "name": "Search matches a latest text fragment",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      },
+      {
+       "id": "two",
+       "board": "Board B.md",
+       "lane": "Todo",
+       "text": "Review budget",
+       "updatedAt": 101,
+       "versions": []
+      }
+     ],
+     "limits": {}
+    },
+    "ANA",
+    true
+   ],
+   "expected": [
+    {
+     "id": "one",
+     "board": "Board A.md",
+     "lane": "Todo",
+     "text": "Call Ana",
+     "updatedAt": 100,
+     "versions": []
+    }
+   ],
+   "function": "findDrafts"
+  },
+  {
+   "name": "Search matches a captured lane label",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      },
+      {
+       "id": "two",
+       "board": "Board B.md",
+       "lane": "Todo",
+       "text": "Review budget",
+       "updatedAt": 101,
+       "versions": []
+      }
+     ],
+     "limits": {}
+    },
+    "todo",
+    true
+   ],
+   "expected": [
+    {
+     "id": "two",
+     "board": "Board B.md",
+     "lane": "Todo",
+     "text": "Review budget",
+     "updatedAt": 101,
+     "versions": []
+    },
+    {
+     "id": "one",
+     "board": "Board A.md",
+     "lane": "Todo",
+     "text": "Call Ana",
+     "updatedAt": 100,
+     "versions": []
+    }
+   ],
+   "function": "findDrafts"
+  },
+  {
+   "name": "Free search stays off",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      },
+      {
+       "id": "two",
+       "board": "Board B.md",
+       "lane": "Todo",
+       "text": "Review budget",
+       "updatedAt": 101,
+       "versions": []
+      }
+     ],
+     "limits": {}
+    },
+    "missing",
+    false
+   ],
+   "expected": [
+    {
+     "id": "two",
+     "board": "Board B.md",
+     "lane": "Todo",
+     "text": "Review budget",
+     "updatedAt": 101,
+     "versions": []
+    },
+    {
+     "id": "one",
+     "board": "Board A.md",
+     "lane": "Todo",
+     "text": "Call Ana",
+     "updatedAt": 100,
+     "versions": []
+    }
+   ],
+   "function": "findDrafts"
+  },
+  {
+   "name": "An unmatched Pro search has no results",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      },
+      {
+       "id": "two",
+       "board": "Board B.md",
+       "lane": "Todo",
+       "text": "Review budget",
+       "updatedAt": 101,
+       "versions": []
+      }
+     ],
+     "limits": {}
+    },
+    "missing",
+    true
+   ],
+   "expected": [],
+   "function": "findDrafts"
+  },
+  {
+   "name": "Malformed settings become an empty store",
+   "args": [
+    {
+     "drafts": [
+      null,
+      1,
+      {
+       "id": "bad",
+       "text": ""
+      }
+     ],
+     "limits": null
+    }
+   ],
+   "expected": {
+    "drafts": [],
+    "limits": {}
+   },
+   "function": "normalizeSettings"
+  },
+  {
+   "name": "Limits clamp to supported values",
+   "args": [
+    {
+     "drafts": 0,
+     "days": 99999,
+     "versions": -5
+    }
+   ],
+   "expected": {
+    "drafts": 1,
+    "days": 3650,
+    "versions": 1
+   },
+   "function": "normalizeLimit"
+  },
+  {
+   "name": "Invalid limits use defaults",
+   "args": [
+    {
+     "drafts": "bad",
+     "days": null
+    }
+   ],
+   "expected": {
+    "drafts": 100,
+    "days": 30,
+    "versions": 10
+   },
+   "function": "normalizeLimit"
+  },
+  {
+   "name": "Retention limits of one board leave another board intact",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      },
+      {
+       "id": "two",
+       "board": "Board B.md",
+       "lane": "Todo",
+       "text": "Review budget",
+       "updatedAt": 101,
+       "versions": []
+      }
+     ],
+     "limits": {
+      "Board A.md": {
+       "drafts": 1,
+       "days": 30,
+       "versions": 2
+      }
+     }
+    },
+    {
+     "id": "three",
+     "board": "Board A.md",
+     "lane": "Todo",
+     "text": "New idea",
+     "at": 103
+    },
+    true
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "three",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "New idea",
+      "updatedAt": 103,
+      "versions": []
+     },
+     {
+      "id": "two",
+      "board": "Board B.md",
+      "lane": "Todo",
+      "text": "Review budget",
+      "updatedAt": 101,
+      "versions": []
+     }
+    ],
+    "limits": {
+     "Board A.md": {
+      "drafts": 1,
+      "days": 30,
+      "versions": 2
+     }
+    }
+   },
+   "function": "captureDraft"
+  },
+  {
+   "name": "Clear followed by another editor session keeps two drafts",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      }
+     ],
+     "limits": {}
+    },
+    {
+     "id": "next",
+     "board": "Board A.md",
+     "lane": "Todo",
+     "text": "New card",
+     "at": 103
+    },
+    false
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "next",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "New card",
+      "updatedAt": 103,
+      "versions": []
+     },
+     {
+      "id": "one",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "Call Ana",
+      "updatedAt": 100,
+      "versions": []
+     }
+    ],
+    "limits": {}
+   },
+   "function": "captureDraft"
+  },
+  {
+   "name": "Missing owner board does not create a record",
+   "args": [
+    {
+     "drafts": [],
+     "limits": {}
+    },
+    {
+     "id": "one",
+     "board": "",
+     "lane": "Todo",
+     "text": "Call Ana",
+     "at": 100
+    },
+    false
+   ],
+   "expected": {
+    "drafts": [],
+    "limits": {}
+   },
+   "function": "captureDraft"
+  },
+  {
+   "name": "A special board path has no inherited retention entry",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "__proto__",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      }
+     ],
+     "limits": {}
+    },
+    102,
+    true
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "one",
+      "board": "__proto__",
+      "lane": "Todo",
+      "text": "Call Ana",
+      "updatedAt": 100,
+      "versions": []
+     }
+    ],
+    "limits": {}
+   },
+   "function": "retain"
+  },
+  {
+   "name": "Duplicate loaded ids keep the first record",
+   "args": [
+    {
+     "drafts": [
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Call Ana",
+       "updatedAt": 100,
+       "versions": []
+      },
+      {
+       "id": "one",
+       "board": "Board A.md",
+       "lane": "Todo",
+       "text": "Duplicate",
+       "updatedAt": 100,
+       "versions": []
+      }
+     ],
+     "limits": {}
+    }
+   ],
+   "expected": {
+    "drafts": [
+     {
+      "id": "one",
+      "board": "Board A.md",
+      "lane": "Todo",
+      "text": "Call Ana",
+      "updatedAt": 100,
+      "versions": []
+     }
+    ],
+    "limits": {}
+   },
+   "function": "normalizeSettings"
+  }
+ ]
+}
