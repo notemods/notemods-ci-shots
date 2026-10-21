@@ -1,0 +1,66 @@
+[
+  {
+    "feature": "baseline",
+    "caption": "A saved prose baseline stays available across a restart.",
+    "note": "Workshop.md",
+    "eval": "(async () => { const p = app.plugins.plugins['revision-session-marks']; p.modal?.close(); p.pro.signOut(); await p.discardSession(); p.state.named = []; p.settings = {baselineName:'First draft',author:'',includeSummary:false}; await p.saveSettings(); const f = app.vault.getFileByPath('Revision Session Marks/Workshop.md'); await p.startSession(f,await app.vault.read(f)); p.showSession(); document.querySelectorAll('.notice-container .notice').forEach(n => n.remove()); return 'ok'; })()"
+  },
+  {
+    "feature": "review",
+    "caption": "A separate review has additions, deletions and substitutions.",
+    "note": "Workshop.md",
+    "eval": "(async () => { const p = app.plugins.plugins['revision-session-marks']; p.modal?.close(); p.pro.signOut(); await p.discardSession(); p.state.named = []; p.settings = {baselineName:'First draft',author:'',includeSummary:false}; await p.saveSettings(); const f = app.vault.getFileByPath('Revision Session Marks/Workshop.md'); await p.startSession(f,await app.vault.read(f)); await app.vault.modify(f,\"We meet at the new library.\\n\\nWe now read the draft together. The door stays open.\\n\\nThe team leaves with a clear plan.\\n\"); const view = app.workspace.getMostRecentLeaf()?.view; if (view && view.file === f) { view.editor.setValue(\"We meet at the new library.\\n\\nWe now read the draft together. The door stays open.\\n\\nThe team leaves with a clear plan.\\n\"); await view.save(); }  await p.stopSession(f,await app.vault.read(f)); document.querySelectorAll('.notice-container .notice').forEach(n => n.remove()); return 'ok'; })()"
+  },
+  {
+    "feature": "verification",
+    "caption": "Greek words and exact spaces have two passed restore checks.",
+    "note": "Greek.md",
+    "eval": "(async () => { const p = app.plugins.plugins['revision-session-marks']; p.modal?.close(); p.pro.signOut(); await p.discardSession(); p.state.named = []; p.settings = {baselineName:'First draft',author:'',includeSummary:false}; await p.saveSettings(); const f = app.vault.getFileByPath('Revision Session Marks/Workshop.md'); const g = app.vault.getFileByPath('Revision Session Marks/Greek.md'); await p.startSession(g,await app.vault.read(g)); await app.vault.modify(g,\"\\u03b1\\u03b3. A  B.\\n\\nThe next draft keeps exact spaces and whole words.\\n\"); const view = app.workspace.getMostRecentLeaf()?.view; if (view && view.file === g) { view.editor.setValue(\"\\u03b1\\u03b3. A  B.\\n\\nThe next draft keeps exact spaces and whole words.\\n\"); await view.save(); }  await p.stopSession(g,await app.vault.read(g)); document.querySelectorAll('.notice-container .notice').forEach(n => n.remove()); return 'ok'; })()"
+  },
+  {
+    "feature": "guard",
+    "caption": "Unsupported final text stops output and keeps the baseline.",
+    "note": "Workshop.md",
+    "eval": "(async () => { const p = app.plugins.plugins['revision-session-marks']; p.modal?.close(); p.pro.signOut(); await p.discardSession(); p.state.named = []; p.settings = {baselineName:'First draft',author:'',includeSummary:false}; await p.saveSettings(); const f = app.vault.getFileByPath('Revision Session Marks/Workshop.md'); await p.startSession(f,await app.vault.read(f)); await p.run(() => p.stopSession(f,'We [[read]] the draft.')); p.showSession(); document.querySelectorAll('.notice-container .notice').forEach(n => n.remove()); return 'ok'; })()"
+  },
+  {
+    "feature": "named",
+    "caption": "Pro keeps named baselines for two sample notes.",
+    "note": "Workshop.md",
+    "eval": "(async () => { const p = app.plugins.plugins['revision-session-marks']; p.modal?.close(); p.pro.signOut(); await p.discardSession(); p.state.named = []; p.settings = {baselineName:'First draft',author:'',includeSummary:false}; await p.saveSettings(); const f = app.vault.getFileByPath('Revision Session Marks/Workshop.md');p.pro.opts.http = async () => ({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('revision-session-marks-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow(); const g=app.vault.getFileByPath('Revision Session Marks/Garden.md'); await app.vault.modify(g,\"The garden opens at noon.\\n\\nWe bring a small notebook and watch the birds.\\n\"); await p.saveNamed(f,await app.vault.read(f)); await p.saveNamed(g,await app.vault.read(g)); p.showSession(); document.querySelectorAll('.notice-container .notice').forEach(n => n.remove()); return 'ok'; })()",
+    "after": "app.plugins.plugins['revision-session-marks'].pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "folder",
+    "caption": "Pro makes review copies for two drafts in one folder.",
+    "note": "Workshop.md",
+    "eval": "(async () => { const p = app.plugins.plugins['revision-session-marks']; p.modal?.close(); p.pro.signOut(); await p.discardSession(); p.state.named = []; p.settings = {baselineName:'First draft',author:'',includeSummary:false}; await p.saveSettings(); const f = app.vault.getFileByPath('Revision Session Marks/Workshop.md');p.pro.opts.http = async () => ({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('revision-session-marks-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow(); const g=app.vault.getFileByPath('Revision Session Marks/Garden.md'); await app.vault.modify(g,\"The garden opens at noon.\\n\\nWe bring a small notebook and watch the birds.\\n\"); await p.saveNamed(f,await app.vault.read(f)); await p.saveNamed(g,await app.vault.read(g)); await app.vault.modify(f,\"We meet at the new library.\\n\\nWe now read the draft together. The door stays open.\\n\\nThe team leaves with a clear plan.\\n\"); const view = app.workspace.getMostRecentLeaf()?.view; if (view && view.file === f) { view.editor.setValue(\"We meet at the new library.\\n\\nWe now read the draft together. The door stays open.\\n\\nThe team leaves with a clear plan.\\n\"); await view.save(); }  await app.vault.modify(g,'The garden opens at dawn.\\n\\nWe bring a small notebook and watch the birds.\\n'); await p.reviewFolder(f,await app.vault.read(f)); document.querySelectorAll('.notice-container .notice').forEach(n => n.remove()); return 'ok'; })()",
+    "after": "app.plugins.plugins['revision-session-marks'].pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "author",
+    "caption": "Pro adds a local author label and a count of change marks.",
+    "note": "Workshop.md",
+    "eval": "(async () => { const p = app.plugins.plugins['revision-session-marks']; p.modal?.close(); p.pro.signOut(); await p.discardSession(); p.state.named = []; p.settings = {baselineName:'First draft',author:'',includeSummary:false}; await p.saveSettings(); const f = app.vault.getFileByPath('Revision Session Marks/Workshop.md');p.pro.opts.http = async () => ({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('revision-session-marks-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow(); p.settings.author='Sam'; p.settings.includeSummary=true; await p.saveSettings(); await p.startSession(f,await app.vault.read(f)); await app.vault.modify(f,\"We meet at the new library.\\n\\nWe now read the draft together. The door stays open.\\n\\nThe team leaves with a clear plan.\\n\"); const view = app.workspace.getMostRecentLeaf()?.view; if (view && view.file === f) { view.editor.setValue(\"We meet at the new library.\\n\\nWe now read the draft together. The door stays open.\\n\\nThe team leaves with a clear plan.\\n\"); await view.save(); }  await p.stopSession(f,await app.vault.read(f)); document.querySelectorAll('.notice-container .notice').forEach(n => n.remove()); return 'ok'; })()",
+    "after": "app.plugins.plugins['revision-session-marks'].pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "session-flow",
+    "caption": "Save a baseline, make a review, then open the new note.",
+    "frames": [
+      {
+        "note": "Workshop.md",
+        "eval": "(async () => { const p = app.plugins.plugins['revision-session-marks']; p.modal?.close(); p.pro.signOut(); await p.discardSession(); p.state.named = []; p.settings = {baselineName:'First draft',author:'',includeSummary:false}; await p.saveSettings(); const f = app.vault.getFileByPath('Revision Session Marks/Workshop.md'); await p.startSession(f,await app.vault.read(f)); p.showSession(); document.querySelectorAll('.notice-container .notice').forEach(n => n.remove()); return 'ok'; })()",
+        "hold": 1600
+      },
+      {
+        "eval": "(async () => { const p=app.plugins.plugins['revision-session-marks']; const f=app.vault.getFileByPath('Revision Session Marks/Workshop.md'); await app.vault.modify(f,\"We meet at the new library.\\n\\nWe now read the draft together. The door stays open.\\n\\nThe team leaves with a clear plan.\\n\"); const view = app.workspace.getMostRecentLeaf()?.view; if (view && view.file === f) { view.editor.setValue(\"We meet at the new library.\\n\\nWe now read the draft together. The door stays open.\\n\\nThe team leaves with a clear plan.\\n\"); await view.save(); }  const out=await p.stopSession(f,await app.vault.read(f)); window.revisionOutput=out.path; document.querySelectorAll('.notice-container .notice').forEach(n => n.remove()); return 'ok'; })()",
+        "hold": 2000
+      },
+      {
+        "eval": "(async () => { app.plugins.plugins['revision-session-marks'].modal?.close(); await app.workspace.getLeaf(false).openFile(app.vault.getFileByPath(window.revisionOutput)); document.querySelectorAll('.notice-container .notice').forEach(n => n.remove()); return 'ok'; })()",
+        "hold": 1600
+      }
+    ]
+  }
+]
