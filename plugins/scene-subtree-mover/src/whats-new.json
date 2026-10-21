@@ -1,0 +1,34 @@
+{
+	"id": "scene-subtree-mover",
+	"name": "Scene Subtree Mover",
+	"version": "1.2.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Refuses an index with an unquoted whole number above 2^53 in its frontmatter.",
+		"Adds free moves between parent groups with a complete subtree preview and source backup."
+	],
+	"changes_user": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"The plugin now refuses an index with an unquoted whole number above 2^53, because the save would change it.",
+		"Move a chapter or scene under another parent with a preview of the whole subtree and a backup. It is free."
+	],
+	"tip": "Select Manuscript root in Destination parent to promote a nested scene.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Scene Subtree Mover is one of over 100 small plugins that I make. Thank you for using it with your writing.",
+	"related": [
+		{
+			"id": "revision-session-marks",
+			"name": "Revision Session Marks",
+			"blurb": "Save a prose baseline and a marked review of edits."
+		},
+		{
+			"id": "compile-loss-check",
+			"name": "Compile Loss Check",
+			"blurb": "Find source paragraphs that do not match a compiled manuscript."
+		},
+		{
+			"id": "scene-notes-to-fountain",
+			"name": "Scene Notes to Fountain",
+			"blurb": "Convert planning notes into an ordered Fountain outline with scene headings and summaries."
+		}
+	]
+}

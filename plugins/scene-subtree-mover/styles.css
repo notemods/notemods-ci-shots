@@ -1,0 +1,114 @@
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
+
+.scene-subtree-mover-modal {
+	width: min(1000px, 94vw);
+}
+
+.scene-subtree-mover-modal .ssm-index-path {
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+	overflow-wrap: anywhere;
+}
+
+.scene-subtree-mover-modal .ssm-controls {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+	gap: 16px;
+}
+
+.scene-subtree-mover-modal .ssm-controls .setting-item {
+	border: none;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 8px;
+}
+
+.scene-subtree-mover-modal select {
+	max-width: 100%;
+}
+
+.scene-subtree-mover-modal .ssm-actions {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+
+.scene-subtree-mover-modal .ssm-button-row {
+	border: none;
+	padding: 4px 0;
+}
+
+.scene-subtree-mover-modal .ssm-button-row .setting-item-info {
+	display: none;
+}
+
+.scene-subtree-mover-modal .ssm-trees {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+	gap: 12px;
+}
+
+.scene-subtree-mover-modal .ssm-tree-panel {
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	background: var(--background-secondary);
+	padding: 12px;
+}
+
+.scene-subtree-mover-modal .ssm-tree-title {
+	font-weight: var(--font-semibold);
+	margin: 0 0 8px;
+}
+
+.scene-subtree-mover-modal .ssm-tree-panel pre {
+	max-height: 260px;
+	margin: 0;
+	overflow: auto;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	font-size: var(--font-ui-small);
+	line-height: 1.65;
+}
+
+.scene-subtree-mover-modal .ssm-status {
+	padding: 10px 12px;
+	border-left: 3px solid var(--interactive-accent);
+	background: var(--background-secondary);
+	overflow-wrap: anywhere;
+}
+
+.scene-subtree-mover-modal .ssm-hint {
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+}
+
+.scene-subtree-mover-modal .ssm-pro summary {
+	cursor: pointer;
+	color: var(--text-muted);
+}
+
+
+.scene-subtree-mover-modal .ssm-controls .setting-item-control {
+	justify-content: flex-start;
+}
