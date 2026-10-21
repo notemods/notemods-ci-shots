@@ -1,0 +1,611 @@
+{
+  "slug": "wordpress-wxr-import",
+  "module": "products/wordpress-wxr-import/src/model.ts",
+  "function": "planImport",
+  "cases": [
+    {
+      "name": "Named three-note acceptance shape",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title>Field journal</title><wp:post_id>11</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Hello <strong>world</strong>.</p><p>Our first field visit.</p>]]></content:encoded><wp:comment><wp:comment_author>Reader</wp:comment_author><wp:comment_date_gmt>2024-12-18 12:00:00</wp:comment_date_gmt><wp:comment_content><![CDATA[<p>A helpful comment</p>]]></wp:comment_content><wp:comment_approved>1</wp:comment_approved></wp:comment><category domain=\"category\">Research</category><category domain=\"post_tag\">field-notes</category></item><item><title>About</title><wp:post_id>12</wp:post_id><wp:post_type>page</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item><item><title>Contact</title><wp:post_id>13</wp:post_id><wp:post_type>page</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item><item><title>Menu</title><wp:post_id>14</wp:post_id><wp:post_type>nav_menu_item</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "posts": 1,
+        "pages": 2,
+        "names": [
+          "Field journal-11.md",
+          "About-12.md",
+          "Contact-13.md"
+        ],
+        "approved": 1,
+        "omitted": 0,
+        "shortcodes": 0,
+        "skipped": [
+          {
+            "type": "nav_menu_item",
+            "count": 1
+          }
+        ],
+        "bodies": [
+          "Hello **world**.\n\nOur first field visit.",
+          "Body",
+          "Body"
+        ],
+        "changes": []
+      }
+    },
+    {
+      "name": "Named seven-note acceptance shape",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title>Entry 1</title><wp:post_id>1</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item><item><title>Entry 2</title><wp:post_id>2</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item><item><title>Entry 3</title><wp:post_id>3</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item><item><title>Entry 4</title><wp:post_id>4</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item><item><title>Entry 5</title><wp:post_id>5</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item><item><title>Entry 6</title><wp:post_id>6</wp:post_id><wp:post_type>page</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item><item><title>Entry 7</title><wp:post_id>7</wp:post_id><wp:post_type>page</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item><item><title>Media 8</title><wp:post_id>8</wp:post_id><wp:post_type>attachment</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item><item><title>Media 9</title><wp:post_id>9</wp:post_id><wp:post_type>attachment</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item><item><title>Media 10</title><wp:post_id>10</wp:post_id><wp:post_type>attachment</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item><item><title>Media 11</title><wp:post_id>11</wp:post_id><wp:post_type>attachment</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item><item><title>Other 12</title><wp:post_id>12</wp:post_id><wp:post_type>nav_menu_item</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item><item><title>Other 13</title><wp:post_id>13</wp:post_id><wp:post_type>nav_menu_item</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item><item><title>Other 14</title><wp:post_id>14</wp:post_id><wp:post_type>nav_menu_item</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "posts": 5,
+        "pages": 2,
+        "names": [
+          "Entry 1-1.md",
+          "Entry 2-2.md",
+          "Entry 3-3.md",
+          "Entry 4-4.md",
+          "Entry 5-5.md",
+          "Entry 6-6.md",
+          "Entry 7-7.md"
+        ],
+        "approved": 0,
+        "omitted": 0,
+        "shortcodes": 0,
+        "skipped": [
+          {
+            "type": "attachment",
+            "count": 4
+          },
+          {
+            "type": "nav_menu_item",
+            "count": 3
+          }
+        ],
+        "bodies": [
+          "Body",
+          "Body",
+          "Body",
+          "Body",
+          "Body",
+          "Body",
+          "Body"
+        ],
+        "changes": []
+      }
+    },
+    {
+      "name": "CDATA body HTML",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title>Plan</title><wp:post_id>1</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Hello <strong>world</strong>.</p>]]></content:encoded></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "posts": 1,
+        "pages": 0,
+        "names": [
+          "Plan-1.md"
+        ],
+        "approved": 0,
+        "omitted": 0,
+        "shortcodes": 0,
+        "skipped": [],
+        "bodies": [
+          "Hello **world**."
+        ],
+        "changes": []
+      }
+    },
+    {
+      "name": "Same title distinct IDs",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title>Plan</title><wp:post_id>11</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item><item><title>Plan</title><wp:post_id>12</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "posts": 2,
+        "pages": 0,
+        "names": [
+          "Plan-11.md",
+          "Plan-12.md"
+        ],
+        "approved": 0,
+        "omitted": 0,
+        "shortcodes": 0,
+        "skipped": [],
+        "bodies": [
+          "Body",
+          "Body"
+        ],
+        "changes": []
+      }
+    },
+    {
+      "name": "Empty title keeps body",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title></title><wp:post_id>13</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "posts": 1,
+        "pages": 0,
+        "names": [
+          "Post-13.md"
+        ],
+        "approved": 0,
+        "omitted": 0,
+        "shortcodes": 0,
+        "skipped": [],
+        "bodies": [
+          "Body"
+        ],
+        "changes": []
+      }
+    },
+    {
+      "name": "Approved and spam comments",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title>Plan</title><wp:post_id>1</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded><wp:comment><wp:comment_author>Reader</wp:comment_author><wp:comment_date_gmt>2024-12-18 12:00:00</wp:comment_date_gmt><wp:comment_content><![CDATA[<p>A helpful comment</p>]]></wp:comment_content><wp:comment_approved>1</wp:comment_approved></wp:comment><wp:comment><wp:comment_author>Reader</wp:comment_author><wp:comment_date_gmt>2024-12-18 12:00:00</wp:comment_date_gmt><wp:comment_content><![CDATA[<p>Spam</p>]]></wp:comment_content><wp:comment_approved>spam</wp:comment_approved></wp:comment></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "posts": 1,
+        "pages": 0,
+        "names": [
+          "Plan-1.md"
+        ],
+        "approved": 1,
+        "omitted": 1,
+        "shortcodes": 0,
+        "skipped": [],
+        "bodies": [
+          "Body"
+        ],
+        "changes": []
+      }
+    },
+    {
+      "name": "Media link and shortcode with no network",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title>Plan</title><wp:post_id>1</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p><img src=\"https://example.org/photo.jpg\" alt=\"Field photo\"></p><p>[gallery ids=\"1\"]</p>]]></content:encoded></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "posts": 1,
+        "pages": 0,
+        "names": [
+          "Plan-1.md"
+        ],
+        "approved": 0,
+        "omitted": 0,
+        "shortcodes": 1,
+        "skipped": [],
+        "bodies": [
+          "[Field photo](https://example.org/photo.jpg)\n\n[gallery ids=\"1\"]"
+        ],
+        "changes": []
+      }
+    },
+    {
+      "name": "Malformed tags stop import",
+      "args": [
+        {
+          "xml": "<rss><channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "error": "Malformed XML: tags do not match."
+      }
+    },
+    {
+      "name": "DOCTYPE stops import",
+      "args": [
+        {
+          "xml": "<!DOCTYPE rss><?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title>Plan</title><wp:post_id>1</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "error": "DOCTYPE and entity declarations are not supported."
+      }
+    },
+    {
+      "name": "Existing folder stops import",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title>Plan</title><wp:post_id>1</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": true
+        }
+      ],
+      "expected": {
+        "error": "The destination folder exists. Choose a new folder."
+      }
+    },
+    {
+      "name": "Platform independent plan",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title>Plan</title><wp:post_id>1</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded><category domain=\"category\">Work</category><category domain=\"post_tag\">draft</category></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "posts": 1,
+        "pages": 0,
+        "names": [
+          "Plan-1.md"
+        ],
+        "approved": 0,
+        "omitted": 0,
+        "shortcodes": 0,
+        "skipped": [],
+        "bodies": [
+          "Body"
+        ],
+        "changes": []
+      }
+    },
+    {
+      "name": "Draft status stays in properties",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title>Plan</title><wp:post_id>1</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>draft</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "posts": 1,
+        "pages": 0,
+        "names": [
+          "Plan-1.md"
+        ],
+        "approved": 0,
+        "omitted": 0,
+        "shortcodes": 0,
+        "skipped": [],
+        "bodies": [
+          "Body"
+        ],
+        "changes": []
+      }
+    },
+    {
+      "name": "Unicode title",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title>旅の記録</title><wp:post_id>1</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "posts": 1,
+        "pages": 0,
+        "names": [
+          "旅の記録-1.md"
+        ],
+        "approved": 0,
+        "omitted": 0,
+        "shortcodes": 0,
+        "skipped": [],
+        "bodies": [
+          "Body"
+        ],
+        "changes": []
+      }
+    },
+    {
+      "name": "Unsafe filename characters",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title>Plan/next: step</title><wp:post_id>1</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "posts": 1,
+        "pages": 0,
+        "names": [
+          "Plan-next- step-1.md"
+        ],
+        "approved": 0,
+        "omitted": 0,
+        "shortcodes": 0,
+        "skipped": [],
+        "bodies": [
+          "Body"
+        ],
+        "changes": []
+      }
+    },
+    {
+      "name": "Duplicate source IDs rejected",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title>Plan</title><wp:post_id>1</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item><item><title>Plan</title><wp:post_id>1</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "error": "Post and page source IDs must be numeric and unique."
+      }
+    },
+    {
+      "name": "Missing source ID rejected",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title>Plan</title><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "error": "Post and page source IDs must be numeric and unique."
+      }
+    },
+    {
+      "name": "Unknown entities rejected",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title>A &bad; title</title><wp:post_id>1</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "error": "Malformed XML: text or entity."
+      }
+    },
+    {
+      "name": "Non WXR RSS rejected",
+      "args": [
+        {
+          "xml": "<rss><channel></channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "error": "The export has no supported WXR namespace or version field."
+      }
+    },
+    {
+      "name": "No post records yields report",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title>Plan</title><wp:post_id>1</wp:post_id><wp:post_type>attachment</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "posts": 0,
+        "pages": 0,
+        "names": [],
+        "approved": 0,
+        "omitted": 0,
+        "shortcodes": 0,
+        "skipped": [
+          {
+            "type": "attachment",
+            "count": 1
+          }
+        ],
+        "bodies": [],
+        "changes": []
+      }
+    },
+    {
+      "name": "WXR 1.1 namespace",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.1/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title>Plan</title><wp:post_id>1</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "posts": 1,
+        "pages": 0,
+        "names": [
+          "Plan-1.md"
+        ],
+        "approved": 0,
+        "omitted": 0,
+        "shortcodes": 0,
+        "skipped": [],
+        "bodies": [
+          "Body"
+        ],
+        "changes": []
+      }
+    },
+    {
+      "name": "Alternate namespace prefix",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:x=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><x:wxr_version>1.2</x:wxr_version><item><title>Plan</title><x:post_id>1</x:post_id><x:post_type>post</x:post_type><x:post_date_gmt>2024-12-17 10:00:00</x:post_date_gmt><x:post_modified_gmt>2024-12-18 11:00:00</x:post_modified_gmt><dc:creator>Writer</dc:creator><x:status>publish</x:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "posts": 1,
+        "pages": 0,
+        "names": [
+          "Plan-1.md"
+        ],
+        "approved": 0,
+        "omitted": 0,
+        "shortcodes": 0,
+        "skipped": [],
+        "bodies": [
+          "Body"
+        ],
+        "changes": []
+      }
+    },
+    {
+      "name": "Pending and trash comments omitted",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title>Plan</title><wp:post_id>1</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded><wp:comment><wp:comment_author>Reader</wp:comment_author><wp:comment_date_gmt>2024-12-18 12:00:00</wp:comment_date_gmt><wp:comment_content><![CDATA[<p>A helpful comment</p>]]></wp:comment_content><wp:comment_approved>0</wp:comment_approved></wp:comment><wp:comment><wp:comment_author>Reader</wp:comment_author><wp:comment_date_gmt>2024-12-18 12:00:00</wp:comment_date_gmt><wp:comment_content><![CDATA[<p>A helpful comment</p>]]></wp:comment_content><wp:comment_approved>trash</wp:comment_approved></wp:comment></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "posts": 1,
+        "pages": 0,
+        "names": [
+          "Plan-1.md"
+        ],
+        "approved": 0,
+        "omitted": 2,
+        "shortcodes": 0,
+        "skipped": [],
+        "bodies": [
+          "Body"
+        ],
+        "changes": []
+      }
+    },
+    {
+      "name": "Path traversal rejected",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title>Plan</title><wp:post_id>1</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item></channel></rss>",
+          "folder": "../Import",
+          "mapping": {},
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "error": "Use a nonempty folder path with safe names and no dot segments."
+      }
+    },
+    {
+      "name": "Reserved property names rejected",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title>Plan</title><wp:post_id>1</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {
+            "title": "source_id"
+          },
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "error": "Property names must be distinct letters, numbers, underscores, or dashes."
+      }
+    },
+    {
+      "name": "Field mapping profile",
+      "args": [
+        {
+          "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\" xmlns:wp=\"http://wordpress.org/export/1.2/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"><channel><title>Field journal</title><wp:wxr_version>1.2</wp:wxr_version><item><title>Plan</title><wp:post_id>1</wp:post_id><wp:post_type>post</wp:post_type><wp:post_date_gmt>2024-12-17 10:00:00</wp:post_date_gmt><wp:post_modified_gmt>2024-12-18 11:00:00</wp:post_modified_gmt><dc:creator>Writer</dc:creator><wp:status>publish</wp:status><content:encoded><![CDATA[<p>Body</p>]]></content:encoded></item></channel></rss>",
+          "folder": "Import",
+          "mapping": {
+            "author": "writer"
+          },
+          "baseline": null,
+          "existing": false
+        }
+      ],
+      "expected": {
+        "posts": 1,
+        "pages": 0,
+        "names": [
+          "Plan-1.md"
+        ],
+        "approved": 0,
+        "omitted": 0,
+        "shortcodes": 0,
+        "skipped": [],
+        "bodies": [
+          "Body"
+        ],
+        "changes": []
+      }
+    }
+  ]
+}
