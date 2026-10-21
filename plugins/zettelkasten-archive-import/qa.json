@@ -1,0 +1,72 @@
+[
+  {
+    "feature": "preview",
+    "caption": "The preview shows 7 live notes, 1 deleted slot, a missing link target and unsupported markup.",
+    "note": "Start here.md",
+    "eval": "(async()=>{const p=app.plugins.plugins['zettelkasten-archive-import']; p.closeImportWindows(); const read=async(n)=>p.readArchive(new Uint8Array(await app.vault.readBinary(app.vault.getFileByPath('Zettelkasten Archive Import/'+n)))); p.settings.folder='Zettelkasten preview'; p.settings.rules={fileName:'number',keywordProperty:'keywords',keywordTags:false};p.pro.signOut();const m=p.openImport(await read('Demo archive.zkn3')); await m.refreshPreview(); m.contentEl.querySelectorAll('.zkn3-list').forEach((el)=>{el.open=true;}); m.contentEl.scrollTop=0; return '7 live notes, 1 deleted slot';})()",
+    "zoom": 0.7,
+    "wait": 900,
+    "after": "const p=app.plugins.plugins['zettelkasten-archive-import']; p.closeImportWindows(); p.pro.signOut(); p.settings.rules={fileName:'number',keywordProperty:'keywords',keywordTags:false}; 'ok'"
+  },
+  {
+    "feature": "note-links",
+    "caption": "Note 1 has note links, a cross-reference and an ordered note sequence.",
+    "eval": "(async()=>{const p=app.plugins.plugins['zettelkasten-archive-import']; p.closeImportWindows(); const read=async(n)=>p.readArchive(new Uint8Array(await app.vault.readBinary(app.vault.getFileByPath('Zettelkasten Archive Import/'+n)))); p.settings.folder='Zettelkasten demo'; p.settings.rules={fileName:'number',keywordProperty:'keywords',keywordTags:false};p.pro.signOut();const a=await read('Demo archive.zkn3'); await p.importPlan(await p.prepare(a,'Zettelkasten demo'));await app.workspace.getLeaf(false).openFile(app.vault.getFileByPath('Zettelkasten demo/1.md'),{state:{mode:'preview'}}); return 'links, cross-references and note sequence';})()",
+    "zoom": 0.85,
+    "wait": 900,
+    "after": "const p=app.plugins.plugins['zettelkasten-archive-import']; p.closeImportWindows(); p.pro.signOut(); p.settings.rules={fileName:'number',keywordProperty:'keywords',keywordTags:false}; 'ok'"
+  },
+  {
+    "feature": "keywords",
+    "caption": "Note 6 keeps the exact keyword values and keeps unsupported markup as source text.",
+    "eval": "(async()=>{const p=app.plugins.plugins['zettelkasten-archive-import']; p.closeImportWindows(); const read=async(n)=>p.readArchive(new Uint8Array(await app.vault.readBinary(app.vault.getFileByPath('Zettelkasten Archive Import/'+n)))); p.settings.folder='Zettelkasten demo'; p.settings.rules={fileName:'number',keywordProperty:'keywords',keywordTags:false};p.pro.signOut();const a=await read('Demo archive.zkn3'); await p.importPlan(await p.prepare(a,'Zettelkasten demo'));await app.workspace.getLeaf(false).openFile(app.vault.getFileByPath('Zettelkasten demo/6.md'),{state:{mode:'preview'}}); return 'exact keywords';})()",
+    "zoom": 0.85,
+    "wait": 900,
+    "after": "const p=app.plugins.plugins['zettelkasten-archive-import']; p.closeImportWindows(); p.pro.signOut(); p.settings.rules={fileName:'number',keywordProperty:'keywords',keywordTags:false}; 'ok'"
+  },
+  {
+    "feature": "rules",
+    "caption": "Pro import rules name the files by position and title and add keywords as tags.",
+    "eval": "(async()=>{const p=app.plugins.plugins['zettelkasten-archive-import']; p.closeImportWindows(); const read=async(n)=>p.readArchive(new Uint8Array(await app.vault.readBinary(app.vault.getFileByPath('Zettelkasten Archive Import/'+n)))); p.settings.folder='Zettelkasten rules demo'; p.settings.rules={fileName:'number',keywordProperty:'keywords',keywordTags:false};let token='gho_'+'0'.repeat(36); p.pro.opts.tokens.get=()=>token; p.pro.opts.tokens.set=(v)=>{token=v;}; p.pro.opts.tokens.clear=()=>{token=null;}; p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader',totalSponsorshipAmountAsSponsorInCents:1500},user:{viewerIsSponsoring:true,sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); await p.pro.refreshNow();p.settings.rules={fileName:'number-title',keywordProperty:'keywords',keywordTags:true}; const m=p.openImport(await read('Demo archive.zkn3')); await m.refreshPreview(); m.contentEl.querySelector('.zkn3-rules').open=true; m.contentEl.scrollTop=120; return 'position and title rule';})()",
+    "zoom": 0.85,
+    "wait": 900,
+    "after": "const p=app.plugins.plugins['zettelkasten-archive-import']; p.closeImportWindows(); p.pro.signOut(); p.settings.rules={fileName:'number',keywordProperty:'keywords',keywordTags:false}; 'ok'"
+  },
+  {
+    "feature": "compare",
+    "caption": "The comparison with an earlier archive shows 1 added note and 1 changed note.",
+    "eval": "(async()=>{const p=app.plugins.plugins['zettelkasten-archive-import']; p.closeImportWindows(); const read=async(n)=>p.readArchive(new Uint8Array(await app.vault.readBinary(app.vault.getFileByPath('Zettelkasten Archive Import/'+n)))); p.settings.folder='Zettelkasten preview'; p.settings.rules={fileName:'number',keywordProperty:'keywords',keywordTags:false};let token='gho_'+'0'.repeat(36); p.pro.opts.tokens.get=()=>token; p.pro.opts.tokens.set=(v)=>{token=v;}; p.pro.opts.tokens.clear=()=>{token=null;}; p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader',totalSponsorshipAmountAsSponsorInCents:1500},user:{viewerIsSponsoring:true,sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); await p.pro.refreshNow();const m=p.openImport(await read('Demo archive.zkn3')); await m.refreshPreview(); m.showComparison(await read('Earlier archive.zkn3')); m.contentEl.querySelectorAll('.zkn3-list').forEach((el)=>{el.open=el.textContent.includes('notes (');}); m.contentEl.scrollTop=m.contentEl.scrollHeight; return '1 added, 1 changed';})()",
+    "zoom": 0.85,
+    "wait": 900,
+    "after": "const p=app.plugins.plugins['zettelkasten-archive-import']; p.closeImportWindows(); p.pro.signOut(); p.settings.rules={fileName:'number',keywordProperty:'keywords',keywordTags:false}; 'ok'"
+  },
+  {
+    "feature": "import-flow",
+    "caption": "Preview the archive, then read the imported notes with their links.",
+    "zoom": 0.85,
+    "frames": [
+      {
+        "note": "Start here.md",
+        "eval": "(async()=>{const p=app.plugins.plugins['zettelkasten-archive-import']; p.closeImportWindows(); const read=async(n)=>p.readArchive(new Uint8Array(await app.vault.readBinary(app.vault.getFileByPath('Zettelkasten Archive Import/'+n)))); p.settings.folder='Zettelkasten preview'; p.settings.rules={fileName:'number',keywordProperty:'keywords',keywordTags:false};p.pro.signOut();const m=p.openImport(await read('Demo archive.zkn3')); await m.refreshPreview(); m.contentEl.querySelectorAll('.zkn3-list').forEach((el)=>{el.open=true;}); m.contentEl.scrollTop=0; return '7 live notes, 1 deleted slot';})()",
+        "hold": 1800,
+        "zoom": 0.7
+      },
+      {
+        "eval": "(async()=>{const p=app.plugins.plugins['zettelkasten-archive-import']; p.closeImportWindows(); const read=async(n)=>p.readArchive(new Uint8Array(await app.vault.readBinary(app.vault.getFileByPath('Zettelkasten Archive Import/'+n)))); p.settings.folder='Zettelkasten demo'; p.settings.rules={fileName:'number',keywordProperty:'keywords',keywordTags:false};p.pro.signOut();const a=await read('Demo archive.zkn3'); await p.importPlan(await p.prepare(a,'Zettelkasten demo'));await app.workspace.getLeaf(false).openFile(app.vault.getFileByPath('Zettelkasten demo/1.md'),{state:{mode:'preview'}}); return 'links, cross-references and note sequence';})()",
+        "hold": 1800,
+        "zoom": 0.7
+      },
+      {
+        "eval": "(async()=>{const p=app.plugins.plugins['zettelkasten-archive-import']; p.closeImportWindows(); const read=async(n)=>p.readArchive(new Uint8Array(await app.vault.readBinary(app.vault.getFileByPath('Zettelkasten Archive Import/'+n)))); p.settings.folder='Zettelkasten demo'; p.settings.rules={fileName:'number',keywordProperty:'keywords',keywordTags:false};p.pro.signOut();const a=await read('Demo archive.zkn3'); await p.importPlan(await p.prepare(a,'Zettelkasten demo'));await app.workspace.getLeaf(false).openFile(app.vault.getFileByPath('Zettelkasten demo/5.md'),{state:{mode:'preview'}}); return 'missing target kept as source text';})()",
+        "hold": 1800,
+        "zoom": 0.7
+      },
+      {
+        "eval": "(async()=>{const p=app.plugins.plugins['zettelkasten-archive-import']; p.closeImportWindows(); const read=async(n)=>p.readArchive(new Uint8Array(await app.vault.readBinary(app.vault.getFileByPath('Zettelkasten Archive Import/'+n)))); p.settings.folder='Zettelkasten demo'; p.settings.rules={fileName:'number',keywordProperty:'keywords',keywordTags:false};p.pro.signOut();const a=await read('Demo archive.zkn3'); await p.importPlan(await p.prepare(a,'Zettelkasten demo'));await app.workspace.getLeaf(false).openFile(app.vault.getFileByPath('Zettelkasten demo/6.md'),{state:{mode:'preview'}}); return 'exact keywords';})()",
+        "hold": 1800,
+        "zoom": 0.7
+      }
+    ],
+    "after": "const p=app.plugins.plugins['zettelkasten-archive-import']; p.closeImportWindows(); p.pro.signOut(); p.settings.rules={fileName:'number',keywordProperty:'keywords',keywordTags:false}; 'ok'"
+  }
+]

@@ -1,0 +1,61 @@
+.zkn3-import-modal {
+  width: min(860px, 95vw);
+}
+
+.zkn3-import {
+  max-height: 75vh;
+  overflow-y: auto;
+}
+
+.zkn3-import summary {
+  cursor: pointer;
+  padding: 8px 0;
+  color: var(--text-muted);
+}
+
+.zkn3-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-ui-small);
+}
+
+.zkn3-table th, .zkn3-table td {
+  padding: 6px 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--background-modifier-border);
+  overflow-wrap: anywhere;
+}
+
+.zkn3-counts {
+  color: var(--text-accent);
+  font-weight: var(--font-semibold);
+}
+
+.zkn3-status {
+  padding: 12px 0;
+}
+
+.zkn3-picker {
+  max-width: 280px;
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
