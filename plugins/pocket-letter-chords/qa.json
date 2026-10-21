@@ -1,0 +1,74 @@
+[
+  {
+    "feature": "dictionary",
+    "caption": "Save a two-letter chord and its text.",
+    "note": "Meeting.md",
+    "eval": "(async()=>{const p=app.plugins.plugins['pocket-letter-chords']; p.flushInput(); p.settings={paused:false,dictionaries:[{name:'Default',folder:'',bindings:[{keys:'qw',text:'Done'},{keys:'as',text:'Action item'},{keys:'xz',text:'Next review'}]},{name:'Project review',folder:'Pocket Letter Chords/Projects',bindings:[{keys:'qw',text:'Ready for review'}]}]}; await p.saveSettings();p.pro.signOut();app.commands.executeCommandById('pocket-letter-chords:edit-dictionary'); return 'ok';})()",
+    "after": "app.plugins.plugins['pocket-letter-chords'].dictionaryModal?.close(); app.setting.close(); app.plugins.plugins['pocket-letter-chords'].pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "insert",
+    "caption": "The q and w chord inserts Done in the meeting note.",
+    "note": "Meeting.md",
+    "eval": "(async()=>{const p=app.plugins.plugins['pocket-letter-chords']; p.flushInput(); p.settings={paused:false,dictionaries:[{name:'Default',folder:'',bindings:[{keys:'qw',text:'Done'},{keys:'as',text:'Action item'},{keys:'xz',text:'Next review'}]},{name:'Project review',folder:'Pocket Letter Chords/Projects',bindings:[{keys:'qw',text:'Ready for review'}]}]}; await p.saveSettings();p.pro.signOut(); const v=app.workspace.getMostRecentLeaf().view; await v.setState({mode:'source',source:true},{history:false}); v.editor.setCursor(v.editor.lastLine(),0); electron.remote.getCurrentWindow().focus(); await new Promise(r=>setTimeout(r,100)); v.editor.focus(); if(!v.editor.hasFocus()) throw new Error('Editor has no focus'); const target=document.activeElement; for(const k of ['q','w']) target.dispatchEvent(new KeyboardEvent('keydown',{key:k,bubbles:true,cancelable:true})); for(const k of ['q','w']) target.dispatchEvent(new KeyboardEvent('keyup',{key:k,bubbles:true})); if(!v.editor.getValue().endsWith('Done')) throw new Error('Chord did not insert'); return 'ok';})()"
+  },
+  {
+    "feature": "input-order",
+    "caption": "Unmatched keys remain in press order.",
+    "note": "Input checks.md",
+    "eval": "(async()=>{const p=app.plugins.plugins['pocket-letter-chords']; p.flushInput(); p.settings={paused:false,dictionaries:[{name:'Default',folder:'',bindings:[{keys:'qw',text:'Done'},{keys:'as',text:'Action item'},{keys:'xz',text:'Next review'}]},{name:'Project review',folder:'Pocket Letter Chords/Projects',bindings:[{keys:'qw',text:'Ready for review'}]}]}; await p.saveSettings();p.pro.signOut(); return 'ok';})()"
+  },
+  {
+    "feature": "paused",
+    "caption": "Pause input while the dictionary stays saved.",
+    "note": "Meeting.md",
+    "eval": "(async()=>{const p=app.plugins.plugins['pocket-letter-chords']; p.flushInput(); p.settings={paused:false,dictionaries:[{name:'Default',folder:'',bindings:[{keys:'qw',text:'Done'},{keys:'as',text:'Action item'},{keys:'xz',text:'Next review'}]},{name:'Project review',folder:'Pocket Letter Chords/Projects',bindings:[{keys:'qw',text:'Ready for review'}]}]}; await p.saveSettings();p.pro.signOut(); p.settings.paused=true; await p.saveSettings(); app.setting.open(); app.setting.openTabById('pocket-letter-chords'); return 'ok';})()",
+    "after": "app.plugins.plugins['pocket-letter-chords'].dictionaryModal?.close(); app.setting.close(); app.plugins.plugins['pocket-letter-chords'].pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "folders",
+    "caption": "A folder selects its own dictionary with Pro.",
+    "note": "Projects/Review.md",
+    "eval": "(async()=>{const p=app.plugins.plugins['pocket-letter-chords']; p.flushInput(); p.settings={paused:false,dictionaries:[{name:'Default',folder:'',bindings:[{keys:'qw',text:'Done'},{keys:'as',text:'Action item'},{keys:'xz',text:'Next review'}]},{name:'Project review',folder:'Pocket Letter Chords/Projects',bindings:[{keys:'qw',text:'Ready for review'}]}]}; await p.saveSettings();p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('pocket-letter-chords-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow();app.setting.open(); app.setting.openTabById('pocket-letter-chords'); return 'ok';})()",
+    "after": "app.plugins.plugins['pocket-letter-chords'].dictionaryModal?.close(); app.setting.close(); app.plugins.plugins['pocket-letter-chords'].pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "files",
+    "caption": "Import and export local dictionary JSON files with Pro.",
+    "note": "Meeting.md",
+    "eval": "(async()=>{const p=app.plugins.plugins['pocket-letter-chords']; p.flushInput(); p.settings={paused:false,dictionaries:[{name:'Default',folder:'',bindings:[{keys:'qw',text:'Done'},{keys:'as',text:'Action item'},{keys:'xz',text:'Next review'}]},{name:'Project review',folder:'Pocket Letter Chords/Projects',bindings:[{keys:'qw',text:'Ready for review'}]}]}; await p.saveSettings();p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('pocket-letter-chords-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow();app.commands.executeCommandById('pocket-letter-chords:edit-dictionary'); return 'ok';})()",
+    "after": "app.plugins.plugins['pocket-letter-chords'].dictionaryModal?.close(); app.setting.close(); app.plugins.plugins['pocket-letter-chords'].pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "triples",
+    "caption": "Pro checks pair and triple conflicts before Save.",
+    "note": "Meeting.md",
+    "eval": "(async()=>{const p=app.plugins.plugins['pocket-letter-chords']; p.flushInput(); p.settings={paused:false,dictionaries:[{name:'Default',folder:'',bindings:[{keys:'qw',text:'Done'},{keys:'as',text:'Action item'},{keys:'xz',text:'Next review'}]},{name:'Project review',folder:'Pocket Letter Chords/Projects',bindings:[{keys:'qw',text:'Ready for review'}]}]}; await p.saveSettings();p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('pocket-letter-chords-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow();app.commands.executeCommandById('pocket-letter-chords:edit-dictionary');const t=document.querySelector('.pocket-letter-chords-dictionary textarea'); t.value=JSON.stringify([{keys:'qwe',text:'Ready for review'},{keys:'qw',text:'Done'}],null,2); t.dispatchEvent(new Event('input',{bubbles:true})); [...document.querySelectorAll('.pocket-letter-chords-dictionary button')].find(b=>b.textContent==='Save').click(); return 'ok';})()",
+    "after": "app.plugins.plugins['pocket-letter-chords'].dictionaryModal?.close(); app.setting.close(); app.plugins.plugins['pocket-letter-chords'].pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "pocket-letter-chords",
+    "caption": "Save a chord, insert text, and pause input.",
+    "frames": [
+      {
+        "note": "Meeting.md",
+        "eval": "(async()=>{const p=app.plugins.plugins['pocket-letter-chords']; p.flushInput(); p.settings={paused:false,dictionaries:[{name:'Default',folder:'',bindings:[{keys:'qw',text:'Done'},{keys:'as',text:'Action item'},{keys:'xz',text:'Next review'}]},{name:'Project review',folder:'Pocket Letter Chords/Projects',bindings:[{keys:'qw',text:'Ready for review'}]}]}; await p.saveSettings();p.pro.signOut();app.commands.executeCommandById('pocket-letter-chords:edit-dictionary'); return 'ok';})()",
+        "hold": 1400
+      },
+      {
+        "eval": "app.plugins.plugins['pocket-letter-chords'].dictionaryModal?.close(); 'ok'",
+        "hold": 500
+      },
+      {
+        "note": "Meeting.md",
+        "eval": "(async()=>{const p=app.plugins.plugins['pocket-letter-chords']; const v=app.workspace.getMostRecentLeaf().view; await v.setState({mode:'source',source:true},{history:false}); v.editor.setCursor(v.editor.lastLine(),0); electron.remote.getCurrentWindow().focus(); await new Promise(r=>setTimeout(r,100)); v.editor.focus(); if(!v.editor.hasFocus()) throw new Error('Editor has no focus'); const t=document.activeElement; for(const k of ['q','w'])t.dispatchEvent(new KeyboardEvent('keydown',{key:k,bubbles:true,cancelable:true})); for(const k of ['q','w'])t.dispatchEvent(new KeyboardEvent('keyup',{key:k,bubbles:true})); return 'ok';})()",
+        "hold": 1600
+      },
+      {
+        "eval": "(async()=>{const p=app.plugins.plugins['pocket-letter-chords']; p.settings.paused=true; await p.saveSettings(); app.setting.open(); app.setting.openTabById('pocket-letter-chords'); return 'ok';})()",
+        "hold": 1400
+      }
+    ],
+    "after": "app.plugins.plugins['pocket-letter-chords'].dictionaryModal?.close(); app.setting.close(); app.plugins.plugins['pocket-letter-chords'].pro.signOut(); 'ok'"
+  }
+]
