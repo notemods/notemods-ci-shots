@@ -1,0 +1,13 @@
+filters:
+  and:
+    - 'file.inFolder("Bases Multi-Row Edit/Projects")'
+views:
+  - type: bases-multi-edit
+    name: Project review
+    order:
+      - note.status
+      - note.owner
+      - note.tags
+    sort:
+      - property: file.name
+        direction: ASC

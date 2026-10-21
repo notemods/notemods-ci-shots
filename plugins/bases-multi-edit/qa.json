@@ -1,0 +1,64 @@
+[
+  {
+    "feature": "selection",
+    "caption": "Select rows within the current Bases query.",
+    "note": "Review.base",
+    "eval": "(async()=>{for(const dialog of app.plugins.plugins['bases-multi-edit'].dialogs)dialog.close(); app.setting.close();for(let i=0;i<50&&!document.querySelector('.bme-table-view tbody input');i++)await new Promise(r=>setTimeout(r,100));if(!document.querySelector('.bme-table-view tbody input'))throw Error('Table missing');[...document.querySelectorAll('.bme-table-view tbody input')].slice(0,2).forEach(e=>{if(!e.checked)e.click()});return 'selection PASS';})()",
+    "wait": 1000
+  },
+  {
+    "feature": "preview",
+    "caption": "Review every old and new value before apply.",
+    "note": "Review.base",
+    "eval": "(async()=>{for(const dialog of app.plugins.plugins['bases-multi-edit'].dialogs)dialog.close(); app.setting.close();for(let i=0;i<50&&!document.querySelector('.bme-table-view tbody input');i++)await new Promise(r=>setTimeout(r,100));if(!document.querySelector('.bme-table-view tbody input'))throw Error('Table missing');[...document.querySelectorAll('.bme-table-view tbody input')].slice(0,2).forEach(e=>{if(!e.checked)e.click()});[...document.querySelectorAll('button')].find(e=>e.textContent==='Edit selected')?.click();await new Promise(r=>setTimeout(r,300));[...document.querySelectorAll('button')].find(e=>e.textContent==='Preview changes')?.click();await new Promise(r=>setTimeout(r,500)); if(!document.querySelector('.bme-preview pre')) throw Error('Preview missing'); return 'preview PASS';})()",
+    "wait": 1000
+  },
+  {
+    "feature": "undo",
+    "caption": "Undo the completed batch in the same session.",
+    "eval": "(async()=>{[...document.querySelectorAll('button')].find(e=>e.textContent==='Apply to 2 notes')?.click();await new Promise(r=>setTimeout(r,700)); if(!document.querySelector('.bme-preview').textContent.includes('2 notes changed')) throw Error('Apply failed'); return 'apply PASS';})()",
+    "wait": 700,
+    "after": "(async()=>{document.querySelector('.bme-preview button')?.click(); await new Promise(r=>setTimeout(r,700)); return 'undo PASS';})()"
+  },
+  {
+    "feature": "append",
+    "caption": "Append a tag without replacing existing list items.",
+    "eval": "(async()=>{{const row=[...document.querySelectorAll('.modal .setting-item')].find(e=>e.querySelector('.setting-item-name')?.textContent===\"Property\");const el=row?.querySelector('input,select,textarea');if(!el)throw Error('Missing control');el.value=\"tags\";el.dispatchEvent(new Event(el.tagName==='SELECT'?'change':'input',{bubbles:true}));}{const row=[...document.querySelectorAll('.modal .setting-item')].find(e=>e.querySelector('.setting-item-name')?.textContent===\"Operation\");const el=row?.querySelector('input,select,textarea');if(!el)throw Error('Missing control');el.value=\"append\";el.dispatchEvent(new Event(el.tagName==='SELECT'?'change':'input',{bubbles:true}));}{const row=[...document.querySelectorAll('.modal .setting-item')].find(e=>e.querySelector('.setting-item-name')?.textContent===\"Value type\");const el=row?.querySelector('input,select,textarea');if(!el)throw Error('Missing control');el.value=\"list\";el.dispatchEvent(new Event(el.tagName==='SELECT'?'change':'input',{bubbles:true}));}{const row=[...document.querySelectorAll('.modal .setting-item')].find(e=>e.querySelector('.setting-item-name')?.textContent===\"Value\");const el=row?.querySelector('input,select,textarea');if(!el)throw Error('Missing control');el.value=\"[\\\"review\\\"]\";el.dispatchEvent(new Event(el.tagName==='SELECT'?'change':'input',{bubbles:true}));}[...document.querySelectorAll('.modal button')].find(e=>e.textContent==='Preview changes')?.click();await new Promise(r=>setTimeout(r,400));const text=document.querySelector('.bme-preview pre')?.textContent;if(!text?.includes('review')||!text.includes('null')||!text.includes('project'))throw Error('Missing mixed list preview');return 'append PASS';})()",
+    "wait": 700
+  },
+  {
+    "feature": "remove",
+    "caption": "Remove matching list items and keep the other tags.",
+    "eval": "(async()=>{[...document.querySelectorAll('.modal button')].find(e=>e.textContent==='Apply to 2 notes')?.click();await new Promise(r=>setTimeout(r,700));if(!document.querySelector('.bme-preview').textContent.includes('2 notes changed'))throw Error('Append failed');{const row=[...document.querySelectorAll('.modal .setting-item')].find(e=>e.querySelector('.setting-item-name')?.textContent===\"Operation\");const el=row?.querySelector('input,select,textarea');if(!el)throw Error('Missing control');el.value=\"remove-items\";el.dispatchEvent(new Event(el.tagName==='SELECT'?'change':'input',{bubbles:true}));}[...document.querySelectorAll('.modal button')].find(e=>e.textContent==='Preview changes')?.click();await new Promise(r=>setTimeout(r,400));if(!document.querySelector('.bme-preview pre')?.textContent.includes('review'))throw Error('Missing remove preview');return 'remove PASS';})()",
+    "wait": 700,
+    "after": "(async()=>{[...document.querySelectorAll('.bme-toolbar button')].find(e=>e.textContent==='Undo last batch')?.click();await new Promise(r=>setTimeout(r,700));return 'restored append';})()"
+  },
+  {
+    "feature": "settings",
+    "caption": "Optional GitHub Sponsors sign in and local saved actions.",
+    "eval": "for(const dialog of app.plugins.plugins['bases-multi-edit'].dialogs)dialog.close(); app.setting.close();app.setting.open(); app.setting.openTabById('bases-multi-edit');",
+    "wait": 700
+  },
+  {
+    "feature": "bases-multi-edit",
+    "frames": [
+      {
+        "note": "Review.base",
+        "eval": "(async()=>{for(const dialog of app.plugins.plugins['bases-multi-edit'].dialogs)dialog.close(); app.setting.close();for(let i=0;i<50&&!document.querySelector('.bme-table-view tbody input');i++)await new Promise(r=>setTimeout(r,100));if(!document.querySelector('.bme-table-view tbody input'))throw Error('Table missing');[...document.querySelectorAll('.bme-table-view tbody input')].slice(0,2).forEach(e=>{if(!e.checked)e.click()});return 'ok';})()",
+        "hold": 1500
+      },
+      {
+        "eval": "(async()=>{[...document.querySelectorAll('.bme-table-view tbody input')].slice(0,2).forEach(e=>{if(!e.checked)e.click()});[...document.querySelectorAll('button')].find(e=>e.textContent==='Edit selected')?.click();await new Promise(r=>setTimeout(r,300));[...document.querySelectorAll('button')].find(e=>e.textContent==='Preview changes')?.click();await new Promise(r=>setTimeout(r,500)); return 'ok';})()",
+        "hold": 1800
+      },
+      {
+        "eval": "[...document.querySelectorAll('button')].find(e=>e.textContent==='Apply to 2 notes')?.click();",
+        "hold": 1500
+      },
+      {
+        "eval": "document.querySelector('.bme-preview button')?.click();",
+        "hold": 1500
+      }
+    ]
+  }
+]

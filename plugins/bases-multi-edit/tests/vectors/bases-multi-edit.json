@@ -1,0 +1,322 @@
+{
+ "slug": "bases-multi-edit",
+ "module": "bases-multi-edit/src/edit",
+ "function": "transform",
+ "cases": [
+  {
+   "name": "set text",
+   "args": [
+    {
+     "exists": true,
+     "value": "todo"
+    },
+    {
+     "property": "status",
+     "operation": "set",
+     "type": "text",
+     "input": "done"
+    }
+   ],
+   "expected": {
+    "exists": true,
+    "value": "done"
+   }
+  },
+  {
+   "name": "create number",
+   "args": [
+    {
+     "exists": false
+    },
+    {
+     "property": "status",
+     "operation": "set",
+     "type": "number",
+     "input": "12"
+    }
+   ],
+   "expected": {
+    "exists": true,
+    "value": 12
+   }
+  },
+  {
+   "name": "set checkbox false",
+   "args": [
+    {
+     "exists": true,
+     "value": true
+    },
+    {
+     "property": "status",
+     "operation": "set",
+     "type": "checkbox",
+     "input": "false"
+    }
+   ],
+   "expected": {
+    "exists": true,
+    "value": false
+   }
+  },
+  {
+   "name": "append without duplicates",
+   "args": [
+    {
+     "exists": true,
+     "value": [
+      "a",
+      "b"
+     ]
+    },
+    {
+     "property": "status",
+     "operation": "append",
+     "type": "list",
+     "input": "[\"b\",\"c\"]"
+    }
+   ],
+   "expected": {
+    "exists": true,
+    "value": [
+     "a",
+     "b",
+     "c"
+    ]
+   }
+  },
+  {
+   "name": "append to absent list",
+   "args": [
+    {
+     "exists": false
+    },
+    {
+     "property": "status",
+     "operation": "append",
+     "type": "list",
+     "input": "[\"a\"]"
+    }
+   ],
+   "expected": {
+    "exists": true,
+    "value": [
+     "a"
+    ]
+   }
+  },
+  {
+   "name": "remove matching list items",
+   "args": [
+    {
+     "exists": true,
+     "value": [
+      "a",
+      "b"
+     ]
+    },
+    {
+     "property": "status",
+     "operation": "remove-items",
+     "type": "list",
+     "input": "[\"a\"]"
+    }
+   ],
+   "expected": {
+    "exists": true,
+    "value": [
+     "b"
+    ]
+   }
+  },
+  {
+   "name": "remove from absent list",
+   "args": [
+    {
+     "exists": false
+    },
+    {
+     "property": "status",
+     "operation": "remove-items",
+     "type": "list",
+     "input": "[\"a\"]"
+    }
+   ],
+   "expected": {
+    "exists": false
+   }
+  },
+  {
+   "name": "remove property",
+   "args": [
+    {
+     "exists": true,
+     "value": [
+      "a"
+     ]
+    },
+    {
+     "property": "status",
+     "operation": "remove-property",
+     "type": "text",
+     "input": ""
+    }
+   ],
+   "expected": {
+    "exists": false
+   }
+  },
+  {
+   "name": "empty text remains present",
+   "args": [
+    {
+     "exists": false
+    },
+    {
+     "property": "status",
+     "operation": "set",
+     "type": "text",
+     "input": ""
+    }
+   ],
+   "expected": {
+    "exists": true,
+    "value": ""
+   }
+  },
+  {
+   "name": "preserve list atom types",
+   "args": [
+    {
+     "exists": true,
+     "value": [
+      false,
+      0
+     ]
+    },
+    {
+     "property": "status",
+     "operation": "append",
+     "type": "list",
+     "input": "[false,\"0\",null]"
+    }
+   ],
+   "expected": {
+    "exists": true,
+    "value": [
+     false,
+     0,
+     "0",
+     null
+    ]
+   }
+  },
+  {
+   "name": "append to empty property",
+   "args": [
+    {
+     "exists": true,
+     "value": null
+    },
+    {
+     "property": "tags",
+     "operation": "append",
+     "type": "list",
+     "input": "[\"review\"]"
+    }
+   ],
+   "expected": {
+    "exists": true,
+    "value": [
+     "review"
+    ]
+   }
+  },
+  {
+   "name": "append to scalar property",
+   "args": [
+    {
+     "exists": true,
+     "value": "project"
+    },
+    {
+     "property": "tags",
+     "operation": "append",
+     "type": "list",
+     "input": "[\"review\"]"
+    }
+   ],
+   "expected": {
+    "exists": true,
+    "value": [
+     "project",
+     "review"
+    ]
+   }
+  },
+  {
+   "name": "remove from scalar property",
+   "args": [
+    {
+     "exists": true,
+     "value": "project"
+    },
+    {
+     "property": "tags",
+     "operation": "remove-items",
+     "type": "list",
+     "input": "[\"project\"]"
+    }
+   ],
+   "expected": {
+    "exists": true,
+    "value": []
+   }
+  },
+  {
+   "name": "remove from empty property",
+   "args": [
+    {
+     "exists": true,
+     "value": null
+    },
+    {
+     "property": "tags",
+     "operation": "remove-items",
+     "type": "list",
+     "input": "[\"review\"]"
+    }
+   ],
+   "expected": {
+    "exists": true,
+    "value": []
+   }
+  },
+  {
+   "name": "keep existing duplicates",
+   "args": [
+    {
+     "exists": true,
+     "value": [
+      "project",
+      "project"
+     ]
+    },
+    {
+     "property": "tags",
+     "operation": "append",
+     "type": "list",
+     "input": "[\"review\", \"review\"]"
+    }
+   ],
+   "expected": {
+    "exists": true,
+    "value": [
+     "project",
+     "project",
+     "review"
+    ]
+   }
+  }
+ ]
+}
