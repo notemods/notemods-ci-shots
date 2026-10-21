@@ -1,0 +1,730 @@
+{
+ "slug": "bases-date-backlinks",
+ "module": "products/bases-date-backlinks/src/matcher",
+ "function": "matchRows",
+ "note": "matchRows([rows], options) returns ids with a date in the selected day, week, or month. Each row has an id and a values map keyed by Bases property id. dateWindow, insertEmbed, buildBaseText, and isManagedBase are additional cases.",
+ "cases": [
+  {
+   "name": "daily date property matches the same date",
+   "args": [
+    [
+     {
+      "id": "today",
+      "values": {
+       "note.date": "2026-10-21"
+      }
+     }
+    ],
+    {
+     "target": "2026-10-21",
+     "dateProperties": [
+      "note.date"
+     ]
+    }
+   ],
+   "expected": [
+    "today"
+   ]
+  },
+  {
+   "name": "date time property matches its local calendar date",
+   "args": [
+    [
+     {
+      "id": "today",
+      "values": {
+       "note.date": "2026-10-21T18:40:00"
+      }
+     }
+    ],
+    {
+     "target": "2026-10-21",
+     "dateProperties": [
+      "note.date"
+     ]
+    }
+   ],
+   "expected": [
+    "today"
+   ]
+  },
+  {
+   "name": "a different calendar date does not match",
+   "args": [
+    [
+     {
+      "id": "tomorrow",
+      "values": {
+       "note.date": "2026-10-22"
+      }
+     }
+    ],
+    {
+     "target": "2026-10-21",
+     "dateProperties": [
+      "note.date"
+     ]
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "a missing date does not match",
+   "args": [
+    [
+     {
+      "id": "empty",
+      "values": {
+       "note.date": null
+      }
+     }
+    ],
+    {
+     "target": "2026-10-21",
+     "dateProperties": [
+      "note.date"
+     ]
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "an invalid target date returns no rows",
+   "args": [
+    [
+     {
+      "id": "today",
+      "values": {
+       "note.date": "2026-10-21"
+      }
+     }
+    ],
+    {
+     "target": "not-a-date",
+     "dateProperties": [
+      "note.date"
+     ]
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "a custom daily note format parses the target",
+   "args": [
+    [
+     {
+      "id": "today",
+      "values": {
+       "note.date": "2026-10-21"
+      }
+     }
+    ],
+    {
+     "target": "2026/10/21",
+     "dateFormat": "YYYY/MM/DD",
+     "dateProperties": [
+      "note.date"
+     ]
+    }
+   ],
+   "expected": [
+    "today"
+   ]
+  },
+  {
+   "name": "a list date property matches when one value is the target",
+   "args": [
+    [
+     {
+      "id": "many",
+      "values": {
+       "note.dates": [
+        "2026-10-20",
+        "2026-10-21"
+       ]
+      }
+     }
+    ],
+    {
+     "target": "2026-10-21",
+     "dateProperties": [
+      "note.dates"
+     ]
+    }
+   ],
+   "expected": [
+    "many"
+   ]
+  },
+  {
+   "name": "a list date property does not match when no item is the target",
+   "args": [
+    [
+     {
+      "id": "many",
+      "values": {
+       "note.dates": [
+        "2026-10-19",
+        "2026-10-20"
+       ]
+      }
+     }
+    ],
+    {
+     "target": "2026-10-21",
+     "dateProperties": [
+      "note.dates"
+     ]
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "one of multiple Pro date properties can match",
+   "args": [
+    [
+     {
+      "id": "started",
+      "values": {
+       "note.started": "2026-10-21",
+       "note.completed": "2026-10-22"
+      }
+     }
+    ],
+    {
+     "target": "2026-10-21",
+     "dateProperties": [
+      "note.started",
+      "note.completed"
+     ]
+    }
+   ],
+   "expected": [
+    "started"
+   ]
+  },
+  {
+   "name": "repeated property ids do not duplicate a row",
+   "args": [
+    [
+     {
+      "id": "one",
+      "values": {
+       "note.date": "2026-10-21"
+      }
+     }
+    ],
+    {
+     "target": "2026-10-21",
+     "dateProperties": [
+      "note.date",
+      "note.date"
+     ]
+    }
+   ],
+   "expected": [
+    "one"
+   ]
+  },
+  {
+   "name": "weekly rollup includes Monday and Sunday",
+   "args": [
+    [
+     {
+      "id": "monday",
+      "values": {
+       "note.date": "2026-10-19"
+      }
+     },
+     {
+      "id": "sunday",
+      "values": {
+       "note.date": "2026-10-25"
+      }
+     }
+    ],
+    {
+     "target": "2026-10-21",
+     "period": "week",
+     "dateProperties": [
+      "note.date"
+     ]
+    }
+   ],
+   "expected": [
+    "monday",
+    "sunday"
+   ]
+  },
+  {
+   "name": "weekly rollup starts on Monday for a Sunday target",
+   "args": [
+    [
+     {
+      "id": "monday",
+      "values": {
+       "note.date": "2026-10-19"
+      }
+     },
+     {
+      "id": "sunday",
+      "values": {
+       "note.date": "2026-10-25"
+      }
+     }
+    ],
+    {
+     "target": "2026-10-25",
+     "period": "week",
+     "dateProperties": [
+      "note.date"
+     ]
+    }
+   ],
+   "expected": [
+    "monday",
+    "sunday"
+   ]
+  },
+  {
+   "name": "weekly rollup excludes the next Monday",
+   "args": [
+    [
+     {
+      "id": "next",
+      "values": {
+       "note.date": "2026-10-26"
+      }
+     }
+    ],
+    {
+     "target": "2026-10-21",
+     "period": "week",
+     "dateProperties": [
+      "note.date"
+     ]
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "monthly rollup includes the first day",
+   "args": [
+    [
+     {
+      "id": "first",
+      "values": {
+       "note.date": "2026-10-01"
+      }
+     }
+    ],
+    {
+     "target": "2026-10-15",
+     "period": "month",
+     "dateProperties": [
+      "note.date"
+     ]
+    }
+   ],
+   "expected": [
+    "first"
+   ]
+  },
+  {
+   "name": "monthly rollup includes the last day",
+   "args": [
+    [
+     {
+      "id": "last",
+      "values": {
+       "note.date": "2026-10-31"
+      }
+     }
+    ],
+    {
+     "target": "2026-10-15",
+     "period": "month",
+     "dateProperties": [
+      "note.date"
+     ]
+    }
+   ],
+   "expected": [
+    "last"
+   ]
+  },
+  {
+   "name": "monthly rollup excludes the next month",
+   "args": [
+    [
+     {
+      "id": "next",
+      "values": {
+       "note.date": "2026-11-01"
+      }
+     }
+    ],
+    {
+     "target": "2026-10-15",
+     "period": "month",
+     "dateProperties": [
+      "note.date"
+     ]
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "date range crossing the target date matches",
+   "args": [
+    [
+     {
+      "id": "range",
+      "values": {
+       "note.start": "2026-10-19",
+       "note.end": "2026-10-23"
+      }
+     }
+    ],
+    {
+     "target": "2026-10-21",
+     "rangeStart": "note.start",
+     "rangeEnd": "note.end"
+    }
+   ],
+   "expected": [
+    "range"
+   ]
+  },
+  {
+   "name": "date range starting on the target matches",
+   "args": [
+    [
+     {
+      "id": "range",
+      "values": {
+       "note.start": "2026-10-21",
+       "note.end": "2026-10-23"
+      }
+     }
+    ],
+    {
+     "target": "2026-10-21",
+     "rangeStart": "note.start",
+     "rangeEnd": "note.end"
+    }
+   ],
+   "expected": [
+    "range"
+   ]
+  },
+  {
+   "name": "date range ending on the target matches",
+   "args": [
+    [
+     {
+      "id": "range",
+      "values": {
+       "note.start": "2026-10-19",
+       "note.end": "2026-10-21"
+      }
+     }
+    ],
+    {
+     "target": "2026-10-21",
+     "rangeStart": "note.start",
+     "rangeEnd": "note.end"
+    }
+   ],
+   "expected": [
+    "range"
+   ]
+  },
+  {
+   "name": "date range outside the target does not match",
+   "args": [
+    [
+     {
+      "id": "range",
+      "values": {
+       "note.start": "2026-10-18",
+       "note.end": "2026-10-20"
+      }
+     }
+    ],
+    {
+     "target": "2026-10-21",
+     "rangeStart": "note.start",
+     "rangeEnd": "note.end"
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "reversed date range does not match",
+   "args": [
+    [
+     {
+      "id": "range",
+      "values": {
+       "note.start": "2026-10-23",
+       "note.end": "2026-10-19"
+      }
+     }
+    ],
+    {
+     "target": "2026-10-21",
+     "rangeStart": "note.start",
+     "rangeEnd": "note.end"
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "a range with one property missing is ignored",
+   "args": [
+    [
+     {
+      "id": "range",
+      "values": {
+       "note.start": "2026-10-19"
+      }
+     }
+    ],
+    {
+     "target": "2026-10-21",
+     "rangeStart": "note.start"
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "a range can match without a date property",
+   "args": [
+    [
+     {
+      "id": "range",
+      "values": {
+       "note.start": "2026-10-19",
+       "note.end": "2026-10-23"
+      }
+     }
+    ],
+    {
+     "target": "2026-10-21",
+     "dateProperties": [],
+     "rangeStart": "note.start",
+     "rangeEnd": "note.end"
+    }
+   ],
+   "expected": [
+    "range"
+   ]
+  },
+  {
+   "name": "a blank property name is ignored",
+   "args": [
+    [
+     {
+      "id": "today",
+      "values": {
+       "note.date": "2026-10-21"
+      }
+     }
+    ],
+    {
+     "target": "2026-10-21",
+     "dateProperties": [
+      "",
+      "note.date"
+     ]
+    }
+   ],
+   "expected": [
+    "today"
+   ]
+  },
+  {
+   "name": "an ISO date window spans one day",
+   "function": "dateWindow",
+   "args": [
+    "2026-10-21"
+   ],
+   "expected": {
+    "start": "2026-10-21",
+    "end": "2026-10-21"
+   }
+  },
+  {
+   "name": "a week date window uses Monday through Sunday",
+   "function": "dateWindow",
+   "args": [
+    "2026-10-21",
+    "YYYY-MM-DD",
+    "week"
+   ],
+   "expected": {
+    "start": "2026-10-19",
+    "end": "2026-10-25"
+   }
+  },
+  {
+   "name": "a month date window uses its calendar bounds",
+   "function": "dateWindow",
+   "args": [
+    "2026-10-21",
+    "YYYY-MM-DD",
+    "month"
+   ],
+   "expected": {
+    "start": "2026-10-01",
+    "end": "2026-10-31"
+   }
+  },
+  {
+   "name": "an empty note receives an embed",
+   "function": "insertEmbed",
+   "args": [
+    "",
+    "![[Date Property Backlinks.base]]"
+   ],
+   "expected": "![[Date Property Backlinks.base]]\n"
+  },
+  {
+   "name": "an embed is separated from existing text",
+   "function": "insertEmbed",
+   "args": [
+    "# Daily note",
+    "![[Date Property Backlinks.base]]"
+   ],
+   "expected": "# Daily note\n\n![[Date Property Backlinks.base]]\n"
+  },
+  {
+   "name": "the command does not add a duplicate embed",
+   "function": "insertEmbed",
+   "args": [
+    "# Daily note\n\n![[Date Property Backlinks.base]]\n",
+    "![[Date Property Backlinks.base]]"
+   ],
+   "expected": "# Daily note\n\n![[Date Property Backlinks.base]]\n"
+  },
+  {
+   "name": "embed insertion keeps CRLF notes",
+   "function": "insertEmbed",
+   "args": [
+    "# Daily note\r\n",
+    "![[Date Property Backlinks.base]]"
+   ],
+   "expected": "# Daily note\r\n\r\n![[Date Property Backlinks.base]]\r\n"
+  },
+  {
+   "name": "the generated Base file selects the view and default date fields",
+   "function": "buildBaseText",
+   "args": [],
+   "expected": "# Generated by Date Property Backlinks\ndateBacklinksManaged: true\n\nfilters:\n  and:\n    - 'file.ext == \"md\"'\n    - 'formula.dateBacklinksHasDate'\n\nformulas:\n  dateBacklinksHasDate: 'note[\"date\"] != null'\n\nviews:\n  - type: bases-date-backlinks\n    name: Date backlinks\n    matchProperty: note.date\n    dailyNoteDate: file.name\n    dailyNoteFormat: \"YYYY-MM-DD\"\n"
+  },
+  {
+   "name": "the command recognizes its generated Base file",
+   "function": "isManagedBase",
+   "args": [
+    "# Generated by Date Property Backlinks\n\nviews:\n  - type: bases-date-backlinks\n    name: Date backlinks\n    matchProperty: note.date\n    dailyNoteDate: file.name\n    dailyNoteFormat: YYYY-MM-DD\n"
+   ],
+   "expected": true
+  },
+  {
+   "name": "the command does not claim a user Base file",
+   "function": "isManagedBase",
+   "args": [
+    "views:\n  - type: table\n    name: Tasks\n"
+   ],
+   "expected": false
+  },
+  {
+   "name": "only the matching property labels a row",
+   "function": "matchDetails",
+   "args": [
+    [
+     {
+      "id": "one",
+      "values": {
+       "note.date": "2026-10-21",
+       "note.other": "2026-10-22"
+      }
+     }
+    ],
+    {
+     "target": "2026-10-21",
+     "dateProperties": [
+      "note.date",
+      "note.other"
+     ]
+    }
+   ],
+   "expected": [
+    {
+     "id": "one",
+     "properties": [
+      "note.date"
+     ],
+     "range": false
+    }
+   ]
+  },
+  {
+   "name": "a range only match is labeled as a range",
+   "function": "matchDetails",
+   "args": [
+    [
+     {
+      "id": "one",
+      "values": {
+       "note.start": "2026-10-20",
+       "note.end": "2026-10-22"
+      }
+     }
+    ],
+    {
+     "target": "2026-10-21",
+     "dateProperties": [
+      "note.date"
+     ],
+     "rangeStart": "note.start",
+     "rangeEnd": "note.end"
+    }
+   ],
+   "expected": [
+    {
+     "id": "one",
+     "properties": [],
+     "range": true
+    }
+   ]
+  },
+  {
+   "name": "an aliased embed is not duplicated",
+   "function": "insertEmbed",
+   "args": [
+    "![[Date Property Backlinks.base|Dates]]",
+    "![[Date Property Backlinks.base]]"
+   ],
+   "expected": "![[Date Property Backlinks.base|Dates]]"
+  },
+  {
+   "name": "a Markdown embed is not duplicated",
+   "function": "insertEmbed",
+   "args": [
+    "![Dates](Date%20Property%20Backlinks.base)",
+    "![[Date Property Backlinks.base]]"
+   ],
+   "expected": "![Dates](Date%20Property%20Backlinks.base)"
+  },
+  {
+   "name": "managed identity survives removal of comments by Bases",
+   "function": "isManagedBase",
+   "args": [
+    "dateBacklinksManaged: true\nviews:\n  - type: bases-date-backlinks\n"
+   ],
+   "expected": true
+  }
+ ]
+}

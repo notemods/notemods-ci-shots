@@ -1,0 +1,63 @@
+.bases-date-backlinks {
+	padding-block: var(--size-4-2);
+}
+
+.bases-date-backlinks-heading {
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+	margin-bottom: var(--size-4-2);
+}
+
+.bases-date-backlinks-list {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-1);
+}
+
+.bases-date-backlinks-row {
+	display: flex;
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: var(--size-4-2);
+}
+
+.bases-date-backlinks-row a {
+	color: var(--link-color);
+}
+
+.bases-date-backlinks-property,
+.bases-date-backlinks-count,
+.bases-date-backlinks-empty {
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+}
+
+.bases-date-backlinks-count {
+	margin-top: var(--size-4-2);
+}
+
+.bases-date-backlinks-preview {
+	max-height: 40vh;
+	overflow: auto;
+	white-space: pre-wrap;
+}
+
+.bases-date-backlinks-auto {
+	flex-shrink: 0;
+	max-height: 40vh;
+	overflow: auto;
+	padding: var(--size-4-3);
+	border-top: 1px solid var(--background-modifier-border);
+}
+
+.bases-date-backlinks-auto-host {
+	display: flex;
+	flex-direction: column;
+}
+
+.bases-date-backlinks-auto-host > .markdown-source-view,
+.bases-date-backlinks-auto-host > .markdown-reading-view {
+	flex: 1 1 0;
+	min-height: 0;
+	height: auto;
+}
