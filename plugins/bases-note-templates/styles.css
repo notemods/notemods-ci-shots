@@ -1,0 +1,55 @@
+/* Bases Note Templates. Every rule uses a class the plugin adds. */
+
+/* Path under the template name in the template list. */
+.bnt-muted {
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+}
+
+/* Only used by the screenshot script to show the pointer over a button. */
+.bnt-demo-hover {
+	background-color: var(--background-modifier-hover);
+	color: var(--text-normal);
+	outline: 2px solid var(--interactive-accent);
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
+
+/* Setup dialog: wide enough inputs to read a template path. */
+.bnt-setup .setting-item-control input[type="text"] {
+	width: 280px;
+}
+
+/* Setup dialog: an extra property row is a name field, a value field and a remove button that share the width. */
+.bnt-setup .bnt-extra .setting-item-info {
+	display: none;
+}
+
+.bnt-setup .bnt-extra .setting-item-control {
+	flex: 1 1 auto;
+}
+
+.bnt-setup .bnt-extra .setting-item-control input[type="text"] {
+	flex: 1 1 0;
+	min-width: 0;
+	width: auto;
+}

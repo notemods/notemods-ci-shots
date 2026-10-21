@@ -1,0 +1,28 @@
+filters:
+  and:
+    - file.inFolder("Books")
+    - file.hasTag("book")
+    - genre.contains("scifi")
+    - rating >= 4
+    - reviewer.isEmpty()
+    - '!summary.isEmpty()'
+    - not:
+        - format == "audio"
+        - not:
+            - edition == 2
+    - file.hasProperty("pages")
+    - series == link("Projects/Apollo")
+    - or:
+        - format == "paper"
+        - format == "ebook"
+views:
+  - type: table
+    name: Reading
+    filters:
+      and:
+        - status == "reading"
+        - done == false
+    order:
+      - file.name
+      - author
+      - note.started

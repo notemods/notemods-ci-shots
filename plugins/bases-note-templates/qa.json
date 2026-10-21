@@ -1,0 +1,120 @@
+[
+	{
+		"feature": "new-button",
+		"caption": "Press New in the Apollo to do view: the new note gets the Task template, the view's filter values and a name from the pattern.",
+		"note": "Tasks.base",
+		"eval": "(async () => { const kept = app.workspace.getMostRecentLeaf(); for (const leaf of [...app.workspace.getLeavesOfType('markdown'), ...app.workspace.getLeavesOfType('bases')]) if (leaf !== kept) leaf.detach(); app.workspace.setActiveLeaf(kept, { focus: true });  const P = 'Bases Note Templates'; const p = app.plugins.plugins['bases-note-templates']; for (const f of app.vault.getMarkdownFiles().filter((f) => f.path.startsWith(P + '/Tasks/') && /^(\\d{4}-|Untitled)/.test(f.basename))) await app.vault.delete(f); document.querySelectorAll('.modal-container').forEach((m) => { m.querySelector('.modal-close-button')?.click(); m.remove(); }); p.pro.signOut(); p.settings.bases = { [P + '/Tasks.base']: { templates: [P + '/Templates/Task.md'], folder: '', pattern: '{{date}} {{project}}', onNew: true, views: {} } }; await p.saveSettings(); p.refreshButtons(); const leaf = app.workspace.getMostRecentLeaf(); const st = leaf.getViewState(); await leaf.setViewState({ ...st, state: { ...st.state, viewName: 'Apollo to do' } }); await new Promise((r) => setTimeout(r, 700)); const c = document.querySelector('.workspace-leaf.mod-active .bases-toolbar-new-item-menu'); (c.querySelector('.text-icon-button, button') || c.firstElementChild).click(); await new Promise((r) => setTimeout(r, 1800)); return 'ok'; })()",
+		"after": "(async () => { document.querySelectorAll('.modal-container').forEach((m) => { m.querySelector('.modal-close-button')?.click(); m.remove(); }); document.body.click(); const p = app.plugins.plugins['bases-note-templates']; p.pro.signOut(); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "filter-values",
+		"caption": "The note in a tab: status and project come from the view filters, priority and the text from the template.",
+		"note": "Tasks.base",
+		"eval": "(async () => { const P = 'Bases Note Templates'; const p = app.plugins.plugins['bases-note-templates']; for (const f of app.vault.getMarkdownFiles().filter((f) => f.path.startsWith(P + '/Tasks/') && /^(\\d{4}-|Untitled)/.test(f.basename))) await app.vault.delete(f); document.querySelectorAll('.modal-container').forEach((m) => { m.querySelector('.modal-close-button')?.click(); m.remove(); }); p.pro.signOut(); p.settings.bases = { [P + '/Tasks.base']: { templates: [P + '/Templates/Task.md'], folder: '', pattern: '{{date}} {{project}}', onNew: true, views: {} } }; await p.saveSettings(); p.refreshButtons(); const leaf = app.workspace.getMostRecentLeaf(); const st = leaf.getViewState(); await leaf.setViewState({ ...st, state: { ...st.state, viewName: 'Apollo to do' } }); await new Promise((r) => setTimeout(r, 700)); await app.commands.executeCommandById('bases-note-templates:new-from-template'); await new Promise((r) => setTimeout(r, 1200)); return 'ok'; })()",
+		"after": "(async () => { document.querySelectorAll('.modal-container').forEach((m) => { m.querySelector('.modal-close-button')?.click(); m.remove(); }); document.body.click(); const p = app.plugins.plugins['bases-note-templates']; p.pro.signOut(); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "setup",
+		"caption": "Set up templates for this base: the template, the folder, the name pattern and the New button switch.",
+		"note": "Tasks.base",
+		"eval": "(async () => { const P = 'Bases Note Templates'; const p = app.plugins.plugins['bases-note-templates']; for (const f of app.vault.getMarkdownFiles().filter((f) => f.path.startsWith(P + '/Tasks/') && /^(\\d{4}-|Untitled)/.test(f.basename))) await app.vault.delete(f); document.querySelectorAll('.modal-container').forEach((m) => { m.querySelector('.modal-close-button')?.click(); m.remove(); }); p.pro.signOut(); p.settings.bases = { [P + '/Tasks.base']: { templates: [P + '/Templates/Task.md'], folder: '', pattern: '{{date}} {{project}}', onNew: true, views: {} } }; await p.saveSettings(); p.refreshButtons(); const leaf = app.workspace.getMostRecentLeaf(); const st = leaf.getViewState(); await leaf.setViewState({ ...st, state: { ...st.state, viewName: 'Apollo to do' } }); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"commands": [
+			"bases-note-templates:set-up-base"
+		],
+		"after": "(async () => { document.querySelectorAll('.modal-container').forEach((m) => { m.querySelector('.modal-close-button')?.click(); m.remove(); }); document.body.click(); const p = app.plugins.plugins['bases-note-templates']; p.pro.signOut(); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "header-button",
+		"caption": "A base with a setup gets a New note from template button in its tab header.",
+		"note": "Tasks.base",
+		"eval": "(async () => { const P = 'Bases Note Templates'; const p = app.plugins.plugins['bases-note-templates']; for (const f of app.vault.getMarkdownFiles().filter((f) => f.path.startsWith(P + '/Tasks/') && /^(\\d{4}-|Untitled)/.test(f.basename))) await app.vault.delete(f); document.querySelectorAll('.modal-container').forEach((m) => { m.querySelector('.modal-close-button')?.click(); m.remove(); }); p.pro.signOut(); p.settings.bases = { [P + '/Tasks.base']: { templates: [P + '/Templates/Task.md'], folder: '', pattern: '{{date}} {{project}}', onNew: true, views: {} } }; await p.saveSettings(); p.refreshButtons(); const leaf = app.workspace.getMostRecentLeaf(); const st = leaf.getViewState(); await leaf.setViewState({ ...st, state: { ...st.state, viewName: 'All tasks' } }); await new Promise((r) => setTimeout(r, 700)); const b = document.querySelector('.workspace-leaf.mod-active .bnt-new-button'); b.addClass('bnt-demo-hover'); b.dispatchEvent(new MouseEvent('mouseover', { bubbles: true })); await new Promise((r) => setTimeout(r, 900)); return 'ok'; })()",
+		"after": "(async () => { document.querySelectorAll('.bnt-demo-hover').forEach((b) => b.removeClass('bnt-demo-hover')); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "picker",
+		"caption": "Pro: with more than one template, New and the command ask which one to use.",
+		"note": "Tasks.base",
+		"eval": "(async () => { const P = 'Bases Note Templates'; const p = app.plugins.plugins['bases-note-templates']; for (const f of app.vault.getMarkdownFiles().filter((f) => f.path.startsWith(P + '/Tasks/') && /^(\\d{4}-|Untitled)/.test(f.basename))) await app.vault.delete(f); document.querySelectorAll('.modal-container').forEach((m) => { m.querySelector('.modal-close-button')?.click(); m.remove(); }); const s = p.pro; s.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-note-templates-github-token', 'gho_' + '0'.repeat(36)); await s.refreshNow(); p.settings.bases = { [P + '/Tasks.base']: { templates: [P + '/Templates/Task.md', P + '/Templates/Bug.md', P + '/Templates/Meeting.md'], folder: '', pattern: '{{date}} {{project}}', onNew: true, views: { 'Bugs': P + '/Templates/Bug.md' } } }; await p.saveSettings(); p.refreshButtons(); const leaf = app.workspace.getMostRecentLeaf(); const st = leaf.getViewState(); await leaf.setViewState({ ...st, state: { ...st.state, viewName: 'Apollo to do' } }); await new Promise((r) => setTimeout(r, 700)); await app.commands.executeCommandById('bases-note-templates:new-from-template'); await new Promise((r) => setTimeout(r, 600)); return 'ok'; })()",
+		"after": "(async () => { document.querySelector('.prompt-input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "view-templates",
+		"caption": "Pro: the Bugs view has its own template, which comes first when you create a note from that view.",
+		"note": "Tasks.base",
+		"eval": "(async () => { const P = 'Bases Note Templates'; const p = app.plugins.plugins['bases-note-templates']; for (const f of app.vault.getMarkdownFiles().filter((f) => f.path.startsWith(P + '/Tasks/') && /^(\\d{4}-|Untitled)/.test(f.basename))) await app.vault.delete(f); document.querySelectorAll('.modal-container').forEach((m) => { m.querySelector('.modal-close-button')?.click(); m.remove(); }); const s = p.pro; s.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-note-templates-github-token', 'gho_' + '0'.repeat(36)); await s.refreshNow(); p.settings.bases = { [P + '/Tasks.base']: { templates: [P + '/Templates/Task.md', P + '/Templates/Bug.md', P + '/Templates/Meeting.md'], folder: '', pattern: '{{date}} {{project}}', onNew: true, views: { 'Bugs': P + '/Templates/Bug.md' } } }; await p.saveSettings(); p.refreshButtons(); const leaf = app.workspace.getMostRecentLeaf(); const st = leaf.getViewState(); await leaf.setViewState({ ...st, state: { ...st.state, viewName: 'Bugs' } }); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"commands": [
+			"bases-note-templates:set-up-base"
+		],
+		"after": "(async () => { document.querySelectorAll('.modal-container').forEach((m) => { m.querySelector('.modal-close-button')?.click(); m.remove(); }); document.body.click(); const p = app.plugins.plugins['bases-note-templates']; p.pro.signOut(); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "setup-extra-props",
+		"caption": "The setup of a base: Extra properties give every new note a property that is not in the filters or the template.",
+		"note": "Tasks.base",
+		"eval": "(async () => { const P = 'Bases Note Templates'; const p = app.plugins.plugins['bases-note-templates']; for (const f of app.vault.getMarkdownFiles().filter((f) => f.path.startsWith(P + '/Tasks/') && /^(\\d{4}-|Untitled)/.test(f.basename))) await app.vault.delete(f); document.querySelectorAll('.modal-container').forEach((m) => { m.querySelector('.modal-close-button')?.click(); m.remove(); }); p.pro.signOut(); p.settings.bases = { [P + '/Tasks.base']: { templates: [P + '/Templates/Task.md'], folder: '', pattern: '{{date}} {{project}}', onNew: true, extraProps: { source: 'meeting', status: '{{date}}' }, views: {} } }; await p.saveSettings(); p.refreshButtons(); const leaf = app.workspace.getMostRecentLeaf(); const st = leaf.getViewState(); await leaf.setViewState({ ...st, state: { ...st.state, viewName: 'Apollo to do' } }); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"commands": [
+			"bases-note-templates:set-up-base"
+		],
+		"after": "(async () => { document.querySelectorAll('.modal-container').forEach((m) => { m.querySelector('.modal-close-button')?.click(); m.remove(); }); document.body.click(); const p = app.plugins.plugins['bases-note-templates']; p.pro.signOut(); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "duplicate",
+		"caption": "Pro: Duplicate the current note as a new note copies a row of a base, with all its properties, to a new note next to it. The row menu of a base has the same action.",
+		"note": "Tasks/Book the venue.md",
+		"eval": "(async () => { const P = 'Bases Note Templates'; const p = app.plugins.plugins['bases-note-templates']; for (const f of app.vault.getMarkdownFiles().filter((f) => f.path.startsWith(P + '/Tasks/') && /^(\\d{4}-|Untitled)/.test(f.basename))) await app.vault.delete(f); document.querySelectorAll('.modal-container').forEach((m) => { m.querySelector('.modal-close-button')?.click(); m.remove(); }); const s = p.pro; s.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-note-templates-github-token', 'gho_' + '0'.repeat(36)); await s.refreshNow(); p.settings.bases = { [P + '/Tasks.base']: { templates: [P + '/Templates/Task.md'], folder: '', pattern: '{{date}} {{project}}', onNew: true, views: {} } }; await p.saveSettings(); p.refreshButtons(); app.commands.executeCommandById('command-palette:open'); await new Promise((x) => setTimeout(x, 300)); const i = document.querySelector('.prompt-input'); i.value = 'duplicate the current'; i.dispatchEvent(new Event('input', { bubbles: true })); await new Promise((r) => setTimeout(r, 500)); return 'ok'; })()",
+		"after": "(async () => { document.querySelector('.prompt-input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); app.plugins.plugins['bases-note-templates'].pro.signOut(); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "settings",
+		"caption": "Settings: the Pro section, the New button switch, the date and time formats, Templater and the list of bases with a setup.",
+		"eval": "(async () => { const P = 'Bases Note Templates'; const p = app.plugins.plugins['bases-note-templates']; for (const f of app.vault.getMarkdownFiles().filter((f) => f.path.startsWith(P + '/Tasks/') && /^(\\d{4}-|Untitled)/.test(f.basename))) await app.vault.delete(f); document.querySelectorAll('.modal-container').forEach((m) => { m.querySelector('.modal-close-button')?.click(); m.remove(); }); p.pro.signOut(); p.settings.bases = { [P + '/Tasks.base']: { templates: [P + '/Templates/Task.md'], folder: '', pattern: '{{date}} {{project}}', onNew: true, views: {} } }; await p.saveSettings(); p.refreshButtons(); app.setting.open(); app.setting.openTabById('bases-note-templates'); return 'ok'; })()",
+		"after": "app.setting.close(); 'ok'",
+		"wait": 900
+	},
+	{
+		"feature": "pro-settings",
+		"caption": "The Pro section after sign in with a sponsoring account: login, tier, Refresh and Sign out.",
+		"eval": "(async () => { const P = 'Bases Note Templates'; const p = app.plugins.plugins['bases-note-templates']; for (const f of app.vault.getMarkdownFiles().filter((f) => f.path.startsWith(P + '/Tasks/') && /^(\\d{4}-|Untitled)/.test(f.basename))) await app.vault.delete(f); document.querySelectorAll('.modal-container').forEach((m) => { m.querySelector('.modal-close-button')?.click(); m.remove(); }); const s = p.pro; s.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-note-templates-github-token', 'gho_' + '0'.repeat(36)); await s.refreshNow(); p.settings.bases = { [P + '/Tasks.base']: { templates: [P + '/Templates/Task.md'], folder: '', pattern: '{{date}} {{project}}', onNew: true, views: {} } }; await p.saveSettings(); p.refreshButtons(); app.setting.open(); app.setting.openTabById('bases-note-templates'); return 'ok'; })()",
+		"after": "app.setting.close(); app.plugins.plugins['bases-note-templates'].pro.signOut(); 'ok'",
+		"wait": 900
+	},
+	{
+		"feature": "nested-properties",
+		"caption": "The New button fills variables in a list and a nested mapping with Unicode text.",
+		"note": "Tasks.base",
+		"eval": "(async () => { const P = 'Bases Note Templates'; const p = app.plugins.plugins['bases-note-templates']; for (const f of app.vault.getMarkdownFiles().filter((f) => f.path.startsWith(P + '/Tasks/') && /^(\\d{4}-|Untitled)/.test(f.basename))) await app.vault.delete(f); document.querySelectorAll('.modal-container').forEach((m) => { m.querySelector('.modal-close-button')?.click(); m.remove(); }); p.pro.signOut(); p.settings.bases = { [P + '/Tasks.base']: { templates: [P + '/Templates/会議 🧪.md'], folder: '', pattern: '{{date}} Café 🧪', onNew: true, views: {} } }; await p.saveSettings(); p.refreshButtons(); const leaf = app.workspace.getMostRecentLeaf(); const st = leaf.getViewState(); await leaf.setViewState({ ...st, state: { ...st.state, viewName: 'Apollo to do' } }); await new Promise((r) => setTimeout(r, 700)); const button = document.querySelector('.workspace-leaf.mod-active .bases-toolbar-new-item-menu'); (button.querySelector('.text-icon-button, button') || button.firstElementChild).click(); await new Promise((r) => setTimeout(r, 1800)); document.querySelectorAll('.modal-container').forEach((m) => m.querySelector('.modal-close-button')?.click()); const created = app.vault.getMarkdownFiles().filter((f) => f.path.startsWith(P + '/Tasks/') && f.basename.includes('Café 🧪')).sort((a, b) => b.stat.ctime - a.stat.ctime)[0]; if (!created) throw new Error('The nested template note was not created'); await app.workspace.getLeaf('tab').openFile(created, { active: true }); const current = app.workspace.getMostRecentLeaf(); const state = current.getViewState(); await current.setViewState({ ...state, state: { ...state.state, mode: 'source', source: true } }); return 'ok'; })()",
+		"after": "(async () => { document.querySelectorAll('.modal-container').forEach((m) => { m.querySelector('.modal-close-button')?.click(); m.remove(); }); document.body.click(); const p = app.plugins.plugins['bases-note-templates']; p.pro.signOut(); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "bases-note-templates",
+		"caption": "Pressing New in a base: the app makes the note, then the plugin fills in the template and renames it with the pattern.",
+		"frames": [
+			{
+				"note": "Tasks.base",
+				"eval": "(async () => { const P = 'Bases Note Templates'; const p = app.plugins.plugins['bases-note-templates']; for (const f of app.vault.getMarkdownFiles().filter((f) => f.path.startsWith(P + '/Tasks/') && /^(\\d{4}-|Untitled)/.test(f.basename))) await app.vault.delete(f); document.querySelectorAll('.modal-container').forEach((m) => { m.querySelector('.modal-close-button')?.click(); m.remove(); }); p.pro.signOut(); p.settings.bases = { [P + '/Tasks.base']: { templates: [P + '/Templates/Task.md'], folder: '', pattern: '{{date}} {{project}}', onNew: true, views: {} } }; await p.saveSettings(); p.refreshButtons(); const leaf = app.workspace.getMostRecentLeaf(); const st = leaf.getViewState(); await leaf.setViewState({ ...st, state: { ...st.state, viewName: 'Apollo to do' } }); await new Promise((r) => setTimeout(r, 700)); await new Promise((r) => setTimeout(r, 300)); return 'ok'; })()",
+				"hold": 1800
+			},
+			{
+				"eval": "(async () => { const c = document.querySelector('.workspace-leaf.mod-active .bases-toolbar-new-item-menu'); (c.querySelector('.text-icon-button, button') || c.firstElementChild).addClass('bnt-demo-hover'); await new Promise((r) => setTimeout(r, 200)); return 'ok'; })()",
+				"hold": 1000
+			},
+			{
+				"eval": "(async () => { document.querySelectorAll('.bnt-demo-hover').forEach((b) => b.removeClass('bnt-demo-hover')); const c = document.querySelector('.workspace-leaf.mod-active .bases-toolbar-new-item-menu'); (c.querySelector('.text-icon-button, button') || c.firstElementChild).click(); await new Promise((r) => setTimeout(r, 1800)); return 'ok'; })()",
+				"hold": 3000
+			},
+			{
+				"eval": "(async () => { document.body.click(); await new Promise((r) => setTimeout(r, 900)); return 'ok'; })()",
+				"hold": 2200
+			}
+		]
+	}
+]
