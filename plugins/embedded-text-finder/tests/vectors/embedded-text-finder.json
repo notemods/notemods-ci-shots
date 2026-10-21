@@ -1,0 +1,807 @@
+{
+ "slug": "embedded-text-finder",
+ "module": "embedded-text-finder/src/search",
+ "function": "search",
+ "cases": [
+  {
+   "name": "Whole note source returns the containing note",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "![[B]]",
+      "B.md": "blue bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird"
+    }
+   ],
+   "expected": {
+    "matches": [
+     [
+      "Parents/A.md",
+      "B.md",
+      "",
+      1
+     ]
+    ],
+    "reports": []
+   }
+  },
+  {
+   "name": "Heading excludes text outside Scope",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "![[B#Scope]]",
+      "B.md": "blue bird\n# Scope\nred fox\n# Other\nblue bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird",
+     "regions": {
+      "B.md#Scope": [
+       10,
+       26
+      ]
+     }
+    }
+   ],
+   "expected": {
+    "matches": [],
+    "reports": []
+   }
+  },
+  {
+   "name": "Block source returns a matching block",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "![[B#^ref]]",
+      "B.md": "blue bird ^ref\n\nred fox"
+     },
+     "folder": "Parents",
+     "query": "blue bird",
+     "regions": {
+      "B.md#^ref": [
+       0,
+       14
+      ]
+     }
+    }
+   ],
+   "expected": {
+    "matches": [
+     [
+      "Parents/A.md",
+      "B.md",
+      "#^ref",
+      1
+     ]
+    ],
+    "reports": []
+   }
+  },
+  {
+   "name": "Two levels return the final source",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "![[B]]",
+      "B.md": "![[C]]",
+      "C.md": "blue bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird"
+    }
+   ],
+   "expected": {
+    "matches": [
+     [
+      "Parents/A.md",
+      "C.md",
+      "",
+      2
+     ]
+    ],
+    "reports": []
+   }
+  },
+  {
+   "name": "Third level stops and reports the limit",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "![[B]]",
+      "B.md": "![[C]]",
+      "C.md": "![[D]]",
+      "D.md": "blue bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird"
+    }
+   ],
+   "expected": {
+    "matches": [],
+    "reports": [
+     "Depth limit"
+    ]
+   }
+  },
+  {
+   "name": "Cycle stops and each source returns once",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "blue bird\n![[B]]",
+      "B.md": "blue bird\n![[Parents/A]]"
+     },
+     "folder": "Parents",
+     "query": "blue bird"
+    }
+   ],
+   "expected": {
+    "matches": [
+     [
+      "Parents/A.md",
+      "Parents/A.md",
+      "",
+      0
+     ],
+     [
+      "Parents/A.md",
+      "B.md",
+      "",
+      1
+     ]
+    ],
+    "reports": [
+     "Cycle"
+    ]
+   }
+  },
+  {
+   "name": "Missing Markdown and PDF are reported",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "![[Missing]]\n![[Manual.pdf]]"
+     },
+     "folder": "Parents",
+     "query": "blue bird"
+    }
+   ],
+   "expected": {
+    "matches": [],
+    "reports": [
+     "Missing Markdown target",
+     "Skipped non-Markdown source"
+    ]
+   }
+  },
+  {
+   "name": "Fenced example does not expand",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "```md\n![[B]]\n```",
+      "B.md": "blue bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird"
+    }
+   ],
+   "expected": {
+    "matches": [],
+    "reports": []
+   }
+  },
+  {
+   "name": "A second search reads changed text",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "![[B]]",
+      "B.md": "red fox"
+     },
+     "folder": "Parents",
+     "query": "blue bird",
+     "updates": {
+      "B.md": "blue bird"
+     }
+    }
+   ],
+   "expected": {
+    "matches": [
+     [
+      "Parents/A.md",
+      "B.md",
+      "",
+      1
+     ]
+    ],
+    "reports": []
+   }
+  },
+  {
+   "name": "Square brackets and stars are literal",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "![[B]]",
+      "B.md": "literal [x]* text"
+     },
+     "folder": "Parents",
+     "query": "[x]*"
+    }
+   ],
+   "expected": {
+    "matches": [
+     [
+      "Parents/A.md",
+      "B.md",
+      "",
+      1
+     ]
+    ],
+    "reports": []
+   }
+  },
+  {
+   "name": "Own body returns the containing note as source",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "blue bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird"
+    }
+   ],
+   "expected": {
+    "matches": [
+     [
+      "Parents/A.md",
+      "Parents/A.md",
+      "",
+      0
+     ]
+    ],
+    "reports": []
+   }
+  },
+  {
+   "name": "Heading match keeps its source link",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "![[B#Scope]]",
+      "B.md": "# Scope\nblue bird\n# Other\nred fox"
+     },
+     "folder": "Parents",
+     "query": "blue bird",
+     "regions": {
+      "B.md#Scope": [
+       0,
+       18
+      ]
+     }
+    }
+   ],
+   "expected": {
+    "matches": [
+     [
+      "Parents/A.md",
+      "B.md",
+      "#Scope",
+      1
+     ]
+    ],
+    "reports": []
+   }
+  },
+  {
+   "name": "Block text outside the selected range is excluded",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "![[B#^ref]]",
+      "B.md": "red fox ^ref\n\nblue bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird",
+     "regions": {
+      "B.md#^ref": [
+       0,
+       12
+      ]
+     }
+    }
+   ],
+   "expected": {
+    "matches": [],
+    "reports": []
+   }
+  },
+  {
+   "name": "Repeated embeds give one source result",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "![[B]]\n![[B]]",
+      "B.md": "blue bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird"
+    }
+   ],
+   "expected": {
+    "matches": [
+     [
+      "Parents/A.md",
+      "B.md",
+      "",
+      1
+     ]
+    ],
+    "reports": []
+   }
+  },
+  {
+   "name": "Aliased embed resolves its target",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "![[B|Bird report]]",
+      "B.md": "blue bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird"
+    }
+   ],
+   "expected": {
+    "matches": [
+     [
+      "Parents/A.md",
+      "B.md",
+      "",
+      1
+     ]
+    ],
+    "reports": []
+   }
+  },
+  {
+   "name": "Folder boundary excludes a sibling folder",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "blue bird",
+      "Parents2/A.md": "blue bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird"
+    }
+   ],
+   "expected": {
+    "matches": [
+     [
+      "Parents/A.md",
+      "Parents/A.md",
+      "",
+      0
+     ]
+    ],
+    "reports": []
+   }
+  },
+  {
+   "name": "Subfolders are included",
+   "args": [
+    {
+     "notes": {
+      "Parents/Sub/A.md": "blue bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird"
+    }
+   ],
+   "expected": {
+    "matches": [
+     [
+      "Parents/Sub/A.md",
+      "Parents/Sub/A.md",
+      "",
+      0
+     ]
+    ],
+    "reports": []
+   }
+  },
+  {
+   "name": "Case-sensitive text does not match another case",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "Blue Bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird"
+    }
+   ],
+   "expected": {
+    "matches": [],
+    "reports": []
+   }
+  },
+  {
+   "name": "Blank query gives no result",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "blue bird"
+     },
+     "folder": "Parents",
+     "query": "   "
+    }
+   ],
+   "expected": {
+    "matches": [],
+    "reports": []
+   }
+  },
+  {
+   "name": "Missing heading is reported",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "![[B#Missing]]",
+      "B.md": "blue bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird"
+    }
+   ],
+   "expected": {
+    "matches": [],
+    "reports": [
+     "Missing or stale section"
+    ]
+   }
+  },
+  {
+   "name": "Inline code example does not expand",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "`![[B]]`",
+      "B.md": "blue bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird"
+    }
+   ],
+   "expected": {
+    "matches": [],
+    "reports": []
+   }
+  },
+  {
+   "name": "Escaped example does not expand",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "\\![[B]]",
+      "B.md": "blue bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird"
+    }
+   ],
+   "expected": {
+    "matches": [],
+    "reports": []
+   }
+  },
+  {
+   "name": "Comment example does not expand",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "%% ![[B]] %%\n<!-- ![[B]] -->",
+      "B.md": "blue bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird"
+    }
+   ],
+   "expected": {
+    "matches": [],
+    "reports": []
+   }
+  },
+  {
+   "name": "Front matter is excluded",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "---\ntext: blue bird\nembed: \"![[B]]\"\n---\nred fox",
+      "B.md": "blue bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird"
+    }
+   ],
+   "expected": {
+    "matches": [],
+    "reports": []
+   }
+  },
+  {
+   "name": "Different sections have distinct source results",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "![[B#One]]\n![[B#Two]]",
+      "B.md": "# One\nblue bird\n# Two\nblue bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird",
+     "regions": {
+      "B.md#One": [
+       0,
+       16
+      ],
+      "B.md#Two": [
+       16,
+       31
+      ]
+     }
+    }
+   ],
+   "expected": {
+    "matches": [
+     [
+      "Parents/A.md",
+      "B.md",
+      "#One",
+      1
+     ],
+     [
+      "Parents/A.md",
+      "B.md",
+      "#Two",
+      1
+     ]
+    ],
+    "reports": []
+   }
+  },
+  {
+   "name": "Heading range excludes nested embeds outside it",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "![[B#Scope]]",
+      "B.md": "# Scope\nred fox\n# Other\n![[C]]",
+      "C.md": "blue bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird",
+     "regions": {
+      "B.md#Scope": [
+       0,
+       16
+      ]
+     }
+    }
+   ],
+   "expected": {
+    "matches": [],
+    "reports": []
+   }
+  },
+  {
+   "name": "Unicode literal text returns the source",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "![[B]]",
+      "B.md": "Café 鳥"
+     },
+     "folder": "Parents",
+     "query": "Café 鳥"
+    }
+   ],
+   "expected": {
+    "matches": [
+     [
+      "Parents/A.md",
+      "B.md",
+      "",
+      1
+     ]
+    ],
+    "reports": []
+   }
+  },
+  {
+   "name": "Tilde fence does not expand",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "~~~\n![[B]]\n~~~",
+      "B.md": "blue bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird"
+    }
+   ],
+   "expected": {
+    "matches": [],
+    "reports": []
+   }
+  },
+  {
+   "name": "A plain wikilink does not expand",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "[[B]]",
+      "B.md": "blue bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird"
+    }
+   ],
+   "expected": {
+    "matches": [],
+    "reports": []
+   }
+  },
+  {
+   "name": "Folder applies to containers and permits outside sources",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "![[Elsewhere/B]]",
+      "Elsewhere/B.md": "blue bird"
+     },
+     "folder": "Parents",
+     "query": "blue bird"
+    }
+   ],
+   "expected": {
+    "matches": [
+     [
+      "Parents/A.md",
+      "Elsewhere/B.md",
+      "",
+      1
+     ]
+    ],
+    "reports": []
+   }
+  },
+  {
+   "name": "Single note scope returns only that container",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "![[S]]",
+      "Parents/B.md": "![[S]]",
+      "S.md": "blue bird"
+     },
+     "folder": "",
+     "query": "blue bird",
+     "note": "Parents/A.md"
+    }
+   ],
+   "expected": {
+    "matches": [
+     [
+      "Parents/A.md",
+      "S.md",
+      "",
+      1
+     ]
+    ],
+    "reports": []
+   }
+  },
+  {
+   "name": "Single note scope replaces the folder",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "blue bird",
+      "Other/C.md": "blue bird"
+     },
+     "folder": "Other",
+     "query": "blue bird",
+     "note": "Parents/A.md"
+    }
+   ],
+   "expected": {
+    "matches": [
+     [
+      "Parents/A.md",
+      "Parents/A.md",
+      "",
+      0
+     ]
+    ],
+    "reports": []
+   }
+  },
+  {
+   "name": "Single note scope reports gaps of that note only",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "![[Missing]]\n![[S]]",
+      "Parents/B.md": "![[Gone]]",
+      "S.md": "blue bird"
+     },
+     "folder": "",
+     "query": "blue bird",
+     "note": "Parents/A.md"
+    }
+   ],
+   "expected": {
+    "matches": [
+     [
+      "Parents/A.md",
+      "S.md",
+      "",
+      1
+     ]
+    ],
+    "reports": [
+     "Missing Markdown target"
+    ]
+   }
+  },
+  {
+   "name": "Single note scope follows two embed levels",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "![[R]]",
+      "R.md": "![[S]]",
+      "S.md": "blue bird"
+     },
+     "folder": "",
+     "query": "blue bird",
+     "note": "Parents/A.md"
+    }
+   ],
+   "expected": {
+    "matches": [
+     [
+      "Parents/A.md",
+      "S.md",
+      "",
+      2
+     ]
+    ],
+    "reports": []
+   }
+  },
+  {
+   "name": "Unknown note path gives no result",
+   "args": [
+    {
+     "notes": {
+      "Parents/A.md": "blue bird"
+     },
+     "folder": "",
+     "query": "blue bird",
+     "note": "Parents/Z.md"
+    }
+   ],
+   "expected": {
+    "matches": [],
+    "reports": []
+   }
+  }
+ ]
+}
