@@ -1,0 +1,103 @@
+[
+	{
+		"feature": "relative-mode",
+		"caption": "Relative mode: every display row of a wrapped line has its own number, counted from the cursor row.",
+		"note": "Long lines.md",
+		"eval": "(async () => { await app.workspace.getLeaf(false).openFile(app.workspace.getActiveFile(), { state: { mode: 'source', source: false } });  app.plugins.plugins['visual-line-numbers'].pro.signOut(); Object.assign(app.plugins.plugins['visual-line-numbers'].settings, {\"enabled\": true, \"mode\": \"relative\", \"countFolded\": false, \"highlightCurrent\": false, \"motionHint\": false, \"noteProperty\": false, \"colorAbsolute\": \"\", \"colorRelative\": \"\", \"colorHybrid\": \"\"}); app.plugins.plugins['visual-line-numbers'].applySettings(); await new Promise((r) => setTimeout(r, 400)); (() => { const e = app.workspace.activeEditor.editor; e.setCursor({line: 2, ch: 0}); e.focus(); })(); await new Promise((r) => setTimeout(r, 800)); return 'ok'; })()"
+	},
+	{
+		"feature": "hybrid-mode",
+		"caption": "Hybrid mode: the same counts, with the line number of the cursor line on the cursor row.",
+		"note": "Long lines.md",
+		"eval": "(async () => { app.plugins.plugins['visual-line-numbers'].pro.signOut(); Object.assign(app.plugins.plugins['visual-line-numbers'].settings, {\"enabled\": true, \"mode\": \"relative\", \"countFolded\": false, \"highlightCurrent\": false, \"motionHint\": false, \"noteProperty\": false, \"colorAbsolute\": \"\", \"colorRelative\": \"\", \"colorHybrid\": \"\"}); app.plugins.plugins['visual-line-numbers'].applySettings(); Object.assign(app.plugins.plugins['visual-line-numbers'].settings, {\"mode\": \"hybrid\"}); app.plugins.plugins['visual-line-numbers'].applySettings(); await new Promise((r) => setTimeout(r, 400)); (() => { const e = app.workspace.activeEditor.editor; e.setCursor({line: 4, ch: 0}); e.focus(); })(); await new Promise((r) => setTimeout(r, 800)); return 'ok'; })()"
+	},
+	{
+		"feature": "absolute-mode",
+		"caption": "Absolute mode: the line number on the first row of each line.",
+		"note": "Long lines.md",
+		"eval": "(async () => { app.plugins.plugins['visual-line-numbers'].pro.signOut(); Object.assign(app.plugins.plugins['visual-line-numbers'].settings, {\"enabled\": true, \"mode\": \"relative\", \"countFolded\": false, \"highlightCurrent\": false, \"motionHint\": false, \"noteProperty\": false, \"colorAbsolute\": \"\", \"colorRelative\": \"\", \"colorHybrid\": \"\"}); app.plugins.plugins['visual-line-numbers'].applySettings(); Object.assign(app.plugins.plugins['visual-line-numbers'].settings, {\"mode\": \"absolute\"}); app.plugins.plugins['visual-line-numbers'].applySettings(); await new Promise((r) => setTimeout(r, 400)); (() => { const e = app.workspace.activeEditor.editor; e.setCursor({line: 2, ch: 0}); e.focus(); })(); await new Promise((r) => setTimeout(r, 800)); return 'ok'; })()"
+	},
+	{
+		"feature": "dual-mode",
+		"caption": "Free dual mode shows document line numbers and wrapped row distances in two columns.",
+		"note": "Long lines.md",
+		"eval": "(async () => { app.plugins.plugins['visual-line-numbers'].pro.signOut(); Object.assign(app.plugins.plugins['visual-line-numbers'].settings, {\"enabled\": true, \"mode\": \"dual\", \"countFolded\": false, \"highlightCurrent\": false, \"motionHint\": false, \"noteProperty\": false, \"colorAbsolute\": \"\", \"colorRelative\": \"\", \"colorHybrid\": \"\"}); app.plugins.plugins['visual-line-numbers'].applySettings(); await new Promise((r) => setTimeout(r, 400)); (() => { const e = app.workspace.activeEditor.editor; e.setCursor({line: 2, ch: 0}); e.focus(); })(); await new Promise((r) => setTimeout(r, 800)); return 'ok'; })()"
+	},
+	{
+		"feature": "fold-aware",
+		"caption": "Pro: with Count folded lines on, each line hidden in a fold takes one count.",
+		"note": "Folded sections.md",
+		"eval": "(async () => { await ((async () => { const p = app.plugins.plugins['visual-line-numbers']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('visual-line-numbers-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); })()); Object.assign(app.plugins.plugins['visual-line-numbers'].settings, {\"enabled\": true, \"mode\": \"relative\", \"countFolded\": false, \"highlightCurrent\": false, \"motionHint\": false, \"noteProperty\": false, \"colorAbsolute\": \"\", \"colorRelative\": \"\", \"colorHybrid\": \"\"}); app.plugins.plugins['visual-line-numbers'].applySettings(); Object.assign(app.plugins.plugins['visual-line-numbers'].settings, {\"mode\": \"relative\", \"countFolded\": true}); app.plugins.plugins['visual-line-numbers'].applySettings(); await new Promise((r) => setTimeout(r, 400)); app.workspace.activeEditor.editor.exec('unfoldAll'); await new Promise((r) => setTimeout(r, 300)); (() => { const e = app.workspace.activeEditor.editor; e.setCursor({line: 4, ch: 0}); e.focus(); })(); app.workspace.activeEditor.editor.exec('toggleFold'); await new Promise((r) => setTimeout(r, 500)); (() => { const e = app.workspace.activeEditor.editor; e.setCursor({line: 11, ch: 0}); e.focus(); })(); app.workspace.activeEditor.editor.exec('toggleFold'); await new Promise((r) => setTimeout(r, 500)); (() => { const e = app.workspace.activeEditor.editor; e.setCursor({line: 2, ch: 0}); e.focus(); })(); await new Promise((r) => setTimeout(r, 800)); return 'ok'; })()",
+		"after": "(async () => { app.plugins.plugins['visual-line-numbers'].pro.signOut(); app.plugins.plugins['visual-line-numbers'].applySettings(); return 'ok'; })()"
+	},
+	{
+		"feature": "current-row",
+		"caption": "Pro: the cursor row number in bold, with a tinted background.",
+		"note": "Long lines.md",
+		"eval": "(async () => { await ((async () => { const p = app.plugins.plugins['visual-line-numbers']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('visual-line-numbers-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); })()); Object.assign(app.plugins.plugins['visual-line-numbers'].settings, {\"enabled\": true, \"mode\": \"relative\", \"countFolded\": false, \"highlightCurrent\": false, \"motionHint\": false, \"noteProperty\": false, \"colorAbsolute\": \"\", \"colorRelative\": \"\", \"colorHybrid\": \"\"}); app.plugins.plugins['visual-line-numbers'].applySettings(); Object.assign(app.plugins.plugins['visual-line-numbers'].settings, {\"mode\": \"hybrid\", \"highlightCurrent\": true}); app.plugins.plugins['visual-line-numbers'].applySettings(); await new Promise((r) => setTimeout(r, 400)); (() => { const e = app.workspace.activeEditor.editor; e.setCursor({line: 2, ch: 0}); e.focus(); })(); await new Promise((r) => setTimeout(r, 800)); return 'ok'; })()",
+		"after": "(async () => { app.plugins.plugins['visual-line-numbers'].pro.signOut(); app.plugins.plugins['visual-line-numbers'].applySettings(); return 'ok'; })()"
+	},
+	{
+		"feature": "motion-hint",
+		"caption": "Pro: hover a number to see the Vim motion that reaches the row.",
+		"note": "Vim counts.md",
+		"eval": "(async () => { await ((async () => { const p = app.plugins.plugins['visual-line-numbers']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('visual-line-numbers-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); })()); Object.assign(app.plugins.plugins['visual-line-numbers'].settings, {\"enabled\": true, \"mode\": \"relative\", \"countFolded\": false, \"highlightCurrent\": false, \"motionHint\": false, \"noteProperty\": false, \"colorAbsolute\": \"\", \"colorRelative\": \"\", \"colorHybrid\": \"\"}); app.plugins.plugins['visual-line-numbers'].applySettings(); Object.assign(app.plugins.plugins['visual-line-numbers'].settings, {\"mode\": \"relative\", \"motionHint\": true}); app.plugins.plugins['visual-line-numbers'].applySettings(); await new Promise((r) => setTimeout(r, 400)); (() => { const e = app.workspace.activeEditor.editor; e.setCursor({line: 0, ch: 0}); e.focus(); })(); await new Promise((r) => setTimeout(r, 700)); const rows = [...document.querySelectorAll('.workspace-leaf.mod-active .vln-row')]; const r = rows.find((x) => x.textContent === '5'); if (r) r.classList.add('vln-force-hint'); window.__vlnHint = r ? r.getAttribute('data-hint') : 'none'; await new Promise((r) => setTimeout(r, 800)); return 'ok'; })()",
+		"after": "(async () => { document.querySelectorAll('.vln-force-hint').forEach((x) => x.classList.remove('vln-force-hint')); app.plugins.plugins['visual-line-numbers'].pro.signOut(); app.plugins.plugins['visual-line-numbers'].applySettings(); return 'ok'; })()"
+	},
+	{
+		"feature": "note-property",
+		"caption": "Pro: a note with visual-line-numbers: false in its properties has no gutter. Other notes keep theirs.",
+		"note": "Hidden gutter.md",
+		"eval": "(async () => { await ((async () => { const p = app.plugins.plugins['visual-line-numbers']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('visual-line-numbers-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); })()); Object.assign(app.plugins.plugins['visual-line-numbers'].settings, {\"enabled\": true, \"mode\": \"relative\", \"countFolded\": false, \"highlightCurrent\": false, \"motionHint\": false, \"noteProperty\": false, \"colorAbsolute\": \"\", \"colorRelative\": \"\", \"colorHybrid\": \"\"}); app.plugins.plugins['visual-line-numbers'].applySettings(); Object.assign(app.plugins.plugins['visual-line-numbers'].settings, {\"noteProperty\": true}); app.plugins.plugins['visual-line-numbers'].applySettings(); await new Promise((r) => setTimeout(r, 400)); await new Promise((r) => setTimeout(r, 800)); return 'ok'; })()",
+		"after": "(async () => { app.plugins.plugins['visual-line-numbers'].pro.signOut(); app.plugins.plugins['visual-line-numbers'].applySettings(); return 'ok'; })()"
+	},
+	{
+		"feature": "mode-colors",
+		"caption": "Pro: a color for each mode. Here relative numbers are blue and the hybrid cursor number is orange.",
+		"note": "Long lines.md",
+		"eval": "(async () => { await ((async () => { const p = app.plugins.plugins['visual-line-numbers']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('visual-line-numbers-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); })()); Object.assign(app.plugins.plugins['visual-line-numbers'].settings, {\"enabled\": true, \"mode\": \"relative\", \"countFolded\": false, \"highlightCurrent\": false, \"motionHint\": false, \"noteProperty\": false, \"colorAbsolute\": \"\", \"colorRelative\": \"\", \"colorHybrid\": \"\"}); app.plugins.plugins['visual-line-numbers'].applySettings(); Object.assign(app.plugins.plugins['visual-line-numbers'].settings, {\"mode\": \"hybrid\", \"colorRelative\": \"#4f8fd6\", \"colorHybrid\": \"#e08a1e\"}); app.plugins.plugins['visual-line-numbers'].applySettings(); await new Promise((r) => setTimeout(r, 400)); (() => { const e = app.workspace.activeEditor.editor; e.setCursor({line: 2, ch: 0}); e.focus(); })(); await new Promise((r) => setTimeout(r, 800)); return 'ok'; })()",
+		"after": "(async () => { app.plugins.plugins['visual-line-numbers'].pro.signOut(); app.plugins.plugins['visual-line-numbers'].applySettings(); return 'ok'; })()"
+	},
+	{
+		"feature": "settings",
+		"caption": "The settings: gutter, number mode, and the Pro options after GitHub sign in.",
+		"eval": "(async () => { await ((async () => { const p = app.plugins.plugins['visual-line-numbers']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('visual-line-numbers-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); })()); Object.assign(app.plugins.plugins['visual-line-numbers'].settings, {\"enabled\": true, \"mode\": \"relative\", \"countFolded\": false, \"highlightCurrent\": false, \"motionHint\": false, \"noteProperty\": false, \"colorAbsolute\": \"\", \"colorRelative\": \"\", \"colorHybrid\": \"\"}); app.plugins.plugins['visual-line-numbers'].applySettings(); app.setting.open(); app.setting.openTabById('visual-line-numbers'); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "app.setting.close(); app.plugins.plugins['visual-line-numbers'].pro.signOut(); app.plugins.plugins['visual-line-numbers'].applySettings(); 'ok'"
+	},
+	{
+		"feature": "cursor-moves",
+		"caption": "The numbers follow the cursor as it moves down and back up.",
+		"note": "Vim counts.md",
+		"frames": [
+			{
+				"note": "Vim counts.md",
+				"eval": "(async () => { app.plugins.plugins['visual-line-numbers'].pro.signOut(); Object.assign(app.plugins.plugins['visual-line-numbers'].settings, {\"enabled\": true, \"mode\": \"relative\", \"countFolded\": false, \"highlightCurrent\": false, \"motionHint\": false, \"noteProperty\": false, \"colorAbsolute\": \"\", \"colorRelative\": \"\", \"colorHybrid\": \"\"}); app.plugins.plugins['visual-line-numbers'].applySettings(); await new Promise((r) => setTimeout(r, 300)); (() => { const e = app.workspace.activeEditor.editor; e.setCursor({line: 2, ch: 0}); e.focus(); })(); await new Promise((r) => setTimeout(r, 800)); return 'ok'; })()",
+				"hold": 1400
+			},
+			{
+				"eval": "(async () => { (() => { const e = app.workspace.activeEditor.editor; e.setCursor({line: 4, ch: 0}); e.focus(); })(); await new Promise((r) => setTimeout(r, 200)); return 'ok'; })()",
+				"hold": 1100
+			},
+			{
+				"eval": "(async () => { (() => { const e = app.workspace.activeEditor.editor; e.setCursor({line: 6, ch: 0}); e.focus(); })(); await new Promise((r) => setTimeout(r, 200)); return 'ok'; })()",
+				"hold": 1100
+			},
+			{
+				"eval": "(async () => { (() => { const e = app.workspace.activeEditor.editor; e.setCursor({line: 8, ch: 0}); e.focus(); })(); await new Promise((r) => setTimeout(r, 200)); return 'ok'; })()",
+				"hold": 1100
+			},
+			{
+				"eval": "(async () => { (() => { const e = app.workspace.activeEditor.editor; e.setCursor({line: 10, ch: 0}); e.focus(); })(); await new Promise((r) => setTimeout(r, 200)); return 'ok'; })()",
+				"hold": 1100
+			},
+			{
+				"eval": "(async () => { (() => { const e = app.workspace.activeEditor.editor; e.setCursor({line: 6, ch: 0}); e.focus(); })(); await new Promise((r) => setTimeout(r, 200)); return 'ok'; })()",
+				"hold": 1100
+			},
+			{
+				"eval": "(async () => { (() => { const e = app.workspace.activeEditor.editor; e.setCursor({line: 2, ch: 0}); e.focus(); })(); await new Promise((r) => setTimeout(r, 200)); return 'ok'; })()",
+				"hold": 1100
+			}
+		]
+	}
+]
