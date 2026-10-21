@@ -62,17 +62,51 @@ jobs:
           sudo apt-get install -q -y xvfb herbstluftwm ffmpeg pngquant >/dev/null
 
       - name: Build the plugin
+        id: build
         working-directory: plugins/${{ env.SLUG }}
         run: |
           { if [ -f package-lock.json ]; then npm ci --no-audit --no-fund; else npm install --no-audit --no-fund; fi
             npm run build
             ls -la main.js manifest.json; } 2>&1 | tee -a "$OUT_DIR/run.log"
+          cp main.js "$OUT_DIR/main.js"
+          sha256sum main.js | cut -d' ' -f1 | tee "$OUT_DIR/main.js.sha256"
+
+      - name: Lint
+        id: lint
+        if: always() && steps.build.outcome == 'success'
+        working-directory: plugins/${{ env.SLUG }}
+        run: |
+          if node -e 'process.exit(require("./package.json").scripts?.lint ? 0 : 1)'; then
+            npm run lint 2>&1 | tee "$OUT_DIR/lint.log"
+          else echo "no lint script" | tee "$OUT_DIR/lint.log"; fi
+
+      - name: Unit tests (vitest)
+        id: unit
+        if: always() && steps.build.outcome == 'success'
+        working-directory: plugins/${{ env.SLUG }}
+        run: npm test -- --reporter=default --reporter=json --outputFile="$OUT_DIR/vitest.json" 2>&1 | tee "$OUT_DIR/unit.log"
+
+      - name: Reproducible build (two clean copies)
+        id: repro
+        if: always() && steps.build.outcome == 'success'
+        run: |
+          for c in a b; do
+            d="$RUNNER_TEMP/repro-$c"; rm -rf "$d"; mkdir -p "$d"
+            tar -C "$PLUGIN_DIR" --exclude=./node_modules --exclude=./main.js -cf - . | tar -C "$d" -xf -
+            (cd "$d" && npm ci --no-audit --no-fund --loglevel=error >/dev/null && npm run build --silent >/dev/null)
+            sha256sum "$d/main.js" | cut -d' ' -f1 > "$RUNNER_TEMP/sha-$c"
+          done
+          a=$(cat "$RUNNER_TEMP/sha-a"); b=$(cat "$RUNNER_TEMP/sha-b"); m=$(cat "$OUT_DIR/main.js.sha256")
+          echo "repro a=$a b=$b first=$m" | tee "$OUT_DIR/repro.log" | tee -a "$OUT_DIR/run.log"
+          [ "$a" = "$b" ] && [ "$a" = "$m" ] && echo "repro: match" | tee -a "$OUT_DIR/repro.log" || { echo "repro: MISMATCH" | tee -a "$OUT_DIR/repro.log"; exit 1; }
 
       - name: Install the shots runner
+        if: always() && steps.build.outcome == 'success'
         working-directory: ci
-        run: npm install --no-audit --no-fund 2>&1 | tail -3
+        run: npm ci --no-audit --no-fund 2>&1 | tail -3
 
       - name: Cache Obsidian downloads
+        if: always() && steps.build.outcome == 'success'
         uses: actions/cache@v4
         with:
           path: .obsidian-cache
@@ -80,6 +114,7 @@ jobs:
           restore-keys: obsidian-${{ runner.os }}-
 
       - name: Virtual display
+        if: always() && steps.build.outcome == 'success'
         run: |
           echo "DISPLAY=:99" >> "$GITHUB_ENV"
           Xvfb :99 -screen 0 1600x1200x24 +extension GLX -noreset &
@@ -91,10 +126,12 @@ jobs:
           DISPLAY=:99 herbstclient set focus_stealing_prevention false || true
 
       - name: Vault from docs/sample-notes
+        if: always() && steps.build.outcome == 'success'
         run: node ci/make-vault.mjs "$PLUGIN_DIR" "$VAULT_DIR" | tee -a "$OUT_DIR/run.log"
 
       - name: Screenshots (qa.json in real Obsidian)
         id: shots
+        if: always() && steps.build.outcome == 'success'
         working-directory: ci
         run: npx wdio run ./wdio.shots.conf.mjs 2>&1 | tee -a "$OUT_DIR/run.log"
 
@@ -118,11 +155,12 @@ jobs:
         run: |
           {
             echo "### shots $SLUG"
-            echo "- shots: ${{ steps.shots.outcome }}, media: ${{ steps.media.outcome }}, e2e: ${{ steps.e2e.outcome }}"
+            echo "- build: ${{ steps.build.outcome }}, lint: ${{ steps.lint.outcome }}, unit: ${{ steps.unit.outcome }}, repro: ${{ steps.repro.outcome }}, shots: ${{ steps.shots.outcome }}, media: ${{ steps.media.outcome }}, e2e: ${{ steps.e2e.outcome }}"
             echo "- png: $(ls out/docs/*.png 2>/dev/null | wc -l), gif: $(ls out/docs/*.gif 2>/dev/null | wc -l)"
             grep -E '^\[shots\]|^media:|FAIL|Error' out/run.log 2>/dev/null | head -60 | sed 's/^/    /' || true
           } >> "$GITHUB_STEP_SUMMARY"
-          echo "RESULT shots=${{ steps.shots.outcome }} media=${{ steps.media.outcome }} e2e=${{ steps.e2e.outcome }}" | tee -a out/run.log
+          [ -f out/vitest.json ] && node -e 'const j=require("./out/vitest.json");console.log(`UNIT ${j.numPassedTests}/${j.numTotalTests} passed, ${j.numFailedTests} failed`)' | tee -a out/run.log || echo "UNIT no report" | tee -a out/run.log
+          echo "RESULT build=${{ steps.build.outcome }} lint=${{ steps.lint.outcome }} unit=${{ steps.unit.outcome }} repro=${{ steps.repro.outcome }} shots=${{ steps.shots.outcome }} media=${{ steps.media.outcome }} e2e=${{ steps.e2e.outcome }}" | tee -a out/run.log
 
       - name: Upload
         if: always()
@@ -136,5 +174,11 @@ jobs:
             out/run.log
             out/e2e.log
             out/results.json
+            out/main.js
+            out/main.js.sha256
+            out/lint.log
+            out/unit.log
+            out/vitest.json
+            out/repro.log
           if-no-files-found: warn
           retention-days: 14
