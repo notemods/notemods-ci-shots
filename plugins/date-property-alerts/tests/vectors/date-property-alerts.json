@@ -1,0 +1,289 @@
+{
+ "slug": "date-property-alerts",
+ "module": "date-property-alerts/src/alerts",
+ "function": "parseDue",
+ "cases": [
+  {
+   "name": "UTC timestamp",
+   "args": [
+    "2026-10-21T09:00:00Z"
+   ],
+   "expected": 1792573200000
+  },
+  {
+   "name": "offset timestamp",
+   "args": [
+    "2026-10-21T10:00:00+01:00"
+   ],
+   "expected": 1792573200000
+  },
+  {
+   "name": "leap day",
+   "args": [
+    "2024-02-29T00:00:00Z"
+   ],
+   "expected": 1709164800000
+  },
+  {
+   "name": "invalid leap day",
+   "args": [
+    "2025-02-29T00:00:00Z"
+   ],
+   "expected": null
+  },
+  {
+   "name": "invalid month",
+   "args": [
+    "2026-13-01"
+   ],
+   "expected": null
+  },
+  {
+   "name": "invalid day",
+   "args": [
+    "2026-04-31"
+   ],
+   "expected": null
+  },
+  {
+   "name": "invalid clock",
+   "args": [
+    "2026-10-21T24:00Z"
+   ],
+   "expected": null
+  },
+  {
+   "name": "invalid offset",
+   "args": [
+    "2026-10-21T10:00+24:00"
+   ],
+   "expected": null
+  },
+  {
+   "name": "missing value",
+   "args": [
+    null
+   ],
+   "expected": null
+  },
+  {
+   "name": "list value",
+   "args": [
+    [
+     "2026-10-21"
+    ]
+   ],
+   "expected": null
+  },
+  {
+   "name": "number value",
+   "args": [
+    123
+   ],
+   "expected": null
+  },
+  {
+   "name": "prose value",
+   "args": [
+    "tomorrow"
+   ],
+   "expected": null
+  },
+  {
+   "name": "blank value",
+   "args": [
+    ""
+   ],
+   "expected": null
+  },
+  {
+   "name": "short date",
+   "args": [
+    "26-10-21"
+   ],
+   "expected": null
+  },
+  {
+   "name": "future date stays silent",
+   "function": "ready",
+   "args": [
+    {
+     "path": "Review.md",
+     "due": 1000,
+     "key": "review"
+    },
+    {},
+    999
+   ],
+   "expected": false
+  },
+  {
+   "name": "due boundary delivers",
+   "function": "ready",
+   "args": [
+    {
+     "path": "Review.md",
+     "due": 1000,
+     "key": "review"
+    },
+    {},
+    1000
+   ],
+   "expected": true
+  },
+  {
+   "name": "missing filtered rows stay empty",
+   "function": "rowsFor",
+   "args": [
+    [],
+    "note.due"
+   ],
+   "expected": {
+    "rows": [],
+    "invalid": 0
+   }
+  },
+  {
+   "name": "delivered row stays quiet",
+   "function": "ready",
+   "args": [
+    {
+     "path": "Review.md",
+     "due": 1000,
+     "key": "review"
+    },
+    {
+     "review": {
+      "delivered": true,
+      "snoozeUntil": 0
+     }
+    },
+    2000
+   ],
+   "expected": false
+  },
+  {
+   "name": "pending snooze stays quiet",
+   "function": "ready",
+   "args": [
+    {
+     "path": "Review.md",
+     "due": 1000,
+     "key": "review"
+    },
+    {
+     "review": {
+      "delivered": false,
+      "snoozeUntil": 3000
+     }
+    },
+    2000
+   ],
+   "expected": false
+  },
+  {
+   "name": "snooze wake boundary delivers",
+   "function": "ready",
+   "args": [
+    {
+     "path": "Review.md",
+     "due": 1000,
+     "key": "review"
+    },
+    {
+     "review": {
+      "delivered": false,
+      "snoozeUntil": 3000
+     }
+    },
+    3000
+   ],
+   "expected": true
+  },
+  {
+   "name": "free fixed snooze is accepted",
+   "function": "snooze",
+   "args": [
+    {
+     "path": "Review.md",
+     "due": 1000,
+     "key": "review"
+    },
+    {},
+    2000,
+    15,
+    false
+   ],
+   "expected": true
+  },
+  {
+   "name": "Pro snooze is accepted",
+   "function": "snooze",
+   "args": [
+    {
+     "path": "Review.md",
+     "due": 1000,
+     "key": "review"
+    },
+    {},
+    2000,
+    15,
+    true
+   ],
+   "expected": true
+  },
+  {
+   "name": "invalid date row is counted",
+   "function": "rowsFor",
+   "args": [
+    [
+     {
+      "path": "Bad.md",
+      "value": "2026-02-30"
+     }
+    ],
+    "note.due"
+   ],
+   "expected": {
+    "rows": [],
+    "invalid": 1
+   }
+  },
+  {
+   "name": "claim emits exact due row",
+   "function": "claim",
+   "args": [
+    [
+     {
+      "path": "Review.md",
+      "due": 1000,
+      "key": "review"
+     }
+    ],
+    {},
+    2000
+   ],
+   "expected": [
+    {
+     "path": "Review.md",
+     "due": 1000,
+     "key": "review"
+    }
+   ]
+  },
+  {
+   "name": "millisecond timestamp",
+   "args": [
+    "2026-10-21T09:00:00.123Z"
+   ],
+   "expected": 1792573200123
+  },
+  {
+   "name": "lowercase timestamp",
+   "args": [
+    "2026-10-21t09:00:00.000z"
+   ],
+   "expected": 1792573200000
+  }
+ ]
+}
