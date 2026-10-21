@@ -1,0 +1,11 @@
+{
+	"id": "table-csv-encoding",
+	"name": "Table CSV Encoding",
+	"version": "1.1.0",
+	"minAppVersion": "1.13.4",
+	"description": "Export Markdown tables to UTF-8 CSV files with a preview.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}

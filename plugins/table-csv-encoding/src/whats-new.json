@@ -1,0 +1,33 @@
+{
+	"id": "table-csv-encoding",
+	"name": "Table CSV Encoding",
+	"version": "1.1.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Scans the vault when the folder path is empty or root.",
+		"Adds Markdown table export with a UTF-8 BOM option, a CSV preview, and new file names."
+	],
+	"changes_user": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Settings now end with a More from NoteMods group, where you can turn this tab off or open it again."
+	],
+	"tip": "Turn on the BOM option when a spreadsheet app needs a clear UTF-8 signal. The CSV file then starts with the bytes EF BB BF.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Table CSV Encoding is one of over 100 small plugins that I make. Thank you for trusting it with your tables.",
+	"related": [
+		{
+			"id": "table-rollup",
+			"name": "Table Rollup",
+			"blurb": "Combine note tables in one table with links to the source notes."
+		},
+		{
+			"id": "table-row-links",
+			"name": "Table Row Links",
+			"blurb": "Copy a link to a marked table row in your note."
+		},
+		{
+			"id": "csv-schema-linter",
+			"name": "CSV Rule Check",
+			"blurb": "Check CSV values, types and duplicates before you use an export."
+		}
+	]
+}
