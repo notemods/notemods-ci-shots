@@ -120,7 +120,7 @@ jobs:
             echo "### shots $SLUG"
             echo "- shots: ${{ steps.shots.outcome }}, media: ${{ steps.media.outcome }}, e2e: ${{ steps.e2e.outcome }}"
             echo "- png: $(ls out/docs/*.png 2>/dev/null | wc -l), gif: $(ls out/docs/*.gif 2>/dev/null | wc -l)"
-            grep -E '^\[shots\]|^media:|FAIL|Error' out/run.log | head -60 | sed 's/^/    /'
+            grep -E '^\[shots\]|^media:|FAIL|Error' out/run.log 2>/dev/null | head -60 | sed 's/^/    /' || true
           } >> "$GITHUB_STEP_SUMMARY"
           echo "RESULT shots=${{ steps.shots.outcome }} media=${{ steps.media.outcome }} e2e=${{ steps.e2e.outcome }}" | tee -a out/run.log
 
