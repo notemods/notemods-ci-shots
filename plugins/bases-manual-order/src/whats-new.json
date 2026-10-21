@@ -1,0 +1,34 @@
+{
+	"id": "bases-manual-order",
+	"name": "Bases Manual Order",
+	"version": "1.2.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Adds manual row ordering with numeric note ranks and separate Pro orderings.",
+		"Adds table and list row ordering with saved numeric ranks."
+	],
+	"changes_user": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Drag a row or use its move buttons to set an order that stays, saved as a number in each note.",
+		"Pro can keep a separate order for each view in its own number property."
+	],
+	"tip": "To show the same order in a core Bases table, sort that table ascending by manual_order.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Bases Manual Order is one of over 100 small plugins that I make. Thank you for putting your notes in order with it.",
+	"related": [
+		{
+			"id": "bases-filter-switches",
+			"name": "Bases Filter Switches",
+			"blurb": "Turn saved Bases filters on or off with switches."
+		},
+		{
+			"id": "bases-multi-edit",
+			"name": "Bases Multi-Row Edit",
+			"blurb": "Set, append or remove a property on selected rows with preview and undo."
+		},
+		{
+			"id": "bases-freeze-panes",
+			"name": "Bases Freeze Panes",
+			"blurb": "Keep column and note names visible as you scroll a base."
+		}
+	]
+}
