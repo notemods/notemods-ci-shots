@@ -1,0 +1,64 @@
+.local-json-query {
+	padding: var(--size-4-4);
+	overflow: auto;
+}
+
+.local-json-query .setting-item-control textarea {
+	width: 320px;
+	min-height: 65px;
+}
+
+.local-json-query .setting-item-control input[type="text"] {
+	width: 280px;
+}
+
+.local-json-output {
+	overflow: auto;
+	padding-top: var(--size-4-2);
+}
+
+.local-json-output table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.local-json-output th, .local-json-output td {
+	padding: var(--size-4-2);
+	border-bottom: 1px solid var(--background-modifier-border);
+	text-align: left;
+	max-width: 320px;
+	overflow-wrap: anywhere;
+}
+
+.local-json-output th {
+	color: var(--text-accent);
+}
+
+.local-json-output pre {
+	white-space: pre-wrap;
+}
+
+.local-json-error {
+	color: var(--text-error);
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}

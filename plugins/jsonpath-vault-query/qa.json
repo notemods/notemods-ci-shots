@@ -1,0 +1,68 @@
+[
+  {
+    "feature": "scalar",
+    "caption": "The count field is a scalar result of 3.",
+    "note": "Welcome.md",
+    "eval": "(async()=>{const p=app.plugins.plugins['jsonpath-vault-query']; const v=await p.openView(); p.pro.signOut();v.path='Local JSON Queries/people.json';v.expression='count';v.draw();await v.run();return 'ok';})()",
+    "wait": 500,
+    "zoom": 0.8
+  },
+  {
+    "feature": "table",
+    "caption": "People appear as a table with renamed columns.",
+    "eval": "(async()=>{const p=app.plugins.plugins['jsonpath-vault-query']; const v=await p.openView(); v.path='Local JSON Queries/people.json';v.expression='rows[*].{person:name,years:age,team:team,hours:hours}';v.draw();await v.run();return 'ok';})()",
+    "wait": 500,
+    "zoom": 0.8
+  },
+  {
+    "feature": "jsonl",
+    "caption": "A JSONL file gives an array of names.",
+    "eval": "(async()=>{const p=app.plugins.plugins['jsonpath-vault-query']; const v=await p.openView(); v.path='Local JSON Queries/names.jsonl';v.expression='[*].name';v.draw();await v.run();return 'ok';})()",
+    "wait": 500,
+    "zoom": 0.8
+  },
+  {
+    "feature": "saved",
+    "caption": "The saved Adults pair restores the file and expression.",
+    "eval": "(async()=>{const p=app.plugins.plugins['jsonpath-vault-query']; const v=await p.openView(); await p.saveQuery({name:'Adults',path:'Local JSON Queries/people.json',expression:'rows[?age > `25`].{person:name,years:age}'});v.selectSaved('Adults');await v.run();return 'ok';})()",
+    "wait": 500,
+    "zoom": 0.8
+  },
+  {
+    "feature": "query-flow",
+    "caption": "The local output changes from a table to names and then a count.",
+    "frames": [
+      {
+        "eval": "(async()=>{const p=app.plugins.plugins['jsonpath-vault-query']; const v=await p.openView(); p.pro.signOut();v.path='Local JSON Queries/people.json';v.expression='rows[*].{person:name,years:age}';v.draw();await v.run();return 'ok';})()",
+        "hold": 1300,
+        "zoom": 0.8
+      },
+      {
+        "eval": "(async()=>{const p=app.plugins.plugins['jsonpath-vault-query']; const v=await p.openView(); v.expression='rows[*].name';v.draw();await v.run();return 'ok';})()",
+        "hold": 1300,
+        "zoom": 0.8
+      },
+      {
+        "eval": "(async()=>{const p=app.plugins.plugins['jsonpath-vault-query']; const v=await p.openView(); v.expression='count';v.draw();await v.run();return 'ok';})()",
+        "hold": 1300,
+        "zoom": 0.8
+      }
+    ],
+    "zoom": 0.8
+  },
+  {
+    "feature": "batch",
+    "caption": "A saved query combines two chosen local files.",
+    "eval": "(async()=>{const p=app.plugins.plugins['jsonpath-vault-query']; const v=await p.openView(); p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}});app.secretStorage.setSecret('jsonpath-vault-query-github-token','gho_'+'0'.repeat(36));await p.pro.refreshNow();await p.saveQuery({name:'Team hours',path:'Local JSON Queries/people.json',expression:'rows[*].{person:name,team:team,hours:hours}'});v.selectSaved('Team hours');v.batchPaths='Local JSON Queries/people.json\\nLocal JSON Queries/second.json';v.draw();await v.run(true);return 'ok';})()",
+    "wait": 500,
+    "zoom": 0.8
+  },
+  {
+    "feature": "report",
+    "caption": "A new report can use CSV or Markdown.",
+    "eval": "(async()=>{const p=app.plugins.plugins['jsonpath-vault-query']; const v=await p.openView(); const button=[...v.contentEl.querySelectorAll('button')].find(b=>b.textContent==='Write report');button.click();return 'ok';})()",
+    "wait": 500,
+    "after": "document.querySelector('.modal-close-button')?.click(); app.plugins.plugins['jsonpath-vault-query'].pro.signOut(); 'ok'",
+    "zoom": 0.8
+  }
+]
