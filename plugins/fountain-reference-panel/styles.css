@@ -1,0 +1,86 @@
+/* Styles for Fountain Reference Panel. Obsidian loads this file while the plugin is enabled. */
+.fountain-reference-panel {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-2);
+}
+
+.fountain-reference-panel-bar {
+	display: flex;
+	align-items: center;
+	gap: var(--size-4-2);
+}
+
+.fountain-reference-panel-note {
+	flex: 1;
+	overflow: hidden;
+	font-weight: var(--font-semibold);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.fountain-reference-panel-status,
+.fountain-reference-panel-time {
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+}
+
+.fountain-reference-panel-failures {
+	padding: var(--size-4-2);
+	color: var(--text-error);
+	font-size: var(--font-ui-small);
+	border: var(--border-width) solid var(--background-modifier-border);
+	border-radius: var(--radius-s);
+}
+
+.fountain-reference-panel-row {
+	padding: var(--size-4-2) 0;
+	border-top: var(--border-width) solid var(--background-modifier-border);
+}
+
+.fountain-reference-panel-row-head {
+	display: flex;
+	justify-content: space-between;
+	gap: var(--size-4-2);
+}
+
+.fountain-reference-panel-source {
+	overflow-wrap: anywhere;
+}
+
+.fountain-reference-panel-line,
+.fountain-reference-panel-before {
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+}
+
+.fountain-reference-panel-scene {
+	font-family: var(--font-monospace);
+	font-size: var(--font-ui-small);
+	text-transform: uppercase;
+}
+
+.fountain-reference-panel-context {
+	user-select: text;
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
