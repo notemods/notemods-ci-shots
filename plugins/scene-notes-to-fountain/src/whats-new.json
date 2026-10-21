@@ -1,0 +1,27 @@
+{
+	"id": "scene-notes-to-fountain",
+	"name": "Scene Notes to Fountain",
+	"version": "1.1.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea."
+	],
+	"tip": "If a note has no slugline property, its file name becomes the scene heading.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Scene Notes to Fountain is one of over 100 small plugins that I make. Thank you for using it with your writing.",
+	"related": [
+		{
+			"id": "compile-loss-check",
+			"name": "Compile Loss Check",
+			"blurb": "Find source paragraphs that do not match a compiled manuscript."
+		},
+		{
+			"id": "chapter-batch-export",
+			"name": "Chapter Batch Export",
+			"blurb": "Export Longform scene groups as chapters."
+		},
+		{
+			"id": "scene-subtree-mover",
+			"name": "Scene Subtree Mover",
+			"blurb": "Move a chapter and its child scenes together in a manuscript index."
+		}
+	]
+}

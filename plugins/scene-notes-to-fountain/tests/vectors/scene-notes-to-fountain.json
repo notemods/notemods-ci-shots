@@ -1,0 +1,626 @@
+{
+ "slug": "scene-notes-to-fountain",
+ "module": "products/scene-notes-to-fountain/src/fountain.ts",
+ "function": "buildPlan",
+ "cases": [
+  {
+   "name": "Slugline and synopsis properties give a forced heading and a synopsis",
+   "function": "buildPlan",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "title": "A",
+      "frontmatter": {
+       "slugline": "INT. LAB - DAY",
+       "synopsis": "Ada finds a key."
+      },
+      "body": ""
+     }
+    ]
+   ],
+   "expected": {
+    "text": ".INT. LAB - DAY\n\n= Ada finds a key.\n",
+    "errors": []
+   }
+  },
+  {
+   "name": "No properties use the file title and the first plain paragraph",
+   "function": "buildPlan",
+   "args": [
+    [
+     {
+      "path": "Rooftop.md",
+      "title": "Rooftop",
+      "frontmatter": null,
+      "body": "Ada waits.\n"
+     }
+    ]
+   ],
+   "expected": {
+    "text": ".Rooftop\n\n= Ada waits.\n",
+    "errors": []
+   }
+  },
+  {
+   "name": "Notes keep the selected order A, C, B",
+   "function": "buildPlan",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "title": "A",
+      "frontmatter": null,
+      "body": "One."
+     },
+     {
+      "path": "C.md",
+      "title": "C",
+      "frontmatter": null,
+      "body": "Three."
+     },
+     {
+      "path": "B.md",
+      "title": "B",
+      "frontmatter": null,
+      "body": "Two."
+     }
+    ]
+   ],
+   "expected": {
+    "text": ".A\n\n= One.\n\n.C\n\n= Three.\n\n.B\n\n= Two.\n",
+    "errors": []
+   }
+  },
+  {
+   "name": "Move C above B gives A, C, B",
+   "function": "move",
+   "args": [
+    [
+     "A",
+     "B",
+     "C"
+    ],
+    2,
+    -1
+   ],
+   "expected": [
+    "A",
+    "C",
+    "B"
+   ]
+  },
+  {
+   "name": "Move down at the end changes nothing",
+   "function": "move",
+   "args": [
+    [
+     "A",
+     "B",
+     "C"
+    ],
+    2,
+    1
+   ],
+   "expected": [
+    "A",
+    "B",
+    "C"
+   ]
+  },
+  {
+   "name": "A synopsis list is a property-type error",
+   "function": "buildPlan",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "title": "A",
+      "frontmatter": {
+       "synopsis": [
+        "Ada",
+        "Bo"
+       ]
+      },
+      "body": ""
+     }
+    ]
+   ],
+   "expected": {
+    "text": null,
+    "errors": [
+     {
+      "path": "A.md",
+      "message": "The property \"synopsis\" is a list. It must be text."
+     }
+    ]
+   }
+  },
+  {
+   "name": "A number slugline is a property-type error",
+   "function": "buildPlan",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "title": "A",
+      "frontmatter": {
+       "slugline": 42
+      },
+      "body": ""
+     }
+    ]
+   ],
+   "expected": {
+    "text": null,
+    "errors": [
+     {
+      "path": "A.md",
+      "message": "The property \"slugline\" is a number. It must be text."
+     }
+    ]
+   }
+  },
+  {
+   "name": "A two-line synopsis gives two synopsis lines",
+   "function": "buildPlan",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "title": "A",
+      "frontmatter": {
+       "synopsis": "Ada runs.\nBo hides."
+      },
+      "body": ""
+     }
+    ]
+   ],
+   "expected": {
+    "text": ".A\n\n= Ada runs.\n= Bo hides.\n",
+    "errors": []
+   }
+  },
+  {
+   "name": "Blank synopsis lines are dropped",
+   "function": "buildPlan",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "title": "A",
+      "frontmatter": {
+       "synopsis": "Ada runs.\n\n  \nBo hides.\n"
+      },
+      "body": ""
+     }
+    ]
+   ],
+   "expected": {
+    "text": ".A\n\n= Ada runs.\n= Bo hides.\n",
+    "errors": []
+   }
+  },
+  {
+   "name": "A title with a line break is unsupported text",
+   "function": "buildPlan",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "title": "Two\nlines",
+      "frontmatter": null,
+      "body": "x"
+     }
+    ]
+   ],
+   "expected": {
+    "text": null,
+    "errors": [
+     {
+      "path": "A.md",
+      "message": "Unsupported text: the scene heading has a line break (file name)."
+     }
+    ]
+   }
+  },
+  {
+   "name": "A slugline with a line break is unsupported text",
+   "function": "buildPlan",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "title": "A",
+      "frontmatter": {
+       "slugline": "INT. LAB\nDAY"
+      },
+      "body": ""
+     }
+    ]
+   ],
+   "expected": {
+    "text": null,
+    "errors": [
+     {
+      "path": "A.md",
+      "message": "Unsupported text: the scene heading has a line break (property \"slugline\")."
+     }
+    ]
+   }
+  },
+  {
+   "name": "A synopsis with [[ is unsupported text",
+   "function": "buildPlan",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "title": "A",
+      "frontmatter": {
+       "synopsis": "Ada reads [[Notes"
+      },
+      "body": ""
+     }
+    ]
+   ],
+   "expected": {
+    "text": null,
+    "errors": [
+     {
+      "path": "A.md",
+      "message": "Unsupported text: the synopsis contains the Fountain delimiter [[ (property \"synopsis\")."
+     }
+    ]
+   }
+  },
+  {
+   "name": "A paragraph with ]] is unsupported text",
+   "function": "buildPlan",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "title": "A",
+      "frontmatter": null,
+      "body": "Ada reads Notes]] now."
+     }
+    ]
+   ],
+   "expected": {
+    "text": null,
+    "errors": [
+     {
+      "path": "A.md",
+      "message": "Unsupported text: the synopsis contains the Fountain delimiter ]] (first paragraph)."
+     }
+    ]
+   }
+  },
+  {
+   "name": "A slugline with /* is unsupported text",
+   "function": "buildPlan",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "title": "A",
+      "frontmatter": {
+       "slugline": "INT. LAB /* old"
+      },
+      "body": ""
+     }
+    ]
+   ],
+   "expected": {
+    "text": null,
+    "errors": [
+     {
+      "path": "A.md",
+      "message": "Unsupported text: the scene heading contains the Fountain delimiter /* (property \"slugline\")."
+     }
+    ]
+   }
+  },
+  {
+   "name": "A synopsis with */ is unsupported text",
+   "function": "buildPlan",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "title": "A",
+      "frontmatter": {
+       "synopsis": "End */ here"
+      },
+      "body": ""
+     }
+    ]
+   ],
+   "expected": {
+    "text": null,
+    "errors": [
+     {
+      "path": "A.md",
+      "message": "Unsupported text: the synopsis contains the Fountain delimiter */ (property \"synopsis\")."
+     }
+    ]
+   }
+  },
+  {
+   "name": "A heading that starts with a period is unsupported text",
+   "function": "buildPlan",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "title": "A",
+      "frontmatter": {
+       "slugline": ".INT. LAB"
+      },
+      "body": ""
+     }
+    ]
+   ],
+   "expected": {
+    "text": null,
+    "errors": [
+     {
+      "path": "A.md",
+      "message": "Unsupported text: the scene heading must start with a letter or a digit (property \"slugline\")."
+     }
+    ]
+   }
+  },
+  {
+   "name": "A heading that ends with a scene number is unsupported text",
+   "function": "buildPlan",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "title": "A",
+      "frontmatter": {
+       "slugline": "INT. LAB - DAY #1A#"
+      },
+      "body": ""
+     }
+    ]
+   ],
+   "expected": {
+    "text": null,
+    "errors": [
+     {
+      "path": "A.md",
+      "message": "Unsupported text: the scene heading ends with #...#, which Fountain reads as a scene number (property \"slugline\")."
+     }
+    ]
+   }
+  },
+  {
+   "name": "An existing output path gives a numbered new name",
+   "function": "freePath",
+   "args": [
+    "Scenes",
+    "Outline",
+    [
+     "Scenes/Outline.fountain"
+    ]
+   ],
+   "expected": "Scenes/Outline 2.fountain"
+  },
+  {
+   "name": "Two existing output paths give number 3",
+   "function": "freePath",
+   "args": [
+    "Scenes",
+    "Outline",
+    [
+     "Scenes/Outline.fountain",
+     "Scenes/Outline 2.fountain"
+    ]
+   ],
+   "expected": "Scenes/Outline 3.fountain"
+  },
+  {
+   "name": "A free output path at the vault root is kept",
+   "function": "freePath",
+   "args": [
+    "/",
+    "Draft",
+    []
+   ],
+   "expected": "Draft.fountain"
+  },
+  {
+   "name": "Zero selected notes give no text",
+   "function": "buildPlan",
+   "args": [
+    []
+   ],
+   "expected": {
+    "text": null,
+    "errors": [
+     {
+      "path": "",
+      "message": "Select one or more notes."
+     }
+    ]
+   }
+  },
+  {
+   "name": "A note changed after preview disables the old plan",
+   "function": "sourcesUnchanged",
+   "args": [
+    {
+     "A.md": "one"
+    },
+    {
+     "A.md": "two"
+    }
+   ],
+   "expected": false
+  },
+  {
+   "name": "Unchanged notes keep the plan",
+   "function": "sourcesUnchanged",
+   "args": [
+    {
+     "A.md": "one",
+     "B.md": "two"
+    },
+    {
+     "A.md": "one",
+     "B.md": "two"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "The fallback paragraph skips frontmatter, headings, lists and fenced code",
+   "function": "firstPlainParagraph",
+   "args": [
+    "---\na: 1\n---\n# Title\n- item\n1. step\n```\ncode\n```\n> quote\n\nAda waits.\n"
+   ],
+   "expected": "Ada waits."
+  },
+  {
+   "name": "The fallback paragraph joins its lines",
+   "function": "firstPlainParagraph",
+   "args": [
+    "Ada waits\nin the rain.\n\nLater."
+   ],
+   "expected": "Ada waits in the rain."
+  },
+  {
+   "name": "The fallback paragraph skips tilde fences and tables",
+   "function": "firstPlainParagraph",
+   "args": [
+    "~~~\nx\n~~~\n| a | b |\n|---|---|\n%% hidden %%\nBo runs."
+   ],
+   "expected": "Bo runs."
+  },
+  {
+   "name": "A note with only a heading has no fallback paragraph",
+   "function": "firstPlainParagraph",
+   "args": [
+    "# Only a heading\n"
+   ],
+   "expected": ""
+  },
+  {
+   "name": "A note with no synopsis gives a heading only",
+   "function": "buildPlan",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "title": "A",
+      "frontmatter": null,
+      "body": "# Heading\n"
+     }
+    ]
+   ],
+   "expected": {
+    "text": ".A\n",
+    "errors": []
+   }
+  },
+  {
+   "name": "An empty slugline falls back to the title",
+   "function": "buildPlan",
+   "args": [
+    [
+     {
+      "path": "Dock.md",
+      "title": "Dock",
+      "frontmatter": {
+       "slugline": "",
+       "synopsis": "Bo waits."
+      },
+      "body": ""
+     }
+    ]
+   ],
+   "expected": {
+    "text": ".Dock\n\n= Bo waits.\n",
+    "errors": []
+   }
+  },
+  {
+   "name": "A custom mapping reads other property names",
+   "function": "buildPlan",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "title": "A",
+      "frontmatter": {
+       "scene": "EXT. PIER - NIGHT",
+       "summary": "Fog.",
+       "slugline": "IGNORED"
+      },
+      "body": ""
+     }
+    ],
+    {
+     "slugline": "scene",
+     "synopsis": "summary"
+    }
+   ],
+   "expected": {
+    "text": ".EXT. PIER - NIGHT\n\n= Fog.\n",
+    "errors": []
+   }
+  },
+  {
+   "name": "One bad note blocks the whole plan",
+   "function": "buildPlan",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "title": "A",
+      "frontmatter": null,
+      "body": "Ok."
+     },
+     {
+      "path": "B.md",
+      "title": "B",
+      "frontmatter": {
+       "synopsis": [
+        "x"
+       ]
+      },
+      "body": ""
+     }
+    ]
+   ],
+   "expected": {
+    "text": null,
+    "errors": [
+     {
+      "path": "B.md",
+      "message": "The property \"synopsis\" is a list. It must be text."
+     }
+    ]
+   }
+  },
+  {
+   "name": "A file name loses characters that the vault refuses",
+   "function": "cleanFileName",
+   "args": [
+    "Act 1: draft?.fountain"
+   ],
+   "expected": "Act 1 draft"
+  },
+  {
+   "name": "An empty file name becomes Outline",
+   "function": "cleanFileName",
+   "args": [
+    "  "
+   ],
+   "expected": "Outline"
+  }
+ ]
+}

@@ -1,0 +1,79 @@
+[
+	{
+		"feature": "export-window",
+		"caption": "The export window lists the four Heist notes in file-name order.",
+		"note": "How to export.md",
+		"eval": "(async () => { const p = app.plugins.plugins['scene-notes-to-fountain']; window.snfModal?.close(); p.pro.signOut(); const m = p.openExport('Scene Notes to Fountain/Heist'); window.snfModal = m;  return 'ok'; })()",
+		"wait": 700,
+		"after": "window.snfModal?.close(); 'ok'",
+		"zoom": 0.75
+	},
+	{
+		"feature": "preview",
+		"caption": "The preview shows a forced scene heading and synopsis lines for each note.",
+		"note": "How to export.md",
+		"eval": "(async () => { const p = app.plugins.plugins['scene-notes-to-fountain']; window.snfModal?.close(); p.pro.signOut(); const m = p.openExport('Scene Notes to Fountain/Heist'); window.snfModal = m; await m.preview(); return 'ok'; })()",
+		"wait": 700,
+		"after": "window.snfModal?.close(); 'ok'",
+		"zoom": 0.75
+	},
+	{
+		"feature": "order",
+		"caption": "Move up puts the vault scene above the street scene in the preview.",
+		"note": "How to export.md",
+		"eval": "(async () => { const p = app.plugins.plugins['scene-notes-to-fountain']; window.snfModal?.close(); p.pro.signOut(); const m = p.openExport('Scene Notes to Fountain/Heist'); window.snfModal = m; m.moveNote(3, -1); await m.preview(); return 'ok'; })()",
+		"wait": 700,
+		"after": "window.snfModal?.close(); 'ok'",
+		"zoom": 0.75
+	},
+	{
+		"feature": "errors",
+		"caption": "A list synopsis and a [[ link stop the export with one error for each note.",
+		"note": "How to export.md",
+		"eval": "(async () => { const p = app.plugins.plugins['scene-notes-to-fountain']; window.snfModal?.close(); p.pro.signOut(); const m = p.openExport('Scene Notes to Fountain/Drafts'); window.snfModal = m; await m.preview(); return 'ok'; })()",
+		"wait": 700,
+		"after": "window.snfModal?.close(); 'ok'",
+		"zoom": 0.75
+	},
+	{
+		"feature": "settings",
+		"caption": "The settings tab shows the Pro fields and the saved note group list.",
+		"note": "How to export.md",
+		"eval": "(async () => { window.snfModal?.close(); app.plugins.plugins['scene-notes-to-fountain'].pro.signOut(); app.setting.open(); app.setting.openTabById('scene-notes-to-fountain'); return 'ok'; })()",
+		"wait": 900,
+		"after": "app.setting.close(); 'ok'",
+		"zoom": 0.75
+	},
+	{
+		"feature": "scene-notes-to-fountain",
+		"caption": "Open the export window, preview, move a scene up, preview again and save a new .fountain file.",
+		"frames": [
+			{
+				"note": "How to export.md",
+				"eval": "(async () => { const p = app.plugins.plugins['scene-notes-to-fountain']; window.snfModal?.close(); p.pro.signOut(); const m = p.openExport('Scene Notes to Fountain/Heist'); window.snfModal = m;  return 'ok'; })()",
+				"hold": 1400,
+				"zoom": 0.75
+			},
+			{
+				"eval": "(async () => { await window.snfModal.preview(); return 'ok'; })()",
+				"hold": 1800,
+				"zoom": 0.75
+			},
+			{
+				"eval": "(async () => { window.snfModal.moveNote(3, -1); return 'ok'; })()",
+				"hold": 1200,
+				"zoom": 0.75
+			},
+			{
+				"eval": "(async () => { await window.snfModal.preview(); return 'ok'; })()",
+				"hold": 1800,
+				"zoom": 0.75
+			},
+			{
+				"eval": "(async () => { const path = await window.snfModal.save(); await app.workspace.openLinkText('Scene Notes to Fountain/Heist/01 Lab.md', '', false); return path ?? 'none'; })()",
+				"hold": 1600,
+				"zoom": 0.75
+			}
+		]
+	}
+]
