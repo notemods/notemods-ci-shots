@@ -1,0 +1,33 @@
+filters:
+  and:
+    - file.inFolder("Bases Date Hierarchy/Tasks")
+views:
+  - type: bases-date-hierarchy
+    name: By month
+    dateHierarchyDate: note.date
+    order: [file.name, note.date, note.hours]
+    sort:
+      - property: file.name
+        direction: ASC
+  - type: bases-date-hierarchy
+    name: Oldest first
+    dateHierarchyDate: note.date
+    dateHierarchyNewest: false
+    order: [file.name, note.date, note.hours]
+  - type: bases-date-hierarchy
+    name: Pro weeks
+    dateHierarchyDate: note.date
+    dateHierarchyPeriod: iso-week
+    dateHierarchyNumber: note.hours
+    dateHierarchyMode: sum
+    dateHierarchyRemember: true
+    order: [file.name, note.date, note.hours]
+  - type: bases-date-hierarchy
+    name: Free weeks
+    dateHierarchyDate: note.date
+    dateHierarchyPeriod: iso-week
+    order: [file.name, note.date, note.hours]
+  - type: bases-date-hierarchy
+    name: Creation time
+    dateHierarchyDate: file.ctime
+    order: [file.name, file.ctime, file.mtime]

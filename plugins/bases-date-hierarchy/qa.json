@@ -1,0 +1,57 @@
+[
+  {
+    "feature": "calendar-levels",
+    "caption": "Year, month and day groups in date order.",
+    "note": "Projects.base",
+    "eval": "return (async () => { await app.workspace.openLinkText('Bases Date Hierarchy/Projects.base#By month', '', false); await new Promise(r => setTimeout(r, 1400)); const root = document.querySelector('.workspace-leaf.mod-active .bases-date-hierarchy'); if (!root) throw new Error('Missing date hierarchy'); [...root.querySelectorAll('button')].find(b => b.textContent === 'Expand all').click(); if (root.querySelectorAll('.bdh-row').length !== 6 || root.querySelectorAll('details').length !== 10) throw new Error('Expected six notes and ten date groups'); return 'ok'; })()",
+    "zoom": 0.8
+  },
+  {
+    "feature": "collapsed-groups",
+    "caption": "Collapsed years with counts.",
+    "note": "Projects.base",
+    "eval": "return (async () => { await app.workspace.openLinkText('Bases Date Hierarchy/Projects.base#By month', '', false); await new Promise(r => setTimeout(r, 1400)); const root = document.querySelector('.workspace-leaf.mod-active .bases-date-hierarchy'); if (!root) throw new Error('Missing date hierarchy'); [...root.querySelectorAll('button')].find(b => b.textContent === 'Collapse all').click(); if (root.querySelector(':scope > details[open]')) throw new Error('Groups did not collapse'); return 'ok'; })()"
+  },
+  {
+    "feature": "oldest-first",
+    "caption": "Oldest year first with undated notes last.",
+    "note": "Projects.base",
+    "eval": "return (async () => { await app.workspace.openLinkText('Bases Date Hierarchy/Projects.base#Oldest first', '', false); await new Promise(r => setTimeout(r, 1400)); const root = document.querySelector('.workspace-leaf.mod-active .bases-date-hierarchy'); if (!root) throw new Error('Missing date hierarchy'); if (!root.querySelector(':scope > details > summary').textContent.includes('2025')) throw new Error('Expected oldest year first'); return 'ok'; })()",
+    "zoom": 0.8
+  },
+  {
+    "feature": "iso-weeks",
+    "caption": "Example Pro ISO week ranges and sums with a test sponsorship response.",
+    "note": "Projects.base",
+    "eval": "return (async () => { const p = app.plugins.plugins['bases-date-hierarchy']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'test-example' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-date-hierarchy-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); await app.workspace.openLinkText('Bases Date Hierarchy/Projects.base#Pro weeks', '', false); await new Promise(r => setTimeout(r, 1400)); const root = document.querySelector('.workspace-leaf.mod-active .bases-date-hierarchy'); if (!root) throw new Error('Missing date hierarchy'); [...root.querySelectorAll('button')].find(b => b.textContent === 'Expand all').click(); if (!root.textContent.includes('2025-12-29 to 2026-01-04') || !root.querySelector('.bdh-summary')) throw new Error('Missing ISO week range or summary'); return 'ok'; })()",
+    "zoom": 0.8,
+    "after": "app.plugins.plugins['bases-date-hierarchy'].pro.signOut();"
+  },
+  {
+    "feature": "settings",
+    "caption": "Free core and optional Pro controls.",
+    "note": "Projects.base",
+    "eval": "app.setting.open(); app.setting.openTabById('bases-date-hierarchy');",
+    "after": "app.setting.close();"
+  },
+  {
+    "feature": "grouping",
+    "caption": "Collapse and expand the date hierarchy.",
+    "note": "Projects.base",
+    "eval": "return (async () => { await app.workspace.openLinkText('Bases Date Hierarchy/Projects.base#By month', '', false); await new Promise(r => setTimeout(r, 1400)); const root = document.querySelector('.workspace-leaf.mod-active .bases-date-hierarchy'); if (!root) throw new Error('Missing date hierarchy'); [...root.querySelectorAll('button')].find(b => b.textContent === 'Expand all').click(); if (root.querySelectorAll('.bdh-row').length !== 6 || root.querySelectorAll('details').length !== 10) throw new Error('Expected six notes and ten date groups'); return 'ok'; })()",
+    "frames": [
+      {
+        "eval": "return (async () => { await app.workspace.openLinkText('Bases Date Hierarchy/Projects.base#By month', '', false); await new Promise(r => setTimeout(r, 1400)); const root = document.querySelector('.workspace-leaf.mod-active .bases-date-hierarchy'); if (!root) throw new Error('Missing date hierarchy'); [...root.querySelectorAll('button')].find(b => b.textContent === 'Expand all').click(); if (root.querySelectorAll('.bdh-row').length !== 6 || root.querySelectorAll('details').length !== 10) throw new Error('Expected six notes and ten date groups'); return 'ok'; })()",
+        "hold": 900
+      },
+      {
+        "eval": "return (async () => { await app.workspace.openLinkText('Bases Date Hierarchy/Projects.base#By month', '', false); await new Promise(r => setTimeout(r, 1400)); const root = document.querySelector('.workspace-leaf.mod-active .bases-date-hierarchy'); if (!root) throw new Error('Missing date hierarchy'); [...root.querySelectorAll('button')].find(b => b.textContent === 'Collapse all').click(); if (root.querySelector(':scope > details[open]')) throw new Error('Groups did not collapse'); return 'ok'; })()",
+        "hold": 900
+      },
+      {
+        "eval": "return (async () => { await app.workspace.openLinkText('Bases Date Hierarchy/Projects.base#By month', '', false); await new Promise(r => setTimeout(r, 1400)); const root = document.querySelector('.workspace-leaf.mod-active .bases-date-hierarchy'); if (!root) throw new Error('Missing date hierarchy'); [...root.querySelectorAll('button')].find(b => b.textContent === 'Expand all').click(); if (root.querySelectorAll('.bdh-row').length !== 6 || root.querySelectorAll('details').length !== 10) throw new Error('Expected six notes and ten date groups'); return 'ok'; })()",
+        "hold": 900
+      }
+    ]
+  }
+]

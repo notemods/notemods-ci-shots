@@ -1,0 +1,504 @@
+{
+ "slug": "bases-date-hierarchy",
+ "module": "bases-date-hierarchy/src/group",
+ "function": "buildGroups",
+ "cases": [
+  {
+   "name": "three nested calendar levels",
+   "args": [
+    [
+     {
+      "id": "a",
+      "values": {
+       "date": "2026-01-02",
+       "hours": 4
+      }
+     }
+    ],
+    {
+     "property": "date",
+     "pro": false
+    }
+   ],
+   "expected": [
+    {
+     "key": "[\"date\",\"month\",\"2026\"]",
+     "label": "2026",
+     "property": "date",
+     "count": 1,
+     "summary": null,
+     "rows": [
+      "a"
+     ],
+     "children": [
+      {
+       "key": "[\"date\",\"month\",\"2026\",\"1\"]",
+       "label": "January",
+       "property": "date",
+       "count": 1,
+       "summary": null,
+       "rows": [
+        "a"
+       ],
+       "children": [
+        {
+         "key": "[\"date\",\"month\",\"2026\",\"1\",\"2026-01-02\"]",
+         "label": "2026-01-02",
+         "property": "date",
+         "count": 1,
+         "summary": null,
+         "rows": [
+          "a"
+         ],
+         "children": []
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "free ISO week range",
+   "args": [
+    [
+     {
+      "id": "a",
+      "values": {
+       "date": "2026-01-02",
+       "hours": 4
+      }
+     }
+    ],
+    {
+     "property": "date",
+     "pro": false,
+     "period": "iso-week"
+    }
+   ],
+   "expected": [
+    {
+     "key": "[\"date\",\"iso-week\",\"2026\"]",
+     "label": "2026",
+     "property": "date",
+     "count": 1,
+     "summary": null,
+     "rows": [
+      "a"
+     ],
+     "children": [
+      {
+       "key": "[\"date\",\"iso-week\",\"2026\",\"1\"]",
+       "label": "Week 1 · 2025-12-29 to 2026-01-04",
+       "property": "date",
+       "count": 1,
+       "summary": null,
+       "rows": [
+        "a"
+       ],
+       "children": [
+        {
+         "key": "[\"date\",\"iso-week\",\"2026\",\"1\",\"2026-01-02\"]",
+         "label": "2026-01-02",
+         "property": "date",
+         "count": 1,
+         "summary": null,
+         "rows": [
+          "a"
+         ],
+         "children": []
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "free ignores numeric summary",
+   "args": [
+    [
+     {
+      "id": "a",
+      "values": {
+       "date": "2026-01-02",
+       "hours": 4
+      }
+     }
+    ],
+    {
+     "property": "date",
+     "pro": false,
+     "summaryProperty": "hours"
+    }
+   ],
+   "expected": [
+    {
+     "key": "[\"date\",\"month\",\"2026\"]",
+     "label": "2026",
+     "property": "date",
+     "count": 1,
+     "summary": null,
+     "rows": [
+      "a"
+     ],
+     "children": [
+      {
+       "key": "[\"date\",\"month\",\"2026\",\"1\"]",
+       "label": "January",
+       "property": "date",
+       "count": 1,
+       "summary": null,
+       "rows": [
+        "a"
+       ],
+       "children": [
+        {
+         "key": "[\"date\",\"month\",\"2026\",\"1\",\"2026-01-02\"]",
+         "label": "2026-01-02",
+         "property": "date",
+         "count": 1,
+         "summary": null,
+         "rows": [
+          "a"
+         ],
+         "children": []
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "pro ISO week range",
+   "args": [
+    [
+     {
+      "id": "a",
+      "values": {
+       "date": "2026-01-02",
+       "hours": 4
+      }
+     }
+    ],
+    {
+     "property": "date",
+     "pro": true,
+     "period": "iso-week",
+     "summaryProperty": "hours",
+     "summaryMode": "sum"
+    }
+   ],
+   "expected": [
+    {
+     "key": "[\"date\",\"iso-week\",\"2026\"]",
+     "label": "2026",
+     "property": "date",
+     "count": 1,
+     "summary": 4,
+     "rows": [
+      "a"
+     ],
+     "children": [
+      {
+       "key": "[\"date\",\"iso-week\",\"2026\",\"1\"]",
+       "label": "Week 1 · 2025-12-29 to 2026-01-04",
+       "property": "date",
+       "count": 1,
+       "summary": 4,
+       "rows": [
+        "a"
+       ],
+       "children": [
+        {
+         "key": "[\"date\",\"iso-week\",\"2026\",\"1\",\"2026-01-02\"]",
+         "label": "2026-01-02",
+         "property": "date",
+         "count": 1,
+         "summary": 4,
+         "rows": [
+          "a"
+         ],
+         "children": []
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "pro sum per level",
+   "args": [
+    [
+     {
+      "id": "a",
+      "values": {
+       "date": "2026-01-02",
+       "hours": 4
+      }
+     }
+    ],
+    {
+     "property": "date",
+     "pro": true,
+     "period": "month",
+     "summaryProperty": "hours",
+     "summaryMode": "sum"
+    }
+   ],
+   "expected": [
+    {
+     "key": "[\"date\",\"month\",\"2026\"]",
+     "label": "2026",
+     "property": "date",
+     "count": 1,
+     "summary": 4,
+     "rows": [
+      "a"
+     ],
+     "children": [
+      {
+       "key": "[\"date\",\"month\",\"2026\",\"1\"]",
+       "label": "January",
+       "property": "date",
+       "count": 1,
+       "summary": 4,
+       "rows": [
+        "a"
+       ],
+       "children": [
+        {
+         "key": "[\"date\",\"month\",\"2026\",\"1\",\"2026-01-02\"]",
+         "label": "2026-01-02",
+         "property": "date",
+         "count": 1,
+         "summary": 4,
+         "rows": [
+          "a"
+         ],
+         "children": []
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "pro average per level",
+   "args": [
+    [
+     {
+      "id": "a",
+      "values": {
+       "date": "2026-01-02",
+       "hours": 4
+      }
+     }
+    ],
+    {
+     "property": "date",
+     "pro": true,
+     "period": "month",
+     "summaryProperty": "hours",
+     "summaryMode": "average"
+    }
+   ],
+   "expected": [
+    {
+     "key": "[\"date\",\"month\",\"2026\"]",
+     "label": "2026",
+     "property": "date",
+     "count": 1,
+     "summary": 4,
+     "rows": [
+      "a"
+     ],
+     "children": [
+      {
+       "key": "[\"date\",\"month\",\"2026\",\"1\"]",
+       "label": "January",
+       "property": "date",
+       "count": 1,
+       "summary": 4,
+       "rows": [
+        "a"
+       ],
+       "children": [
+        {
+         "key": "[\"date\",\"month\",\"2026\",\"1\",\"2026-01-02\"]",
+         "label": "2026-01-02",
+         "property": "date",
+         "count": 1,
+         "summary": 4,
+         "rows": [
+          "a"
+         ],
+         "children": []
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "invalid date last even newest first",
+   "args": [
+    [
+     {
+      "id": "b",
+      "values": {
+       "date": "bad"
+      }
+     },
+     {
+      "id": "a",
+      "values": {
+       "date": "2026-01-02",
+       "hours": 4
+      }
+     }
+    ],
+    {
+     "property": "date",
+     "pro": false
+    }
+   ],
+   "expected": [
+    {
+     "key": "[\"date\",\"month\",\"2026\"]",
+     "label": "2026",
+     "property": "date",
+     "count": 1,
+     "summary": null,
+     "rows": [
+      "a"
+     ],
+     "children": [
+      {
+       "key": "[\"date\",\"month\",\"2026\",\"1\"]",
+       "label": "January",
+       "property": "date",
+       "count": 1,
+       "summary": null,
+       "rows": [
+        "a"
+       ],
+       "children": [
+        {
+         "key": "[\"date\",\"month\",\"2026\",\"1\",\"2026-01-02\"]",
+         "label": "2026-01-02",
+         "property": "date",
+         "count": 1,
+         "summary": null,
+         "rows": [
+          "a"
+         ],
+         "children": []
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "key": "[\"date\",\"no-date\"]",
+     "label": "No date",
+     "property": "date",
+     "count": 1,
+     "summary": null,
+     "rows": [
+      "b"
+     ],
+     "children": []
+    }
+   ]
+  },
+  {
+   "name": "invalid date last oldest first",
+   "args": [
+    [
+     {
+      "id": "b",
+      "values": {
+       "date": "bad"
+      }
+     },
+     {
+      "id": "a",
+      "values": {
+       "date": "2026-01-02",
+       "hours": 4
+      }
+     }
+    ],
+    {
+     "property": "date",
+     "pro": false,
+     "newestFirst": false
+    }
+   ],
+   "expected": [
+    {
+     "key": "[\"date\",\"month\",\"2026\"]",
+     "label": "2026",
+     "property": "date",
+     "count": 1,
+     "summary": null,
+     "rows": [
+      "a"
+     ],
+     "children": [
+      {
+       "key": "[\"date\",\"month\",\"2026\",\"1\"]",
+       "label": "January",
+       "property": "date",
+       "count": 1,
+       "summary": null,
+       "rows": [
+        "a"
+       ],
+       "children": [
+        {
+         "key": "[\"date\",\"month\",\"2026\",\"1\",\"2026-01-02\"]",
+         "label": "2026-01-02",
+         "property": "date",
+         "count": 1,
+         "summary": null,
+         "rows": [
+          "a"
+         ],
+         "children": []
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "key": "[\"date\",\"no-date\"]",
+     "label": "No date",
+     "property": "date",
+     "count": 1,
+     "summary": null,
+     "rows": [
+      "b"
+     ],
+     "children": []
+    }
+   ]
+  },
+  {
+   "name": "empty result",
+   "args": [
+    [],
+    {
+     "property": "date",
+     "pro": false
+    }
+   ],
+   "expected": []
+  }
+ ]
+}

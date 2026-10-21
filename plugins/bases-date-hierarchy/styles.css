@@ -1,0 +1,64 @@
+.bases-date-hierarchy {
+	overflow: auto;
+	padding: var(--size-4-3);
+	color: var(--text-normal);
+}
+
+.bases-date-hierarchy .bdh-bar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--size-4-2);
+	align-items: center;
+	margin-bottom: var(--size-4-3);
+}
+
+.bases-date-hierarchy .bdh-group {
+	margin-block: var(--size-4-2);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-s);
+}
+
+.bases-date-hierarchy summary {
+	padding: var(--size-4-2);
+	background: var(--background-secondary);
+	cursor: pointer;
+}
+
+.bases-date-hierarchy summary:focus-visible {
+	outline: 2px solid var(--interactive-accent);
+}
+
+.bases-date-hierarchy .bdh-content {
+	padding-inline: var(--size-4-3) var(--size-4-2);
+}
+
+.bases-date-hierarchy .bdh-property,
+.bases-date-hierarchy .bdh-count,
+.bases-date-hierarchy .bdh-summary,
+.bases-date-hierarchy .bdh-empty {
+	color: var(--text-muted);
+}
+
+.bases-date-hierarchy .bdh-table {
+	width: 100%;
+	border-collapse: collapse;
+	table-layout: fixed;
+	font-size: var(--font-ui-small);
+}
+
+.bases-date-hierarchy td,
+.bases-date-hierarchy th {
+	padding: var(--size-4-2);
+	text-align: start;
+	border-bottom: 1px solid var(--background-modifier-border);
+	overflow-wrap: anywhere;
+}
+
+.bases-date-hierarchy .bdh-day {
+	margin: 0;
+	border: 0;
+}
+
+.bases-date-hierarchy tr[hidden] {
+	display: none;
+}
