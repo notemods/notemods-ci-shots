@@ -1,0 +1,490 @@
+{
+ "slug": "subtitle-sentence-miner",
+ "module": "products/subtitle-sentence-miner/src/cues",
+ "function": "parseSubtitles",
+ "cases": [
+  {
+   "name": "SRT greeting",
+   "function": "parseSubtitles",
+   "args": [
+    "1\n00:00:01,000 --> 00:00:03,500\nBonjour."
+   ],
+   "expected": {
+    "cues": [
+     {
+      "number": 1,
+      "identifier": "1",
+      "start": 1,
+      "end": 3.5,
+      "text": "Bonjour."
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "VTT two lines",
+   "function": "parseSubtitles",
+   "args": [
+    "WEBVTT\n\n00:01.200 --> 00:02.800\nBonjour.\nAu revoir."
+   ],
+   "expected": {
+    "cues": [
+     {
+      "number": 1,
+      "identifier": "",
+      "start": 1.2,
+      "end": 2.8,
+      "text": "Bonjour.\nAu revoir."
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "VTT layout settings",
+   "function": "parseSubtitles",
+   "args": [
+    "WEBVTT\n\n00:01.200 --> 00:02.800 position:50% line:90%\nHello."
+   ],
+   "expected": {
+    "cues": [
+     {
+      "number": 1,
+      "identifier": "",
+      "start": 1.2,
+      "end": 2.8,
+      "text": "Hello."
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "Malformed cue then valid cue",
+   "function": "parseSubtitles",
+   "args": [
+    "1\nwrong --> time\nBad\n\n2\n00:00:04,000 --> 00:00:05,000\nGood"
+   ],
+   "expected": {
+    "cues": [
+     {
+      "number": 2,
+      "identifier": "2",
+      "start": 4,
+      "end": 5,
+      "text": "Good"
+     }
+    ],
+    "warnings": [
+     "Skipped malformed cue 1."
+    ]
+   }
+  },
+  {
+   "name": "Case insensitive filter",
+   "function": "filterCues",
+   "args": [
+    [
+     {
+      "number": 1,
+      "identifier": "1",
+      "start": 1,
+      "end": 3.5,
+      "text": "Bonjour."
+     },
+     {
+      "number": 2,
+      "identifier": "2",
+      "start": 4,
+      "end": 5,
+      "text": "Au revoir."
+     }
+    ],
+    "bonjour"
+   ],
+   "expected": [
+    {
+     "number": 1,
+     "identifier": "1",
+     "start": 1,
+     "end": 3.5,
+     "text": "Bonjour."
+    }
+   ]
+  },
+  {
+   "name": "Exact world span",
+   "function": "exactCloze",
+   "args": [
+    "Hello world.",
+    6,
+    11
+   ],
+   "expected": "Hello {{c1::world}}."
+  },
+  {
+   "name": "Question and answer preview",
+   "function": "renderCards",
+   "args": [
+    [
+     {
+      "source": "Lessons/French.srt",
+      "cue": {
+       "number": 1,
+       "identifier": "1",
+       "start": 1,
+       "end": 3.5,
+       "text": "Bonjour."
+      },
+      "answer": {
+       "kind": "qa",
+       "question": "What greeting?",
+       "answer": "Bonjour"
+      }
+     }
+    ]
+   ],
+   "expected": "# Subtitle sentence cards\n\n## Card 1\n\nSource path: Lessons/French.srt\n\nCue number: 1\n\nStart: 00:00:01.000\n\nEnd: 00:00:03.500\n\nSentence: Bonjour.\n\nQuestion: What greeting?\n\nAnswer: Bonjour\n"
+  },
+  {
+   "name": "Existing output path",
+   "function": "availablePath",
+   "args": [
+    "Cards.md",
+    [
+     "Cards.md"
+    ]
+   ],
+   "expected": "Cards 2.md"
+  },
+  {
+   "name": "Cancel preview keeps source",
+   "function": "cancelPreview",
+   "args": [
+    "1\n00:00:01,000 --> 00:00:03,500\nBonjour."
+   ],
+   "expected": {
+    "created": [],
+    "source": "1\n00:00:01,000 --> 00:00:03,500\nBonjour."
+   }
+  },
+  {
+   "name": "UTF8 BOM and CRLF",
+   "function": "parseSubtitles",
+   "args": [
+    "﻿1\r\n00:00:01,000 --> 00:00:03,500\r\nBonjour.\r\n"
+   ],
+   "expected": {
+    "cues": [
+     {
+      "number": 1,
+      "identifier": "1",
+      "start": 1,
+      "end": 3.5,
+      "text": "Bonjour."
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "HTML tags are plain text",
+   "function": "parseSubtitles",
+   "args": [
+    "1\n00:00:01,000 --> 00:00:03,500\n<b>Hello</b> &amp; <i>goodbye</i>."
+   ],
+   "expected": {
+    "cues": [
+     {
+      "number": 1,
+      "identifier": "1",
+      "start": 1,
+      "end": 3.5,
+      "text": "Hello & goodbye."
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "Script text is removed",
+   "function": "parseSubtitles",
+   "args": [
+    "1\n00:00:01,000 --> 00:00:03,500\n<script>alert(1)</script>Safe."
+   ],
+   "expected": {
+    "cues": [
+     {
+      "number": 1,
+      "identifier": "1",
+      "start": 1,
+      "end": 3.5,
+      "text": "Safe."
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "Style block is skipped",
+   "function": "parseSubtitles",
+   "args": [
+    "WEBVTT\n\nSTYLE\n::cue {color: red}\n\n00:01.000 --> 00:02.000\nSafe."
+   ],
+   "expected": {
+    "cues": [
+     {
+      "number": 1,
+      "identifier": "",
+      "start": 1,
+      "end": 2,
+      "text": "Safe."
+     }
+    ],
+    "warnings": [
+     "Skipped STYLE block."
+    ]
+   }
+  },
+  {
+   "name": "Region block is skipped",
+   "function": "parseSubtitles",
+   "args": [
+    "WEBVTT\n\nREGION\nid:fred\n\n00:01.000 --> 00:02.000\nSafe."
+   ],
+   "expected": {
+    "cues": [
+     {
+      "number": 1,
+      "identifier": "",
+      "start": 1,
+      "end": 2,
+      "text": "Safe."
+     }
+    ],
+    "warnings": [
+     "Skipped REGION block."
+    ]
+   }
+  },
+  {
+   "name": "Note block is skipped",
+   "function": "parseSubtitles",
+   "args": [
+    "WEBVTT\n\nNOTE comment\nnot a cue\n\n00:01.000 --> 00:02.000\nSafe."
+   ],
+   "expected": {
+    "cues": [
+     {
+      "number": 1,
+      "identifier": "",
+      "start": 1,
+      "end": 2,
+      "text": "Safe."
+     }
+    ],
+    "warnings": [
+     "Skipped NOTE block."
+    ]
+   }
+  },
+  {
+   "name": "End precedes start",
+   "function": "parseSubtitles",
+   "args": [
+    "1\n00:00:03,000 --> 00:00:01,000\nBad"
+   ],
+   "expected": {
+    "cues": [],
+    "warnings": [
+     "Skipped malformed cue 1."
+    ]
+   }
+  },
+  {
+   "name": "Empty cue is skipped",
+   "function": "parseSubtitles",
+   "args": [
+    "1\n00:00:01,000 --> 00:00:03,000\n<i></i>"
+   ],
+   "expected": {
+    "cues": [],
+    "warnings": [
+     "Skipped malformed cue 1."
+    ]
+   }
+  },
+  {
+   "name": "VTT identifier",
+   "function": "parseSubtitles",
+   "args": [
+    "WEBVTT\n\nchapter-one\n00:01.000 --> 00:02.000\nHi."
+   ],
+   "expected": {
+    "cues": [
+     {
+      "number": 1,
+      "identifier": "chapter-one",
+      "start": 1,
+      "end": 2,
+      "text": "Hi."
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "Long hour value",
+   "function": "parseSubtitles",
+   "args": [
+    "24\n100:00:01,000 --> 100:00:03,000\nHi."
+   ],
+   "expected": {
+    "cues": [
+     {
+      "number": 24,
+      "identifier": "24",
+      "start": 360001,
+      "end": 360003,
+      "text": "Hi."
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "No filter match",
+   "function": "filterCues",
+   "args": [
+    [
+     {
+      "number": 1,
+      "identifier": "1",
+      "start": 1,
+      "end": 3.5,
+      "text": "Bonjour."
+     },
+     {
+      "number": 2,
+      "identifier": "2",
+      "start": 4,
+      "end": 5,
+      "text": "Au revoir."
+     }
+    ],
+    "absent"
+   ],
+   "expected": []
+  },
+  {
+   "name": "Repeated word exact span",
+   "function": "exactCloze",
+   "args": [
+    "go go go",
+    3,
+    5
+   ],
+   "expected": "go {{c1::go}} go"
+  },
+  {
+   "name": "Unicode exact span",
+   "function": "exactCloze",
+   "args": [
+    "Hi 世界",
+    3,
+    5
+   ],
+   "expected": "Hi {{c1::世界}}"
+  },
+  {
+   "name": "Several path collisions",
+   "function": "availablePath",
+   "args": [
+    "Cards.md",
+    [
+     "Cards.md",
+     "Cards 2.md",
+     "Cards 3.md"
+    ]
+   ],
+   "expected": "Cards 4.md"
+  },
+  {
+   "name": "Valid timestamp",
+   "function": "parseTime",
+   "args": [
+    "00:02:05,120"
+   ],
+   "expected": 125.12
+  },
+  {
+   "name": "Out of range seconds",
+   "function": "parseTime",
+   "args": [
+    "00:01:60,000"
+   ],
+   "expected": null
+  },
+  {
+   "name": "Numeric and named entities",
+   "function": "subtitleText",
+   "args": [
+    "&lt;word&gt; &#x4e16;&#30028; &nbsp;"
+   ],
+   "expected": "<word> 世界"
+  },
+  {
+   "name": "Multiline HTML break",
+   "function": "subtitleText",
+   "args": [
+    "Hello<br>world"
+   ],
+   "expected": "Hello\nworld"
+  },
+  {
+   "name": "Time format",
+   "function": "formatTime",
+   "args": [
+    125.12
+   ],
+   "expected": "00:02:05.120"
+  },
+  {
+   "name": "Custom template keeps metadata",
+   "function": "renderCards",
+   "args": [
+    [
+     {
+      "source": "Lessons/French.srt",
+      "cue": {
+       "number": 1,
+       "identifier": "1",
+       "start": 1,
+       "end": 3.5,
+       "text": "Bonjour."
+      },
+      "answer": {
+       "kind": "qa",
+       "question": "What greeting?",
+       "answer": "Bonjour"
+      }
+     }
+    ],
+    "Front: {{sentence}}\nBack: {{answer}}"
+   ],
+   "expected": "# Subtitle sentence cards\n\n## Card 1\n\nSource path: Lessons/French.srt\n\nCue number: 1\n\nStart: 00:00:01.000\n\nEnd: 00:00:03.500\n\nFront: Bonjour.\nBack: Bonjour\n"
+  },
+  {
+   "name": "Empty subtitle",
+   "function": "parseSubtitles",
+   "args": [
+    ""
+   ],
+   "expected": {
+    "cues": [],
+    "warnings": []
+   }
+  }
+ ]
+}

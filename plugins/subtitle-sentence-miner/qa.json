@@ -1,0 +1,82 @@
+[
+	{
+		"feature": "cues",
+		"caption": "The local subtitle list shows six cues and their source times.",
+		"note": "Welcome.md",
+		"eval": "(async () => {const p = app.plugins.plugins['subtitle-sentence-miner']; for (const m of [...p.miners]) m.close(); p.pro.signOut();const m = await p.openSource(app.vault.getFiles().find(f => f.path === 'Subtitle Sentence Miner/French.srt')); if (!m || m.entries.length !== 6) throw new Error('Expected six French cues');return 'ok';})()",
+		"after": "(async () => {for(const m of [...app.plugins.plugins['subtitle-sentence-miner'].miners])m.close(); app.plugins.plugins['subtitle-sentence-miner'].pro.signOut(); return 'ok';})()",
+		"wait": 500
+	},
+	{
+		"feature": "filter",
+		"caption": "The filter shows the Bonjour cue.",
+		"note": "Welcome.md",
+		"eval": "(async () => {const p = app.plugins.plugins['subtitle-sentence-miner']; for (const m of [...p.miners]) m.close(); p.pro.signOut();const m = await p.openSource(app.vault.getFiles().find(f => f.path === 'Subtitle Sentence Miner/French.srt')); if (!m || m.entries.length !== 6) throw new Error('Expected six French cues');const t=m.contentEl.querySelector('[data-ssm=filter]');t.value='BONJOUR';t.dispatchEvent(new Event('input',{bubbles:true}));m.entries[0].selected=true;m.drawList();return 'ok';})()",
+		"after": "(async () => {for(const m of [...app.plugins.plugins['subtitle-sentence-miner'].miners])m.close(); app.plugins.plugins['subtitle-sentence-miner'].pro.signOut(); return 'ok';})()",
+		"wait": 500
+	},
+	{
+		"feature": "cloze",
+		"caption": "The exact word world is selected as the hidden answer.",
+		"note": "Welcome.md",
+		"eval": "(async () => {const p = app.plugins.plugins['subtitle-sentence-miner']; for (const m of [...p.miners]) m.close(); p.pro.signOut();const m = await p.openSource(app.vault.getFiles().find(f => f.path === 'Subtitle Sentence Miner/French.srt')); if (!m || m.entries.length !== 6) throw new Error('Expected six French cues');m.contentEl.querySelectorAll('[data-ssm=edit-cue]')[1].click();const t = document.querySelector('.ssm-answer [data-ssm=span-text]'); t.focus(); t.setSelectionRange(6,11);return 'ok';})()",
+		"after": "(async () => {for(const m of [...app.plugins.plugins['subtitle-sentence-miner'].miners])m.close(); app.plugins.plugins['subtitle-sentence-miner'].pro.signOut(); return 'ok';})()",
+		"wait": 500
+	},
+	{
+		"feature": "question",
+		"caption": "The editor has a question and a separate answer.",
+		"note": "Welcome.md",
+		"eval": "(async () => {const p = app.plugins.plugins['subtitle-sentence-miner']; for (const m of [...p.miners]) m.close(); p.pro.signOut();const m = await p.openSource(app.vault.getFiles().find(f => f.path === 'Subtitle Sentence Miner/French.srt')); if (!m || m.entries.length !== 6) throw new Error('Expected six French cues');m.contentEl.querySelectorAll('[data-ssm=edit-cue]')[0].click();for(const [key,value] of [['question','What greeting starts this sentence?'],['answer','Bonjour']]) {const t=document.querySelector('.ssm-answer [data-ssm='+key+']');t.value=value;t.dispatchEvent(new Event('input',{bubbles:true}));}return 'ok';})()",
+		"after": "(async () => {for(const m of [...app.plugins.plugins['subtitle-sentence-miner'].miners])m.close(); app.plugins.plugins['subtitle-sentence-miner'].pro.signOut(); return 'ok';})()",
+		"wait": 500
+	},
+	{
+		"feature": "preview",
+		"caption": "The Markdown preview keeps the source path, cue number and both times.",
+		"note": "Welcome.md",
+		"eval": "(async () => {const p = app.plugins.plugins['subtitle-sentence-miner']; for (const m of [...p.miners]) m.close(); p.pro.signOut();const m = await p.openSource(app.vault.getFiles().find(f => f.path === 'Subtitle Sentence Miner/French.srt')); if (!m || m.entries.length !== 6) throw new Error('Expected six French cues');m.entries[1].selected=true;m.entries[1].answer={kind:'cloze',start:6,end:11};m.drawList();m.preview(); if(!document.querySelector('.ssm-markdown').textContent.includes('{{c1::world}}')) throw new Error('Missing cloze preview');return 'ok';})()",
+		"after": "(async () => {for(const m of [...app.plugins.plugins['subtitle-sentence-miner'].miners])m.close(); app.plugins.plugins['subtitle-sentence-miner'].pro.signOut(); return 'ok';})()",
+		"wait": 500
+	},
+	{
+		"feature": "templates",
+		"caption": "A saved Front and Back template is selected.",
+		"note": "Welcome.md",
+		"eval": "(async () => {const p = app.plugins.plugins['subtitle-sentence-miner']; for (const m of [...p.miners]) m.close(); p.pro.signOut();p.pro.opts.http = async () => ({status:200,json:{data:{viewer:{login:'demo-reader',totalSponsorshipAmountAsSponsorInCents:500},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('subtitle-sentence-miner-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow();await p.saveTemplate({name:'Front and Back',body:'Front: {{sentence}}\\nBack: {{answer}}'});const m = await p.openSource(app.vault.getFiles().find(f => f.path === 'Subtitle Sentence Miner/French.srt')); if (!m || m.entries.length !== 6) throw new Error('Expected six French cues');m.entries[1].selected=true;m.entries[1].answer={kind:'cloze',start:6,end:11};m.drawList();const d=m.contentEl.querySelector('[data-ssm=template]');d.value='Front and Back';d.dispatchEvent(new Event('change',{bubbles:true}));return 'ok';})()",
+		"after": "(async () => {for(const m of [...app.plugins.plugins['subtitle-sentence-miner'].miners])m.close(); app.plugins.plugins['subtitle-sentence-miner'].pro.signOut(); return 'ok';})()",
+		"wait": 500
+	},
+	{
+		"feature": "combined",
+		"caption": "Pro combines selected cues from two subtitle files.",
+		"note": "Welcome.md",
+		"eval": "(async () => {const p = app.plugins.plugins['subtitle-sentence-miner']; for (const m of [...p.miners]) m.close(); p.pro.signOut();p.pro.opts.http = async () => ({status:200,json:{data:{viewer:{login:'demo-reader',totalSponsorshipAmountAsSponsorInCents:500},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('subtitle-sentence-miner-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow();const m = await p.openSource(app.vault.getFiles().find(f => f.path === 'Subtitle Sentence Miner/French.srt')); if (!m || m.entries.length !== 6) throw new Error('Expected six French cues');await m.addSource(app.vault.getFiles().find(f=>f.path==='Subtitle Sentence Miner/Travel.vtt'));m.entries[4].selected=true;m.entries[4].answer={kind:'cloze',start:3,end:8};m.entries[7].selected=true;m.entries[7].answer={kind:'qa',question:'Which platform?',answer:'Platform two'};m.query='train';const t=m.contentEl.querySelector('[data-ssm=filter]');t.value='train';m.drawList();if(m.contentEl.querySelectorAll('.ssm-cue').length!==2 || !m.contentEl.querySelector('.ssm-cues').textContent.includes('Travel.vtt'))throw new Error('Expected cues from two sources');return 'ok';})()",
+		"after": "(async () => {for(const m of [...app.plugins.plugins['subtitle-sentence-miner'].miners])m.close(); app.plugins.plugins['subtitle-sentence-miner'].pro.signOut(); return 'ok';})()",
+		"wait": 500
+	},
+	{
+		"feature": "subtitle-sentence-miner",
+		"caption": "Read cues, select an exact span and review a new card note.",
+		"frames": [
+			{
+				"note": "Welcome.md",
+				"eval": "(async () => {const p = app.plugins.plugins['subtitle-sentence-miner']; for (const m of [...p.miners]) m.close(); p.pro.signOut();const m = await p.openSource(app.vault.getFiles().find(f => f.path === 'Subtitle Sentence Miner/French.srt')); if (!m || m.entries.length !== 6) throw new Error('Expected six French cues');return 'ok';})()",
+				"hold": 1400
+			},
+			{
+				"eval": "(async () => {const p=app.plugins.plugins['subtitle-sentence-miner'];const m=[...p.miners][0];m.contentEl.querySelectorAll('[data-ssm=edit-cue]')[1].click();const t = document.querySelector('.ssm-answer [data-ssm=span-text]'); t.focus(); t.setSelectionRange(6,11);return 'ok';})()",
+				"hold": 1600
+			},
+			{
+				"eval": "(async () => {document.querySelector('.ssm-answer [data-ssm=save-cloze]').click();const p=app.plugins.plugins['subtitle-sentence-miner'];const m=[...p.miners][0];m.preview();return 'ok';})()",
+				"hold": 2000
+			},
+			{
+				"eval": "(async () => {document.querySelector('.ssm-preview [data-ssm=cancel-export]').click();return 'ok';})()",
+				"hold": 700
+			}
+		],
+		"after": "(async () => {for(const m of [...app.plugins.plugins['subtitle-sentence-miner'].miners])m.close(); app.plugins.plugins['subtitle-sentence-miner'].pro.signOut(); return 'ok';})()"
+	}
+]

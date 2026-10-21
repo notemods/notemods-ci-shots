@@ -1,0 +1,27 @@
+{
+	"id": "subtitle-sentence-miner",
+	"name": "Subtitle Sentence Miner",
+	"version": "1.1.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea."
+	],
+	"tip": "A selected cue stays selected when the filter hides it. Clear the filter to review all your picks before you preview the note.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Subtitle Sentence Miner is one of over 100 small plugins that I make. Thank you for learning with it.",
+	"related": [
+		{
+			"id": "parallel-paragraph-reader",
+			"name": "Parallel Paragraph Reader",
+			"blurb": "Read two existing language versions in matched paragraph rows."
+		},
+		{
+			"id": "csv-glossary-lookup",
+			"name": "CSV Glossary Lookup",
+			"blurb": "Look up selected terms in a local CSV glossary and insert a meaning."
+		},
+		{
+			"id": "card-question-sheet",
+			"name": "Card Question Sheet",
+			"blurb": "Export text study cards as a PDF question sheet with a separate answer key."
+		}
+	]
+}
