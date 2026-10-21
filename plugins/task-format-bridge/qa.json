@@ -1,0 +1,64 @@
+[
+  {
+    "feature": "dataview",
+    "caption": "Preview emoji fields as Dataview fields.",
+    "note": "Release.md",
+    "commands": [
+      "task-format-bridge:preview-dataview"
+    ],
+    "wait": 500
+  },
+  {
+    "feature": "emoji",
+    "caption": "Preview Dataview fields as emoji fields.",
+    "note": "Research.md",
+    "commands": [
+      "task-format-bridge:preview-emoji"
+    ],
+    "wait": 500
+  },
+  {
+    "feature": "skipped",
+    "caption": "Skip invalid, duplicate and timed values.",
+    "note": "Review.md",
+    "commands": [
+      "task-format-bridge:preview-dataview"
+    ],
+    "wait": 500
+  },
+  {
+    "feature": "folder-report",
+    "caption": "Pro report groups migration work by note.",
+    "note": "Release.md",
+    "eval": "(async () => { const p = app.plugins.plugins['task-format-bridge']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('task-format-bridge-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); app.commands.executeCommandById('task-format-bridge:folder-report'); const input = document.querySelector('.modal input[type=text]'); input.value = 'Task Format Bridge'; input.dispatchEvent(new Event('input', { bubbles: true })); document.querySelectorAll('.modal .setting-item-control button').forEach(b => { if (b.textContent === 'Scan folder') b.click(); }); return 'Report started with local test entitlement'; })()",
+    "wait": 1000,
+    "after": "app.plugins.plugins['task-format-bridge'].pro.signOut(); 'signed out'"
+  },
+  {
+    "feature": "task-format-bridge",
+    "caption": "Inspect two target formats and skipped lines.",
+    "frames": [
+      {
+        "note": "Release.md",
+        "commands": [
+          "task-format-bridge:preview-dataview"
+        ],
+        "hold": 1600
+      },
+      {
+        "note": "Research.md",
+        "commands": [
+          "task-format-bridge:preview-emoji"
+        ],
+        "hold": 1600
+      },
+      {
+        "note": "Review.md",
+        "commands": [
+          "task-format-bridge:preview-dataview"
+        ],
+        "hold": 1600
+      }
+    ]
+  }
+]

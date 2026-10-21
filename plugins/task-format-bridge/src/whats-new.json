@@ -1,0 +1,34 @@
+{
+	"id": "task-format-bridge",
+	"name": "Task Format Bridge",
+	"version": "1.2.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Adds free task format previews and conversion.",
+		"Converts Tasks date emoji aliases and nested subtasks."
+	],
+	"changes_user": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Free preview commands convert the task dates of a note between emoji and Dataview fields.",
+		"Pro adds a folder report that lists the notes with task lines to convert."
+	],
+	"tip": "Apply makes one editor change, so one undo in the note restores the previous task text.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Task Format Bridge is one of over 100 small plugins that I make. Thank you for using it to keep your tasks in order.",
+	"related": [
+		{
+			"id": "task-field-labels",
+			"name": "Task Field Labels",
+			"blurb": "Show text labels for dates, priority, and recurrence in rendered tasks."
+		},
+		{
+			"id": "task-date-links",
+			"name": "Task Date Links",
+			"blurb": "Add a daily note link to a task when you complete it."
+		},
+		{
+			"id": "bases-task-rows",
+			"name": "Bases Task Rows",
+			"blurb": "Show each checklist task in the notes of a base as its own row, with due dates and tags."
+		}
+	]
+}

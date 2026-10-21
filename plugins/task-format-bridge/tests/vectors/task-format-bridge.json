@@ -1,0 +1,1079 @@
+{
+ "slug": "task-format-bridge",
+ "module": "products/task-format-bridge/src/convert",
+ "function": "convert",
+ "cases": [
+  {
+   "name": "start to Dataview",
+   "args": [
+    "- [ ] A 🛫 2026-10-18",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [start:: 2026-10-18]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A 🛫 2026-10-18",
+      "after": "- [ ] A [start:: 2026-10-18]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "start to emoji",
+   "args": [
+    "- [x] A (start:: 2026-10-18)",
+    "emoji"
+   ],
+   "expected": {
+    "text": "- [x] A 🛫 2026-10-18",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [x] A (start:: 2026-10-18)",
+      "after": "- [x] A 🛫 2026-10-18"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "scheduled to Dataview",
+   "args": [
+    "- [ ] A ⏳ 2026-10-18",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [scheduled:: 2026-10-18]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A ⏳ 2026-10-18",
+      "after": "- [ ] A [scheduled:: 2026-10-18]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "scheduled to emoji",
+   "args": [
+    "- [x] A (scheduled:: 2026-10-18)",
+    "emoji"
+   ],
+   "expected": {
+    "text": "- [x] A ⏳ 2026-10-18",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [x] A (scheduled:: 2026-10-18)",
+      "after": "- [x] A ⏳ 2026-10-18"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "due to Dataview",
+   "args": [
+    "- [ ] A 📅 2026-10-18",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [due:: 2026-10-18]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A 📅 2026-10-18",
+      "after": "- [ ] A [due:: 2026-10-18]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "due to emoji",
+   "args": [
+    "- [x] A (due:: 2026-10-18)",
+    "emoji"
+   ],
+   "expected": {
+    "text": "- [x] A 📅 2026-10-18",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [x] A (due:: 2026-10-18)",
+      "after": "- [x] A 📅 2026-10-18"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "created to Dataview",
+   "args": [
+    "- [ ] A ➕ 2026-10-18",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [created:: 2026-10-18]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A ➕ 2026-10-18",
+      "after": "- [ ] A [created:: 2026-10-18]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "created to emoji",
+   "args": [
+    "- [x] A (created:: 2026-10-18)",
+    "emoji"
+   ],
+   "expected": {
+    "text": "- [x] A ➕ 2026-10-18",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [x] A (created:: 2026-10-18)",
+      "after": "- [x] A ➕ 2026-10-18"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "completion to Dataview",
+   "args": [
+    "- [ ] A ✅ 2026-10-18",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [completion:: 2026-10-18]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A ✅ 2026-10-18",
+      "after": "- [ ] A [completion:: 2026-10-18]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "completion to emoji",
+   "args": [
+    "- [x] A (completion:: 2026-10-18)",
+    "emoji"
+   ],
+   "expected": {
+    "text": "- [x] A ✅ 2026-10-18",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [x] A (completion:: 2026-10-18)",
+      "after": "- [x] A ✅ 2026-10-18"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "cancelled to Dataview",
+   "args": [
+    "- [ ] A ❌ 2026-10-18",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [cancelled:: 2026-10-18]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A ❌ 2026-10-18",
+      "after": "- [ ] A [cancelled:: 2026-10-18]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "cancelled to emoji",
+   "args": [
+    "- [x] A (cancelled:: 2026-10-18)",
+    "emoji"
+   ],
+   "expected": {
+    "text": "- [x] A ❌ 2026-10-18",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [x] A (cancelled:: 2026-10-18)",
+      "after": "- [x] A ❌ 2026-10-18"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "highest priority",
+   "args": [
+    "- [ ] A 🔺",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [priority:: highest]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A 🔺",
+      "after": "- [ ] A [priority:: highest]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "highest reverse",
+   "args": [
+    "- [ ] A [priority:: highest]",
+    "emoji"
+   ],
+   "expected": {
+    "text": "- [ ] A 🔺",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A [priority:: highest]",
+      "after": "- [ ] A 🔺"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "high priority",
+   "args": [
+    "- [ ] A ⏫",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [priority:: high]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A ⏫",
+      "after": "- [ ] A [priority:: high]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "high reverse",
+   "args": [
+    "- [ ] A [priority:: high]",
+    "emoji"
+   ],
+   "expected": {
+    "text": "- [ ] A ⏫",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A [priority:: high]",
+      "after": "- [ ] A ⏫"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "medium priority",
+   "args": [
+    "- [ ] A 🔼",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [priority:: medium]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A 🔼",
+      "after": "- [ ] A [priority:: medium]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "medium reverse",
+   "args": [
+    "- [ ] A [priority:: medium]",
+    "emoji"
+   ],
+   "expected": {
+    "text": "- [ ] A 🔼",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A [priority:: medium]",
+      "after": "- [ ] A 🔼"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "low priority",
+   "args": [
+    "- [ ] A 🔽",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [priority:: low]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A 🔽",
+      "after": "- [ ] A [priority:: low]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "low reverse",
+   "args": [
+    "- [ ] A [priority:: low]",
+    "emoji"
+   ],
+   "expected": {
+    "text": "- [ ] A 🔽",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A [priority:: low]",
+      "after": "- [ ] A 🔽"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "lowest priority",
+   "args": [
+    "- [ ] A ⏬",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [priority:: lowest]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A ⏬",
+      "after": "- [ ] A [priority:: lowest]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "lowest reverse",
+   "args": [
+    "- [ ] A [priority:: lowest]",
+    "emoji"
+   ],
+   "expected": {
+    "text": "- [ ] A ⏬",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A [priority:: lowest]",
+      "after": "- [ ] A ⏬"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "repeat field",
+   "args": [
+    "- [ ] A 🔁 every 2 weeks on Monday when done",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [repeat:: every 2 weeks on Monday when done]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A 🔁 every 2 weeks on Monday when done",
+      "after": "- [ ] A [repeat:: every 2 weeks on Monday when done]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "repeat reverse field",
+   "args": [
+    "- [ ] A [repeat:: every 2 weeks on Monday when done]",
+    "emoji"
+   ],
+   "expected": {
+    "text": "- [ ] A 🔁 every 2 weeks on Monday when done",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A [repeat:: every 2 weeks on Monday when done]",
+      "after": "- [ ] A 🔁 every 2 weeks on Monday when done"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "id field",
+   "args": [
+    "- [ ] A 🆔 a23",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [id:: a23]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A 🆔 a23",
+      "after": "- [ ] A [id:: a23]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "id reverse field",
+   "args": [
+    "- [ ] A [id:: a23]",
+    "emoji"
+   ],
+   "expected": {
+    "text": "- [ ] A 🆔 a23",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A [id:: a23]",
+      "after": "- [ ] A 🆔 a23"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "dependsOn field",
+   "args": [
+    "- [ ] A ⛔ a23,b1",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [dependsOn:: a23,b1]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A ⛔ a23,b1",
+      "after": "- [ ] A [dependsOn:: a23,b1]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "dependsOn reverse field",
+   "args": [
+    "- [ ] A [dependsOn:: a23,b1]",
+    "emoji"
+   ],
+   "expected": {
+    "text": "- [ ] A ⛔ a23,b1",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A [dependsOn:: a23,b1]",
+      "after": "- [ ] A ⛔ a23,b1"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "onCompletion field",
+   "args": [
+    "- [ ] A 🏁 delete",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [onCompletion:: delete]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A 🏁 delete",
+      "after": "- [ ] A [onCompletion:: delete]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "onCompletion reverse field",
+   "args": [
+    "- [ ] A [onCompletion:: delete]",
+    "emoji"
+   ],
+   "expected": {
+    "text": "- [ ] A 🏁 delete",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A [onCompletion:: delete]",
+      "after": "- [ ] A 🏁 delete"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "multiple trailing fields",
+   "args": [
+    "- [ ] A #tag 🔺 🔁 every day 📅 2026-10-18 🆔 a1 ^anchor",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A #tag [priority:: highest] [repeat:: every day] [due:: 2026-10-18] [id:: a1] ^anchor",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A #tag 🔺 🔁 every day 📅 2026-10-18 🆔 a1 ^anchor",
+      "after": "- [ ] A #tag [priority:: highest] [repeat:: every day] [due:: 2026-10-18] [id:: a1] ^anchor"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "mixed formats with different keys",
+   "args": [
+    "- [ ] A [start:: 2026-10-17] 📅 2026-10-18",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [start:: 2026-10-17] [due:: 2026-10-18]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A [start:: 2026-10-17] 📅 2026-10-18",
+      "after": "- [ ] A [start:: 2026-10-17] [due:: 2026-10-18]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "quoted numbered task and CRLF",
+   "args": [
+    "> 1. [/] A 📅 2026-10-18\r\n  - [ ] B ⏫\r\n",
+    "dataview"
+   ],
+   "expected": {
+    "text": "> 1. [/] A [due:: 2026-10-18]\r\n  - [ ] B [priority:: high]\r\n",
+    "changes": [
+     {
+      "line": 1,
+      "before": "> 1. [/] A 📅 2026-10-18",
+      "after": "> 1. [/] A [due:: 2026-10-18]"
+     },
+     {
+      "line": 2,
+      "before": "  - [ ] B ⏫",
+      "after": "  - [ ] B [priority:: high]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "trailing whitespace",
+   "args": [
+    "- [ ] A 📅 2026-10-18  ",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [due:: 2026-10-18]  ",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A 📅 2026-10-18  ",
+      "after": "- [ ] A [due:: 2026-10-18]  "
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "unknown custom field before known suffix",
+   "args": [
+    "- [ ] A [owner:: Joe] 📅 2026-10-18",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [owner:: Joe] [due:: 2026-10-18]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A [owner:: Joe] 📅 2026-10-18",
+      "after": "- [ ] A [owner:: Joe] [due:: 2026-10-18]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "already target",
+   "args": [
+    "- [ ] A [due:: 2026-10-18]",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [due:: 2026-10-18]",
+    "changes": [],
+    "warnings": []
+   }
+  },
+  {
+   "name": "plain prose",
+   "args": [
+    "Text 📅 2026-10-18",
+    "dataview"
+   ],
+   "expected": {
+    "text": "Text 📅 2026-10-18",
+    "changes": [],
+    "warnings": []
+   }
+  },
+  {
+   "name": "frontmatter",
+   "args": [
+    "---\na: x\n- [ ] A 📅 2026-10-18\n---\n",
+    "dataview"
+   ],
+   "expected": {
+    "text": "---\na: x\n- [ ] A 📅 2026-10-18\n---\n",
+    "changes": [],
+    "warnings": []
+   }
+  },
+  {
+   "name": "backtick fence",
+   "args": [
+    "```md\n- [ ] A 📅 2026-10-18\n```\n",
+    "dataview"
+   ],
+   "expected": {
+    "text": "```md\n- [ ] A 📅 2026-10-18\n```\n",
+    "changes": [],
+    "warnings": []
+   }
+  },
+  {
+   "name": "tilde and quoted fence",
+   "args": [
+    "> ~~~md\n> - [ ] A 📅 2026-10-18\n> ~~~",
+    "dataview"
+   ],
+   "expected": {
+    "text": "> ~~~md\n> - [ ] A 📅 2026-10-18\n> ~~~",
+    "changes": [],
+    "warnings": []
+   }
+  },
+  {
+   "name": "comment block",
+   "args": [
+    "<!--\n- [ ] A 📅 2026-10-18\n-->",
+    "dataview"
+   ],
+   "expected": {
+    "text": "<!--\n- [ ] A 📅 2026-10-18\n-->",
+    "changes": [],
+    "warnings": []
+   }
+  },
+  {
+   "name": "percent comment",
+   "args": [
+    "%%\n- [ ] A 📅 2026-10-18\n%%",
+    "dataview"
+   ],
+   "expected": {
+    "text": "%%\n- [ ] A 📅 2026-10-18\n%%",
+    "changes": [],
+    "warnings": []
+   }
+  },
+  {
+   "name": "leap date valid",
+   "args": [
+    "- [ ] A 📅 2024-02-29",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [due:: 2024-02-29]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A 📅 2024-02-29",
+      "after": "- [ ] A [due:: 2024-02-29]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "invalid leap date",
+   "args": [
+    "- [ ] A 📅 2026-02-29",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A 📅 2026-02-29",
+    "changes": [],
+    "warnings": [
+     {
+      "line": 1,
+      "reason": "Invalid or unsupported due value. Line kept."
+     }
+    ]
+   }
+  },
+  {
+   "name": "duplicate date",
+   "args": [
+    "- [ ] A 📅 2026-10-18 [due:: 2026-10-19]",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A 📅 2026-10-18 [due:: 2026-10-19]",
+    "changes": [],
+    "warnings": [
+     {
+      "line": 1,
+      "reason": "Duplicate due field. Line kept."
+     }
+    ]
+   }
+  },
+  {
+   "name": "date in description",
+   "args": [
+    "- [ ] A 📅 2026-10-18 then text",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A 📅 2026-10-18 then text",
+    "changes": [],
+    "warnings": [
+     {
+      "line": 1,
+      "reason": "Field is not a supported trailing field. Line kept."
+     }
+    ]
+   }
+  },
+  {
+   "name": "inline code field",
+   "args": [
+    "- [ ] A `📅 2026-10-18`",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A `📅 2026-10-18`",
+    "changes": [],
+    "warnings": [
+     {
+      "line": 1,
+      "reason": "Field is not a supported trailing field. Line kept."
+     }
+    ]
+   }
+  },
+  {
+   "name": "field before unknown suffix",
+   "args": [
+    "- [ ] A 📅 2026-10-18 [owner:: Jo]",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A 📅 2026-10-18 [owner:: Jo]",
+    "changes": [],
+    "warnings": [
+     {
+      "line": 1,
+      "reason": "Field is not a supported trailing field. Line kept."
+     }
+    ]
+   }
+  },
+  {
+   "name": "time unsupported",
+   "args": [
+    "- [ ] A 📅 2026-10-18 12:00",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A 📅 2026-10-18 12:00",
+    "changes": [],
+    "warnings": [
+     {
+      "line": 1,
+      "reason": "Field is not a supported trailing field. Line kept."
+     }
+    ]
+   }
+  },
+  {
+   "name": "mismatched brackets",
+   "args": [
+    "- [ ] A [due:: 2026-10-18)",
+    "emoji"
+   ],
+   "expected": {
+    "text": "- [ ] A [due:: 2026-10-18)",
+    "changes": [],
+    "warnings": [
+     {
+      "line": 1,
+      "reason": "Field is not a supported trailing field. Line kept."
+     }
+    ]
+   }
+  },
+  {
+   "name": "unknown priority value",
+   "args": [
+    "- [ ] A [priority:: critical]",
+    "emoji"
+   ],
+   "expected": {
+    "text": "- [ ] A [priority:: critical]",
+    "changes": [],
+    "warnings": [
+     {
+      "line": 1,
+      "reason": "Invalid or unsupported priority value. Line kept."
+     }
+    ]
+   }
+  },
+  {
+   "name": "deeply indented code",
+   "args": [
+    "    - [ ] A 📅 2026-10-18",
+    "dataview"
+   ],
+   "expected": {
+    "text": "    - [ ] A 📅 2026-10-18",
+    "changes": [],
+    "warnings": [
+     {
+      "line": 1,
+      "reason": "Deep indentation can be code. Line kept."
+     }
+    ]
+   }
+  },
+  {
+   "name": "inherited key is not a priority",
+   "args": [
+    "- [ ] A [priority:: toString]",
+    "emoji"
+   ],
+   "expected": {
+    "text": "- [ ] A [priority:: toString]",
+    "changes": [],
+    "warnings": [
+     {
+      "line": 1,
+      "reason": "Invalid or unsupported priority value. Line kept."
+     }
+    ]
+   }
+  },
+  {
+   "name": "comment marker in code fence",
+   "args": [
+    "```md\n<!--\n```\n- [ ] A 📅 2026-10-18",
+    "dataview"
+   ],
+   "expected": {
+    "text": "```md\n<!--\n```\n- [ ] A [due:: 2026-10-18]",
+    "changes": [
+     {
+      "line": 4,
+      "before": "- [ ] A 📅 2026-10-18",
+      "after": "- [ ] A [due:: 2026-10-18]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "empty input",
+   "args": [
+    "",
+    "dataview"
+   ],
+   "expected": {
+    "text": "",
+    "changes": [],
+    "warnings": []
+   }
+  },
+  {
+   "name": "alternate due calendar",
+   "args": [
+    "- [ ] A 📆 2024-01-01",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [due:: 2024-01-01]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A 📆 2024-01-01",
+      "after": "- [ ] A [due:: 2024-01-01]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "alternate due spiral calendar",
+   "args": [
+    "- [ ] A 🗓 2024-01-01",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [due:: 2024-01-01]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A 🗓 2024-01-01",
+      "after": "- [ ] A [due:: 2024-01-01]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "alternate scheduled hourglass",
+   "args": [
+    "- [ ] A ⌛ 2024-01-01",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] A [scheduled:: 2024-01-01]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] A ⌛ 2024-01-01",
+      "after": "- [ ] A [scheduled:: 2024-01-01]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "nested tab and space tasks",
+   "args": [
+    "- [ ] Parent\n\t- [ ] Tab 📆 2024-01-01\n    - [ ] Space ⌛ 2024-01-02",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] Parent\n\t- [ ] Tab [due:: 2024-01-01]\n    - [ ] Space [scheduled:: 2024-01-02]",
+    "changes": [
+     {
+      "line": 2,
+      "before": "\t- [ ] Tab 📆 2024-01-01",
+      "after": "\t- [ ] Tab [due:: 2024-01-01]"
+     },
+     {
+      "line": 3,
+      "before": "    - [ ] Space ⌛ 2024-01-02",
+      "after": "    - [ ] Space [scheduled:: 2024-01-02]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "inline code percent marker",
+   "args": [
+    "- [ ] Use `%%` 📅 2024-01-01\n- [ ] Next 📅 2024-01-02",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] Use `%%` [due:: 2024-01-01]\n- [ ] Next [due:: 2024-01-02]",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] Use `%%` 📅 2024-01-01",
+      "after": "- [ ] Use `%%` [due:: 2024-01-01]"
+     },
+     {
+      "line": 2,
+      "before": "- [ ] Next 📅 2024-01-02",
+      "after": "- [ ] Next [due:: 2024-01-02]"
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "matched inline comment warns",
+   "args": [
+    "- [ ] Task %%hidden%% 📅 2024-01-01",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] Task %%hidden%% 📅 2024-01-01",
+    "changes": [],
+    "warnings": [
+     {
+      "line": 1,
+      "reason": "Comment on task line. Line kept."
+     }
+    ]
+   }
+  },
+  {
+   "name": "tag after task fields",
+   "args": [
+    "- [ ] Task 📅 2024-01-01 #tag ^anchor  ",
+    "dataview"
+   ],
+   "expected": {
+    "text": "- [ ] Task [due:: 2024-01-01] #tag ^anchor  ",
+    "changes": [
+     {
+      "line": 1,
+      "before": "- [ ] Task 📅 2024-01-01 #tag ^anchor  ",
+      "after": "- [ ] Task [due:: 2024-01-01] #tag ^anchor  "
+     }
+    ],
+    "warnings": []
+   }
+  }
+ ]
+}
