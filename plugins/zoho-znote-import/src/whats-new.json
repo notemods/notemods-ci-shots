@@ -1,0 +1,27 @@
+{
+	"id": "zoho-znote-import",
+	"name": "Zoho Znote Import",
+	"version": "1.1.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea."
+	],
+	"tip": "Select a ZIP with the file picker; the archive can sit outside the vault.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Zoho Znote Import is one of over 100 small plugins that I make. Thank you for moving your notes into Obsidian with it.",
+	"related": [
+		{
+			"id": "standard-notes-import",
+			"name": "Standard Notes Import",
+			"blurb": "Import decrypted Standard Notes backups with tags and dates."
+		},
+		{
+			"id": "cherrytree-import",
+			"name": "CherryTree Import",
+			"blurb": "Import unencrypted CherryTree XML, links and PNGs."
+		},
+		{
+			"id": "notestation-nsx-import",
+			"name": "Note Station NSX Import",
+			"blurb": "Import Note Station backups as notes with notebooks, dates, tags, and local attachments."
+		}
+	]
+}
