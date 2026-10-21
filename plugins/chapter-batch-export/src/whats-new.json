@@ -1,0 +1,27 @@
+{
+	"id": "chapter-batch-export",
+	"name": "Chapter Batch Export",
+	"version": "1.1.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea."
+	],
+	"tip": "Set a root chapter range such as '1-3, 5' to export only those chapters with Pro.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Chapter Batch Export is one of over 100 small plugins that I make. Thank you for using it with your writing.",
+	"related": [
+		{
+			"id": "scene-subtree-mover",
+			"name": "Scene Subtree Mover",
+			"blurb": "Move a chapter and its child scenes together in a manuscript index."
+		},
+		{
+			"id": "compile-loss-check",
+			"name": "Compile Loss Check",
+			"blurb": "Find source paragraphs that do not match a compiled manuscript."
+		},
+		{
+			"id": "note-word-comments",
+			"name": "Word Comment Export",
+			"blurb": "Export a DOCX with comments attached to the preceding word."
+		}
+	]
+}
