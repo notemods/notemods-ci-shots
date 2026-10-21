@@ -1,0 +1,79 @@
+[
+	{
+		"feature": "preview",
+		"caption": "The preview before export: the note, 4 comments, the author and the new file name.",
+		"note": "Grant proposal.md",
+		"eval": "(async () => { const P = app.plugins.plugins['note-word-comments']; P.pro.signOut(); window.__nwc?.close(); P.settings.author = 'Dana Reyes'; await P.saveSettings(); const f = app.workspace.getActiveFile(); window.__nwc = P.previewActive(f, app.workspace.activeEditor.editor.getValue()); for (let i = 0; i < 50 && !['ready', 'blocked'].includes(document.querySelector('.nwc-modal')?.dataset.state); i++) await new Promise((r) => setTimeout(r, 100)); return document.querySelector('.nwc-modal')?.dataset.state; })()",
+		"wait": 700,
+		"after": "(async () => { window.__nwc?.close(); return 'ok'; })()"
+	},
+	{
+		"feature": "exported",
+		"caption": "After export: a notice gives the new DOCX file and the comment count. The note is unchanged.",
+		"note": "Grant proposal.md",
+		"eval": "(async () => { const P = app.plugins.plugins['note-word-comments']; P.pro.signOut(); P.lastExport = null; window.__nwc?.close(); P.settings.author = 'Dana Reyes'; await P.saveSettings(); const f = app.workspace.getActiveFile(); window.__nwc = P.previewActive(f, app.workspace.activeEditor.editor.getValue()); for (let i = 0; i < 50 && !['ready', 'blocked'].includes(document.querySelector('.nwc-modal')?.dataset.state); i++) await new Promise((r) => setTimeout(r, 100)); document.querySelector('.nwc-modal .nwc-export').click(); for (let i = 0; i < 50 && P.lastExport === null; i++) await new Promise((r) => setTimeout(r, 100)); return P.lastExport; })()",
+		"wait": 500,
+		"after": "(async () => { const P = app.plugins.plugins['note-word-comments']; const f = P.lastExport && app.vault.getFileByPath(P.lastExport); if (f) await app.vault.delete(f); P.lastExport = null; return 'ok'; })()"
+	},
+	{
+		"feature": "stopped",
+		"caption": "Unsupported Markdown stops the export. The preview names each structure and its line.",
+		"note": "Field notes.md",
+		"eval": "(async () => { const P = app.plugins.plugins['note-word-comments']; P.pro.signOut(); window.__nwc?.close(); P.settings.author = 'Dana Reyes'; await P.saveSettings(); const f = app.workspace.getActiveFile(); window.__nwc = P.previewActive(f, app.workspace.activeEditor.editor.getValue()); for (let i = 0; i < 50 && !['ready', 'blocked'].includes(document.querySelector('.nwc-modal')?.dataset.state); i++) await new Promise((r) => setTimeout(r, 100)); return document.querySelector('.nwc-modal')?.dataset.state; })()",
+		"wait": 700,
+		"after": "(async () => { window.__nwc?.close(); return 'ok'; })()"
+	},
+	{
+		"feature": "settings",
+		"caption": "Settings: the author name, authors from labels (Pro) and the GitHub Sponsors sign in.",
+		"note": "Grant proposal.md",
+		"eval": "(async () => { window.__nwc?.close(); app.plugins.plugins['note-word-comments'].pro.signOut(); app.setting.open(); app.setting.openTabById('note-word-comments'); await new Promise((r) => setTimeout(r, 500)); return 'ok'; })()",
+		"wait": 700,
+		"after": "(async () => { app.setting.close(); return 'ok'; })()"
+	},
+	{
+		"feature": "labels",
+		"caption": "Pro: labels such as \"Lee:\" set the author of each comment.",
+		"note": "Review round.md",
+		"eval": "(async () => { const P = app.plugins.plugins['note-word-comments']; P.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('note-word-comments-github-token', 'gho_' + '0'.repeat(36)); await P.pro.refreshNow(); window.__nwc?.close(); P.settings.author = 'Dana Reyes'; await P.saveSettings(); const f = app.workspace.getActiveFile(); window.__nwc = P.previewActive(f, app.workspace.activeEditor.editor.getValue()); for (let i = 0; i < 50 && !['ready', 'blocked'].includes(document.querySelector('.nwc-modal')?.dataset.state); i++) await new Promise((r) => setTimeout(r, 100)); return document.querySelector('.nwc-modal')?.dataset.state; })()",
+		"wait": 700,
+		"after": "(async () => { window.__nwc?.close(); app.plugins.plugins['note-word-comments'].pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "table-image",
+		"caption": "Pro: a Markdown table and a local image go into the DOCX file.",
+		"note": "Budget table.md",
+		"eval": "(async () => { const P = app.plugins.plugins['note-word-comments']; P.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('note-word-comments-github-token', 'gho_' + '0'.repeat(36)); await P.pro.refreshNow(); window.__nwc?.close(); P.settings.author = 'Dana Reyes'; await P.saveSettings(); const f = app.workspace.getActiveFile(); window.__nwc = P.previewActive(f, app.workspace.activeEditor.editor.getValue()); for (let i = 0; i < 50 && !['ready', 'blocked'].includes(document.querySelector('.nwc-modal')?.dataset.state); i++) await new Promise((r) => setTimeout(r, 100)); return document.querySelector('.nwc-modal')?.dataset.state; })()",
+		"wait": 900,
+		"after": "(async () => { window.__nwc?.close(); app.plugins.plugins['note-word-comments'].pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "join",
+		"caption": "Pro: pick notes of a folder to join in one DOCX file.",
+		"note": "Book/01 Opening.md",
+		"eval": "(async () => { const P = app.plugins.plugins['note-word-comments']; P.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('note-word-comments-github-token', 'gho_' + '0'.repeat(36)); await P.pro.refreshNow(); window.__nwc?.close(); window.__nwc = P.pickNotes(app.workspace.getActiveFile()); await new Promise((r) => setTimeout(r, 300)); return 'ok'; })()",
+		"wait": 700,
+		"after": "(async () => { window.__nwc?.close(); app.plugins.plugins['note-word-comments'].pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "note-word-comments",
+		"caption": "Export a note with inline comments to a DOCX file.",
+		"frames": [
+			{
+				"note": "Grant proposal.md",
+				"eval": "(async () => { window.__nwc?.close(); app.plugins.plugins['note-word-comments'].pro.signOut(); return 'ok'; })()",
+				"hold": 1500
+			},
+			{
+				"note": "Grant proposal.md",
+				"eval": "(async () => { const P = app.plugins.plugins['note-word-comments'];  window.__nwc?.close(); P.settings.author = 'Dana Reyes'; await P.saveSettings(); const f = app.workspace.getActiveFile(); window.__nwc = P.previewActive(f, app.workspace.activeEditor.editor.getValue()); for (let i = 0; i < 50 && !['ready', 'blocked'].includes(document.querySelector('.nwc-modal')?.dataset.state); i++) await new Promise((r) => setTimeout(r, 100)); return document.querySelector('.nwc-modal')?.dataset.state; })()",
+				"hold": 2200
+			},
+			{
+				"note": "Grant proposal.md",
+				"eval": "(async () => { document.querySelector('.nwc-modal .nwc-export').click(); for (let i = 0; i < 50 && app.plugins.plugins['note-word-comments'].lastExport === null; i++) await new Promise((r) => setTimeout(r, 100)); return app.plugins.plugins['note-word-comments'].lastExport; })()",
+				"hold": 2500
+			}
+		]
+	}
+]
