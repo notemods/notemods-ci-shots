@@ -1,0 +1,87 @@
+[
+ {
+  "feature": "copy-row",
+  "caption": "The copy command adds an anchor inside the Oranges row.",
+  "note": "Fruit.md",
+  "eval": "(async () => { document.querySelector('.prompt-input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', keyCode: 27, bubbles: true }));app.plugins.plugins['table-row-links'].pro.signOut();const v = app.workspace.getMostRecentLeaf().view; await v.leaf.setViewState({type:'markdown',state:{file:v.file.path,mode:'source',source:true}}); v.editor.setCursor({line:8,ch:2}); await pCopy(); function pCopy() { return app.plugins.plugins['table-row-links'].copyRowLink(v.editor,v.file); } return 'ok'; })()",
+  "wait": 700
+ },
+ {
+  "feature": "reading",
+  "caption": "Reading view shows the values without the anchor comments.",
+  "note": "Fruit.md",
+  "eval": "(async () => { document.querySelector('.prompt-input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', keyCode: 27, bubbles: true }));app.plugins.plugins['table-row-links'].pro.signOut();const v = app.workspace.getMostRecentLeaf().view; await v.leaf.setViewState({type:'markdown',state:{file:v.file.path,mode:'preview'}}); return 'ok'; })()"
+ },
+ {
+  "feature": "jump",
+  "caption": "The free jump command lists marked rows of the current note.",
+  "note": "Fruit.md",
+  "eval": "(async () => { document.querySelector('.prompt-input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', keyCode: 27, bubbles: true }));app.plugins.plugins['table-row-links'].pro.signOut();const v = app.workspace.getMostRecentLeaf().view; await v.leaf.setViewState({type:'markdown',state:{file:v.file.path,mode:'source',source:true}}); return 'ok'; })()",
+  "commands": [
+   "table-row-links:jump-to-row"
+  ],
+  "after": "app.workspace.getMostRecentLeaf().view.editor.focus(); document.querySelector('.prompt-input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', keyCode: 27, bubbles: true })); 'ok'"
+ },
+ {
+  "feature": "vault-search",
+  "caption": "Pro lists marked rows from Markdown notes in the vault.",
+  "note": "Review.md",
+  "eval": "(async () => { document.querySelector('.prompt-input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', keyCode: 27, bubbles: true }));const p = app.plugins.plugins['table-row-links']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('table-row-links-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow();const v = app.workspace.getMostRecentLeaf().view; await v.leaf.setViewState({type:'markdown',state:{file:v.file.path,mode:'source',source:true}}); await p.searchVault(); return 'ok'; })()",
+  "after": "document.querySelector('.prompt-input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', keyCode: 27, bubbles: true })); app.plugins.plugins['table-row-links'].pro.signOut(); 'ok'"
+ },
+ {
+  "feature": "row-links",
+  "caption": "Pro reading links open the Apples and Pears table rows.",
+  "note": "Review.md",
+  "eval": "(async () => { document.querySelector('.prompt-input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', keyCode: 27, bubbles: true }));const p = app.plugins.plugins['table-row-links']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('table-row-links-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow();const v = app.workspace.getMostRecentLeaf().view; await v.leaf.setViewState({type:'markdown',state:{file:v.file.path,mode:'preview'}}); return 'ok'; })()",
+  "after": "app.plugins.plugins['table-row-links'].pro.signOut(); 'ok'"
+ },
+ {
+  "feature": "cleanup",
+  "caption": "Pro removes the unused anchor and keeps the linked row.",
+  "note": "Cleanup.md",
+  "eval": "(async () => { document.querySelector('.prompt-input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', keyCode: 27, bubbles: true }));const p = app.plugins.plugins['table-row-links']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('table-row-links-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow();const v = app.workspace.getMostRecentLeaf().view; await v.leaf.setViewState({type:'markdown',state:{file:v.file.path,mode:'source',source:true}}); await p.removeUnused(v.editor); return 'ok'; })()",
+  "after": "app.plugins.plugins['table-row-links'].pro.signOut(); 'ok'"
+ },
+ {
+  "feature": "settings",
+  "caption": "The context menu toggle and the GitHub Sponsors status.",
+  "eval": "(async () => { document.querySelector('.prompt-input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', keyCode: 27, bubbles: true }));app.plugins.plugins['table-row-links'].pro.signOut(); app.setting.open(); app.setting.openTabById('table-row-links'); return 'ok'; })()",
+  "after": "app.setting.close(); 'ok'"
+ },
+ {
+  "feature": "table-row-links",
+  "caption": "Copy a row link, view the table and search marked rows.",
+  "frames": [
+   {
+    "note": "Fruit.md",
+    "eval": "(async () => { document.querySelector('.prompt-input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', keyCode: 27, bubbles: true }));app.plugins.plugins['table-row-links'].pro.signOut();const v = app.workspace.getMostRecentLeaf().view; await v.leaf.setViewState({type:'markdown',state:{file:v.file.path,mode:'source',source:true}}); v.editor.setCursor({line:8,ch:2}); await app.plugins.plugins['table-row-links'].copyRowLink(v.editor,v.file); return 'ok'; })()",
+    "hold": 1800
+   },
+   {
+    "eval": "(async () => { document.querySelector('.prompt-input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', keyCode: 27, bubbles: true }));const v = app.workspace.getMostRecentLeaf().view; await v.leaf.setViewState({type:'markdown',state:{file:v.file.path,mode:'preview'}}); return 'ok'; })()",
+    "hold": 1800
+   },
+   {
+    "eval": "(async () => { document.querySelector('.prompt-input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', keyCode: 27, bubbles: true }));const v = app.workspace.getMostRecentLeaf().view; await v.leaf.setViewState({type:'markdown',state:{file:v.file.path,mode:'source',source:true}}); return 'ok'; })()",
+    "commands": [
+     "table-row-links:jump-to-row"
+    ],
+    "hold": 1800
+   },
+   {
+    "eval": "(async () => { document.querySelector('.prompt-input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', keyCode: 27, bubbles: true }));document.querySelector('.prompt-input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', keyCode: 27, bubbles: true }));const p = app.plugins.plugins['table-row-links']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('table-row-links-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); await p.searchVault(); return 'ok'; })()",
+    "hold": 1800
+   },
+   {
+    "note": "Review.md",
+    "eval": "(async () => { document.querySelector('.prompt-input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', keyCode: 27, bubbles: true }));document.querySelector('.prompt-input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', keyCode: 27, bubbles: true }));const v = app.workspace.getMostRecentLeaf().view; await v.leaf.setViewState({type:'markdown',state:{file:v.file.path,mode:'preview'}}); return 'ok'; })()",
+    "hold": 1800
+   },
+   {
+    "eval": "(async () => { document.querySelector('.prompt-input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', keyCode: 27, bubbles: true }));app.plugins.plugins['table-row-links'].pro.signOut(); return 'ok'; })()",
+    "hold": 500
+   }
+  ]
+ }
+]

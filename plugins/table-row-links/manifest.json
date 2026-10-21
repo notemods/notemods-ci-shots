@@ -1,0 +1,11 @@
+{
+	"id": "table-row-links",
+	"name": "Table Row Links",
+	"version": "1.1.0",
+	"minAppVersion": "1.13.4",
+	"description": "Copy links to marked data rows in Markdown tables and open notes at those rows.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}
