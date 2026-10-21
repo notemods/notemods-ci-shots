@@ -1,0 +1,99 @@
+[
+	{
+		"feature": "merge-tables",
+		"caption": "Twenty meeting notes, one merged table: every row of the Action items tables, with a link to the note it came from.",
+		"note": "Action items.base",
+		"eval": "(async () => { const kept = app.workspace.getMostRecentLeaf(); for (const leaf of [...app.workspace.getLeavesOfType('markdown'), ...app.workspace.getLeavesOfType('bases')]) if (leaf !== kept) leaf.detach(); app.workspace.setActiveLeaf(kept, { focus: true });  app.plugins.plugins['table-rollup'].pro.signOut(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "sort",
+		"caption": "Click a column header to sort. Numbers sort as numbers; a second click sorts the other way.",
+		"note": "Action items.base",
+		"eval": "(async () => { app.plugins.plugins['table-rollup'].pro.signOut(); await new Promise((r) => setTimeout(r, 700)); [...document.querySelectorAll('.workspace-leaf.mod-active .table-rollup th')].find((x) => x.textContent.trim() === 'Hours').click(); await new Promise((r) => setTimeout(r, 700)); [...document.querySelectorAll('.workspace-leaf.mod-active .table-rollup th')].find((x) => x.textContent.trim() === 'Hours').click(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { [...document.querySelectorAll('.workspace-leaf.mod-active .table-rollup th')].find((x) => x.textContent.trim() === 'Hours').click(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "find-rows",
+		"caption": "The find box narrows the table to the rows whose cells hold the text.",
+		"note": "Action items.base",
+		"eval": "(async () => { app.plugins.plugins['table-rollup'].pro.signOut(); await new Promise((r) => setTimeout(r, 700)); const input = document.querySelector('.workspace-leaf.mod-active .table-rollup-find-input'); input.value = 'budget'; input.dispatchEvent(new Event('input', { bubbles: true })); await new Promise((r) => setTimeout(r, 900)); return 'ok'; })()",
+		"after": "(async () => { const btn = document.querySelector('.workspace-leaf.mod-active .table-rollup-find-clear'); if (btn) btn.click(); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "embedded",
+		"caption": "The rollup embedded in a weekly review note, below the text.",
+		"note": "Weekly review.md",
+		"eval": "(async () => { app.plugins.plugins['table-rollup'].pro.signOut(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "group-subtotals",
+		"caption": "Pro: hours summed per owner with subtotals and a grand total.",
+		"note": "Views/Hours by owner.md",
+		"eval": "(async () => { app.plugins.plugins['table-rollup'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('table-rollup-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['table-rollup'].pro.refreshNow(); await new Promise((r) => setTimeout(r, 700)); await new Promise((r) => setTimeout(r, 700)); document.querySelectorAll('.workspace-leaf.mod-active .table-rollup-subtotal')[0].scrollIntoView({ block: 'center' }); await new Promise((r) => setTimeout(r, 300)); return 'ok'; })()",
+		"after": "(async () => { app.plugins.plugins['table-rollup'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "filter",
+		"caption": "Pro: only rows whose Status is not done, with the open hours summed.",
+		"note": "Views/Open items.md",
+		"eval": "(async () => { app.plugins.plugins['table-rollup'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('table-rollup-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['table-rollup'].pro.refreshNow(); await new Promise((r) => setTimeout(r, 700)); await new Promise((r) => setTimeout(r, 700)); document.querySelector('.workspace-leaf.mod-active .table-rollup-total').scrollIntoView({ block: 'end' }); await new Promise((r) => setTimeout(r, 300)); return 'ok'; })()",
+		"after": "(async () => { app.plugins.plugins['table-rollup'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "task-rollup",
+		"caption": "Pro: the task lists under Follow-ups in every note, with done state and due date.",
+		"note": "Views/Follow-up tasks.md",
+		"eval": "(async () => { app.plugins.plugins['table-rollup'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('table-rollup-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['table-rollup'].pro.refreshNow(); await new Promise((r) => setTimeout(r, 700)); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { app.plugins.plugins['table-rollup'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "export",
+		"caption": "Pro: the merged table exported to a new Markdown note, with links back to the sources and a summary row.",
+		"note": "Views/Hours by owner.md",
+		"eval": "(async () => { app.plugins.plugins['table-rollup'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('table-rollup-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['table-rollup'].pro.refreshNow(); await new Promise((r) => setTimeout(r, 700)); await new Promise((r) => setTimeout(r, 700)); const f = await app.plugins.plugins['table-rollup'].exportView(app.plugins.plugins['table-rollup'].targetView(), 'markdown'); window.__trExport = f && f.path; await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { const f = app.vault.getFileByPath(window.__trExport || ''); app.workspace.getLeaf(false).detach(); if (f) await app.vault.delete(f); app.plugins.plugins['table-rollup'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "settings",
+		"caption": "Settings after sign in: the Pro section with the GitHub account and status, and the live update delay.",
+		"eval": "(async () => { app.plugins.plugins['table-rollup'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('table-rollup-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['table-rollup'].pro.refreshNow(); app.setting.open(); app.setting.openTabById('table-rollup'); await new Promise((r) => setTimeout(r, 500)); return 'ok'; })()",
+		"after": "app.setting.close(); app.plugins.plugins['table-rollup'].pro.signOut(); 'ok'"
+	},
+	{
+		"feature": "table-rollup",
+		"caption": "Open the base, sort by Hours, then switch to the Pro view with subtotals per owner.",
+		"frames": [
+			{
+				"note": "Action items.base",
+				"eval": "(async () => { app.plugins.plugins['table-rollup'].pro.signOut(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 1800
+			},
+			{
+				"eval": "(async () => { [...document.querySelectorAll('.workspace-leaf.mod-active .table-rollup th')].find((x) => x.textContent.trim() === 'Hours').click(); await new Promise((r) => setTimeout(r, 700)); [...document.querySelectorAll('.workspace-leaf.mod-active .table-rollup th')].find((x) => x.textContent.trim() === 'Hours').click(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 1500
+			},
+			{
+				"eval": "(async () => { [...document.querySelectorAll('.workspace-leaf.mod-active .table-rollup th')].find((x) => x.textContent.trim() === 'Hours').click(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 600
+			},
+			{
+				"note": "Views/Hours by owner.md",
+				"eval": "(async () => { app.plugins.plugins['table-rollup'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('table-rollup-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['table-rollup'].pro.refreshNow(); await new Promise((r) => setTimeout(r, 700)); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 2000
+			},
+			{
+				"note": "Views/Open items.md",
+				"eval": "(async () => { await new Promise((r) => setTimeout(r, 700)); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 2000
+			}
+		]
+	}
+]
