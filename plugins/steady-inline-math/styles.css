@@ -1,0 +1,45 @@
+.steady-inline-math-panel {
+	padding: var(--size-4-4);
+}
+
+.steady-inline-math-equation {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-2);
+	padding: var(--size-4-3) 0;
+	border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.steady-inline-math-equation small {
+	color: var(--text-muted);
+}
+
+.steady-inline-math-equation code {
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+
+.steady-inline-math-note {
+	color: var(--text-muted);
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}

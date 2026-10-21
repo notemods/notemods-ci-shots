@@ -1,0 +1,67 @@
+[
+  {
+    "feature": "guard",
+    "caption": "A leading space stays inside the active math guard.",
+    "note": "Math practice.md",
+    "eval": "(async () => { const p = app.plugins.plugins['steady-inline-math']; p.settings.enabled = true; p.pro.signOut(); const leaf = app.workspace.getMostRecentLeaf(); const s = leaf.getViewState(); await leaf.setViewState({ ...s, state: { ...s.state, mode: 'source', source: false } }); const v = [...p.guard.views].find(v => p.filePath(v.state) === app.workspace.getActiveFile()?.path); if (!v) throw new Error('No editor'); p.settings.enabled = false; v.dispatch({ changes: { from: 0, to: v.state.doc.length, insert: \"# Math practice\\n\\nUse one caret in a plain paragraph. Put it just inside a dollar sign, type a space, then move it into the text.\\n\\nThe first result is $x+y$. Keep the equation active while you add a space before x.\\n\\nThe second result is $E=mc^2$. Add a space after the last term, then leave the equation.\\n\\n## Braces that I wrote\\n\\nThis source includes my empty braces: $x{}+y$. The guard must keep them when I leave.\\n\\n## After the edit\\n\\nMy text is kept when the temporary guard leaves. Undo and Redo apply to the space that I type.\\n\\nThe sample uses plain paragraphs. Headings, code and tables are outside the guard scope.\\n\" }, selection: { anchor: 0 }, annotations: [] }); p.settings.enabled = true; v.focus(); const at = v.state.doc.toString().indexOf(\"$x+y$\") + 1; if (at < 1) throw new Error('Missing equation'); v.dispatch({ selection: { anchor: at } }); const pos = v.state.selection.main.head; v.dispatch({ changes: { from: pos, insert: ' ' }, selection: { anchor: pos + 1 }, userEvent: 'input.type' }); return 'ok'; })()"
+  },
+  {
+    "feature": "owned-braces",
+    "caption": "The braces that the user wrote stay in the equation.",
+    "note": "Math practice.md",
+    "eval": "(async () => { const p = app.plugins.plugins['steady-inline-math']; p.settings.enabled = true; p.pro.signOut(); const leaf = app.workspace.getMostRecentLeaf(); const s = leaf.getViewState(); await leaf.setViewState({ ...s, state: { ...s.state, mode: 'source', source: false } }); const v = [...p.guard.views].find(v => p.filePath(v.state) === app.workspace.getActiveFile()?.path); if (!v) throw new Error('No editor'); p.settings.enabled = false; v.dispatch({ changes: { from: 0, to: v.state.doc.length, insert: \"# Math practice\\n\\nUse one caret in a plain paragraph. Put it just inside a dollar sign, type a space, then move it into the text.\\n\\nThe first result is $x+y$. Keep the equation active while you add a space before x.\\n\\nThe second result is $E=mc^2$. Add a space after the last term, then leave the equation.\\n\\n## Braces that I wrote\\n\\nThis source includes my empty braces: $x{}+y$. The guard must keep them when I leave.\\n\\n## After the edit\\n\\nMy text is kept when the temporary guard leaves. Undo and Redo apply to the space that I type.\\n\\nThe sample uses plain paragraphs. Headings, code and tables are outside the guard scope.\\n\" }, selection: { anchor: 0 }, annotations: [] }); p.settings.enabled = true; v.focus(); const at = v.state.doc.toString().indexOf(\"$x{}+y$\") + 1; if (at < 1) throw new Error('Missing equation'); v.dispatch({ selection: { anchor: at } }); return 'ok'; })()"
+  },
+  {
+    "feature": "cleanup",
+    "caption": "The caret is outside the equation after guard cleanup.",
+    "note": "Math practice.md",
+    "eval": "(async () => { const p = app.plugins.plugins['steady-inline-math']; p.settings.enabled = true; p.pro.signOut(); const leaf = app.workspace.getMostRecentLeaf(); const s = leaf.getViewState(); await leaf.setViewState({ ...s, state: { ...s.state, mode: 'source', source: false } }); const v = [...p.guard.views].find(v => p.filePath(v.state) === app.workspace.getActiveFile()?.path); if (!v) throw new Error('No editor'); p.settings.enabled = false; v.dispatch({ changes: { from: 0, to: v.state.doc.length, insert: \"# Math practice\\n\\nUse one caret in a plain paragraph. Put it just inside a dollar sign, type a space, then move it into the text.\\n\\nThe first result is $x+y$. Keep the equation active while you add a space before x.\\n\\nThe second result is $E=mc^2$. Add a space after the last term, then leave the equation.\\n\\n## Braces that I wrote\\n\\nThis source includes my empty braces: $x{}+y$. The guard must keep them when I leave.\\n\\n## After the edit\\n\\nMy text is kept when the temporary guard leaves. Undo and Redo apply to the space that I type.\\n\\nThe sample uses plain paragraphs. Headings, code and tables are outside the guard scope.\\n\" }, selection: { anchor: 0 }, annotations: [] }); p.settings.enabled = true; v.focus(); const at = v.state.doc.toString().indexOf('$x+y$') + 1; v.dispatch({ selection: { anchor: at } }); const pos = v.state.selection.main.head; v.dispatch({ changes: { from: pos, insert: ' ' }, selection: { anchor: pos + 1 }, userEvent: 'input.type' }); v.dispatch({ selection: { anchor: 0 } }); return 'ok'; })()"
+  },
+  {
+    "feature": "skip-contexts",
+    "caption": "Code, display math and a table are outside the guard scope.",
+    "note": "Skipped contexts.md",
+    "eval": "(async () => { const p = app.plugins.plugins['steady-inline-math']; p.settings.enabled = true; p.pro.signOut(); const leaf = app.workspace.getMostRecentLeaf(); const s = leaf.getViewState(); await leaf.setViewState({ ...s, state: { ...s.state, mode: 'source', source: false } }); const v = [...p.guard.views].find(v => p.filePath(v.state) === app.workspace.getActiveFile()?.path); if (!v) throw new Error('No editor'); p.settings.enabled = false; v.dispatch({ changes: { from: 0, to: v.state.doc.length, insert: \"# Skipped contexts\\n\\nThe guard leaves these contexts unchanged.\\n\\nThe cost is \\\\$5. This dollar sign is escaped.\\n\\nInline code stays code: `$x+y$`.\\n\\n```latex\\n$x+y$\\n```\\n\\n$$\\nx+y\\n$$\\n\\n| Item | Equation |\\n| --- | --- |\\n| Result | $x+y$ |\\n\\nA plain paragraph is eligible: $x+y$.\\n\" }, selection: { anchor: 0 }, annotations: [] }); p.settings.enabled = true; v.focus(); v.dispatch({ selection: { anchor: 0 } }); return 'ok'; })()"
+  },
+  {
+    "feature": "toggle",
+    "caption": "The free guard switch in the settings.",
+    "note": "Math practice.md",
+    "eval": "(async () => { const p = app.plugins.plugins['steady-inline-math']; p.pro.signOut(); app.setting.open(); app.setting.openTabById('steady-inline-math');return 'ok'; })()",
+    "after": "app.setting.close()"
+  },
+  {
+    "feature": "folder-rules",
+    "caption": "Pro rules disable Archive and enable its Study child folder.",
+    "note": "Math practice.md",
+    "eval": "(async () => { const p = app.plugins.plugins['steady-inline-math']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('steady-inline-math-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow();p.settings.folderRules = '-Archive\\n+Archive/Study'; await p.saveSettings(); app.setting.open(); app.setting.openTabById('steady-inline-math');return 'ok'; })()",
+    "after": "app.setting.close()"
+  },
+  {
+    "feature": "equation-panel",
+    "caption": "The Pro panel lists equation source and line numbers from the note.",
+    "note": "Math practice.md",
+    "eval": "(async () => { const p = app.plugins.plugins['steady-inline-math']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('steady-inline-math-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow();await p.showEquations(); return 'ok'; })()",
+    "after": "(async () => { const p = app.plugins.plugins['steady-inline-math']; p.pro.signOut(); app.workspace.detachLeavesOfType('steady-inline-math-equations'); return 'ok'; })()"
+  },
+  {
+    "feature": "steady-inline-math",
+    "caption": "Edit, add a space and leave the equation.",
+    "note": "Math practice.md",
+    "frames": [
+      {
+        "note": "Math practice.md",
+        "eval": "(async () => { const p = app.plugins.plugins['steady-inline-math']; p.settings.enabled = true; p.pro.signOut(); const leaf = app.workspace.getMostRecentLeaf(); const s = leaf.getViewState(); await leaf.setViewState({ ...s, state: { ...s.state, mode: 'source', source: false } }); const v = [...p.guard.views].find(v => p.filePath(v.state) === app.workspace.getActiveFile()?.path); if (!v) throw new Error('No editor'); p.settings.enabled = false; v.dispatch({ changes: { from: 0, to: v.state.doc.length, insert: \"# Math practice\\n\\nUse one caret in a plain paragraph. Put it just inside a dollar sign, type a space, then move it into the text.\\n\\nThe first result is $x+y$. Keep the equation active while you add a space before x.\\n\\nThe second result is $E=mc^2$. Add a space after the last term, then leave the equation.\\n\\n## Braces that I wrote\\n\\nThis source includes my empty braces: $x{}+y$. The guard must keep them when I leave.\\n\\n## After the edit\\n\\nMy text is kept when the temporary guard leaves. Undo and Redo apply to the space that I type.\\n\\nThe sample uses plain paragraphs. Headings, code and tables are outside the guard scope.\\n\" }, selection: { anchor: 0 }, annotations: [] }); p.settings.enabled = true; v.focus(); const at = v.state.doc.toString().indexOf(\"$x+y$\") + 1; if (at < 1) throw new Error('Missing equation'); v.dispatch({ selection: { anchor: at } }); return 'ok'; })()",
+        "hold": 900
+      },
+      {
+        "eval": "(async () => { const p = app.plugins.plugins['steady-inline-math']; p.settings.enabled = true; p.pro.signOut(); const leaf = app.workspace.getMostRecentLeaf(); const s = leaf.getViewState(); await leaf.setViewState({ ...s, state: { ...s.state, mode: 'source', source: false } }); const v = [...p.guard.views].find(v => p.filePath(v.state) === app.workspace.getActiveFile()?.path); if (!v) throw new Error('No editor'); p.settings.enabled = false; v.dispatch({ changes: { from: 0, to: v.state.doc.length, insert: \"# Math practice\\n\\nUse one caret in a plain paragraph. Put it just inside a dollar sign, type a space, then move it into the text.\\n\\nThe first result is $x+y$. Keep the equation active while you add a space before x.\\n\\nThe second result is $E=mc^2$. Add a space after the last term, then leave the equation.\\n\\n## Braces that I wrote\\n\\nThis source includes my empty braces: $x{}+y$. The guard must keep them when I leave.\\n\\n## After the edit\\n\\nMy text is kept when the temporary guard leaves. Undo and Redo apply to the space that I type.\\n\\nThe sample uses plain paragraphs. Headings, code and tables are outside the guard scope.\\n\" }, selection: { anchor: 0 }, annotations: [] }); p.settings.enabled = true; v.focus(); const at = v.state.doc.toString().indexOf(\"$x+y$\") + 1; if (at < 1) throw new Error('Missing equation'); v.dispatch({ selection: { anchor: at } }); const pos = v.state.selection.main.head; v.dispatch({ changes: { from: pos, insert: ' ' }, selection: { anchor: pos + 1 }, userEvent: 'input.type' }); return 'ok'; })()",
+        "hold": 1200
+      },
+      {
+        "eval": "(async () => { const p = app.plugins.plugins['steady-inline-math']; p.settings.enabled = true; p.pro.signOut(); const leaf = app.workspace.getMostRecentLeaf(); const s = leaf.getViewState(); await leaf.setViewState({ ...s, state: { ...s.state, mode: 'source', source: false } }); const v = [...p.guard.views].find(v => p.filePath(v.state) === app.workspace.getActiveFile()?.path); if (!v) throw new Error('No editor'); v.focus(); v.dispatch({ selection: { anchor: 0 } }); return 'ok'; })()",
+        "hold": 900
+      }
+    ]
+  }
+]

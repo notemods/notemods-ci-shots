@@ -1,0 +1,27 @@
+{
+	"id": "steady-inline-math",
+	"name": "Steady Inline Math",
+	"version": "1.1.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea."
+	],
+	"tip": "The Toggle inline math guard command has no default hotkey. Assign one in Settings, then Hotkeys, to switch the guard quickly.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Steady Inline Math is one of over 100 small plugins that I make. Thank you for keeping it in your editor.",
+	"related": [
+		{
+			"id": "shared-tex-preamble",
+			"name": "Shared TeX Preamble",
+			"blurb": "Load TeX commands from one vault file and use them in math notes on phones and tablets."
+		},
+		{
+			"id": "pocket-symbolic-solver",
+			"name": "Pocket Symbolic Solver",
+			"blurb": "Solve an equation for a chosen symbol and insert the result as display math."
+		},
+		{
+			"id": "pandoc-crossref-preview",
+			"name": "Pandoc Crossref Preview",
+			"blurb": "Show figure and equation reference numbers from Pandoc labels while you read a note."
+		}
+	]
+}
