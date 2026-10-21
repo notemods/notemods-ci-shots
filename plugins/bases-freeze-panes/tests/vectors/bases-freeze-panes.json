@@ -1,0 +1,622 @@
+{
+ "slug": "bases-freeze-panes",
+ "module": "bases-freeze-panes/src/layout",
+ "function": "planRow",
+ "note": "planRow args = [column widths in px, frozen columns, visible left edge, visible right edge, pinLast?] in table coordinates; expected = {frozen, end, cells:[{index,start,width,frozen}]} with frozen columns first, every column in view, and with pinLast the last column (end = its index, null when not pinned or when it is already frozen), or null for unusable widths.",
+ "cases": [
+  {
+   "name": "one frozen column after scrolling right keeps the file name column",
+   "args": [
+    [
+     252,
+     173,
+     61,
+     95,
+     107,
+     72,
+     87,
+     70
+    ],
+    1,
+    300,
+    600
+   ],
+   "expected": {
+    "frozen": 1,
+    "end": null,
+    "cells": [
+     {
+      "index": 0,
+      "start": 0,
+      "width": 252,
+      "frozen": true
+     },
+     {
+      "index": 1,
+      "start": 252,
+      "width": 173,
+      "frozen": false
+     },
+     {
+      "index": 2,
+      "start": 425,
+      "width": 61,
+      "frozen": false
+     },
+     {
+      "index": 3,
+      "start": 486,
+      "width": 95,
+      "frozen": false
+     },
+     {
+      "index": 4,
+      "start": 581,
+      "width": 107,
+      "frozen": false
+     }
+    ]
+   }
+  },
+  {
+   "name": "one frozen column at the start of the table",
+   "args": [
+    [
+     252,
+     173,
+     61,
+     95,
+     107,
+     72,
+     87,
+     70
+    ],
+    1,
+    0,
+    400
+   ],
+   "expected": {
+    "frozen": 1,
+    "end": null,
+    "cells": [
+     {
+      "index": 0,
+      "start": 0,
+      "width": 252,
+      "frozen": true
+     },
+     {
+      "index": 1,
+      "start": 252,
+      "width": 173,
+      "frozen": false
+     }
+    ]
+   }
+  },
+  {
+   "name": "zero frozen columns matches the core visible range",
+   "args": [
+    [
+     252,
+     173,
+     61,
+     95,
+     107,
+     72,
+     87,
+     70
+    ],
+    0,
+    300,
+    600
+   ],
+   "expected": {
+    "frozen": 0,
+    "end": null,
+    "cells": [
+     {
+      "index": 1,
+      "start": 252,
+      "width": 173,
+      "frozen": false
+     },
+     {
+      "index": 2,
+      "start": 425,
+      "width": 61,
+      "frozen": false
+     },
+     {
+      "index": 3,
+      "start": 486,
+      "width": 95,
+      "frozen": false
+     },
+     {
+      "index": 4,
+      "start": 581,
+      "width": 107,
+      "frozen": false
+     }
+    ]
+   }
+  },
+  {
+   "name": "two frozen columns far to the right keep both start offsets",
+   "args": [
+    [
+     252,
+     173,
+     61,
+     95,
+     107,
+     72,
+     87,
+     70
+    ],
+    2,
+    760,
+    917
+   ],
+   "expected": {
+    "frozen": 2,
+    "end": null,
+    "cells": [
+     {
+      "index": 0,
+      "start": 0,
+      "width": 252,
+      "frozen": true
+     },
+     {
+      "index": 1,
+      "start": 252,
+      "width": 173,
+      "frozen": true
+     },
+     {
+      "index": 5,
+      "start": 688,
+      "width": 72,
+      "frozen": false
+     },
+     {
+      "index": 6,
+      "start": 760,
+      "width": 87,
+      "frozen": false
+     },
+     {
+      "index": 7,
+      "start": 847,
+      "width": 70,
+      "frozen": false
+     }
+    ]
+   }
+  },
+  {
+   "name": "frozen count larger than the column count is clamped to the columns",
+   "args": [
+    [
+     100,
+     100
+    ],
+    3,
+    0,
+    50
+   ],
+   "expected": {
+    "frozen": 2,
+    "end": null,
+    "cells": [
+     {
+      "index": 0,
+      "start": 0,
+      "width": 100,
+      "frozen": true
+     },
+     {
+      "index": 1,
+      "start": 100,
+      "width": 100,
+      "frozen": true
+     }
+    ]
+   }
+  },
+  {
+   "name": "frozen count above 3 is clamped to 3",
+   "args": [
+    [
+     100,
+     100,
+     100,
+     100,
+     100
+    ],
+    5,
+    350,
+    450
+   ],
+   "expected": {
+    "frozen": 3,
+    "end": null,
+    "cells": [
+     {
+      "index": 0,
+      "start": 0,
+      "width": 100,
+      "frozen": true
+     },
+     {
+      "index": 1,
+      "start": 100,
+      "width": 100,
+      "frozen": true
+     },
+     {
+      "index": 2,
+      "start": 200,
+      "width": 100,
+      "frozen": true
+     },
+     {
+      "index": 3,
+      "start": 300,
+      "width": 100,
+      "frozen": false
+     },
+     {
+      "index": 4,
+      "start": 400,
+      "width": 100,
+      "frozen": false
+     }
+    ]
+   }
+  },
+  {
+   "name": "a frozen column that is also in view is kept once",
+   "args": [
+    [
+     100,
+     100,
+     100
+    ],
+    2,
+    0,
+    150
+   ],
+   "expected": {
+    "frozen": 2,
+    "end": null,
+    "cells": [
+     {
+      "index": 0,
+      "start": 0,
+      "width": 100,
+      "frozen": true
+     },
+     {
+      "index": 1,
+      "start": 100,
+      "width": 100,
+      "frozen": true
+     }
+    ]
+   }
+  },
+  {
+   "name": "a column that only touches the view edge stays, as in the core table",
+   "args": [
+    [
+     100,
+     100,
+     100
+    ],
+    0,
+    200,
+    250
+   ],
+   "expected": {
+    "frozen": 0,
+    "end": null,
+    "cells": [
+     {
+      "index": 1,
+      "start": 100,
+      "width": 100,
+      "frozen": false
+     },
+     {
+      "index": 2,
+      "start": 200,
+      "width": 100,
+      "frozen": false
+     }
+    ]
+   }
+  },
+  {
+   "name": "a table with no columns plans an empty row",
+   "args": [
+    [],
+    1,
+    0,
+    500
+   ],
+   "expected": {
+    "frozen": 0,
+    "end": null,
+    "cells": []
+   }
+  },
+  {
+   "name": "a negative width makes the plan null so the core code handles the row",
+   "args": [
+    [
+     100,
+     -5
+    ],
+    1,
+    0,
+    500
+   ],
+   "expected": null
+  },
+  {
+   "name": "a fractional frozen count is rounded",
+   "args": [
+    [
+     252,
+     173,
+     61,
+     95,
+     107,
+     72,
+     87,
+     70
+    ],
+    1.6,
+    900,
+    1000
+   ],
+   "expected": {
+    "frozen": 2,
+    "end": null,
+    "cells": [
+     {
+      "index": 0,
+      "start": 0,
+      "width": 252,
+      "frozen": true
+     },
+     {
+      "index": 1,
+      "start": 252,
+      "width": 173,
+      "frozen": true
+     },
+     {
+      "index": 7,
+      "start": 847,
+      "width": 70,
+      "frozen": false
+     }
+    ]
+   }
+  },
+  {
+   "name": "pin last at the start of the table keeps the last column out of view",
+   "args": [
+    [
+     252,
+     173,
+     61,
+     95,
+     107,
+     72,
+     87,
+     70
+    ],
+    1,
+    0,
+    400,
+    true
+   ],
+   "expected": {
+    "frozen": 1,
+    "end": 7,
+    "cells": [
+     {
+      "index": 0,
+      "start": 0,
+      "width": 252,
+      "frozen": true
+     },
+     {
+      "index": 1,
+      "start": 252,
+      "width": 173,
+      "frozen": false
+     },
+     {
+      "index": 7,
+      "start": 847,
+      "width": 70,
+      "frozen": false
+     }
+    ]
+   }
+  },
+  {
+   "name": "pin last when the last column is in view keeps it once",
+   "args": [
+    [
+     252,
+     173,
+     61,
+     95,
+     107,
+     72,
+     87,
+     70
+    ],
+    1,
+    760,
+    917,
+    true
+   ],
+   "expected": {
+    "frozen": 1,
+    "end": 7,
+    "cells": [
+     {
+      "index": 0,
+      "start": 0,
+      "width": 252,
+      "frozen": true
+     },
+     {
+      "index": 5,
+      "start": 688,
+      "width": 72,
+      "frozen": false
+     },
+     {
+      "index": 6,
+      "start": 760,
+      "width": 87,
+      "frozen": false
+     },
+     {
+      "index": 7,
+      "start": 847,
+      "width": 70,
+      "frozen": false
+     }
+    ]
+   }
+  },
+  {
+   "name": "pin last with every column frozen pins nothing",
+   "args": [
+    [
+     100,
+     100
+    ],
+    3,
+    0,
+    50,
+    true
+   ],
+   "expected": {
+    "frozen": 2,
+    "end": null,
+    "cells": [
+     {
+      "index": 0,
+      "start": 0,
+      "width": 100,
+      "frozen": true
+     },
+     {
+      "index": 1,
+      "start": 100,
+      "width": 100,
+      "frozen": true
+     }
+    ]
+   }
+  },
+  {
+   "name": "pin last with zero frozen columns",
+   "args": [
+    [
+     100,
+     100,
+     100
+    ],
+    0,
+    0,
+    50,
+    true
+   ],
+   "expected": {
+    "frozen": 0,
+    "end": 2,
+    "cells": [
+     {
+      "index": 0,
+      "start": 0,
+      "width": 100,
+      "frozen": false
+     },
+     {
+      "index": 2,
+      "start": 200,
+      "width": 100,
+      "frozen": false
+     }
+    ]
+   }
+  },
+  {
+   "name": "pin last off is the same as four arguments",
+   "args": [
+    [
+     252,
+     173,
+     61,
+     95,
+     107,
+     72,
+     87,
+     70
+    ],
+    1,
+    300,
+    600,
+    false
+   ],
+   "expected": {
+    "frozen": 1,
+    "end": null,
+    "cells": [
+     {
+      "index": 0,
+      "start": 0,
+      "width": 252,
+      "frozen": true
+     },
+     {
+      "index": 1,
+      "start": 252,
+      "width": 173,
+      "frozen": false
+     },
+     {
+      "index": 2,
+      "start": 425,
+      "width": 61,
+      "frozen": false
+     },
+     {
+      "index": 3,
+      "start": 486,
+      "width": 95,
+      "frozen": false
+     },
+     {
+      "index": 4,
+      "start": 581,
+      "width": 107,
+      "frozen": false
+     }
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,119 @@
+[
+	{
+		"feature": "base-file",
+		"caption": "A base file scrolled down and to the right: the header row and the file name column stay in place.",
+		"note": "Reading log.base",
+		"eval": "(async () => { await new Promise((r) => setTimeout(r, 400)); const v = [...document.querySelectorAll('.workspace-leaf.mod-active .bases-view')].find((x) => x.offsetParent); v.scrollTop = 420; v.scrollLeft = 800; await new Promise((r) => setTimeout(r, 400)); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "embedded-base",
+		"caption": "A base embedded in a note scrolls inside its own box, so its header row sticks at the top.",
+		"note": "Reading notes.md",
+		"eval": "(async () => { await new Promise((r) => setTimeout(r, 400)); const v = [...document.querySelectorAll('.workspace-leaf.mod-active .bases-view')].find((x) => x.offsetParent); const s = v.closest('.cm-scroller, .markdown-preview-view'); if (s) s.scrollTop += v.closest('.bases-embed, .block-language-base').getBoundingClientRect().top - s.getBoundingClientRect().top - 60; v.scrollTop = 380; v.scrollLeft = 600; await new Promise((r) => setTimeout(r, 400)); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "two-columns",
+		"caption": "Pro: two frozen columns keep the title and the author in view.",
+		"note": "Reading log.base",
+		"eval": "(async () => { const p = app.plugins.plugins['bases-freeze-panes']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-freeze-panes-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); app.plugins.plugins['bases-freeze-panes'].settings.columns = 2; app.plugins.plugins['bases-freeze-panes'].refresh(); await new Promise((r) => setTimeout(r, 400)); const v = [...document.querySelectorAll('.workspace-leaf.mod-active .bases-view')].find((x) => x.offsetParent); v.scrollTop = 300; v.scrollLeft = 800; await new Promise((r) => setTimeout(r, 400)); return 'ok'; })()",
+		"after": "app.plugins.plugins['bases-freeze-panes'].pro.signOut(); app.plugins.plugins['bases-freeze-panes'].settings.columns = 1; app.plugins.plugins['bases-freeze-panes'].settings.files = {}; app.plugins.plugins['bases-freeze-panes'].refresh(); 'ok'",
+		"wait": 900
+	},
+	{
+		"feature": "last-column",
+		"caption": "Pro: the last column stays at the right edge while the middle columns scroll.",
+		"note": "Reading log.base",
+		"eval": "(async () => { const p = app.plugins.plugins['bases-freeze-panes']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-freeze-panes-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); app.plugins.plugins['bases-freeze-panes'].settings.freezeLast = true; app.plugins.plugins['bases-freeze-panes'].refresh(); await new Promise((r) => setTimeout(r, 400)); const v = [...document.querySelectorAll('.workspace-leaf.mod-active .bases-view')].find((x) => x.offsetParent); v.scrollTop = 300; v.scrollLeft = 300; await new Promise((r) => setTimeout(r, 400)); return 'ok'; })()",
+		"after": "app.plugins.plugins['bases-freeze-panes'].pro.signOut(); app.plugins.plugins['bases-freeze-panes'].settings.freezeLast = false; app.plugins.plugins['bases-freeze-panes'].refresh(); 'ok'",
+		"wait": 900
+	},
+	{
+		"feature": "reading-view",
+		"caption": "A base code block in reading view, with the header row and the first column frozen.",
+		"note": "Books by country.md",
+		"eval": "(async () => { await app.workspace.activeLeaf.setViewState({ type: 'markdown', state: { file: app.workspace.getActiveFile().path, mode: 'preview' } }); await new Promise((r) => setTimeout(r, 400)); const v = [...document.querySelectorAll('.workspace-leaf.mod-active .bases-view')].find((x) => x.offsetParent); const s = v.closest('.cm-scroller, .markdown-preview-view'); if (s) s.scrollTop += v.closest('.bases-embed, .block-language-base').getBoundingClientRect().top - s.getBoundingClientRect().top - 60; v.scrollTop = 360; v.scrollLeft = 700; await new Promise((r) => setTimeout(r, 400)); return 'ok';  })()",
+		"after": "app.workspace.activeLeaf.setViewState({ type: 'markdown', state: { file: app.workspace.getActiveFile().path, mode: 'source' } }).then(() => 'ok')",
+		"wait": 1200
+	},
+	{
+		"feature": "light-theme",
+		"caption": "The frozen cells use the theme background, so they stay solid in the light theme too.",
+		"note": "Reading log.base",
+		"eval": "(async () => { app.changeTheme('moonstone'); await new Promise((r) => setTimeout(r, 400)); const v = [...document.querySelectorAll('.workspace-leaf.mod-active .bases-view')].find((x) => x.offsetParent); v.scrollTop = 420; v.scrollLeft = 800; await new Promise((r) => setTimeout(r, 400)); return 'ok'; })()",
+		"after": "app.changeTheme('system'); 'ok'",
+		"wait": 1200
+	},
+	{
+		"feature": "file-columns",
+		"caption": "Pro: Set frozen columns for the current file picks 0 to 3 columns for one base or note.",
+		"note": "Reading log.base",
+		"eval": "(async () => { const p = app.plugins.plugins['bases-freeze-panes']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-freeze-panes-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); await new Promise((r) => setTimeout(r, 400)); const v = [...document.querySelectorAll('.workspace-leaf.mod-active .bases-view')].find((x) => x.offsetParent); v.scrollTop = 0; v.scrollLeft = 0; await new Promise((r) => setTimeout(r, 400)); return 'ok'; })()",
+		"commands": [
+			"bases-freeze-panes:set-file-columns"
+		],
+		"after": "document.querySelector('.prompt-input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); app.plugins.plugins['bases-freeze-panes'].pro.signOut(); 'ok'",
+		"wait": 900
+	},
+	{
+		"feature": "settings",
+		"caption": "Settings: the Pro section before sign in, then the main switch, the header row, the frozen columns and the height of embedded tables.",
+		"eval": "(async () => { app.plugins.plugins['bases-freeze-panes'].pro.signOut(); app.setting.open(); app.setting.openTabById('bases-freeze-panes'); return 'ok'; })()",
+		"after": "app.setting.close(); 'ok'"
+	},
+	{
+		"feature": "pro-settings",
+		"caption": "The Pro section after sign in with a sponsoring account: login, tier, Refresh and Sign out.",
+		"eval": "(async () => { const p = app.plugins.plugins['bases-freeze-panes']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-freeze-panes-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); app.setting.open(); app.setting.openTabById('bases-freeze-panes'); return 'ok'; })()",
+		"after": "app.setting.close(); app.plugins.plugins['bases-freeze-panes'].pro.signOut(); 'ok'",
+		"wait": 900
+	},
+	{
+		"feature": "bases-freeze-panes",
+		"caption": "Scrolling a wide base: down first, then to the right. The header row and the file name column stay put.",
+		"frames": [
+			{
+				"note": "Reading log.base",
+				"eval": "(async () => { await new Promise((r) => setTimeout(r, 400)); const v = [...document.querySelectorAll('.workspace-leaf.mod-active .bases-view')].find((x) => x.offsetParent); v.scrollTop = 0; v.scrollLeft = 0; await new Promise((r) => setTimeout(r, 400)); return 'ok'; })()",
+				"hold": 1600
+			},
+			{
+				"eval": "(async () => { await new Promise((r) => setTimeout(r, 400)); const v = [...document.querySelectorAll('.workspace-leaf.mod-active .bases-view')].find((x) => x.offsetParent); v.scrollTop = 200; v.scrollLeft = 0; await new Promise((r) => setTimeout(r, 400)); return 'ok'; })()",
+				"hold": 1000
+			},
+			{
+				"eval": "(async () => { await new Promise((r) => setTimeout(r, 400)); const v = [...document.querySelectorAll('.workspace-leaf.mod-active .bases-view')].find((x) => x.offsetParent); v.scrollTop = 420; v.scrollLeft = 0; await new Promise((r) => setTimeout(r, 400)); return 'ok'; })()",
+				"hold": 1000
+			},
+			{
+				"eval": "(async () => { await new Promise((r) => setTimeout(r, 400)); const v = [...document.querySelectorAll('.workspace-leaf.mod-active .bases-view')].find((x) => x.offsetParent); v.scrollTop = 420; v.scrollLeft = 300; await new Promise((r) => setTimeout(r, 400)); return 'ok'; })()",
+				"hold": 1000
+			},
+			{
+				"eval": "(async () => { await new Promise((r) => setTimeout(r, 400)); const v = [...document.querySelectorAll('.workspace-leaf.mod-active .bases-view')].find((x) => x.offsetParent); v.scrollTop = 420; v.scrollLeft = 600; await new Promise((r) => setTimeout(r, 400)); return 'ok'; })()",
+				"hold": 1000
+			},
+			{
+				"eval": "(async () => { await new Promise((r) => setTimeout(r, 400)); const v = [...document.querySelectorAll('.workspace-leaf.mod-active .bases-view')].find((x) => x.offsetParent); v.scrollTop = 420; v.scrollLeft = 900; await new Promise((r) => setTimeout(r, 400)); return 'ok'; })()",
+				"hold": 2200
+			}
+		]
+	},
+	{
+		"feature": "note-tables",
+		"caption": "A rendered Markdown table keeps its header and first column in view.",
+		"note": "Project review.md",
+		"eval": "(async () => { const p = app.plugins.plugins['bases-freeze-panes']; p.settings.freezeNoteTables = true; p.settings.columns = 1; p.refresh(); await app.workspace.activeLeaf.setViewState({ type: 'markdown', state: { file: app.workspace.getActiveFile().path, mode: 'preview' } }); await new Promise(r => setTimeout(r, 700)); p.refresh(); const box = [...document.querySelectorAll('.workspace-leaf.mod-active .bfp-note-table')].find(el => el.offsetParent); if (!box) throw new Error('No note table'); const head = box.querySelector('thead th'); const before = head.getBoundingClientRect(); box.scrollTop = 240; box.scrollLeft = 300; await new Promise(r => setTimeout(r, 500)); const after = head.getBoundingClientRect(); if (box.scrollTop < 200 || box.scrollLeft < 100 || Math.abs(before.top-after.top) > 2 || Math.abs(before.left-after.left) > 2) throw new Error('Note panes did not stay in view ' + JSON.stringify({top:box.scrollTop,left:box.scrollLeft,before:[before.top,before.left],after:[after.top,after.left]})); return 'note table panes PASS'; })()",
+		"after": "app.plugins.plugins['bases-freeze-panes'].settings.freezeNoteTables = false; app.plugins.plugins['bases-freeze-panes'].refresh(); 'ok'",
+		"wait": 900
+	},
+	{
+		"feature": "pin-property",
+		"caption": "Pro keeps a chosen visible property beside the file name.",
+		"note": "Reading log.base",
+		"eval": "(async () => { const p = app.plugins.plugins['bases-freeze-panes']; p.pro.opts.http = async () => ({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('bases-freeze-panes-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow(); p.settings.columns = 1; p.settings.pinProperty = 'author'; p.refresh(); await new Promise(r=>setTimeout(r,500)); const box = [...document.querySelectorAll('.workspace-leaf.mod-active .bases-view[data-view-type=table]')].find(v=>v.offsetParent); box.scrollTop = 400; box.scrollLeft = 800; await new Promise(r=>setTimeout(r,500)); const frozen = [...box.querySelectorAll('.bases-thead .bfp-frozen')]; if (frozen.length !== 2) throw new Error('Expected two pinned header cells, got '+frozen.length); return 'property pin PASS'; })()",
+		"after": "app.plugins.plugins['bases-freeze-panes'].settings.pinProperty = ''; app.plugins.plugins['bases-freeze-panes'].pro.signOut(); app.plugins.plugins['bases-freeze-panes'].refresh(); 'ok'",
+		"wait": 800
+	}
+]
