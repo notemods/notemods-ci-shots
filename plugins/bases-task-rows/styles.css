@@ -1,0 +1,149 @@
+/* Bases Task Rows. Every rule starts with a class the view adds, so no other table changes. */
+
+.btr-view {
+	padding: var(--size-4-2) var(--size-4-3);
+	font-size: var(--font-ui-small);
+	overflow: auto;
+	height: 100%;
+}
+
+.btr-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--size-4-2);
+	margin-bottom: var(--size-4-2);
+}
+
+.btr-toolbar .btr-search {
+	flex: 1 1 200px;
+	min-width: 140px;
+}
+
+.btr-toolbar .btr-locked {
+	opacity: 0.6;
+}
+
+.btr-info {
+	color: var(--text-muted);
+	margin-bottom: var(--size-4-1);
+}
+
+.btr-pro-note {
+	color: var(--text-faint);
+}
+
+.btr-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.btr-table th {
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	text-align: start;
+	font-weight: var(--font-semibold);
+	color: var(--text-muted);
+	background-color: var(--background-primary);
+	border-bottom: var(--border-width) solid var(--background-modifier-border);
+	padding: var(--size-4-1) var(--size-4-2);
+	white-space: nowrap;
+}
+
+.btr-table td {
+	padding: var(--size-4-1) var(--size-4-2);
+	border-bottom: var(--border-width) solid var(--background-modifier-border);
+	vertical-align: top;
+}
+
+.btr-table .btr-col-done,
+.btr-table .btr-col-select,
+.btr-table .btr-col-actions {
+	width: 1px;
+	white-space: nowrap;
+}
+
+.btr-table .btr-col-due,
+.btr-table .btr-col-scheduled {
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+}
+
+.btr-table .btr-col-due.btr-overdue {
+	color: var(--text-error);
+}
+
+.btr-table .btr-col-due.btr-today {
+	color: var(--text-accent);
+	font-weight: var(--font-semibold);
+}
+
+.btr-table .btr-editable {
+	cursor: pointer;
+	min-width: 6em;
+}
+
+.btr-table .btr-editable:hover {
+	background-color: var(--background-modifier-hover);
+}
+
+.btr-table .btr-col-text {
+	min-width: 14em;
+}
+
+.btr-table .btr-col-note,
+.btr-table .btr-col-heading {
+	white-space: nowrap;
+}
+
+.btr-table .btr-text {
+	color: var(--text-normal);
+	text-decoration: none;
+}
+
+.btr-table .btr-text:hover {
+	text-decoration: underline;
+}
+
+.btr-row.is-done .btr-text {
+	color: var(--text-faint);
+	text-decoration: line-through;
+}
+
+.btr-table .btr-col-tags .tag {
+	margin-inline-end: var(--size-4-1);
+}
+
+.btr-group td {
+	padding-top: var(--size-4-3);
+	font-weight: var(--font-semibold);
+	color: var(--text-normal);
+	background-color: var(--background-secondary);
+}
+
+.btr-empty {
+	color: var(--text-muted);
+	padding: var(--size-4-4) 0;
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
