@@ -1,0 +1,632 @@
+{
+ "slug": "yaml-json-toml-converter",
+ "module": "yaml-json-toml-converter/src/convert",
+ "function": "convert",
+ "cases": [
+  {
+   "name": "YAML name and count to JSON",
+   "args": [
+    "name: Ada\ncount: 3",
+    "yaml",
+    "json"
+   ],
+   "expected": {
+    "data": {
+     "name": "Ada",
+     "count": 3
+    }
+   }
+  },
+  {
+   "name": "JSON name and count to TOML",
+   "args": [
+    "{\"name\":\"Ada\",\"count\":3}",
+    "json",
+    "toml"
+   ],
+   "expected": {
+    "data": {
+     "name": "Ada",
+     "count": 3
+    }
+   }
+  },
+  {
+   "name": "TOML table to JSON",
+   "args": [
+    "[person]\nname = \"Ada\"",
+    "toml",
+    "json"
+   ],
+   "expected": {
+    "data": {
+     "person": {
+      "name": "Ada"
+     }
+    }
+   }
+  },
+  {
+   "name": "YAML Boolean array to TOML",
+   "args": [
+    "flags: [true, false]",
+    "yaml",
+    "toml"
+   ],
+   "expected": {
+    "data": {
+     "flags": [
+      true,
+      false
+     ]
+    }
+   }
+  },
+  {
+   "name": "TOML rejects object null at path",
+   "args": [
+    "{\"a\":null}",
+    "json",
+    "toml"
+   ],
+   "expected": {
+    "error": "$[\"a\"]: TOML cannot represent null."
+   }
+  },
+  {
+   "name": "TOML rejects array null at path",
+   "args": [
+    "{\"a\":[1,null]}",
+    "json",
+    "toml"
+   ],
+   "expected": {
+    "error": "$[\"a\"][1]: TOML cannot represent null."
+   }
+  },
+  {
+   "name": "Duplicate YAML key",
+   "args": [
+    "name: Ada\nname: Bea",
+    "yaml",
+    "json"
+   ],
+   "expected": {
+    "error": "Map keys must be unique"
+   }
+  },
+  {
+   "name": "Malformed YAML indentation",
+   "args": [
+    "a:\n  b: 1\n c: 2",
+    "yaml",
+    "json"
+   ],
+   "expected": {
+    "error": "All mapping items must start at the same column"
+   }
+  },
+  {
+   "name": "Custom YAML tag",
+   "args": [
+    "a: !custom Ada",
+    "yaml",
+    "json"
+   ],
+   "expected": {
+    "error": "Unresolved tag"
+   }
+  },
+  {
+   "name": "Cyclic YAML alias",
+   "args": [
+    "a: &cycle [*cycle]",
+    "yaml",
+    "json"
+   ],
+   "expected": {
+    "error": "Cyclic aliases"
+   }
+  },
+  {
+   "name": "Unsafe YAML integer",
+   "args": [
+    "a: 9007199254740993",
+    "yaml",
+    "json"
+   ],
+   "expected": {
+    "error": "safe conversion range"
+   }
+  },
+  {
+   "name": "Unsafe JSON integer",
+   "args": [
+    "{\"a\":9007199254740993}",
+    "json",
+    "yaml"
+   ],
+   "expected": {
+    "error": "safe conversion range"
+   }
+  },
+  {
+   "name": "Unsafe TOML integer",
+   "args": [
+    "a = 9007199254740993",
+    "toml",
+    "json"
+   ],
+   "expected": {
+    "error": "cannot be represented losslessly"
+   }
+  },
+  {
+   "name": "YAML infinity",
+   "args": [
+    "a: .inf",
+    "yaml",
+    "json"
+   ],
+   "expected": {
+    "error": "safe conversion range"
+   }
+  },
+  {
+   "name": "YAML NaN",
+   "args": [
+    "a: .nan",
+    "yaml",
+    "json"
+   ],
+   "expected": {
+    "error": "safe conversion range"
+   }
+  },
+  {
+   "name": "TOML date",
+   "args": [
+    "day = 2026-10-12",
+    "toml",
+    "json"
+   ],
+   "expected": {
+    "error": "Dates and non-plain objects"
+   }
+  },
+  {
+   "name": "YAML timestamp tag",
+   "args": [
+    "day: !!timestamp 2026-10-12",
+    "yaml",
+    "json"
+   ],
+   "expected": {
+    "error": "Unsupported YAML tag"
+   }
+  },
+  {
+   "name": "JSON duplicate key",
+   "args": [
+    "{\"a\":1,\"a\":2}",
+    "json",
+    "toml"
+   ],
+   "expected": {
+    "error": "Map keys must be unique"
+   }
+  },
+  {
+   "name": "JSON malformed syntax",
+   "args": [
+    "{\"a\":}",
+    "json",
+    "yaml"
+   ],
+   "expected": {
+    "error": "Unexpected token"
+   }
+  },
+  {
+   "name": "TOML malformed syntax",
+   "args": [
+    "a = [1,",
+    "toml",
+    "json"
+   ],
+   "expected": {
+    "error": "unfinished array"
+   }
+  },
+  {
+   "name": "TOML rejects root array",
+   "args": [
+    "[1,2]",
+    "json",
+    "toml"
+   ],
+   "expected": {
+    "error": "TOML requires an object"
+   }
+  },
+  {
+   "name": "TOML rejects root scalar",
+   "args": [
+    "true",
+    "json",
+    "toml"
+   ],
+   "expected": {
+    "error": "TOML requires an object"
+   }
+  },
+  {
+   "name": "Negative zero",
+   "args": [
+    "{\"n\":-0}",
+    "json",
+    "yaml"
+   ],
+   "expected": {
+    "error": "Negative zero"
+   }
+  },
+  {
+   "name": "JSON underflow",
+   "args": [
+    "{\"n\":1e-999}",
+    "json",
+    "yaml"
+   ],
+   "expected": {
+    "error": "underflows"
+   }
+  },
+  {
+   "name": "YAML numeric mapping key",
+   "args": [
+    "1: value",
+    "yaml",
+    "json"
+   ],
+   "expected": {
+    "error": "mapping keys must be strings"
+   }
+  },
+  {
+   "name": "YAML comment warning",
+   "args": [
+    "name: Ada # comment",
+    "yaml",
+    "json"
+   ],
+   "expected": {
+    "data": {
+     "name": "Ada"
+    }
+   }
+  },
+  {
+   "name": "Multiline YAML string",
+   "args": [
+    "text: |\n  first\n  second\n",
+    "yaml",
+    "json"
+   ],
+   "expected": {
+    "data": {
+     "text": "first\nsecond\n"
+    }
+   }
+  },
+  {
+   "name": "JSON quoted key",
+   "args": [
+    "{\"a.b\":\"Ada\",\"quote\":\"say \\\"hi\\\"\"}",
+    "json",
+    "toml"
+   ],
+   "expected": {
+    "data": {
+     "a.b": "Ada",
+     "quote": "say \"hi\""
+    }
+   }
+  },
+  {
+   "name": "TOML empty nested table",
+   "args": [
+    "[person]",
+    "toml",
+    "yaml"
+   ],
+   "expected": {
+    "data": {
+     "person": {}
+    }
+   }
+  },
+  {
+   "name": "JSON empty object to TOML",
+   "args": [
+    "{}",
+    "json",
+    "toml"
+   ],
+   "expected": {
+    "data": {}
+   }
+  },
+  {
+   "name": "JSON nested objects to TOML",
+   "args": [
+    "{\"person\":{\"name\":\"Ada\"},\"teams\":[{\"name\":\"A\"},{\"name\":\"B\"}]}",
+    "json",
+    "toml"
+   ],
+   "expected": {
+    "data": {
+     "person": {
+      "name": "Ada"
+     },
+     "teams": [
+      {
+       "name": "A"
+      },
+      {
+       "name": "B"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "Safe integer boundary",
+   "args": [
+    "{\"n\":9007199254740991}",
+    "json",
+    "toml"
+   ],
+   "expected": {
+    "data": {
+     "n": 9007199254740991
+    }
+   }
+  },
+  {
+   "name": "Unicode strings",
+   "args": [
+    "name: \"Áda 東京\"",
+    "yaml",
+    "toml"
+   ],
+   "expected": {
+    "data": {
+     "name": "Áda 東京"
+    }
+   }
+  },
+  {
+   "name": "JSON null retained in YAML",
+   "args": [
+    "{\"a\":null}",
+    "json",
+    "yaml"
+   ],
+   "expected": {
+    "data": {
+     "a": null
+    }
+   }
+  },
+  {
+   "name": "TOML decimal",
+   "args": [
+    "n = 1.25",
+    "toml",
+    "json"
+   ],
+   "expected": {
+    "data": {
+     "n": 1.25
+    }
+   }
+  },
+  {
+   "name": "YAML empty array",
+   "args": [
+    "flags: []",
+    "yaml",
+    "toml"
+   ],
+   "expected": {
+    "data": {
+     "flags": []
+    }
+   }
+  },
+  {
+   "name": "Changed selection is blocked",
+   "kind": "guard",
+   "args": [
+    "name: Ada",
+    "name: Bea",
+    "result"
+   ],
+   "expected": {
+    "error": "Source changed"
+   }
+  },
+  {
+   "name": "Unchanged selection is replaced",
+   "kind": "guard",
+   "args": [
+    "name: Ada",
+    "name: Ada",
+    "result"
+   ],
+   "expected": {
+    "text": "result"
+   }
+  },
+  {
+   "name": "Cancel keeps bytes",
+   "kind": "cancel",
+   "args": [
+    "name: Ada\n# keep\n"
+   ],
+   "expected": {
+    "text": "name: Ada\n# keep\n"
+   }
+  },
+  {
+   "name": "Local schema passes",
+   "kind": "schema",
+   "args": [
+    {
+     "name": "Ada"
+    },
+    "{\"type\":\"object\",\"required\":[\"name\"],\"properties\":{\"name\":{\"type\":\"string\"}}}"
+   ],
+   "expected": {
+    "errors": []
+   }
+  },
+  {
+   "name": "Local schema rejects type",
+   "kind": "schema",
+   "args": [
+    {
+     "name": 3
+    },
+    "{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}}}"
+   ],
+   "expected": {
+    "errors": [
+     "/name: is not of a type(s) string"
+    ]
+   }
+  },
+  {
+   "name": "Remote schema refs are blocked",
+   "kind": "schema",
+   "args": [
+    {},
+    "{\"$ref\":\"remote.json\"}"
+   ],
+   "expected": {
+    "error": "local fragments"
+   }
+  },
+  {
+   "name": "Batch previews two blocks",
+   "kind": "batch",
+   "args": [
+    "```yaml\nname: Ada\n```\n```toml\ncount = 3\n```",
+    "json"
+   ],
+   "expected": {
+    "files": [
+     "Converted block 1.json",
+     "Converted block 2.json"
+    ],
+    "data": [
+     {
+      "name": "Ada"
+     },
+     {
+      "count": 3
+     }
+    ]
+   }
+  },
+  {
+   "name": "Batch does not cross unknown fences",
+   "kind": "batch",
+   "args": [
+    "```text\n```yaml\nname: Ada\n```\n```",
+    "json"
+   ],
+   "expected": {
+    "error": "Choose at least one"
+   }
+  },
+  {
+   "name": "Batch null stops preview",
+   "kind": "batch",
+   "args": [
+    "```json\n{\"a\":null}\n```",
+    "toml"
+   ],
+   "expected": {
+    "error": "TOML cannot represent null"
+   }
+  },
+  {
+   "name": "YAML underflow",
+   "args": [
+    "n: 1e-999",
+    "yaml",
+    "json"
+   ],
+   "expected": {
+    "error": "underflows"
+   }
+  },
+  {
+   "name": "TOML underflow",
+   "args": [
+    "n = 1e-999",
+    "toml",
+    "json"
+   ],
+   "expected": {
+    "error": "underflows"
+   }
+  },
+  {
+   "name": "YAML negative zero",
+   "args": [
+    "n: -0",
+    "yaml",
+    "json"
+   ],
+   "expected": {
+    "error": "Negative zero"
+   }
+  },
+  {
+   "name": "TOML negative zero",
+   "args": [
+    "n = -0",
+    "toml",
+    "json"
+   ],
+   "expected": {
+    "error": "Negative zero"
+   }
+  },
+  {
+   "name": "YAML decimal precision",
+   "args": [
+    "n: 19.999999999999999999",
+    "yaml",
+    "json"
+   ],
+   "expected": {
+    "error": "more digits"
+   }
+  },
+  {
+   "name": "TOML decimal precision",
+   "args": [
+    "n = 0.1000000000000000000001",
+    "toml",
+    "json"
+   ],
+   "expected": {
+    "error": "more digits"
+   }
+  }
+ ]
+}

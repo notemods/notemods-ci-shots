@@ -1,0 +1,47 @@
+.data-format-converter .dfc-preview {
+	padding: var(--size-4-3);
+	background: var(--background-secondary);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	max-height: 24vh;
+	overflow: auto;
+	white-space: pre-wrap;
+	font-family: var(--font-monospace);
+	font-size: var(--font-smaller);
+}
+
+.data-format-converter .dfc-warning {
+	color: var(--text-warning);
+}
+
+.data-format-converter .dfc-status {
+	white-space: pre-wrap;
+	color: var(--text-normal);
+}
+
+.data-format-converter .dfc-block-list,
+.data-format-converter .dfc-batch-preview {
+	max-height: 30vh;
+	overflow: auto;
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
