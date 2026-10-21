@@ -1,0 +1,59 @@
+[
+  {
+    "feature": "print-preview",
+    "caption": "Core PDF print output with reading preview off. The native save step is intercepted.",
+    "note": "Launch report.md",
+    "eval": "const require=window.wdioObsidianService().require;\n\nconst p = app.plugins.plugins['properties-pdf-export']; p.settings.preview=false; p.settings.hidden='cssclasses, aliases, internal'; p.settings.order='author, date, status'; p.settings.layout='table'; await p.saveSettings();\nconst {Modal}=require('obsidian'); const original=Modal.prototype.open; let modal;\nModal.prototype.open=function(){modal=this; return original.call(this);};\ntry { if(!app.commands.executeCommandById(['workspace', 'export-pdf'].join(':'))) throw new Error('Core PDF command unavailable'); } finally {Modal.prototype.open=original;}\nif(!modal || typeof modal.testPrint!=='function') throw new Error('Core print interception unavailable'); modal.close();\nconst el=require('electron'); const remote=el.remote || require('@electron/remote'); const debug=remote.getCurrentWebContents().debugger; debug.attach('1.3'); window.__ppePrintDebugger=debug;\nawait debug.sendCommand('Emulation.setEmulatedMedia',{media:'print'}); await modal.testPrint();\nconst root=document.querySelector('body > .print'); const headers=root.querySelectorAll('.ppe-header'); if(headers.length!==1 || !headers[0].textContent.includes('Ada Chen') || headers[0].getBoundingClientRect().height===0) throw new Error('Printable header missing');\nreturn 'Core PDF print preview ready';\n",
+    "wait": 1200,
+    "after": "document.querySelector('body > .print')?.click();const debug=window.__ppePrintDebugger;await debug.sendCommand('Emulation.setEmulatedMedia',{media:''});debug.detach();delete window.__ppePrintDebugger;return 'ok';"
+  },
+  {
+    "feature": "header",
+    "caption": "Printable properties in reading preview.",
+    "note": "Launch report.md",
+    "eval": " const p = app.plugins.plugins['properties-pdf-export']; p.settings.preview = true; p.settings.hidden = 'cssclasses, internal'; p.settings.order = 'author, date, status'; p.settings.layout = 'table'; await p.saveSettings(); await app.workspace.getLeaf(false).setViewState({type:'markdown',state:{file:app.workspace.getActiveFile().path,mode:'preview'}}); await new Promise(r=>setTimeout(r,700)); const header=document.querySelector('.workspace-leaf.mod-active .ppe-header'); if(!header || header.getBoundingClientRect().height===0) throw new Error('Reading header missing'); return 'ok'; ",
+    "wait": 1200
+  },
+  {
+    "feature": "compact",
+    "caption": "The free compact layout.",
+    "note": "Launch report.md",
+    "eval": " const p = app.plugins.plugins['properties-pdf-export']; p.settings.preview = true; p.settings.hidden = 'cssclasses, internal'; p.settings.order = 'author, date, status'; p.settings.layout = 'compact'; await p.saveSettings(); await app.workspace.getLeaf(false).setViewState({type:'markdown',state:{file:app.workspace.getActiveFile().path,mode:'preview'}}); await new Promise(r=>setTimeout(r,700)); const header=document.querySelector('.workspace-leaf.mod-active .ppe-header'); if(!header || header.getBoundingClientRect().height===0) throw new Error('Reading header missing'); return 'ok'; ",
+    "wait": 1200
+  },
+  {
+    "feature": "settings",
+    "caption": "Free controls and optional Pro folder layouts.",
+    "eval": "app.setting.open(); app.setting.openTabById('properties-pdf-export'); 'ok'",
+    "after": "app.setting.close(); 'ok'"
+  },
+  {
+    "feature": "folder-layouts",
+    "caption": "Folder rules are saved in settings; activation needs Pro.",
+    "eval": " const p = app.plugins.plugins['properties-pdf-export']; p.settings.folderLayouts='Reports = compact\\nReports/Clients = table'; await p.saveSettings(); app.setting.open(); app.setting.openTabById('properties-pdf-export'); return 'ok'; ",
+    "after": "app.setting.close(); 'ok'"
+  },
+  {
+    "feature": "properties-pdf-export",
+    "caption": "The preview toggle leaves the note unchanged.",
+    "frames": [
+      {
+        "note": "Launch report.md",
+        "eval": " const p = app.plugins.plugins['properties-pdf-export']; p.settings.preview = true; p.settings.hidden = 'cssclasses, internal'; p.settings.order = 'author, date, status'; p.settings.layout = 'table'; await p.saveSettings(); await app.workspace.getLeaf(false).setViewState({type:'markdown',state:{file:app.workspace.getActiveFile().path,mode:'preview'}}); await new Promise(r=>setTimeout(r,700)); const header=document.querySelector('.workspace-leaf.mod-active .ppe-header'); if(!header || header.getBoundingClientRect().height===0) throw new Error('Reading header missing'); return 'ok'; ",
+        "hold": 1800
+      },
+      {
+        "commands": [
+          "properties-pdf-export:toggle-header-preview"
+        ],
+        "hold": 1800
+      },
+      {
+        "commands": [
+          "properties-pdf-export:toggle-header-preview"
+        ],
+        "hold": 1800
+      }
+    ]
+  }
+]
