@@ -51,13 +51,19 @@ async function evalInApp(code, label) {
 			.then(() => {
 				if (!/\bawait\b/.test(src)) return (0, eval)(src);
 				const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
-				const lines = src.trim().replace(/;\s*$/, '').split(';');
-				const last = lines.pop();
+				const body = src.trim().replace(/;\s*$/, '');
 				let fn;
 				try {
-					fn = new AsyncFunction(`${lines.join(';')};\nreturn (${last});`);
+					// one expression, e.g. (async () => { ...; await x; ... })(): return its promise so the step waits for it
+					fn = new AsyncFunction(`return (${body});`);
 				} catch {
-					fn = new AsyncFunction(src); // last statement is not an expression: no completion value
+					const lines = body.split(';');
+					const last = lines.pop();
+					try {
+						fn = new AsyncFunction(`${lines.join(';')};\nreturn (${last});`);
+					} catch {
+						fn = new AsyncFunction(src); // last statement is not an expression: no completion value
+					}
 				}
 				return fn();
 			})
