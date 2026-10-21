@@ -1,0 +1,28 @@
+filters:
+  and:
+    - file.inFolder("Bases Read Only/Notes")
+views:
+  - type: table
+    name: Projects
+    sort:
+      - property: file.name
+        direction: ASC
+    order:
+      - file.name
+      - note.project
+      - note.owner
+      - note.done
+      - note.status
+  - type: cards
+    name: Cards
+    order:
+      - file.name
+      - note.project
+      - note.owner
+      - note.done
+  - type: list
+    name: List
+    order:
+      - file.name
+      - note.project
+      - note.owner
