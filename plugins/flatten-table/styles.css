@@ -1,0 +1,130 @@
+/* Styles for Flatten Table. Obsidian loads this file while the plugin is enabled. */
+.flatten-table {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-2);
+	padding: var(--size-4-2) var(--size-4-4);
+	overflow: auto;
+	height: 100%;
+}
+
+.flatten-table-bar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--size-4-3);
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+}
+
+.flatten-table-limit {
+	color: var(--text-warning);
+}
+
+.flatten-table-export {
+	font-size: var(--font-ui-smaller);
+}
+
+.flatten-table-empty {
+	color: var(--text-muted);
+	padding: var(--size-4-4) 0;
+}
+
+.flatten-table-scroll {
+	overflow-x: auto;
+}
+
+.flatten-table-table {
+	border-collapse: collapse;
+	width: 100%;
+	font-size: var(--font-ui-small);
+}
+
+.flatten-table-table th,
+.flatten-table-table td {
+	border: var(--border-width) solid var(--table-border-color, var(--background-modifier-border));
+	padding: var(--size-4-1) var(--size-4-2);
+	text-align: start;
+	vertical-align: top;
+}
+
+.flatten-table-table th {
+	background: var(--table-header-background, var(--background-secondary));
+	font-weight: var(--font-semibold);
+	cursor: pointer;
+	user-select: none;
+	white-space: nowrap;
+	position: sticky;
+	top: 0;
+}
+
+.flatten-table-table th:hover {
+	background: var(--background-modifier-hover);
+}
+
+.flatten-table-sort {
+	display: inline-flex;
+	vertical-align: middle;
+	margin-inline-start: var(--size-4-1);
+
+	--icon-size: var(--icon-xs);
+}
+
+.flatten-table-source {
+	white-space: nowrap;
+}
+
+.flatten-table-group td {
+	background: var(--background-secondary);
+	font-weight: var(--font-semibold);
+}
+
+.bases-embed .flatten-table,
+.block-language-base .flatten-table {
+	height: auto;
+}
+
+.flatten-table-index {
+	color: var(--text-muted);
+	text-align: end;
+}
+
+/* Two classes beat the app rules button:not(.clickable-icon), button:hover and .mobile-tap. */
+.flatten-table-table .flatten-table-sort-button,
+.flatten-table-table .flatten-table-sort-button:hover,
+.flatten-table-table .flatten-table-sort-button.mobile-tap {
+	background: transparent;
+	box-shadow: none;
+	border: none;
+	padding: 0;
+	height: auto;
+	color: inherit;
+	font: inherit;
+}
+
+.flatten-table-sort-priority {
+	margin-inline-start: var(--size-4-1);
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}

@@ -1,0 +1,28 @@
+filters:
+  and:
+    - file.inFolder("Flatten Table/Projects")
+views:
+  - type: flatten-table
+    name: Milestones
+    property: note.milestones
+  - type: table
+    name: Notes
+    order:
+      - file.name
+      - status
+      - lead
+      - milestones
+  - type: flatten-table
+    name: Open milestones
+    property: note.milestones
+    filterColumn: status
+    filterOp: not-equals
+    filterValue: done
+    flattenSort:
+      column: due
+      dir: asc
+  - type: flatten-table
+    name: By owner
+    property: note.milestones
+    groupColumn: owner
+    showSource: true
