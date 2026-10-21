@@ -1,0 +1,9 @@
+node_modules
+main.js
+*.map
+data.json
+.turbo
+dist
+.DS_Store
+
+.test-deps

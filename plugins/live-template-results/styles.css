@@ -1,0 +1,50 @@
+.ltr-result {
+ color: var(--text-accent);
+ background: var(--background-secondary);
+ border-radius: var(--radius-s);
+ padding: 0 4px;
+ cursor: text;
+ white-space: pre-wrap;
+}
+
+.ltr-error {
+ color: var(--text-error);
+ font-size: var(--font-smallest);
+}
+
+.ltr-panel {
+ padding: var(--size-4-4);
+ overflow: auto;
+}
+
+.ltr-panel code {
+ white-space: pre-wrap;
+ overflow-wrap: anywhere;
+}
+
+.ltr-panel-result {
+ white-space: pre-wrap;
+ border-bottom: 1px solid var(--background-modifier-border);
+ padding-bottom: var(--size-4-2);
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}

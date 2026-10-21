@@ -1,0 +1,770 @@
+{
+ "slug": "live-template-results",
+ "module": "live-template-results/src/model",
+ "function": "planNote",
+ "note": "A1 to A10 map to the acceptance cases. Runtime and mobile checks are separate. These vectors test the render plan, not a script evaluator.",
+ "cases": [
+  {
+   "name": "A1 cached arithmetic result keeps the command range",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "<%+ 1 + 1 %>",
+     "enabled": true,
+     "live": true,
+     "snapshot": {
+      "path": "A.md",
+      "source": "<%+ 1 + 1 %>",
+      "results": [
+       {
+        "from": 0,
+        "to": 12,
+        "source": "<%+ 1 + 1 %>",
+        "text": "2"
+       }
+      ]
+     }
+    }
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "to": 12,
+     "source": "<%+ 1 + 1 %>",
+     "display": "result",
+     "text": "2"
+    }
+   ]
+  },
+  {
+   "name": "A2 cursor inside shows source",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "<%+ 1 + 1 %>",
+     "enabled": true,
+     "live": true,
+     "snapshot": {
+      "path": "A.md",
+      "source": "<%+ 1 + 1 %>",
+      "results": [
+       {
+        "from": 0,
+        "to": 12,
+        "source": "<%+ 1 + 1 %>",
+        "text": "2"
+       }
+      ]
+     },
+     "selections": [
+      {
+       "from": 4,
+       "to": 4
+      }
+     ]
+    }
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "to": 12,
+     "source": "<%+ 1 + 1 %>",
+     "display": "source",
+     "text": "<%+ 1 + 1 %>"
+    }
+   ]
+  },
+  {
+   "name": "A2 cursor outside returns the cached result",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "<%+ 1 + 1 %>",
+     "enabled": true,
+     "live": true,
+     "snapshot": {
+      "path": "A.md",
+      "source": "<%+ 1 + 1 %>",
+      "results": [
+       {
+        "from": 0,
+        "to": 12,
+        "source": "<%+ 1 + 1 %>",
+        "text": "2"
+       }
+      ]
+     },
+     "selections": []
+    }
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "to": 12,
+     "source": "<%+ 1 + 1 %>",
+     "display": "result",
+     "text": "2"
+    }
+   ]
+  },
+  {
+   "name": "A3 fenced code is excluded",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "```js\n<%+ 1 + 1 %>\n```",
+     "enabled": true,
+     "live": true
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "A3 tilde fence is excluded",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "~~~\n<%+ 1 + 1 %>\n~~~",
+     "enabled": true,
+     "live": true
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "A3 inline code is excluded",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "`<%+ 1 + 1 %>`",
+     "enabled": true,
+     "live": true
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "A3 frontmatter is excluded",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "---\nvalue: <%+ 1 + 1 %>\n---",
+     "enabled": true,
+     "live": true
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "A4 disabled note has no render plan",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "<%+ 1 + 1 %>",
+     "enabled": false,
+     "live": true,
+     "snapshot": {
+      "path": "A.md",
+      "source": "<%+ 1 + 1 %>",
+      "results": [
+       {
+        "from": 0,
+        "to": 12,
+        "source": "<%+ 1 + 1 %>",
+        "text": "2"
+       }
+      ]
+     }
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "A5 no host result keeps source editable",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "<%+ 1 + 1 %>",
+     "enabled": true,
+     "live": true
+    }
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "to": 12,
+     "source": "<%+ 1 + 1 %>",
+     "display": "source",
+     "text": "<%+ 1 + 1 %>"
+    }
+   ]
+  },
+  {
+   "name": "A5 render error keeps a source range and error",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "<%+ 1 + 1 %>",
+     "enabled": true,
+     "live": true,
+     "snapshot": {
+      "path": "A.md",
+      "source": "<%+ 1 + 1 %>",
+      "results": [
+       {
+        "from": 0,
+        "to": 12,
+        "source": "<%+ 1 + 1 %>",
+        "error": "No result produced."
+       }
+      ]
+     }
+    }
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "to": 12,
+     "source": "<%+ 1 + 1 %>",
+     "display": "error",
+     "text": "No result produced."
+    }
+   ]
+  },
+  {
+   "name": "A6 changed command rejects old snapshot",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "<%+ 2 + 2 %>",
+     "enabled": true,
+     "live": true,
+     "snapshot": {
+      "path": "A.md",
+      "source": "<%+ 1 + 1 %>",
+      "results": [
+       {
+        "from": 0,
+        "to": 12,
+        "source": "<%+ 1 + 1 %>",
+        "text": "2"
+       }
+      ]
+     }
+    }
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "to": 12,
+     "source": "<%+ 2 + 2 %>",
+     "display": "source",
+     "text": "<%+ 2 + 2 %>"
+    }
+   ]
+  },
+  {
+   "name": "A6 deleted command rejects old snapshot",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "",
+     "enabled": true,
+     "live": true,
+     "snapshot": {
+      "path": "A.md",
+      "source": "<%+ 1 + 1 %>",
+      "results": [
+       {
+        "from": 0,
+        "to": 12,
+        "source": "<%+ 1 + 1 %>",
+        "text": "2"
+       }
+      ]
+     }
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "A6 inserted prefix rejects old offsets",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "X <%+ 1 + 1 %>",
+     "enabled": true,
+     "live": true,
+     "snapshot": {
+      "path": "A.md",
+      "source": "<%+ 1 + 1 %>",
+      "results": [
+       {
+        "from": 0,
+        "to": 12,
+        "source": "<%+ 1 + 1 %>",
+        "text": "2"
+       }
+      ]
+     }
+    }
+   ],
+   "expected": [
+    {
+     "from": 2,
+     "to": 14,
+     "source": "<%+ 1 + 1 %>",
+     "display": "source",
+     "text": "<%+ 1 + 1 %>"
+    }
+   ]
+  },
+  {
+   "name": "A7 owner A uses its own snapshot",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "<%+ 1 + 1 %>",
+     "enabled": true,
+     "live": true,
+     "snapshot": {
+      "path": "A.md",
+      "source": "<%+ 1 + 1 %>",
+      "results": [
+       {
+        "from": 0,
+        "to": 12,
+        "source": "<%+ 1 + 1 %>",
+        "text": "2"
+       }
+      ]
+     }
+    }
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "to": 12,
+     "source": "<%+ 1 + 1 %>",
+     "display": "result",
+     "text": "2"
+    }
+   ]
+  },
+  {
+   "name": "A7 owner B rejects owner A snapshot",
+   "args": [
+    {
+     "path": "B.md",
+     "source": "<%+ 1 + 1 %>",
+     "enabled": true,
+     "live": true,
+     "snapshot": {
+      "path": "A.md",
+      "source": "<%+ 1 + 1 %>",
+      "results": [
+       {
+        "from": 0,
+        "to": 12,
+        "source": "<%+ 1 + 1 %>",
+        "text": "2"
+       }
+      ]
+     }
+    }
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "to": 12,
+     "source": "<%+ 1 + 1 %>",
+     "display": "source",
+     "text": "<%+ 1 + 1 %>"
+    }
+   ]
+  },
+  {
+   "name": "A8 two commands keep source order",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "<%+ 1 + 1 %> <%+ 1 + 1 %>",
+     "enabled": true,
+     "live": true,
+     "snapshot": {
+      "path": "A.md",
+      "source": "<%+ 1 + 1 %> <%+ 1 + 1 %>",
+      "results": [
+       {
+        "from": 0,
+        "to": 12,
+        "source": "<%+ 1 + 1 %>",
+        "text": "2"
+       },
+       {
+        "from": 13,
+        "to": 25,
+        "source": "<%+ 1 + 1 %>",
+        "text": "2"
+       }
+      ]
+     }
+    }
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "to": 12,
+     "source": "<%+ 1 + 1 %>",
+     "display": "result",
+     "text": "2"
+    },
+    {
+     "from": 13,
+     "to": 25,
+     "source": "<%+ 1 + 1 %>",
+     "display": "result",
+     "text": "2"
+    }
+   ]
+  },
+  {
+   "name": "A9 disable removes a failed render",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "<%+ 1 + 1 %>",
+     "enabled": false,
+     "live": true,
+     "snapshot": {
+      "path": "A.md",
+      "source": "<%+ 1 + 1 %>",
+      "results": [
+       {
+        "from": 0,
+        "to": 12,
+        "source": "<%+ 1 + 1 %>",
+        "error": "Error"
+       }
+      ]
+     }
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "A10 pointer places cursor at command start",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "<%+ 1 + 1 %>",
+     "enabled": true,
+     "live": true,
+     "snapshot": {
+      "path": "A.md",
+      "source": "<%+ 1 + 1 %>",
+      "results": [
+       {
+        "from": 0,
+        "to": 12,
+        "source": "<%+ 1 + 1 %>",
+        "text": "2"
+       }
+      ]
+     },
+     "selections": [
+      {
+       "from": 3,
+       "to": 3
+      }
+     ]
+    }
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "to": 12,
+     "source": "<%+ 1 + 1 %>",
+     "display": "source",
+     "text": "<%+ 1 + 1 %>"
+    }
+   ]
+  },
+  {
+   "name": "source mode has no widgets",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "<%+ 1 + 1 %>",
+     "enabled": true,
+     "live": false,
+     "snapshot": {
+      "path": "A.md",
+      "source": "<%+ 1 + 1 %>",
+      "results": [
+       {
+        "from": 0,
+        "to": 12,
+        "source": "<%+ 1 + 1 %>",
+        "text": "2"
+       }
+      ]
+     }
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "cursor on end boundary exposes source",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "<%+ 1 + 1 %>",
+     "enabled": true,
+     "live": true,
+     "snapshot": {
+      "path": "A.md",
+      "source": "<%+ 1 + 1 %>",
+      "results": [
+       {
+        "from": 0,
+        "to": 12,
+        "source": "<%+ 1 + 1 %>",
+        "text": "2"
+       }
+      ]
+     },
+     "selections": [
+      {
+       "from": 12,
+       "to": 12
+      }
+     ]
+    }
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "to": 12,
+     "source": "<%+ 1 + 1 %>",
+     "display": "source",
+     "text": "<%+ 1 + 1 %>"
+    }
+   ]
+  },
+  {
+   "name": "selection across command exposes source",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "<%+ 1 + 1 %>",
+     "enabled": true,
+     "live": true,
+     "snapshot": {
+      "path": "A.md",
+      "source": "<%+ 1 + 1 %>",
+      "results": [
+       {
+        "from": 0,
+        "to": 12,
+        "source": "<%+ 1 + 1 %>",
+        "text": "2"
+       }
+      ]
+     },
+     "selections": [
+      {
+       "from": 0,
+       "to": 12
+      }
+     ]
+    }
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "to": 12,
+     "source": "<%+ 1 + 1 %>",
+     "display": "source",
+     "text": "<%+ 1 + 1 %>"
+    }
+   ]
+  },
+  {
+   "name": "indented code is excluded",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "    <%+ 1 + 1 %>",
+     "enabled": true,
+     "live": true
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "block quotes are outside this version",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "> <%+ 1 + 1 %>",
+     "enabled": true,
+     "live": true
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "HTML comments are excluded",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "<!-- <%+ 1 + 1 %> -->",
+     "enabled": true,
+     "live": true
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "escaped command opener is excluded",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "\\<%+ 1 + 1 %>",
+     "enabled": true,
+     "live": true
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "multiline command is excluded",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "<%+ 1\n+ 1 %>",
+     "enabled": true,
+     "live": true
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "non dynamic command is excluded",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "<% 1 + 1 %>",
+     "enabled": true,
+     "live": true
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "empty result remains a valid result",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "<%+ 1 + 1 %>",
+     "enabled": true,
+     "live": true,
+     "snapshot": {
+      "path": "A.md",
+      "source": "<%+ 1 + 1 %>",
+      "results": [
+       {
+        "from": 0,
+        "to": 12,
+        "source": "<%+ 1 + 1 %>",
+        "text": ""
+       }
+      ]
+     }
+    }
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "to": 12,
+     "source": "<%+ 1 + 1 %>",
+     "display": "result",
+     "text": ""
+    }
+   ]
+  },
+  {
+   "name": "stale range within snapshot is rejected",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "<%+ 1 + 1 %>",
+     "enabled": true,
+     "live": true,
+     "snapshot": {
+      "path": "A.md",
+      "source": "<%+ 1 + 1 %>",
+      "results": [
+       {
+        "from": 1,
+        "to": 13,
+        "source": "<%+ 1 + 1 %>",
+        "text": "2"
+       }
+      ]
+     }
+    }
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "to": 12,
+     "source": "<%+ 1 + 1 %>",
+     "display": "source",
+     "text": "<%+ 1 + 1 %>"
+    }
+   ]
+  },
+  {
+   "name": "closed inline code permits following command",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "`code` <%+ 1 + 1 %>",
+     "enabled": true,
+     "live": true
+    }
+   ],
+   "expected": [
+    {
+     "from": 7,
+     "to": 19,
+     "source": "<%+ 1 + 1 %>",
+     "display": "source",
+     "text": "<%+ 1 + 1 %>"
+    }
+   ]
+  },
+  {
+   "name": "closed fence permits following command",
+   "args": [
+    {
+     "path": "A.md",
+     "source": "```\ncode\n```\n<%+ 1 + 1 %>",
+     "enabled": true,
+     "live": true
+    }
+   ],
+   "expected": [
+    {
+     "from": 13,
+     "to": 25,
+     "source": "<%+ 1 + 1 %>",
+     "display": "source",
+     "text": "<%+ 1 + 1 %>"
+    }
+   ]
+  }
+ ]
+}

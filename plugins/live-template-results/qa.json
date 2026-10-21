@@ -1,0 +1,73 @@
+[
+  {
+    "feature": "results",
+    "caption": "Live results use the owner note and its properties.",
+    "note": "Project review.md",
+    "eval": "(async()=>{const p = app.plugins.plugins['live-template-results']; app.setting.close(); if (!app.plugins.plugins['templater-obsidian']) await app.plugins.enablePlugin('templater-obsidian'); const v = app.workspace.getMostRecentLeaf().view; await v.leaf.setViewState({type:'markdown',state:{file:v.file.path,mode:'source',source:false}}); v.editor.setCursor({line:5,ch:0}); for (let i=0;i<100 && ![...p.editors].some(e=>e.path===v.file.path);i++) await new Promise(r=>setTimeout(r,50));p.pro.signOut(); p.settings.folders=''; p.settings.property=''; p.settings.watch='';await p.setEnabled(v.file.path,true); await Promise.all([...p.editors].filter(e=>e.path===v.file.path).map(e=>e.pending)); document.querySelectorAll('.notice-container .notice').forEach(n=>n.remove()); return 'ok';})()",
+    "wait": 800
+  },
+  {
+    "feature": "edit",
+    "caption": "The cursor exposes a command for editing.",
+    "note": "Project review.md",
+    "eval": "(async()=>{const p = app.plugins.plugins['live-template-results']; app.setting.close(); if (!app.plugins.plugins['templater-obsidian']) await app.plugins.enablePlugin('templater-obsidian'); const v = app.workspace.getMostRecentLeaf().view; await v.leaf.setViewState({type:'markdown',state:{file:v.file.path,mode:'source',source:false}}); v.editor.setCursor({line:5,ch:0}); for (let i=0;i<100 && ![...p.editors].some(e=>e.path===v.file.path);i++) await new Promise(r=>setTimeout(r,50));p.pro.signOut(); p.settings.folders=''; p.settings.property=''; p.settings.watch='';await p.setEnabled(v.file.path,true); await Promise.all([...p.editors].filter(e=>e.path===v.file.path).map(e=>e.pending));v.editor.setCursor({line:13,ch:28}); document.querySelectorAll('.notice-container .notice').forEach(n=>n.remove()); return 'ok';})()",
+    "wait": 500
+  },
+  {
+    "feature": "enable",
+    "caption": "A note without enable keeps the original commands.",
+    "note": "First look.md",
+    "eval": "(async()=>{const p = app.plugins.plugins['live-template-results']; app.setting.close(); if (!app.plugins.plugins['templater-obsidian']) await app.plugins.enablePlugin('templater-obsidian'); const v = app.workspace.getMostRecentLeaf().view; await v.leaf.setViewState({type:'markdown',state:{file:v.file.path,mode:'source',source:false}}); v.editor.setCursor({line:5,ch:0}); for (let i=0;i<100 && ![...p.editors].some(e=>e.path===v.file.path);i++) await new Promise(r=>setTimeout(r,50));p.pro.signOut(); p.settings.folders=''; p.settings.property=''; p.settings.watch='';await p.setEnabled(v.file.path,false); v.editor.setCursor({line:0,ch:0}); document.querySelectorAll('.notice-container .notice').forEach(n=>n.remove()); return 'ok';})()",
+    "wait": 500
+  },
+  {
+    "feature": "errors",
+    "caption": "A missing Templater host gives an inline message and editable source.",
+    "note": "Check the renderer.md",
+    "eval": "(async()=>{const p = app.plugins.plugins['live-template-results']; app.setting.close(); if (!app.plugins.plugins['templater-obsidian']) await app.plugins.enablePlugin('templater-obsidian'); const v = app.workspace.getMostRecentLeaf().view; await v.leaf.setViewState({type:'markdown',state:{file:v.file.path,mode:'source',source:false}}); v.editor.setCursor({line:5,ch:0}); for (let i=0;i<100 && ![...p.editors].some(e=>e.path===v.file.path);i++) await new Promise(r=>setTimeout(r,50));p.pro.signOut(); p.settings.folders=''; p.settings.property=''; p.settings.watch='';await app.plugins.disablePlugin('templater-obsidian');await p.setEnabled(v.file.path,true); await Promise.all([...p.editors].filter(e=>e.path===v.file.path).map(e=>e.pending));v.editor.setCursor({line:0,ch:0}); document.querySelectorAll('.notice-container .notice').forEach(n=>n.remove()); return 'ok';})()",
+    "wait": 500,
+    "after": "app.plugins.enablePlugin('templater-obsidian').then(()=> 'ok')"
+  },
+  {
+    "feature": "rules",
+    "caption": "Pro rules enable trusted folders or a Boolean property.",
+    "note": "Project review.md",
+    "eval": "(async()=>{const p = app.plugins.plugins['live-template-results']; app.setting.close(); if (!app.plugins.plugins['templater-obsidian']) await app.plugins.enablePlugin('templater-obsidian'); const v = app.workspace.getMostRecentLeaf().view; await v.leaf.setViewState({type:'markdown',state:{file:v.file.path,mode:'source',source:false}}); v.editor.setCursor({line:5,ch:0}); for (let i=0;i<100 && ![...p.editors].some(e=>e.path===v.file.path);i++) await new Promise(r=>setTimeout(r,50));p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('live-template-results-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow();p.settings.folders='Live Template Results'; p.settings.property='live-results'; p.settings.watch='hours, rate'; await p.saveSettings(); app.setting.open(); app.setting.openTabById('live-template-results'); document.querySelectorAll('.notice-container .notice').forEach(n=>n.remove()); return 'ok';})()",
+    "wait": 800,
+    "after": "app.setting.close(); 'ok'"
+  },
+  {
+    "feature": "metadata",
+    "caption": "The budget changes when the selected hours property changes.",
+    "note": "Project review.md",
+    "eval": "(async()=>{const p = app.plugins.plugins['live-template-results']; app.setting.close(); if (!app.plugins.plugins['templater-obsidian']) await app.plugins.enablePlugin('templater-obsidian'); const v = app.workspace.getMostRecentLeaf().view; await v.leaf.setViewState({type:'markdown',state:{file:v.file.path,mode:'source',source:false}}); v.editor.setCursor({line:5,ch:0}); for (let i=0;i<100 && ![...p.editors].some(e=>e.path===v.file.path);i++) await new Promise(r=>setTimeout(r,50));p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('live-template-results-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow();await p.setEnabled(v.file.path,true); await Promise.all([...p.editors].filter(e=>e.path===v.file.path).map(e=>e.pending));p.settings.watch='hours, rate'; await app.fileManager.processFrontMatter(v.file,fm=>{fm.hours=8;}); for(let i=0;i<100;i++){if([...p.editors].some(e=>e.path===v.file.path && e.snapshot?.results.some(r=>r.text==='680')))break; await new Promise(r=>setTimeout(r,50));} v.editor.setCursor({line:5,ch:0}); document.querySelectorAll('.notice-container .notice').forEach(n=>n.remove()); return 'ok';})()",
+    "wait": 700
+  },
+  {
+    "feature": "panel",
+    "caption": "The Pro panel lists cached source commands and results.",
+    "note": "Project review.md",
+    "eval": "(async()=>{const p = app.plugins.plugins['live-template-results']; app.setting.close(); if (!app.plugins.plugins['templater-obsidian']) await app.plugins.enablePlugin('templater-obsidian'); const v = app.workspace.getMostRecentLeaf().view; await v.leaf.setViewState({type:'markdown',state:{file:v.file.path,mode:'source',source:false}}); v.editor.setCursor({line:5,ch:0}); for (let i=0;i<100 && ![...p.editors].some(e=>e.path===v.file.path);i++) await new Promise(r=>setTimeout(r,50));p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('live-template-results-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow();await p.setEnabled(v.file.path,true); await Promise.all([...p.editors].filter(e=>e.path===v.file.path).map(e=>e.pending));await app.commands.executeCommandById('live-template-results:open-panel'); document.querySelectorAll('.notice-container .notice').forEach(n=>n.remove()); return 'ok';})()",
+    "wait": 700,
+    "after": "app.workspace.getLeavesOfType('live-template-results-panel').forEach(l=>l.detach()); app.plugins.plugins['live-template-results'].pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "live-template-results",
+    "caption": "Read results, edit the source command, then return to the cached result.",
+    "frames": [
+      {
+        "note": "Project review.md",
+        "eval": "(async()=>{const p = app.plugins.plugins['live-template-results']; app.setting.close(); if (!app.plugins.plugins['templater-obsidian']) await app.plugins.enablePlugin('templater-obsidian'); const v = app.workspace.getMostRecentLeaf().view; await v.leaf.setViewState({type:'markdown',state:{file:v.file.path,mode:'source',source:false}}); v.editor.setCursor({line:5,ch:0}); for (let i=0;i<100 && ![...p.editors].some(e=>e.path===v.file.path);i++) await new Promise(r=>setTimeout(r,50));p.pro.signOut(); p.settings.folders=''; p.settings.property=''; p.settings.watch='';await p.setEnabled(v.file.path,true); await Promise.all([...p.editors].filter(e=>e.path===v.file.path).map(e=>e.pending)); document.querySelectorAll('.notice-container .notice').forEach(n=>n.remove()); return 'ok';})()",
+        "hold": 1800
+      },
+      {
+        "eval": "app.workspace.activeEditor.editor.setCursor({line:13,ch:28}); 'ok'",
+        "hold": 1600
+      },
+      {
+        "eval": "app.workspace.activeEditor.editor.setCursor({line:5,ch:0}); 'ok'",
+        "hold": 1800
+      }
+    ]
+  }
+]
