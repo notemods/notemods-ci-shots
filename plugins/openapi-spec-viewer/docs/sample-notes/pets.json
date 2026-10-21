@@ -1,0 +1,138 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Pet service",
+    "version": "1.2.0"
+  },
+  "paths": {
+    "/pets": {
+      "get": {
+        "tags": [
+          "Pets"
+        ],
+        "summary": "List pets",
+        "description": "Read the pet directory. Use the limit parameter to select a page size.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pet list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Pet"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Pets"
+        ],
+        "summary": "Create a pet",
+        "description": "Add a pet to the directory. The request needs a name.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Pet"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Pet created"
+          },
+          "400": {
+            "description": "Check the name and age fields"
+          }
+        }
+      }
+    },
+    "/pets/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "Pets"
+        ],
+        "summary": "Find a pet",
+        "description": "Read one pet by its numeric ID.",
+        "responses": {
+          "200": {
+            "description": "Pet found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pet"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No pet with this ID"
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Service status",
+        "description": "Read service readiness. This reference does not send a request.",
+        "responses": {
+          "200": {
+            "description": "Ready"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Pet": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "age": {
+            "type": "integer"
+          },
+          "parent": {
+            "$ref": "#/components/schemas/Pet"
+          }
+        }
+      }
+    }
+  }
+}

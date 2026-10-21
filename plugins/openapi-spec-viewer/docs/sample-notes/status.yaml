@@ -1,0 +1,11 @@
+openapi: 3.0.3
+info:
+  title: Status service
+paths:
+  /status:
+    get:
+      tags: [Health]
+      summary: Read status
+      responses:
+        "200":
+          description: Ready
