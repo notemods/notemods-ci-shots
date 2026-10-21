@@ -1,0 +1,681 @@
+{
+  "slug": "csv-schema-linter",
+  "module": "csv-schema-linter/src/checker",
+  "function": "check",
+  "note": "check returns the exact result or throws the expected error. The size case builds a 5242881-byte input. The repeat-report case checks stable source text and report output. Vault output names are checked in plugin tests.",
+  "cases": [
+    {
+      "name": "number age has zero errors",
+      "args": [
+        "name,age\nAda,20",
+        "{\"columns\":{\"age\":{\"type\":\"number\"}}}"
+      ],
+      "expected": {
+        "headers": [
+          "name",
+          "age"
+        ],
+        "rows": [
+          [
+            "Ada",
+            "20"
+          ]
+        ],
+        "errors": [],
+        "total": 0
+      }
+    },
+    {
+      "name": "bad age names logical row 2",
+      "args": [
+        "name,age\nAda,xx",
+        "{\"columns\":{\"age\":{\"type\":\"number\"}}}"
+      ],
+      "expected": {
+        "headers": [
+          "name",
+          "age"
+        ],
+        "rows": [
+          [
+            "Ada",
+            "xx"
+          ]
+        ],
+        "errors": [
+          {
+            "row": 2,
+            "column": "age",
+            "rule": "type number",
+            "value": "xx"
+          }
+        ],
+        "total": 1
+      }
+    },
+    {
+      "name": "required name is empty",
+      "args": [
+        "name,age\n,20",
+        "{\"columns\":{\"name\":{\"required\":true}}}"
+      ],
+      "expected": {
+        "headers": [
+          "name",
+          "age"
+        ],
+        "rows": [
+          [
+            "",
+            "20"
+          ]
+        ],
+        "errors": [
+          {
+            "row": 2,
+            "column": "name",
+            "rule": "required",
+            "value": ""
+          }
+        ],
+        "total": 1
+      }
+    },
+    {
+      "name": "blocked is not an allowed status",
+      "args": [
+        "status\nblocked",
+        "{\"columns\":{\"status\":{\"enum\":[\"open\",\"done\"]}}}"
+      ],
+      "expected": {
+        "headers": [
+          "status"
+        ],
+        "rows": [
+          [
+            "blocked"
+          ]
+        ],
+        "errors": [
+          {
+            "row": 2,
+            "column": "status",
+            "rule": "allowed value",
+            "value": "blocked"
+          }
+        ],
+        "total": 1
+      }
+    },
+    {
+      "name": "duplicate id reports both rows",
+      "args": [
+        "id\nA\nA",
+        "{\"columns\":{\"id\":{\"unique\":true}}}"
+      ],
+      "expected": {
+        "headers": [
+          "id"
+        ],
+        "rows": [
+          [
+            "A"
+          ],
+          [
+            "A"
+          ]
+        ],
+        "errors": [
+          {
+            "row": 2,
+            "column": "id",
+            "rule": "unique",
+            "value": "A"
+          },
+          {
+            "row": 3,
+            "column": "id",
+            "rule": "unique",
+            "value": "A"
+          }
+        ],
+        "total": 2
+      }
+    },
+    {
+      "name": "quoted comma remains one field",
+      "args": [
+        "id,text\nA,\"a,b\"",
+        "{\"columns\":{\"text\":{\"type\":\"string\"}}}"
+      ],
+      "expected": {
+        "headers": [
+          "id",
+          "text"
+        ],
+        "rows": [
+          [
+            "A",
+            "a,b"
+          ]
+        ],
+        "errors": [],
+        "total": 0
+      }
+    },
+    {
+      "name": "quoted line break keeps logical rows",
+      "args": [
+        "id,text\nA,\"first\nsecond\"\nB,x",
+        "{\"columns\":{\"id\":{\"enum\":[\"A\"]}}}"
+      ],
+      "expected": {
+        "headers": [
+          "id",
+          "text"
+        ],
+        "rows": [
+          [
+            "A",
+            "first\nsecond"
+          ],
+          [
+            "B",
+            "x"
+          ]
+        ],
+        "errors": [
+          {
+            "row": 3,
+            "column": "id",
+            "rule": "allowed value",
+            "value": "B"
+          }
+        ],
+        "total": 1
+      }
+    },
+    {
+      "name": "duplicate headers rejected before rules",
+      "args": [
+        "id,id\nA,B",
+        "{\"columns\":{\"missing\":{\"required\":true}}}"
+      ],
+      "expected": {
+        "error": "CSV has duplicate headers."
+      }
+    },
+    {
+      "name": "missing schema column is named",
+      "args": [
+        "name\nAda",
+        "{\"columns\":{\"age\":{\"type\":\"number\"}}}"
+      ],
+      "expected": {
+        "headers": [
+          "name"
+        ],
+        "rows": [
+          [
+            "Ada"
+          ]
+        ],
+        "errors": [
+          {
+            "row": 1,
+            "column": "age",
+            "rule": "missing column",
+            "value": ""
+          }
+        ],
+        "total": 1
+      }
+    },
+    {
+      "name": "CRLF input",
+      "args": [
+        "name,age\r\nAda,20\r\n",
+        "{\"columns\":{\"age\":{\"type\":\"number\"}}}"
+      ],
+      "expected": {
+        "headers": [
+          "name",
+          "age"
+        ],
+        "rows": [
+          [
+            "Ada",
+            "20"
+          ]
+        ],
+        "errors": [],
+        "total": 0
+      }
+    },
+    {
+      "name": "UTF-8 BOM removed from first header",
+      "args": [
+        "\ufeffname,age\nAda,20",
+        "{\"columns\":{\"name\":{\"required\":true}}}"
+      ],
+      "expected": {
+        "headers": [
+          "name",
+          "age"
+        ],
+        "rows": [
+          [
+            "Ada",
+            "20"
+          ]
+        ],
+        "errors": [],
+        "total": 0
+      }
+    },
+    {
+      "name": "001 stays exact text",
+      "args": [
+        "id\n001",
+        "{\"columns\":{\"id\":{\"type\":\"string\"}}}"
+      ],
+      "expected": {
+        "headers": [
+          "id"
+        ],
+        "rows": [
+          [
+            "001"
+          ]
+        ],
+        "errors": [],
+        "total": 0
+      }
+    },
+    {
+      "name": "number check preserves 001",
+      "args": [
+        "id\n001",
+        "{\"columns\":{\"id\":{\"type\":\"number\"}}}"
+      ],
+      "expected": {
+        "headers": [
+          "id"
+        ],
+        "rows": [
+          [
+            "001"
+          ]
+        ],
+        "errors": [],
+        "total": 0
+      }
+    },
+    {
+      "name": "boolean true and false accepted",
+      "args": [
+        "enabled\ntrue\nfalse",
+        "{\"columns\":{\"enabled\":{\"type\":\"boolean\"}}}"
+      ],
+      "expected": {
+        "headers": [
+          "enabled"
+        ],
+        "rows": [
+          [
+            "true"
+          ],
+          [
+            "false"
+          ]
+        ],
+        "errors": [],
+        "total": 0
+      }
+    },
+    {
+      "name": "boolean case is exact",
+      "args": [
+        "enabled\nTRUE",
+        "{\"columns\":{\"enabled\":{\"type\":\"boolean\"}}}"
+      ],
+      "expected": {
+        "headers": [
+          "enabled"
+        ],
+        "rows": [
+          [
+            "TRUE"
+          ]
+        ],
+        "errors": [
+          {
+            "row": 2,
+            "column": "enabled",
+            "rule": "type boolean",
+            "value": "TRUE"
+          }
+        ],
+        "total": 1
+      }
+    },
+    {
+      "name": "optional empty value skips type",
+      "args": [
+        "age\n\"\"",
+        "{\"columns\":{\"age\":{\"type\":\"number\"}}}"
+      ],
+      "expected": {
+        "headers": [
+          "age"
+        ],
+        "rows": [
+          [
+            ""
+          ]
+        ],
+        "errors": [],
+        "total": 0
+      }
+    },
+    {
+      "name": "empty unique values skipped",
+      "args": [
+        "id\n\"\"\n\"\"",
+        "{\"columns\":{\"id\":{\"unique\":true}}}"
+      ],
+      "expected": {
+        "headers": [
+          "id"
+        ],
+        "rows": [
+          [
+            ""
+          ],
+          [
+            ""
+          ]
+        ],
+        "errors": [],
+        "total": 0
+      }
+    },
+    {
+      "name": "spaces are not automatically trimmed",
+      "args": [
+        "age\n 20 ",
+        "{\"columns\":{\"age\":{\"type\":\"number\"}}}"
+      ],
+      "expected": {
+        "headers": [
+          "age"
+        ],
+        "rows": [
+          [
+            " 20 "
+          ]
+        ],
+        "errors": [
+          {
+            "row": 2,
+            "column": "age",
+            "rule": "type number",
+            "value": " 20 "
+          }
+        ],
+        "total": 1
+      }
+    },
+    {
+      "name": "enum keeps case",
+      "args": [
+        "status\nOpen",
+        "{\"columns\":{\"status\":{\"enum\":[\"open\"]}}}"
+      ],
+      "expected": {
+        "headers": [
+          "status"
+        ],
+        "rows": [
+          [
+            "Open"
+          ]
+        ],
+        "errors": [
+          {
+            "row": 2,
+            "column": "status",
+            "rule": "allowed value",
+            "value": "Open"
+          }
+        ],
+        "total": 1
+      }
+    },
+    {
+      "name": "extra field error",
+      "args": [
+        "id,name\nA,Ada,extra",
+        "{\"columns\":{}}"
+      ],
+      "expected": {
+        "headers": [
+          "id",
+          "name"
+        ],
+        "rows": [
+          [
+            "A",
+            "Ada",
+            "extra"
+          ]
+        ],
+        "errors": [
+          {
+            "row": 2,
+            "column": "(record)",
+            "rule": "field count",
+            "value": "3"
+          }
+        ],
+        "total": 1
+      }
+    },
+    {
+      "name": "missing field error",
+      "args": [
+        "id,name\nA",
+        "{\"columns\":{}}"
+      ],
+      "expected": {
+        "headers": [
+          "id",
+          "name"
+        ],
+        "rows": [
+          [
+            "A"
+          ]
+        ],
+        "errors": [
+          {
+            "row": 2,
+            "column": "(record)",
+            "rule": "field count",
+            "value": "1"
+          }
+        ],
+        "total": 1
+      }
+    },
+    {
+      "name": "quoted double quote",
+      "args": [
+        "text\n\"He said \"\"yes\"\"\"",
+        "{\"columns\":{\"text\":{\"type\":\"string\"}}}"
+      ],
+      "expected": {
+        "headers": [
+          "text"
+        ],
+        "rows": [
+          [
+            "He said \"yes\""
+          ]
+        ],
+        "errors": [],
+        "total": 0
+      }
+    },
+    {
+      "name": "header only file",
+      "args": [
+        "id,name",
+        "{\"columns\":{\"id\":{\"required\":true}}}"
+      ],
+      "expected": {
+        "headers": [
+          "id",
+          "name"
+        ],
+        "rows": [],
+        "errors": [],
+        "total": 0
+      }
+    },
+    {
+      "name": "three duplicate rows",
+      "args": [
+        "id\nA\nA\nA",
+        "{\"columns\":{\"id\":{\"unique\":true}}}"
+      ],
+      "expected": {
+        "headers": [
+          "id"
+        ],
+        "rows": [
+          [
+            "A"
+          ],
+          [
+            "A"
+          ],
+          [
+            "A"
+          ]
+        ],
+        "errors": [
+          {
+            "row": 2,
+            "column": "id",
+            "rule": "unique",
+            "value": "A"
+          },
+          {
+            "row": 3,
+            "column": "id",
+            "rule": "unique",
+            "value": "A"
+          },
+          {
+            "row": 4,
+            "column": "id",
+            "rule": "unique",
+            "value": "A"
+          }
+        ],
+        "total": 3
+      }
+    },
+    {
+      "name": "finite number rejects overflow",
+      "args": [
+        "age\n1e999",
+        "{\"columns\":{\"age\":{\"type\":\"number\"}}}"
+      ],
+      "expected": {
+        "headers": [
+          "age"
+        ],
+        "rows": [
+          [
+            "1e999"
+          ]
+        ],
+        "errors": [
+          {
+            "row": 2,
+            "column": "age",
+            "rule": "type number",
+            "value": "1e999"
+          }
+        ],
+        "total": 1
+      }
+    },
+    {
+      "name": "decimal scientific notation",
+      "args": [
+        "age\n-2.5e2",
+        "{\"columns\":{\"age\":{\"type\":\"number\"}}}"
+      ],
+      "expected": {
+        "headers": [
+          "age"
+        ],
+        "rows": [
+          [
+            "-2.5e2"
+          ]
+        ],
+        "errors": [],
+        "total": 0
+      }
+    },
+    {
+      "name": "malformed schema before duplicate header parsing",
+      "args": [
+        "id,id\nA,A",
+        "{"
+      ],
+      "expected": {
+        "error": "Rule file is not valid JSON."
+      }
+    },
+    {
+      "name": "unknown type is rejected",
+      "args": [
+        "id\nA",
+        "{\"columns\":{\"id\":{\"type\":\"date\"}}}"
+      ],
+      "expected": {
+        "error": "Invalid type for id."
+      }
+    },
+    {
+      "name": "input size limit before parsing",
+      "function": "checkSize",
+      "args": [
+        "x",
+        "CSV file",
+        5242881
+      ],
+      "expected": {
+        "error": "CSV file exceeds the 5 MiB limit."
+      }
+    },
+    {
+      "name": "repeat checks and report leave source bytes intact",
+      "operation": "repeat-report",
+      "args": [
+        "id\r\n001\r\n",
+        "{\"columns\":{\"id\":{\"type\":\"string\"}}}"
+      ],
+      "expected": {
+        "sameSource": true,
+        "sameResult": true,
+        "report": "# CSV rule report\n\nSource: source.csv\n\n1 data record. 0 errors. 0 errors shown.\n\n| Logical row | Column | Failed rule | Value |\n| --- | --- | --- | --- |\n\n"
+      }
+    }
+  ]
+}

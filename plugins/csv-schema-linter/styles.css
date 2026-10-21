@@ -1,0 +1,62 @@
+.csv-rule-results {
+ padding: var(--size-4-6);
+ overflow: auto;
+}
+
+.csv-rule-summary {
+ color: var(--text-muted);
+}
+
+.csv-rule-table-wrap {
+ overflow-x: auto;
+ margin-bottom: var(--size-4-6);
+}
+
+.csv-rule-table {
+ width: 100%;
+ border-collapse: collapse;
+ font-size: var(--font-ui-small);
+}
+
+.csv-rule-table th,
+.csv-rule-table td {
+ padding: var(--size-4-2) var(--size-4-3);
+ border: 1px solid var(--background-modifier-border);
+ text-align: left;
+ white-space: pre-wrap;
+ overflow-wrap: anywhere;
+ max-width: 30em;
+}
+
+.csv-rule-table th {
+ background-color: var(--background-secondary);
+}
+
+.csv-rule-warning {
+ color: var(--text-error);
+}
+
+.csv-rule-success {
+ color: var(--text-success);
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}

@@ -1,0 +1,21 @@
+{
+  "columns": {
+    "id": {
+      "type": "string",
+      "unique": true
+    },
+    "name": {
+      "required": true,
+      "trim": true,
+      "default": "Unknown"
+    },
+    "status": {
+      "required": true,
+      "enum": [
+        "open",
+        "done"
+      ],
+      "default": "open"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+	"id": "csv-schema-linter",
+	"name": "CSV Rule Check",
+	"version": "1.1.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea."
+	],
+	"tip": "Put the rules for people.csv in people.csv.schema.json in the same folder, and the check reads them.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. CSV Rule Check is one of over 100 small plugins that I make. Thank you for trusting it with your CSV files.",
+	"related": [
+		{
+			"id": "table-rollup",
+			"name": "Table Rollup",
+			"blurb": "Combine note tables in one table with links to the source notes."
+		},
+		{
+			"id": "table-csv-encoding",
+			"name": "Table CSV Encoding",
+			"blurb": "Export Markdown tables to UTF-8 CSV files with a preview."
+		},
+		{
+			"id": "csv-glossary-lookup",
+			"name": "CSV Glossary Lookup",
+			"blurb": "Look up selected terms in a local CSV glossary and insert a meaning."
+		}
+	]
+}

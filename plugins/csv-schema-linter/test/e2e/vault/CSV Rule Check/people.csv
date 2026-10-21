@@ -1,0 +1,5 @@
+id,name,age,status,enabled
+A,Ada,20,open,true
+A,,xx,blocked,TRUE
+B,Bob,31,done,false
+C,Cara,27,open,true

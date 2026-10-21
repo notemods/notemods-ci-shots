@@ -1,0 +1,64 @@
+[
+  {
+    "feature": "choose",
+    "caption": "Choose the people CSV and its adjacent rules.",
+    "note": "Welcome.md",
+    "eval": "(async () => { const p = app.plugins.plugins['csv-schema-linter']; for (let i = 0; i < 8 && document.querySelector('.modal-container'); i++) { document.querySelectorAll('.modal-container .modal-close-button').forEach(b => b.click()); await new Promise(r => setTimeout(r,150)); } document.querySelectorAll('.modal-container').forEach(m => m.remove()); if (document.querySelector('.modal-container')) throw new Error('Modal did not close'); for (const leaf of app.workspace.getLeavesOfType('markdown')) leaf.detach(); p.pro.signOut(); await p.runCheck('CSV Rule Check/people.csv'); app.commands.executeCommandById('csv-schema-linter:check-csv'); const d = document.querySelector('.modal-content select'); d.value = 'CSV Rule Check/people.csv'; d.dispatchEvent(new Event('change', {bubbles:true})); document.querySelectorAll('.notice-container .notice').forEach(n => n.remove()); return 'ok'; })()",
+    "wait": 500,
+    "after": "(async () => { const p = app.plugins.plugins['csv-schema-linter']; for (let i = 0; i < 8 && document.querySelector('.modal-container'); i++) { document.querySelectorAll('.modal-container .modal-close-button').forEach(b => b.click()); await new Promise(r => setTimeout(r,150)); } document.querySelectorAll('.modal-container').forEach(m => m.remove()); if (document.querySelector('.modal-container')) throw new Error('Modal did not close'); p.pro.signOut();return 'ok'; })()"
+  },
+  {
+    "feature": "rules",
+    "caption": "Check missing names, types, allowed values and duplicate identifiers.",
+    "eval": "(async () => { const p = app.plugins.plugins['csv-schema-linter']; for (let i = 0; i < 8 && document.querySelector('.modal-container'); i++) { document.querySelectorAll('.modal-container .modal-close-button').forEach(b => b.click()); await new Promise(r => setTimeout(r,150)); } document.querySelectorAll('.modal-container').forEach(m => m.remove()); if (document.querySelector('.modal-container')) throw new Error('Modal did not close'); p.pro.signOut(); await p.runCheck('CSV Rule Check/people.csv');document.querySelectorAll('.notice-container .notice').forEach(n => n.remove()); return 'ok'; })()",
+    "wait": 500,
+    "after": "(async () => { const p = app.plugins.plugins['csv-schema-linter']; for (let i = 0; i < 8 && document.querySelector('.modal-container'); i++) { document.querySelectorAll('.modal-container .modal-close-button').forEach(b => b.click()); await new Promise(r => setTimeout(r,150)); } document.querySelectorAll('.modal-container').forEach(m => m.remove()); if (document.querySelector('.modal-container')) throw new Error('Modal did not close'); p.pro.signOut();return 'ok'; })()"
+  },
+  {
+    "feature": "rows",
+    "caption": "Quoted commas and line breaks keep logical row numbers.",
+    "eval": "(async () => { const p = app.plugins.plugins['csv-schema-linter']; for (let i = 0; i < 8 && document.querySelector('.modal-container'); i++) { document.querySelectorAll('.modal-container .modal-close-button').forEach(b => b.click()); await new Promise(r => setTimeout(r,150)); } document.querySelectorAll('.modal-container').forEach(m => m.remove()); if (document.querySelector('.modal-container')) throw new Error('Modal did not close'); p.pro.signOut(); await p.runCheck('CSV Rule Check/quoted.csv');document.querySelectorAll('.notice-container .notice').forEach(n => n.remove()); return 'ok'; })()",
+    "wait": 500,
+    "after": "(async () => { const p = app.plugins.plugins['csv-schema-linter']; for (let i = 0; i < 8 && document.querySelector('.modal-container'); i++) { document.querySelectorAll('.modal-container .modal-close-button').forEach(b => b.click()); await new Promise(r => setTimeout(r,150)); } document.querySelectorAll('.modal-container').forEach(m => m.remove()); if (document.querySelector('.modal-container')) throw new Error('Modal did not close'); p.pro.signOut();return 'ok'; })()"
+  },
+  {
+    "feature": "report",
+    "caption": "Create a new Markdown report from the check.",
+    "eval": "(async () => { const p = app.plugins.plugins['csv-schema-linter']; for (let i = 0; i < 8 && document.querySelector('.modal-container'); i++) { document.querySelectorAll('.modal-container .modal-close-button').forEach(b => b.click()); await new Promise(r => setTimeout(r,150)); } document.querySelectorAll('.modal-container').forEach(m => m.remove()); if (document.querySelector('.modal-container')) throw new Error('Modal did not close'); p.pro.signOut(); await p.runCheck('CSV Rule Check/people.csv'); const f = await p.writeReport(); await app.workspace.getLeaf('tab').openFile(f); document.querySelectorAll('.notice-container .notice').forEach(n => n.remove()); return 'ok'; })()",
+    "wait": 500,
+    "after": "(async () => { const p = app.plugins.plugins['csv-schema-linter']; for (let i = 0; i < 8 && document.querySelector('.modal-container'); i++) { document.querySelectorAll('.modal-container .modal-close-button').forEach(b => b.click()); await new Promise(r => setTimeout(r,150)); } document.querySelectorAll('.modal-container').forEach(m => m.remove()); if (document.querySelector('.modal-container')) throw new Error('Modal did not close'); p.pro.signOut();return 'ok'; })()"
+  },
+  {
+    "feature": "fixes",
+    "caption": "Review trim and default fixes before a new CSV copy.",
+    "eval": "(async () => { const p = app.plugins.plugins['csv-schema-linter']; for (let i = 0; i < 8 && document.querySelector('.modal-container'); i++) { document.querySelectorAll('.modal-container .modal-close-button').forEach(b => b.click()); await new Promise(r => setTimeout(r,150)); } document.querySelectorAll('.modal-container').forEach(m => m.remove()); if (document.querySelector('.modal-container')) throw new Error('Modal did not close'); p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('csv-schema-linter-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); await p.runCheck('CSV Rule Check/fix.csv'); await p.openPreview();document.querySelectorAll('.notice-container .notice').forEach(n => n.remove()); return 'ok'; })()",
+    "wait": 500,
+    "after": "(async () => { const p = app.plugins.plugins['csv-schema-linter']; for (let i = 0; i < 8 && document.querySelector('.modal-container'); i++) { document.querySelectorAll('.modal-container .modal-close-button').forEach(b => b.click()); await new Promise(r => setTimeout(r,150)); } document.querySelectorAll('.modal-container').forEach(m => m.remove()); if (document.querySelector('.modal-container')) throw new Error('Modal did not close'); p.pro.signOut();return 'ok'; })()"
+  },
+  {
+    "feature": "batch",
+    "caption": "Choose files and a saved rule set for a batch check.",
+    "eval": "(async () => { const p = app.plugins.plugins['csv-schema-linter']; for (let i = 0; i < 8 && document.querySelector('.modal-container'); i++) { document.querySelectorAll('.modal-container .modal-close-button').forEach(b => b.click()); await new Promise(r => setTimeout(r,150)); } document.querySelectorAll('.modal-container').forEach(m => m.remove()); if (document.querySelector('.modal-container')) throw new Error('Modal did not close'); p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('csv-schema-linter-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); await p.runCheck('CSV Rule Check/people.csv'); if (!p.settings.ruleSets.People) await p.saveRuleSet('People'); app.commands.executeCommandById('csv-schema-linter:batch-check'); for (const row of document.querySelectorAll('.modal-content .setting-item')) { const name = row.querySelector('.setting-item-name')?.textContent || ''; if (name.endsWith('/people.csv') || name.endsWith('/quoted.csv')) row.querySelector('.checkbox-container')?.click(); }document.querySelectorAll('.notice-container .notice').forEach(n => n.remove()); return 'ok'; })()",
+    "wait": 500,
+    "after": "(async () => { const p = app.plugins.plugins['csv-schema-linter']; for (let i = 0; i < 8 && document.querySelector('.modal-container'); i++) { document.querySelectorAll('.modal-container .modal-close-button').forEach(b => b.click()); await new Promise(r => setTimeout(r,150)); } document.querySelectorAll('.modal-container').forEach(m => m.remove()); if (document.querySelector('.modal-container')) throw new Error('Modal did not close'); p.pro.signOut();return 'ok'; })()"
+  },
+  {
+    "feature": "csv-schema-linter",
+    "caption": "Check local CSV files and review fixes.",
+    "frames": [
+      {
+        "eval": "(async () => { const p = app.plugins.plugins['csv-schema-linter']; for (let i = 0; i < 8 && document.querySelector('.modal-container'); i++) { document.querySelectorAll('.modal-container .modal-close-button').forEach(b => b.click()); await new Promise(r => setTimeout(r,150)); } document.querySelectorAll('.modal-container').forEach(m => m.remove()); if (document.querySelector('.modal-container')) throw new Error('Modal did not close'); p.pro.signOut(); await p.runCheck('CSV Rule Check/people.csv');document.querySelectorAll('.notice-container .notice').forEach(n => n.remove()); return 'ok'; })()",
+        "hold": 1600
+      },
+      {
+        "eval": "(async () => { const p = app.plugins.plugins['csv-schema-linter']; for (let i = 0; i < 8 && document.querySelector('.modal-container'); i++) { document.querySelectorAll('.modal-container .modal-close-button').forEach(b => b.click()); await new Promise(r => setTimeout(r,150)); } document.querySelectorAll('.modal-container').forEach(m => m.remove()); if (document.querySelector('.modal-container')) throw new Error('Modal did not close'); p.pro.signOut(); await p.runCheck('CSV Rule Check/quoted.csv');document.querySelectorAll('.notice-container .notice').forEach(n => n.remove()); return 'ok'; })()",
+        "hold": 1600
+      },
+      {
+        "eval": "(async () => { const p = app.plugins.plugins['csv-schema-linter']; for (let i = 0; i < 8 && document.querySelector('.modal-container'); i++) { document.querySelectorAll('.modal-container .modal-close-button').forEach(b => b.click()); await new Promise(r => setTimeout(r,150)); } document.querySelectorAll('.modal-container').forEach(m => m.remove()); if (document.querySelector('.modal-container')) throw new Error('Modal did not close'); p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('csv-schema-linter-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); await p.runCheck('CSV Rule Check/fix.csv'); await p.openPreview();document.querySelectorAll('.notice-container .notice').forEach(n => n.remove()); return 'ok'; })()",
+        "hold": 1800
+      }
+    ],
+    "after": "(async () => { const p = app.plugins.plugins['csv-schema-linter']; for (let i = 0; i < 8 && document.querySelector('.modal-container'); i++) { document.querySelectorAll('.modal-container .modal-close-button').forEach(b => b.click()); await new Promise(r => setTimeout(r,150)); } document.querySelectorAll('.modal-container').forEach(m => m.remove()); if (document.querySelector('.modal-container')) throw new Error('Modal did not close'); p.pro.signOut();return 'ok'; })()"
+  }
+]

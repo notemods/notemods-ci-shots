@@ -1,0 +1,13 @@
+{
+  "columns": {
+    "id": {
+      "type": "string"
+    },
+    "text": {
+      "required": true
+    },
+    "age": {
+      "type": "number"
+    }
+  }
+}
