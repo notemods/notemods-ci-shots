@@ -1,0 +1,84 @@
+.sync-churn-watch {
+	padding: 16px;
+}
+
+.sync-churn-state {
+	color: var(--text-accent);
+	font-weight: var(--font-semibold);
+}
+
+.sync-churn-controls {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.sync-churn-help {
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+	line-height: 1.5;
+}
+
+.sync-churn-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: var(--font-ui-small);
+}
+
+.sync-churn-table th, .sync-churn-table td {
+	padding: 8px 6px;
+	text-align: right;
+	border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.sync-churn-table th:first-child, .sync-churn-table td:first-child {
+	text-align: left;
+}
+
+.sync-churn-table small {
+	display: block;
+	color: var(--text-muted);
+	overflow-wrap: anywhere;
+}
+
+.sync-churn-name {
+	overflow-wrap: anywhere;
+}
+
+.sync-churn-status {
+	cursor: pointer;
+}
+
+.sync-churn-day {
+	display: grid;
+	grid-template-columns: 90px 1fr 40px;
+	gap: 8px;
+	align-items: center;
+	margin-bottom: 8px;
+	font-size: var(--font-ui-small);
+}
+
+.sync-churn-day meter {
+	width: 100%;
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}

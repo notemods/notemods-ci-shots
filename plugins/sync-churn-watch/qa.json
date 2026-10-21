@@ -1,0 +1,64 @@
+[
+	{
+		"feature": "watch",
+		"caption": "A fixed sample session with free file counts.",
+		"note": "Review.md",
+		"eval": "(async () => { const p = app.plugins.plugins['sync-churn-watch']; await p.stopSession(); p.pro.signOut(); p.history = []; await p.startSession(); p.watch.session.started = Date.now() - 900000; const config = app.vault.configDir; for (let n = 0; n < 18; n++) p.watch.observe(config + '/plugins/workspace-helper/data.json', 'Workspace helper', 'settings', 2400); for (let n = 0; n < 7; n++) p.watch.observe(config + '/plugins/daily-review/data.json', 'Daily review', 'settings', 640); for (let n = 0; n < 4; n++) p.watch.observe('Sync Churn Watch/Meeting.md', 'Sync Churn Watch/Meeting.md', 'vault', 2000); for (let n = 0; n < 2; n++) p.watch.observe('Sync Churn Watch/Plan.md', 'Sync Churn Watch/Plan.md', 'vault', 1400); p.watch.observe('Sync Churn Watch/assets/chart.png', 'Sync Churn Watch/assets/chart.png', 'vault', 64000); await p.openView(); const leaf = app.workspace.getLeaf('tab'); await leaf.setViewState({ type: 'sync-churn-watch-view', active: true }); await app.workspace.revealLeaf(leaf); app.workspace.rightSplit.collapse(); p.redraw(); return 'sample session ready'; })()",
+		"wait": 600
+	},
+	{
+		"feature": "settings-files",
+		"caption": "Sample settings rows show plugin names, paths and lower bound counts.",
+		"eval": "(async () => { const p = app.plugins.plugins['sync-churn-watch']; p.redraw(); return 'ok'; })()",
+		"wait": 400
+	},
+	{
+		"feature": "note-writes",
+		"caption": "Sample notes and an attachment show write counts and estimated bytes.",
+		"eval": "(async () => { const p = app.plugins.plugins['sync-churn-watch']; p.redraw(); const el = [...document.querySelectorAll('.sync-churn-watch')].find(e => e.offsetWidth > 0); el.scrollTop = 320; return 'ok'; })()",
+		"wait": 500
+	},
+	{
+		"feature": "markdown-report",
+		"caption": "The free report pasted into a sample note.",
+		"eval": "(async () => { const p = app.plugins.plugins['sync-churn-watch']; await p.stopSession(); await p.copyResults(); const text = await navigator.clipboard.readText(); const path = 'Sync Churn Watch/Report.md'; const content = '# Watch report\\n\\nFixed sample session. Settings counts are a lower bound.\\n\\n' + text; const file = app.vault.getFileByPath(path); if (file) await app.vault.process(file, () => content); else await app.vault.create(path, content); await app.workspace.openLinkText(path, '', false); return 'ok'; })()",
+		"wait": 500
+	},
+	{
+		"feature": "history",
+		"caption": "A daily chart of fixed sample sessions with a mocked Pro check.",
+		"eval": "(async () => { const p = app.plugins.plugins['sync-churn-watch']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('sync-churn-watch-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); const s = p.watch.session; p.history = [3, 2, 1].map((n) => { const date = new Date(); date.setDate(date.getDate() - n); const day = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0'); return { ...s, started: date.getTime() - 900000, stopped: date.getTime(), rows: s.rows.map(r => ({ ...r, writes: r.writes * n, bytes: r.bytes * n })), days: { [day]: s.rows.reduce((total, r) => total + r.writes, 0) * n } }; }); const leaf = app.workspace.getLeaf('tab'); await leaf.setViewState({ type: 'sync-churn-watch-view', active: true }); await app.workspace.revealLeaf(leaf); p.redraw(); const el = [...document.querySelectorAll('.sync-churn-watch')].find(e => e.offsetWidth > 0); el.scrollTop = 570; el.querySelector('details').open = true; return 'ok'; })()",
+		"wait": 500
+	},
+	{
+		"feature": "rate-notice",
+		"caption": "A fixed sample write rate notice with Pro enabled by a mocked check.",
+		"eval": "(async () => { const p = app.plugins.plugins['sync-churn-watch']; p.settings.alerts = true; p.settings.threshold = 60; const saved = p.watch.session; await p.startSession(); p.watch.session = { ...saved, stopped: null, started: Date.now() - 900000, rows: saved.rows.map(r => ({ ...r })) }; p.watch.observe(app.vault.configDir + '/plugins/workspace-helper/data.json', 'Workspace helper', 'settings', 2400); const leaf = app.workspace.getLeavesOfType('sync-churn-watch-view').find(l => l.view.containerEl.offsetWidth > 0); await app.workspace.revealLeaf(leaf); const el = [...document.querySelectorAll('.sync-churn-watch')].find(e => e.offsetWidth > 0); el.scrollTop = 0; return 'ok'; })()",
+		"wait": 500
+	},
+	{
+		"feature": "folders",
+		"caption": "The copied folder suggestions in a sample review note.",
+		"eval": "(async () => { const p = app.plugins.plugins['sync-churn-watch']; await p.stopSession(); await p.copyExclusions(); const folders = await navigator.clipboard.readText(); const path = 'Sync Churn Watch/Folder review.md'; const content = '# Folders to review\\n\\nFixed sample. Review these folders before you change Sync exclusions.\\n\\n```text\\n' + folders + '\\n```\\n\\nThe command does not change Sync settings. A folder can contain useful files.\\n'; const file = app.vault.getFileByPath(path); if (file) await app.vault.process(file, () => content); else await app.vault.create(path, content); await app.workspace.openLinkText(path, '', false); return 'ok'; })()",
+		"wait": 500
+	},
+	{
+		"feature": "watch-session",
+		"caption": "Start, compare settings and notes, then stop the sample session.",
+		"frames": [
+			{
+				"note": "Review.md",
+				"eval": "(async () => { const p = app.plugins.plugins['sync-churn-watch']; await p.stopSession(); p.pro.signOut(); p.history = []; await p.startSession(); p.watch.session.started = Date.now() - 900000; const config = app.vault.configDir; for (let n = 0; n < 18; n++) p.watch.observe(config + '/plugins/workspace-helper/data.json', 'Workspace helper', 'settings', 2400); for (let n = 0; n < 7; n++) p.watch.observe(config + '/plugins/daily-review/data.json', 'Daily review', 'settings', 640); for (let n = 0; n < 4; n++) p.watch.observe('Sync Churn Watch/Meeting.md', 'Sync Churn Watch/Meeting.md', 'vault', 2000); for (let n = 0; n < 2; n++) p.watch.observe('Sync Churn Watch/Plan.md', 'Sync Churn Watch/Plan.md', 'vault', 1400); p.watch.observe('Sync Churn Watch/assets/chart.png', 'Sync Churn Watch/assets/chart.png', 'vault', 64000); await p.openView(); const leaf = app.workspace.getLeaf('tab'); await leaf.setViewState({ type: 'sync-churn-watch-view', active: true }); await app.workspace.revealLeaf(leaf); app.workspace.rightSplit.collapse(); p.redraw(); return 'sample session ready'; })()",
+				"hold": 1400
+			},
+			{
+				"eval": "(async () => { const p = app.plugins.plugins['sync-churn-watch']; p.watch.observe('Sync Churn Watch/Meeting.md', 'Sync Churn Watch/Meeting.md', 'vault', 2000); p.redraw(); const el = [...document.querySelectorAll('.sync-churn-watch')].find(e => e.offsetWidth > 0); el.scrollTop = 310; return 'ok'; })()",
+				"hold": 1400
+			},
+			{
+				"eval": "(async () => { const p = app.plugins.plugins['sync-churn-watch']; await p.stopSession(); const el = [...document.querySelectorAll('.sync-churn-watch')].find(e => e.offsetWidth > 0); el.scrollTop = 0; return 'ok'; })()",
+				"hold": 1800
+			}
+		]
+	}
+]

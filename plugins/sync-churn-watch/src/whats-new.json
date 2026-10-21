@@ -1,0 +1,34 @@
+{
+	"id": "sync-churn-watch",
+	"name": "Sync Churn Watch",
+	"version": "1.1.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Redraws the watch view at most two times each second during bulk edits.",
+		"Adds free watch sessions, settings checks, note event counts and Markdown copy."
+	],
+	"changes_user": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"During bulk edits, the watch view redraws at most twice a second, so it stays usable.",
+		"The watch view keeps its scroll position and open session history after a settings check."
+	],
+	"tip": "Run Copy results as Markdown to put a write table on the clipboard.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Sync Churn Watch is one of over 100 small plugins that I make. Thank you for using it to keep your sync history in check.",
+	"related": [
+		{
+			"id": "vault-loss-alarm",
+			"name": "Vault Loss Alarm",
+			"blurb": "Check missing files against a saved vault record."
+		},
+		{
+			"id": "vault-path-portability",
+			"name": "Vault Path Portability",
+			"blurb": "Find vault paths that can fail when moved between devices."
+		},
+		{
+			"id": "property-change-ledger",
+			"name": "Property Change Ledger",
+			"blurb": "Record observed changes to selected note properties in a local history file."
+		}
+	]
+}
