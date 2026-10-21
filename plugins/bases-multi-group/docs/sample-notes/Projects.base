@@ -1,0 +1,35 @@
+filters:
+  and:
+    - file.inFolder("Bases Multi Group/Tasks")
+views:
+  - type: bases-multi-group
+    name: By status and project
+    multiGroupFirst: note.status
+    multiGroupSecond: note.project
+    order:
+      - file.name
+      - note.owner
+      - note.hours
+    sort:
+      - property: file.name
+        direction: ASC
+  - type: bases-multi-group
+    name: Split work
+    multiGroupFirst: note.work
+    multiGroupSecond: note.status
+    multiGroupSplit: true
+    order:
+      - file.name
+      - note.project
+      - note.hours
+  - type: bases-multi-group
+    name: Pro example
+    multiGroupFirst: note.status
+    multiGroupSecond: note.project
+    multiGroupThird: note.owner
+    multiGroupNumber: note.hours
+    multiGroupMode: sum
+    multiGroupRemember: true
+    order:
+      - file.name
+      - note.hours

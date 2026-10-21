@@ -1,0 +1,436 @@
+{
+ "slug": "bases-multi-group",
+ "module": "bases-multi-group/src/group",
+ "function": "buildGroups",
+ "cases": [
+  {
+   "name": "two nested properties",
+   "args": [
+    [
+     {
+      "id": "a",
+      "values": {
+       "status": "Todo",
+       "project": "Alpha"
+      }
+     },
+     {
+      "id": "b",
+      "values": {
+       "status": "Todo",
+       "project": "Beta"
+      }
+     }
+    ],
+    {
+     "properties": [
+      "status",
+      "project"
+     ],
+     "splitLists": false,
+     "pro": false
+    }
+   ],
+   "expected": [
+    {
+     "key": "[[\"status\",\"\\\"Todo\\\"\"]]",
+     "label": "Todo",
+     "property": "status",
+     "count": 2,
+     "summary": null,
+     "rows": [
+      "a",
+      "b"
+     ],
+     "children": [
+      {
+       "key": "[[\"status\",\"\\\"Todo\\\"\"],[\"project\",\"\\\"Alpha\\\"\"]]",
+       "label": "Alpha",
+       "property": "project",
+       "count": 1,
+       "summary": null,
+       "rows": [
+        "a"
+       ],
+       "children": []
+      },
+      {
+       "key": "[[\"status\",\"\\\"Todo\\\"\"],[\"project\",\"\\\"Beta\\\"\"]]",
+       "label": "Beta",
+       "property": "project",
+       "count": 1,
+       "summary": null,
+       "rows": [
+        "b"
+       ],
+       "children": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "list stays combined",
+   "args": [
+    [
+     {
+      "id": "a",
+      "values": {
+       "status": [
+        "A",
+        "B"
+       ]
+      }
+     }
+    ],
+    {
+     "properties": [
+      "status"
+     ],
+     "splitLists": false,
+     "pro": false
+    }
+   ],
+   "expected": [
+    {
+     "key": "[[\"status\",\"[\\\"A\\\",\\\"B\\\"]\"]]",
+     "label": "[A, B]",
+     "property": "status",
+     "count": 1,
+     "summary": null,
+     "rows": [
+      "a"
+     ],
+     "children": []
+    }
+   ]
+  },
+  {
+   "name": "list splits across groups",
+   "args": [
+    [
+     {
+      "id": "a",
+      "values": {
+       "status": [
+        "A",
+        "B"
+       ]
+      }
+     }
+    ],
+    {
+     "properties": [
+      "status"
+     ],
+     "splitLists": true,
+     "pro": false
+    }
+   ],
+   "expected": [
+    {
+     "key": "[[\"status\",\"\\\"A\\\"\"]]",
+     "label": "A",
+     "property": "status",
+     "count": 1,
+     "summary": null,
+     "rows": [
+      "a"
+     ],
+     "children": []
+    },
+    {
+     "key": "[[\"status\",\"\\\"B\\\"\"]]",
+     "label": "B",
+     "property": "status",
+     "count": 1,
+     "summary": null,
+     "rows": [
+      "a"
+     ],
+     "children": []
+    }
+   ]
+  },
+  {
+   "name": "list duplicates count once",
+   "args": [
+    [
+     {
+      "id": "a",
+      "values": {
+       "status": [
+        "A",
+        "A"
+       ]
+      }
+     }
+    ],
+    {
+     "properties": [
+      "status"
+     ],
+     "splitLists": true,
+     "pro": false
+    }
+   ],
+   "expected": [
+    {
+     "key": "[[\"status\",\"\\\"A\\\"\"]]",
+     "label": "A",
+     "property": "status",
+     "count": 1,
+     "summary": null,
+     "rows": [
+      "a"
+     ],
+     "children": []
+    }
+   ]
+  },
+  {
+   "name": "missing and empty lists",
+   "args": [
+    [
+     {
+      "id": "a",
+      "values": {}
+     },
+     {
+      "id": "b",
+      "values": {
+       "status": []
+      }
+     }
+    ],
+    {
+     "properties": [
+      "status"
+     ],
+     "splitLists": true,
+     "pro": false
+    }
+   ],
+   "expected": [
+    {
+     "key": "[[\"status\",\"null\"]]",
+     "label": "(no value)",
+     "property": "status",
+     "count": 2,
+     "summary": null,
+     "rows": [
+      "a",
+      "b"
+     ],
+     "children": []
+    }
+   ]
+  },
+  {
+   "name": "leaf row order",
+   "args": [
+    [
+     {
+      "id": "b",
+      "values": {
+       "status": "A"
+      }
+     },
+     {
+      "id": "a",
+      "values": {
+       "status": "A"
+      }
+     }
+    ],
+    {
+     "properties": [
+      "status"
+     ],
+     "splitLists": false,
+     "pro": false
+    }
+   ],
+   "expected": [
+    {
+     "key": "[[\"status\",\"\\\"A\\\"\"]]",
+     "label": "A",
+     "property": "status",
+     "count": 2,
+     "summary": null,
+     "rows": [
+      "b",
+      "a"
+     ],
+     "children": []
+    }
+   ]
+  },
+  {
+   "name": "free ignores third level and summary",
+   "args": [
+    [
+     {
+      "id": "a",
+      "values": {
+       "status": "A",
+       "project": "B",
+       "area": "C",
+       "hours": 4
+      }
+     }
+    ],
+    {
+     "properties": [
+      "status",
+      "project",
+      "area"
+     ],
+     "splitLists": false,
+     "pro": false,
+     "summaryProperty": "hours"
+    }
+   ],
+   "expected": [
+    {
+     "key": "[[\"status\",\"\\\"A\\\"\"]]",
+     "label": "A",
+     "property": "status",
+     "count": 1,
+     "summary": null,
+     "rows": [
+      "a"
+     ],
+     "children": [
+      {
+       "key": "[[\"status\",\"\\\"A\\\"\"],[\"project\",\"\\\"B\\\"\"]]",
+       "label": "B",
+       "property": "project",
+       "count": 1,
+       "summary": null,
+       "rows": [
+        "a"
+       ],
+       "children": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "pro third level and sum",
+   "args": [
+    [
+     {
+      "id": "a",
+      "values": {
+       "status": "A",
+       "project": "B",
+       "area": "C",
+       "hours": 4
+      }
+     }
+    ],
+    {
+     "properties": [
+      "status",
+      "project",
+      "area"
+     ],
+     "splitLists": false,
+     "pro": true,
+     "summaryProperty": "hours"
+    }
+   ],
+   "expected": [
+    {
+     "key": "[[\"status\",\"\\\"A\\\"\"]]",
+     "label": "A",
+     "property": "status",
+     "count": 1,
+     "summary": 4,
+     "rows": [
+      "a"
+     ],
+     "children": [
+      {
+       "key": "[[\"status\",\"\\\"A\\\"\"],[\"project\",\"\\\"B\\\"\"]]",
+       "label": "B",
+       "property": "project",
+       "count": 1,
+       "summary": 4,
+       "rows": [
+        "a"
+       ],
+       "children": [
+        {
+         "key": "[[\"status\",\"\\\"A\\\"\"],[\"project\",\"\\\"B\\\"\"],[\"area\",\"\\\"C\\\"\"]]",
+         "label": "C",
+         "property": "area",
+         "count": 1,
+         "summary": 4,
+         "rows": [
+          "a"
+         ],
+         "children": []
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "pro average ignores text",
+   "args": [
+    [
+     {
+      "id": "a",
+      "values": {
+       "status": "A",
+       "hours": 4
+      }
+     },
+     {
+      "id": "b",
+      "values": {
+       "status": "A",
+       "hours": 8
+      }
+     },
+     {
+      "id": "c",
+      "values": {
+       "status": "A",
+       "hours": "100"
+      }
+     }
+    ],
+    {
+     "properties": [
+      "status"
+     ],
+     "splitLists": false,
+     "pro": true,
+     "summaryProperty": "hours",
+     "summaryMode": "average"
+    }
+   ],
+   "expected": [
+    {
+     "key": "[[\"status\",\"\\\"A\\\"\"]]",
+     "label": "A",
+     "property": "status",
+     "count": 3,
+     "summary": 6,
+     "rows": [
+      "a",
+      "b",
+      "c"
+     ],
+     "children": []
+    }
+   ]
+  }
+ ]
+}

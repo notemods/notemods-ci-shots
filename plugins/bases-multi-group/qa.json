@@ -1,0 +1,60 @@
+[
+  {
+    "feature": "nested-groups",
+    "caption": "nested groups",
+    "note": "Projects.base",
+    "eval": "return (async () => { await app.workspace.openLinkText('Bases Multi Group/Projects.base#By status and project', '', false); await new Promise(r => setTimeout(r, 1400)); const root = document.querySelector('.workspace-leaf.mod-active .bases-multi-group'); if (!root) throw new Error('Missing Multi group view');  if (root.querySelectorAll('.bmg-row').length !== 6) throw new Error('Expected six task rows'); return 'ok'; })()",
+    "wait": 500
+  },
+  {
+    "feature": "collapsed-groups",
+    "caption": "collapsed groups",
+    "note": "Projects.base",
+    "eval": "return (async () => { await app.workspace.openLinkText('Bases Multi Group/Projects.base#By status and project', '', false); await new Promise(r => setTimeout(r, 1400)); const root = document.querySelector('.workspace-leaf.mod-active .bases-multi-group'); if (!root) throw new Error('Missing Multi group view'); [...root.querySelectorAll('button')].find(b => b.textContent === 'Collapse all').click(); await new Promise(r => setTimeout(r, 100)); if (root.querySelector('details[open]')) throw new Error('Groups did not collapse'); return 'ok'; })()",
+    "wait": 500
+  },
+  {
+    "feature": "list-groups",
+    "caption": "list groups",
+    "note": "Projects.base",
+    "eval": "return (async () => { await app.workspace.openLinkText('Bases Multi Group/Projects.base#Split work', '', false); await new Promise(r => setTimeout(r, 1400)); const root = document.querySelector('.workspace-leaf.mod-active .bases-multi-group'); if (!root) throw new Error('Missing Multi group view');  for (const top of root.querySelectorAll(':scope > details')) { const label = top.querySelector('summary').textContent; if (label.includes('(no value)') || label.includes('Research')) top.open = false; else for (const child of top.querySelectorAll(':scope > .bmg-content > details')) child.open = child.querySelector('summary').textContent.includes('Doing'); } await new Promise(r => setTimeout(r, 200)); if (root.querySelectorAll('.bmg-row').length !== 8) throw new Error('Expected eight list memberships'); return 'ok'; })()",
+    "wait": 500
+  },
+  {
+    "feature": "pro-summary",
+    "caption": "pro summary",
+    "note": "Projects.base",
+    "eval": "return (async () => {const p = app.plugins.plugins['bases-multi-group']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'test-example' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-multi-group-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); await app.workspace.openLinkText('Bases Multi Group/Projects.base#Pro example', '', false); await new Promise(r => setTimeout(r, 1400)); const root = document.querySelector('.workspace-leaf.mod-active .bases-multi-group'); if (!root) throw new Error('Missing Multi group view');  [...root.querySelectorAll('button')].find(b => b.textContent === 'Expand all').click(); for (const top of root.querySelectorAll(':scope > details')) if (!top.querySelector('summary').textContent.includes('Doing')) top.open = false; await new Promise(r => setTimeout(r, 200)); if (root.querySelectorAll('details').length !== 13 || !root.querySelector('.bmg-summary')) throw new Error('Missing Pro levels or summary'); return 'ok'; })()",
+    "wait": 500,
+    "after": "app.plugins.plugins['bases-multi-group'].pro.signOut();",
+    "zoom": 0.9
+  },
+  {
+    "feature": "settings",
+    "caption": "settings",
+    "note": "Projects.base",
+    "eval": "return (async () => { await app.workspace.openLinkText('Bases Multi Group/Projects.base#By status and project', '', false); await new Promise(r => setTimeout(r, 1400)); const root = document.querySelector('.workspace-leaf.mod-active .bases-multi-group'); if (!root) throw new Error('Missing Multi group view'); app.setting.open(); app.setting.openTabById('bases-multi-group');  return 'ok'; })()",
+    "wait": 500,
+    "after": "app.setting.close();"
+  },
+  {
+    "feature": "grouping",
+    "caption": "Fold and expand the real task groups.",
+    "note": "Projects.base",
+    "eval": "return (async () => { await app.workspace.openLinkText('Bases Multi Group/Projects.base#By status and project', '', false); await new Promise(r => setTimeout(r, 1400)); const root = document.querySelector('.workspace-leaf.mod-active .bases-multi-group'); if (!root) throw new Error('Missing Multi group view');  if (root.querySelectorAll('.bmg-row').length !== 6) throw new Error('Expected six task rows'); return 'ok'; })()",
+    "frames": [
+      {
+        "eval": "return (async () => { await app.workspace.openLinkText('Bases Multi Group/Projects.base#By status and project', '', false); await new Promise(r => setTimeout(r, 1400)); const root = document.querySelector('.workspace-leaf.mod-active .bases-multi-group'); if (!root) throw new Error('Missing Multi group view');  if (root.querySelectorAll('.bmg-row').length !== 6) throw new Error('Expected six task rows'); return 'ok'; })()",
+        "hold": 1000
+      },
+      {
+        "eval": "[...document.querySelectorAll('.workspace-leaf.mod-active .bmg-bar button')].find(b => b.textContent === 'Collapse all').click()",
+        "hold": 1000
+      },
+      {
+        "eval": "[...document.querySelectorAll('.workspace-leaf.mod-active .bmg-bar button')].find(b => b.textContent === 'Expand all').click()",
+        "hold": 1000
+      }
+    ]
+  }
+]
