@@ -1,0 +1,69 @@
+[
+  {
+    "feature": "folders",
+    "caption": "Select source pages and a new destination folder.",
+    "note": "Welcome.md",
+    "eval": "(async()=>{document.querySelectorAll('.modal-container').forEach(e=>e.remove()); const p=app.plugins.plugins['vimwiki-import']; p.pro.signOut(); p.settings={source:'Vimwiki Import/Wiki',destination:'Imported atlas',diary:''}; app.commands.executeCommandById('vimwiki-import:preview-import'); document.querySelector('.vimwiki-import-modal .checkbox-container').click();return 'ok';})()",
+    "wait": 350
+  },
+  {
+    "feature": "preview",
+    "caption": "Review headings, tasks and mapped local links.",
+    "note": "Welcome.md",
+    "eval": "(async()=>{document.querySelectorAll('.modal-container').forEach(e=>e.remove()); const p=app.plugins.plugins['vimwiki-import']; p.pro.signOut(); p.settings={source:'Vimwiki Import/Wiki',destination:'Imported atlas',diary:''}; app.commands.executeCommandById('vimwiki-import:preview-import'); document.querySelector('.vimwiki-import-modal .checkbox-container').click(); document.querySelector('.vimwiki-import-modal button.mod-cta').click(); for(let i=0;i<100 && !document.querySelector('.vimwiki-preview');i++) await new Promise(r=>setTimeout(r,30)); if(!document.querySelector('.vimwiki-preview')) throw new Error('Preview missing'); return 'ok';})()",
+    "wait": 350
+  },
+  {
+    "feature": "tasks",
+    "caption": "Review task states and code blocks.",
+    "note": "Welcome.md",
+    "eval": "(async()=>{document.querySelectorAll('.modal-container').forEach(e=>e.remove()); const p=app.plugins.plugins['vimwiki-import']; p.pro.signOut(); p.settings={source:'Vimwiki Import/Tasks',destination:'Imported tasks',diary:''}; app.commands.executeCommandById('vimwiki-import:preview-import'); document.querySelector('.vimwiki-import-modal .checkbox-container').click(); document.querySelector('.vimwiki-import-modal button.mod-cta').click(); for(let i=0;i<100 && !document.querySelector('.vimwiki-preview');i++) await new Promise(r=>setTimeout(r,30)); if(!document.querySelector('.vimwiki-preview')) throw new Error('Preview missing'); return 'ok';})()",
+    "wait": 350
+  },
+  {
+    "feature": "report",
+    "caption": "Read created paths and warnings after import.",
+    "note": "Welcome.md",
+    "eval": "(async()=>{document.querySelectorAll('.modal-container').forEach(e=>e.remove()); const p=app.plugins.plugins['vimwiki-import']; p.pro.signOut(); const dest='Imported sample '+Date.now(); p.settings={source:'Vimwiki Import/Tasks',destination:dest,diary:''}; app.commands.executeCommandById('vimwiki-import:preview-import'); document.querySelector('.vimwiki-import-modal .checkbox-container').click(); document.querySelector('.vimwiki-import-modal button.mod-cta').click(); for(let i=0;i<100 && !document.querySelector('.vimwiki-preview');i++) await new Promise(r=>setTimeout(r,30)); if(!document.querySelector('.vimwiki-preview')) throw new Error('Preview missing'); document.querySelector('.vimwiki-import-modal button.mod-cta').click(); for(let i=0;i<100 && document.querySelector('.vimwiki-preview pre');i++) await new Promise(r=>setTimeout(r,30)); if(!document.querySelector('.modal-title')?.textContent?.includes('result')) throw new Error('Result missing'); return 'ok';})()",
+    "wait": 350
+  },
+  {
+    "feature": "diary",
+    "caption": "Map an ISO diary name into the daily-note folder.",
+    "note": "Welcome.md",
+    "eval": "(async()=>{document.querySelectorAll('.modal-container').forEach(e=>e.remove()); const p=app.plugins.plugins['vimwiki-import']; p.pro.signOut(); p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('vimwiki-import-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow(); p.settings={source:'Vimwiki Import/Diary',destination:'Imported diary',diary:'Daily sample'}; app.commands.executeCommandById('vimwiki-import:preview-import'); document.querySelector('.vimwiki-import-modal .checkbox-container').click(); document.querySelector('.vimwiki-import-modal button.mod-cta').click(); for(let i=0;i<100 && !document.querySelector('.vimwiki-preview');i++) await new Promise(r=>setTimeout(r,30)); if(!document.querySelector('.vimwiki-preview')) throw new Error('Preview missing'); return 'ok';})()",
+    "wait": 350,
+    "after": "app.plugins.plugins['vimwiki-import'].pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "combined",
+    "caption": "Review unresolved links from two imported folders.",
+    "note": "Welcome.md",
+    "eval": "(async()=>{document.querySelectorAll('.modal-container').forEach(e=>e.remove()); const p=app.plugins.plugins['vimwiki-import']; p.pro.signOut(); p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('vimwiki-import-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow(); document.querySelectorAll('.modal-container').forEach(e=>e.remove()); for(const source of ['Wiki','Other']) { const plan=await p.preview('Vimwiki Import/'+source,'Imported '+source+' '+Date.now()); await p.importPlan(plan); } const path=await p.writeCombined(); await app.workspace.openLinkText(path,'',false); return 'ok';})()",
+    "wait": 350,
+    "after": "app.plugins.plugins['vimwiki-import'].pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "vimwiki-import",
+    "caption": "Select folders, preview conversion and read the import result.",
+    "frames": [
+      {
+        "note": "Welcome.md",
+        "eval": "(async()=>{document.querySelectorAll('.modal-container').forEach(e=>e.remove()); const p=app.plugins.plugins['vimwiki-import']; p.pro.signOut(); p.settings={source:'Vimwiki Import/Wiki',destination:'Imported atlas',diary:''}; app.commands.executeCommandById('vimwiki-import:preview-import'); document.querySelector('.vimwiki-import-modal .checkbox-container').click();return 'ok';})()",
+        "hold": 1300
+      },
+      {
+        "eval": "(async()=>{document.querySelectorAll('.modal-container').forEach(e=>e.remove()); const p=app.plugins.plugins['vimwiki-import']; p.pro.signOut(); p.settings={source:'Vimwiki Import/Wiki',destination:'Imported atlas',diary:''}; app.commands.executeCommandById('vimwiki-import:preview-import'); document.querySelector('.vimwiki-import-modal .checkbox-container').click(); document.querySelector('.vimwiki-import-modal button.mod-cta').click(); for(let i=0;i<100 && !document.querySelector('.vimwiki-preview');i++) await new Promise(r=>setTimeout(r,30)); if(!document.querySelector('.vimwiki-preview')) throw new Error('Preview missing'); return 'ok';})()",
+        "hold": 1600
+      },
+      {
+        "eval": "(async()=>{document.querySelectorAll('.modal-container').forEach(e=>e.remove()); const p=app.plugins.plugins['vimwiki-import']; p.pro.signOut(); p.settings={source:'Vimwiki Import/Tasks',destination:'Imported tasks',diary:''}; app.commands.executeCommandById('vimwiki-import:preview-import'); document.querySelector('.vimwiki-import-modal .checkbox-container').click(); document.querySelector('.vimwiki-import-modal button.mod-cta').click(); for(let i=0;i<100 && !document.querySelector('.vimwiki-preview');i++) await new Promise(r=>setTimeout(r,30)); if(!document.querySelector('.vimwiki-preview')) throw new Error('Preview missing'); return 'ok';})()",
+        "hold": 1400
+      },
+      {
+        "eval": "(async()=>{document.querySelectorAll('.modal-container').forEach(e=>e.remove()); const p=app.plugins.plugins['vimwiki-import']; p.pro.signOut(); const dest='Imported sample '+Date.now(); p.settings={source:'Vimwiki Import/Tasks',destination:dest,diary:''}; app.commands.executeCommandById('vimwiki-import:preview-import'); document.querySelector('.vimwiki-import-modal .checkbox-container').click(); document.querySelector('.vimwiki-import-modal button.mod-cta').click(); for(let i=0;i<100 && !document.querySelector('.vimwiki-preview');i++) await new Promise(r=>setTimeout(r,30)); if(!document.querySelector('.vimwiki-preview')) throw new Error('Preview missing'); document.querySelector('.vimwiki-import-modal button.mod-cta').click(); for(let i=0;i<100 && document.querySelector('.vimwiki-preview pre');i++) await new Promise(r=>setTimeout(r,30)); if(!document.querySelector('.modal-title')?.textContent?.includes('result')) throw new Error('Result missing'); return 'ok';})()",
+        "hold": 1600
+      }
+    ]
+  }
+]

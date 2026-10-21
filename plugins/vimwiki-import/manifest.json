@@ -1,0 +1,11 @@
+{
+	"id": "vimwiki-import",
+	"name": "Vimwiki Import",
+	"version": "1.1.0",
+	"minAppVersion": "1.13.4",
+	"description": "Convert default Vimwiki pages into Markdown notes with working local links.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}

@@ -1,0 +1,27 @@
+{
+	"id": "vimwiki-import",
+	"name": "Vimwiki Import",
+	"version": "1.1.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea."
+	],
+	"tip": "Copy your Vimwiki folder into the vault first, then run the preview command on that folder.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Vimwiki Import is one of over 100 small plugins that I make. Thank you for moving your notes into Obsidian with it.",
+	"related": [
+		{
+			"id": "zim-notebook-import",
+			"name": "Zim Notebook Import",
+			"blurb": "Convert basic Zim pages into linked Markdown notes."
+		},
+		{
+			"id": "cherrytree-import",
+			"name": "CherryTree Import",
+			"blurb": "Import unencrypted CherryTree XML, links and PNGs."
+		},
+		{
+			"id": "visual-line-numbers",
+			"name": "Visual Line Numbers",
+			"blurb": "Show a line number for each wrapped row, so counted Vim motions land where the gutter says."
+		}
+	]
+}
