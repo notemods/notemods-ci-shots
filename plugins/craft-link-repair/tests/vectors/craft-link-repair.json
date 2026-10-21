@@ -1,0 +1,1990 @@
+{
+ "slug": "craft-link-repair",
+ "module": "craft-link-repair/src/repair",
+ "function": "planRepair",
+ "note": "Each case calls planRepair with local source text and options. Expected output is exact. These are synthetic format fixtures.",
+ "cases": [
+  {
+   "name": "Page URL with documentId",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[Project](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[[Export/Page.textbundle/text.repaired|Project]]"
+     }
+    ],
+    "changes": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "label": "Project",
+      "url": "craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111",
+      "target": "Export/Page.textbundle/text.repaired"
+     }
+    ],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Page URL with id",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[Project](craftdocs://open?id=a1b2c3d4-1111-4111-8111-111111111111)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[[Export/Page.textbundle/text.repaired|Project]]"
+     }
+    ],
+    "changes": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "label": "Project",
+      "url": "craftdocs://open?id=a1b2c3d4-1111-4111-8111-111111111111",
+      "target": "Export/Page.textbundle/text.repaired"
+     }
+    ],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Page URL with identifier",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[Project](craftdocs://open?identifier=a1b2c3d4-1111-4111-8111-111111111111)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[[Export/Page.textbundle/text.repaired|Project]]"
+     }
+    ],
+    "changes": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "label": "Project",
+      "url": "craftdocs://open?identifier=a1b2c3d4-1111-4111-8111-111111111111",
+      "target": "Export/Page.textbundle/text.repaired"
+     }
+    ],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Page URL with blockId",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[Project](craftdocs://open?blockId=a1b2c3d4-1111-4111-8111-111111111111)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[[Export/Page.textbundle/text.repaired|Project]]"
+     }
+    ],
+    "changes": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "label": "Project",
+      "url": "craftdocs://open?blockId=a1b2c3d4-1111-4111-8111-111111111111",
+      "target": "Export/Page.textbundle/text.repaired"
+     }
+    ],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Keep a Unicode label",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[設計 notes](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[[Export/Page.textbundle/text.repaired|設計 notes]]"
+     }
+    ],
+    "changes": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "label": "設計 notes",
+      "url": "craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111",
+      "target": "Export/Page.textbundle/text.repaired"
+     }
+    ],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Keep an empty label",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[[Export/Page.textbundle/text.repaired|]]"
+     }
+    ],
+    "changes": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "label": "",
+      "url": "craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111",
+      "target": "Export/Page.textbundle/text.repaired"
+     }
+    ],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Accept an angle enclosed URL",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[Page](<craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111>)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[[Export/Page.textbundle/text.repaired|Page]]"
+     }
+    ],
+    "changes": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "label": "Page",
+      "url": "craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111",
+      "target": "Export/Page.textbundle/text.repaired"
+     }
+    ],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Identifier case does not change the map",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[Page](craftdocs://open?documentId=A1B2C3D4-1111-4111-8111-111111111111)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[[Export/Page.textbundle/text.repaired|Page]]"
+     }
+    ],
+    "changes": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "label": "Page",
+      "url": "craftdocs://open?documentId=A1B2C3D4-1111-4111-8111-111111111111",
+      "target": "Export/Page.textbundle/text.repaired"
+     }
+    ],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Keep a missing identifier URL",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[Missing](craftdocs://open?documentId=22222222-2222-4222-8222-222222222222)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[Missing](craftdocs://open?documentId=22222222-2222-4222-8222-222222222222)"
+     }
+    ],
+    "changes": [],
+    "issues": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "url": "craftdocs://open?documentId=22222222-2222-4222-8222-222222222222",
+      "reason": "Missing or ambiguous page identifier"
+     }
+    ],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Keep a separate block URL",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[Block](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111&blockId=22222222-2222-4222-8222-222222222222)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[Block](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111&blockId=22222222-2222-4222-8222-222222222222)"
+     }
+    ],
+    "changes": [],
+    "issues": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "url": "craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111&blockId=22222222-2222-4222-8222-222222222222",
+      "reason": "Block link needs manual repair"
+     }
+    ],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Keep a fragment URL",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[Block](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111#section)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[Block](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111#section)"
+     }
+    ],
+    "changes": [],
+    "issues": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "url": "craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111#section",
+      "reason": "Block link needs manual repair"
+     }
+    ],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Same page and block identifier",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[Page](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111&blockId=a1b2c3d4-1111-4111-8111-111111111111)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[[Export/Page.textbundle/text.repaired|Page]]"
+     }
+    ],
+    "changes": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "label": "Page",
+      "url": "craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111&blockId=a1b2c3d4-1111-4111-8111-111111111111",
+      "target": "Export/Page.textbundle/text.repaired"
+     }
+    ],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Report a URL without an identifier",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[Page](craftdocs://open)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[Page](craftdocs://open)"
+     }
+    ],
+    "changes": [],
+    "issues": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "url": "craftdocs://open",
+      "reason": "No page identifier"
+     }
+    ],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Keep an unsupported Craft route",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[Page](craftdocs://other?id=a1b2c3d4-1111-4111-8111-111111111111)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[Page](craftdocs://other?id=a1b2c3d4-1111-4111-8111-111111111111)"
+     }
+    ],
+    "changes": [],
+    "issues": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "url": "craftdocs://other?id=a1b2c3d4-1111-4111-8111-111111111111",
+      "reason": "Unsupported Craft URL"
+     }
+    ],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Keep a Craft image link",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "![Page](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "![Page](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111)"
+     }
+    ],
+    "changes": [],
+    "issues": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "url": "craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111",
+      "reason": "Craft image link is not supported"
+     }
+    ],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Keep a label with a pipe",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[A|B](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[A|B](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111)"
+     }
+    ],
+    "changes": [],
+    "issues": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "url": "craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111",
+      "reason": "Label or path cannot form a wikilink"
+     }
+    ],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Fenced code stays intact",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "```md\n[Page](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111)\n```\n"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "```md\n[Page](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111)\n```\n"
+     }
+    ],
+    "changes": [],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Tilde code stays intact",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "~~~md\n[Page](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111)\n~~~\n"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "~~~md\n[Page](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111)\n~~~\n"
+     }
+    ],
+    "changes": [],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Inline code stays intact",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "`[Page](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111)`"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "`[Page](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111)`"
+     }
+    ],
+    "changes": [],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "HTML comment stays intact",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "<!-- [Page](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111) -->"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "<!-- [Page](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111) -->"
+     }
+    ],
+    "changes": [],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Note comment stays intact",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "%% [Page](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111) %%"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "%% [Page](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111) %%"
+     }
+    ],
+    "changes": [],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Frontmatter stays intact",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "---\nlink: [Page](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111)\n---\n"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "---\nlink: [Page](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111)\n---\n"
+     }
+    ],
+    "changes": [],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Leap day becomes a date link",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[Thursday](day://2024-02-29)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[[2024-02-29|Thursday]]"
+     }
+    ],
+    "changes": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "label": "Thursday",
+      "url": "day://2024-02-29",
+      "target": "2024-02-29"
+     }
+    ],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Keep an invalid leap date",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[Invalid](day://2025-02-29)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[Invalid](day://2025-02-29)"
+     }
+    ],
+    "changes": [],
+    "issues": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "url": "day://2025-02-29",
+      "reason": "Invalid day date"
+     }
+    ],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Keep an invalid month",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[Invalid](day://2026-13-01)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[Invalid](day://2026-13-01)"
+     }
+    ],
+    "changes": [],
+    "issues": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "url": "day://2026-13-01",
+      "reason": "Invalid day date"
+     }
+    ],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Free uses the default date path",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[Monday](day://2026-10-12)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export",
+     "outputFolder": "Copies",
+     "dateFolder": "Daily",
+     "dateFormat": "YYYY.MM.DD"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[[2026-10-12|Monday]]"
+     }
+    ],
+    "changes": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "label": "Monday",
+      "url": "day://2026-10-12",
+      "target": "2026-10-12"
+     }
+    ],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Pro date format YYYY.MM.DD",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[Monday](day://2026-10-12)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export",
+     "pro": true,
+     "dateFolder": "Daily",
+     "dateFormat": "YYYY.MM.DD"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[[Daily/2026.10.12|Monday]]"
+     }
+    ],
+    "changes": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "label": "Monday",
+      "url": "day://2026-10-12",
+      "target": "Daily/2026.10.12"
+     }
+    ],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Pro date format YYYY/MM/DD",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[Monday](day://2026-10-12)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export",
+     "pro": true,
+     "dateFolder": "Daily",
+     "dateFormat": "YYYY/MM/DD"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[[Daily/2026/10/12|Monday]]"
+     }
+    ],
+    "changes": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "label": "Monday",
+      "url": "day://2026-10-12",
+      "target": "Daily/2026/10/12"
+     }
+    ],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Keep a normal web link",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[Web](https://craft.do/example)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[Web](https://craft.do/example)"
+     }
+    ],
+    "changes": [],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Keep a relative image beside the source",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "![Sketch](assets/sketch.png)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "![Sketch](assets/sketch.png)"
+     }
+    ],
+    "changes": [],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Pro output rebases a relative image",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "![Sketch](assets/sketch.png)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export",
+     "pro": true,
+     "outputFolder": "Copies"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Copies/Page.textbundle/text.md",
+      "text": "![Sketch](../../Export/Page.textbundle/assets/sketch.png)"
+     }
+    ],
+    "changes": [],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Report invalid metadata",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "Plain text"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "Plain text"
+     }
+    ],
+    "changes": [],
+    "issues": [
+     {
+      "source": "Export/Page.textbundle/info.json",
+      "url": "",
+      "reason": "Invalid info.json"
+     }
+    ],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Report a missing metadata identifier",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "Plain text"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "Plain text"
+     }
+    ],
+    "changes": [],
+    "issues": [
+     {
+      "source": "Export/Page.textbundle/info.json",
+      "url": "",
+      "reason": "Missing identifier in info.json"
+     }
+    ],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Report metadata without a note",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [],
+    "changes": [],
+    "issues": [
+     {
+      "source": "Export/Page.textbundle/info.json",
+      "url": "",
+      "reason": "No single Markdown note for identifier"
+     }
+    ],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Do not guess between sibling notes",
+   "args": [
+    [
+     {
+      "path": "Export/One.md",
+      "text": "one"
+     },
+     {
+      "path": "Export/Two.md",
+      "text": "two"
+     },
+     {
+      "path": "Export/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/One.md",
+      "path": "Export/One.repaired.md",
+      "text": "one"
+     },
+     {
+      "source": "Export/Two.md",
+      "path": "Export/Two.repaired.md",
+      "text": "two"
+     }
+    ],
+    "changes": [],
+    "issues": [
+     {
+      "source": "Export/info.json",
+      "url": "",
+      "reason": "No single Markdown note for identifier"
+     }
+    ],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Use text.md when more sibling notes exist",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[Page](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111)"
+     },
+     {
+      "path": "Export/Page.textbundle/Other.md",
+      "text": "other"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/Other.md",
+      "path": "Export/Page.textbundle/Other.repaired.md",
+      "text": "other"
+     },
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[[Export/Page.textbundle/text.repaired|Page]]"
+     }
+    ],
+    "changes": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "label": "Page",
+      "url": "craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111",
+      "target": "Export/Page.textbundle/text.repaired"
+     }
+    ],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Use one named Markdown sibling",
+   "args": [
+    [
+     {
+      "path": "Export/Named.md",
+      "text": "[Page](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111)"
+     },
+     {
+      "path": "Export/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Named.md",
+      "path": "Export/Named.repaired.md",
+      "text": "[[Export/Named.repaired|Page]]"
+     }
+    ],
+    "changes": [
+     {
+      "source": "Export/Named.md",
+      "label": "Page",
+      "url": "craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111",
+      "target": "Export/Named.repaired"
+     }
+    ],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Duplicate identifiers stay unresolved",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "[Page](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111)"
+     },
+     {
+      "path": "Export/Page.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     },
+     {
+      "path": "Export/Second.textbundle/text.md",
+      "text": "second"
+     },
+     {
+      "path": "Export/Second.textbundle/info.json",
+      "text": "{\"identifier\": \"a1b2c3d4-1111-4111-8111-111111111111\"}"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "[Page](craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111)"
+     },
+     {
+      "source": "Export/Second.textbundle/text.md",
+      "path": "Export/Second.textbundle/text.repaired.md",
+      "text": "second"
+     }
+    ],
+    "changes": [],
+    "issues": [
+     {
+      "source": "Export/Second.textbundle/info.json",
+      "url": "",
+      "reason": "Duplicate page identifier"
+     },
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "url": "craftdocs://open?documentId=a1b2c3d4-1111-4111-8111-111111111111",
+      "reason": "Missing or ambiguous page identifier"
+     }
+    ],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Ignore a folder with a similar prefix",
+   "args": [
+    [
+     {
+      "path": "Export-other/Note.md",
+      "text": "other"
+     },
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "one"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "one"
+     }
+    ],
+    "changes": [],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Ignore a prior repaired copy",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "one"
+     },
+     {
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "prior copy"
+     },
+     {
+      "path": "Export/Craft repair report.md",
+      "text": "report"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "one"
+     }
+    ],
+    "changes": [],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Do not overwrite an output",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "one"
+     }
+    ],
+    {
+     "folder": "Export",
+     "occupied": [
+      "Export/Page.textbundle/text.repaired.md"
+     ]
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/Page.textbundle/text.md",
+      "path": "Export/Page.textbundle/text.repaired.md",
+      "text": "one"
+     }
+    ],
+    "changes": [],
+    "issues": [],
+    "blocked": [
+     "Output already exists: Export/Page.textbundle/text.repaired.md"
+    ],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Skip a recorded copy",
+   "args": [
+    [
+     {
+      "path": "Export/Page.textbundle/text.md",
+      "text": "one"
+     }
+    ],
+    {
+     "folder": "Export",
+     "occupied": [
+      "Export/Page.textbundle/text.repaired.md"
+     ],
+     "receipts": {
+      "Export/Page.textbundle/text.md": "Export/Page.textbundle/text.repaired.md"
+     }
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [],
+    "changes": [],
+    "issues": [],
+    "blocked": [],
+    "skipped": [
+     "Export/Page.textbundle/text.md"
+    ]
+   }
+  },
+  {
+   "name": "Block a free pass of 11 notes",
+   "args": [
+    [
+     {
+      "path": "Export/00.md",
+      "text": "0"
+     },
+     {
+      "path": "Export/01.md",
+      "text": "1"
+     },
+     {
+      "path": "Export/02.md",
+      "text": "2"
+     },
+     {
+      "path": "Export/03.md",
+      "text": "3"
+     },
+     {
+      "path": "Export/04.md",
+      "text": "4"
+     },
+     {
+      "path": "Export/05.md",
+      "text": "5"
+     },
+     {
+      "path": "Export/06.md",
+      "text": "6"
+     },
+     {
+      "path": "Export/07.md",
+      "text": "7"
+     },
+     {
+      "path": "Export/08.md",
+      "text": "8"
+     },
+     {
+      "path": "Export/09.md",
+      "text": "9"
+     },
+     {
+      "path": "Export/10.md",
+      "text": "10"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/00.md",
+      "path": "Export/00.repaired.md",
+      "text": "0"
+     },
+     {
+      "source": "Export/01.md",
+      "path": "Export/01.repaired.md",
+      "text": "1"
+     },
+     {
+      "source": "Export/02.md",
+      "path": "Export/02.repaired.md",
+      "text": "2"
+     },
+     {
+      "source": "Export/03.md",
+      "path": "Export/03.repaired.md",
+      "text": "3"
+     },
+     {
+      "source": "Export/04.md",
+      "path": "Export/04.repaired.md",
+      "text": "4"
+     },
+     {
+      "source": "Export/05.md",
+      "path": "Export/05.repaired.md",
+      "text": "5"
+     },
+     {
+      "source": "Export/06.md",
+      "path": "Export/06.repaired.md",
+      "text": "6"
+     },
+     {
+      "source": "Export/07.md",
+      "path": "Export/07.repaired.md",
+      "text": "7"
+     },
+     {
+      "source": "Export/08.md",
+      "path": "Export/08.repaired.md",
+      "text": "8"
+     },
+     {
+      "source": "Export/09.md",
+      "path": "Export/09.repaired.md",
+      "text": "9"
+     },
+     {
+      "source": "Export/10.md",
+      "path": "Export/10.repaired.md",
+      "text": "10"
+     }
+    ],
+    "changes": [],
+    "issues": [],
+    "blocked": [
+     "Free limit: 11 notes exceeds 10. Select a smaller export folder or use Pro."
+    ],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Pro writes a pass of 11 notes",
+   "args": [
+    [
+     {
+      "path": "Export/00.md",
+      "text": "0"
+     },
+     {
+      "path": "Export/01.md",
+      "text": "1"
+     },
+     {
+      "path": "Export/02.md",
+      "text": "2"
+     },
+     {
+      "path": "Export/03.md",
+      "text": "3"
+     },
+     {
+      "path": "Export/04.md",
+      "text": "4"
+     },
+     {
+      "path": "Export/05.md",
+      "text": "5"
+     },
+     {
+      "path": "Export/06.md",
+      "text": "6"
+     },
+     {
+      "path": "Export/07.md",
+      "text": "7"
+     },
+     {
+      "path": "Export/08.md",
+      "text": "8"
+     },
+     {
+      "path": "Export/09.md",
+      "text": "9"
+     },
+     {
+      "path": "Export/10.md",
+      "text": "10"
+     }
+    ],
+    {
+     "folder": "Export",
+     "pro": true
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/00.md",
+      "path": "Export/00.repaired.md",
+      "text": "0"
+     },
+     {
+      "source": "Export/01.md",
+      "path": "Export/01.repaired.md",
+      "text": "1"
+     },
+     {
+      "source": "Export/02.md",
+      "path": "Export/02.repaired.md",
+      "text": "2"
+     },
+     {
+      "source": "Export/03.md",
+      "path": "Export/03.repaired.md",
+      "text": "3"
+     },
+     {
+      "source": "Export/04.md",
+      "path": "Export/04.repaired.md",
+      "text": "4"
+     },
+     {
+      "source": "Export/05.md",
+      "path": "Export/05.repaired.md",
+      "text": "5"
+     },
+     {
+      "source": "Export/06.md",
+      "path": "Export/06.repaired.md",
+      "text": "6"
+     },
+     {
+      "source": "Export/07.md",
+      "path": "Export/07.repaired.md",
+      "text": "7"
+     },
+     {
+      "source": "Export/08.md",
+      "path": "Export/08.repaired.md",
+      "text": "8"
+     },
+     {
+      "source": "Export/09.md",
+      "path": "Export/09.repaired.md",
+      "text": "9"
+     },
+     {
+      "source": "Export/10.md",
+      "path": "Export/10.repaired.md",
+      "text": "10"
+     }
+    ],
+    "changes": [],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Free writes a pass of 10 notes",
+   "args": [
+    [
+     {
+      "path": "Export/00.md",
+      "text": "0"
+     },
+     {
+      "path": "Export/01.md",
+      "text": "1"
+     },
+     {
+      "path": "Export/02.md",
+      "text": "2"
+     },
+     {
+      "path": "Export/03.md",
+      "text": "3"
+     },
+     {
+      "path": "Export/04.md",
+      "text": "4"
+     },
+     {
+      "path": "Export/05.md",
+      "text": "5"
+     },
+     {
+      "path": "Export/06.md",
+      "text": "6"
+     },
+     {
+      "path": "Export/07.md",
+      "text": "7"
+     },
+     {
+      "path": "Export/08.md",
+      "text": "8"
+     },
+     {
+      "path": "Export/09.md",
+      "text": "9"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/00.md",
+      "path": "Export/00.repaired.md",
+      "text": "0"
+     },
+     {
+      "source": "Export/01.md",
+      "path": "Export/01.repaired.md",
+      "text": "1"
+     },
+     {
+      "source": "Export/02.md",
+      "path": "Export/02.repaired.md",
+      "text": "2"
+     },
+     {
+      "source": "Export/03.md",
+      "path": "Export/03.repaired.md",
+      "text": "3"
+     },
+     {
+      "source": "Export/04.md",
+      "path": "Export/04.repaired.md",
+      "text": "4"
+     },
+     {
+      "source": "Export/05.md",
+      "path": "Export/05.repaired.md",
+      "text": "5"
+     },
+     {
+      "source": "Export/06.md",
+      "path": "Export/06.repaired.md",
+      "text": "6"
+     },
+     {
+      "source": "Export/07.md",
+      "path": "Export/07.repaired.md",
+      "text": "7"
+     },
+     {
+      "source": "Export/08.md",
+      "path": "Export/08.repaired.md",
+      "text": "8"
+     },
+     {
+      "source": "Export/09.md",
+      "path": "Export/09.repaired.md",
+      "text": "9"
+     }
+    ],
+    "changes": [],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Do not merge equal note names in separate folders",
+   "args": [
+    [
+     {
+      "path": "Export/A/Note.md",
+      "text": "a"
+     },
+     {
+      "path": "Export/B/Note.md",
+      "text": "b"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [
+     {
+      "source": "Export/A/Note.md",
+      "path": "Export/A/Note.repaired.md",
+      "text": "a"
+     },
+     {
+      "source": "Export/B/Note.md",
+      "path": "Export/B/Note.repaired.md",
+      "text": "b"
+     }
+    ],
+    "changes": [],
+    "issues": [],
+    "blocked": [],
+    "skipped": []
+   }
+  },
+  {
+   "name": "Reject a wikilink special output path",
+   "args": [
+    [
+     {
+      "path": "Export/A#B.md",
+      "text": "a"
+     }
+    ],
+    {
+     "folder": "Export"
+    }
+   ],
+   "expected": {
+    "folder": "Export",
+    "copies": [],
+    "changes": [],
+    "issues": [],
+    "blocked": [
+     "Unsupported output path: Export/A#B.repaired.md"
+    ],
+    "skipped": []
+   }
+  }
+ ]
+}

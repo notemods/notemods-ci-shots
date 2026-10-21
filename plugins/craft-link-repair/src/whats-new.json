@@ -1,0 +1,27 @@
+{
+	"id": "craft-link-repair",
+	"name": "Craft Link Repair",
+	"version": "1.1.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea."
+	],
+	"tip": "Inline day:// links become links to date notes. The repair does not create those notes, so create them after the pass.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Craft Link Repair is one of over 100 small plugins that I make. Thank you for using it to keep your links working.",
+	"related": [
+		{
+			"id": "frontmatter-link-repair",
+			"name": "Frontmatter Link Repair",
+			"blurb": "Repair wiki links with restore copies."
+		},
+		{
+			"id": "heading-link-sync",
+			"name": "Heading Link Sync",
+			"blurb": "Update heading links and embeds when you edit a heading."
+		},
+		{
+			"id": "remnote-json-import",
+			"name": "RemNote JSON Import",
+			"blurb": "Import RemNote JSON notes with parent links and references."
+		}
+	]
+}
