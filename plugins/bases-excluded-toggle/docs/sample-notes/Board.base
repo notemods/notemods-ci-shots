@@ -1,0 +1,9 @@
+filters:
+  and:
+    - file.inFolder("Excluded Files Toggle")
+views:
+  - type: table
+    name: Archive index
+    order:
+      - file.name
+      - topic

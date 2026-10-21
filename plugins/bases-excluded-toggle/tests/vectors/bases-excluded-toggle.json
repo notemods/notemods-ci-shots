@@ -1,0 +1,201 @@
+{
+ "slug": "bases-excluded-toggle",
+ "module": "products/bases-excluded-toggle/src/toggle.ts",
+ "function": "runOp",
+ "note": "args is one object with current patterns, saved patterns or null, and optional restore=true; expected is the toggle result or restored pattern list.",
+ "cases": [
+  {
+   "name": "hide all current filters",
+   "args": [
+    {
+     "current": [
+      "Archive/",
+      "/^_/"
+     ],
+     "saved": null
+    }
+   ],
+   "expected": {
+    "action": "show",
+    "nextFilters": [],
+    "savedFilters": [
+     "Archive/",
+     "/^_/"
+    ]
+   }
+  },
+  {
+   "name": "restore a saved list",
+   "args": [
+    {
+     "current": [],
+     "saved": [
+      "Archive/"
+     ]
+    }
+   ],
+   "expected": {
+    "action": "hide",
+    "nextFilters": [
+     "Archive/"
+    ],
+    "savedFilters": null
+   }
+  },
+  {
+   "name": "merge filters added while visible",
+   "args": [
+    {
+     "current": [
+      "Templates/"
+     ],
+     "saved": [
+      "Archive/"
+     ]
+    }
+   ],
+   "expected": {
+    "action": "hide",
+    "nextFilters": [
+     "Archive/",
+     "Templates/"
+    ],
+    "savedFilters": null
+   }
+  },
+  {
+   "name": "keep original order",
+   "args": [
+    {
+     "current": [
+      "Second/",
+      "First/"
+     ],
+     "saved": null
+    }
+   ],
+   "expected": {
+    "action": "show",
+    "nextFilters": [],
+    "savedFilters": [
+     "Second/",
+     "First/"
+    ]
+   }
+  },
+  {
+   "name": "deduplicate configured filters",
+   "args": [
+    {
+     "current": [
+      "A/",
+      "A/",
+      "B/"
+     ],
+     "saved": null
+    }
+   ],
+   "expected": {
+    "action": "show",
+    "nextFilters": [],
+    "savedFilters": [
+     "A/",
+     "B/"
+    ]
+   }
+  },
+  {
+   "name": "deduplicate edits added while visible",
+   "args": [
+    {
+     "current": [
+      "A/",
+      "B/",
+      "A/"
+     ],
+     "saved": [
+      "A/",
+      "C/"
+     ]
+    }
+   ],
+   "expected": {
+    "action": "hide",
+    "nextFilters": [
+     "A/",
+     "C/",
+     "B/"
+    ],
+    "savedFilters": null
+   }
+  },
+  {
+   "name": "do nothing when there are no filters",
+   "args": [
+    {
+     "current": [],
+     "saved": null
+    }
+   ],
+   "expected": {
+    "action": "empty",
+    "nextFilters": [],
+    "savedFilters": null
+   }
+  },
+  {
+   "name": "restore on unload",
+   "args": [
+    {
+     "current": [
+      "New/"
+     ],
+     "saved": [
+      "Old/"
+     ],
+     "restore": true
+    }
+   ],
+   "expected": [
+    "Old/",
+    "New/"
+   ]
+  },
+  {
+   "name": "reject an unsupported setting value",
+   "args": [
+    {
+     "current": [],
+     "saved": null,
+     "validate": {
+      "pattern": "Archive/"
+     }
+    }
+   ],
+   "expected": null
+  },
+  {
+   "name": "apply a preset and end the visible state",
+   "args": [
+    {
+     "current": [],
+     "saved": [
+      "Old/"
+     ],
+     "preset": {
+      "Archive": [
+       "Archive/"
+      ]
+     },
+     "name": "Archive"
+    }
+   ],
+   "expected": {
+    "nextFilters": [
+     "Archive/"
+    ],
+    "savedFilters": null
+   }
+  }
+ ]
+}

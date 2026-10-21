@@ -1,0 +1,36 @@
+[
+  {
+    "feature": "excluded-files-toggle",
+    "caption": "The Base shows a note from an excluded folder while Excluded Files Toggle is on.",
+    "note": "Board.base",
+    "eval": "(async () => { const p = app.plugins.plugins['bases-excluded-toggle']; app.vault.setConfig('userIgnoreFilters', ['Excluded Files Toggle/Archive']); await new Promise(r => setTimeout(r, 400)); await p.toggleVisibility(); await new Promise(r => setTimeout(r, 900)); if (!document.querySelector('.workspace-leaf.mod-active .bases-view')?.textContent.includes('Old research')) throw new Error('The archived sample note is missing from the Base'); return 'archived note is visible'; })()",
+    "after": "(async () => { await app.plugins.plugins['bases-excluded-toggle'].toggleVisibility(); return 'patterns restored'; })()",
+    "wait": 1200
+  },
+  {
+    "feature": "pro-presets",
+    "caption": "Pro settings show named exclusion presets with apply and delete controls.",
+    "eval": "(async () => { const p = app.plugins.plugins['bases-excluded-toggle']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-excluded-toggle-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); p.data.presets = { Archive: ['Archive/'], Templates: ['Templates/'] }; await p.saveData(p.data); p.settingTab?.update(); app.setting.open(); app.setting.openTabById('bases-excluded-toggle'); return 'ok'; })()",
+    "after": "app.setting.close(); app.plugins.plugins['bases-excluded-toggle'].pro.signOut(); 'ok'",
+    "wait": 1200
+  },
+  {
+    "feature": "excluded-files-toggle",
+    "caption": "The command restores and clears the native exclusion patterns in one step.",
+    "frames": [
+      {
+        "note": "Board.base",
+        "eval": "(async () => { const p = app.plugins.plugins['bases-excluded-toggle']; app.vault.setConfig('userIgnoreFilters', ['Excluded Files Toggle/Archive']); await new Promise(r => setTimeout(r, 400)); return 'patterns are active'; })()",
+        "hold": 1200
+      },
+      {
+        "eval": "(async () => { await app.plugins.plugins['bases-excluded-toggle'].toggleVisibility(); await new Promise(r => setTimeout(r, 900)); return 'excluded note is visible'; })()",
+        "hold": 1500
+      },
+      {
+        "eval": "(async () => { await app.plugins.plugins['bases-excluded-toggle'].toggleVisibility(); await new Promise(r => setTimeout(r, 900)); return 'patterns are restored'; })()",
+        "hold": 1500
+      }
+    ]
+  }
+]

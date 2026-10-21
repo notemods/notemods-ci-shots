@@ -1,0 +1,9 @@
+filters:
+  and:
+    - topic != null
+views:
+  - type: table
+    name: Archive index
+    order:
+      - file.name
+      - topic
