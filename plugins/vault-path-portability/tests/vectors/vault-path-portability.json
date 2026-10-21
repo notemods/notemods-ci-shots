@@ -1,0 +1,432 @@
+{
+ "slug": "vault-path-portability",
+ "module": "products/vault-path-portability/src/scan.ts",
+ "function": "scanPaths",
+ "cases": [
+  {
+   "name": "case collision",
+   "args": [
+    [
+     "Note.md",
+     "note.md"
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "case-collision",
+     "paths": [
+      "Note.md",
+      "note.md"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "reserved CON.md",
+   "args": [
+    [
+     "CON.md"
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "reserved-name",
+     "paths": [
+      "CON.md"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "reserved prn.txt",
+   "args": [
+    [
+     "prn.txt"
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "reserved-name",
+     "paths": [
+      "prn.txt"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "reserved AUX",
+   "args": [
+    [
+     "AUX"
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "reserved-name",
+     "paths": [
+      "AUX"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "reserved nul.md",
+   "args": [
+    [
+     "nul.md"
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "reserved-name",
+     "paths": [
+      "nul.md"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "reserved COM1.md",
+   "args": [
+    [
+     "COM1.md"
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "reserved-name",
+     "paths": [
+      "COM1.md"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "reserved COM9.md",
+   "args": [
+    [
+     "COM9.md"
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "reserved-name",
+     "paths": [
+      "COM9.md"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "reserved LPT1.md",
+   "args": [
+    [
+     "LPT1.md"
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "reserved-name",
+     "paths": [
+      "LPT1.md"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "reserved LPT9.md",
+   "args": [
+    [
+     "LPT9.md"
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "reserved-name",
+     "paths": [
+      "LPT9.md"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "reserved COM¹.md",
+   "args": [
+    [
+     "COM¹.md"
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "reserved-name",
+     "paths": [
+      "COM¹.md"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "not a reserved device",
+   "args": [
+    [
+     "COM0.md",
+     "COM10.md",
+     "LPT0.md",
+     "CONtext.md"
+    ]
+   ],
+   "expected": []
+  },
+  {
+   "name": "trailing space",
+   "args": [
+    [
+     "note.md "
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "trailing-character",
+     "paths": [
+      "note.md "
+     ]
+    }
+   ]
+  },
+  {
+   "name": "trailing dot",
+   "args": [
+    [
+     "note.md."
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "trailing-character",
+     "paths": [
+      "note.md."
+     ]
+    }
+   ]
+  },
+  {
+   "name": "illegal punctuation",
+   "args": [
+    [
+     "why?.md"
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "illegal-character",
+     "paths": [
+      "why?.md"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "control character",
+   "args": [
+    [
+     "a\u0001.md"
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "illegal-character",
+     "paths": [
+      "a\u0001.md"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "long relative path",
+   "args": [
+    [
+     "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "long-name",
+     "paths": [
+      "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+     ]
+    },
+    {
+     "rule": "long-path",
+     "paths": [
+      "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "260 relative units exceed budget with NUL",
+   "args": [
+    [
+     "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "long-name",
+     "paths": [
+      "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+     ]
+    },
+    {
+     "rule": "long-path",
+     "paths": [
+      "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "folder case collision",
+   "args": [
+    [
+     "Notes",
+     "notes"
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "case-collision",
+     "paths": [
+      "Notes",
+      "notes"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "unsafe parent",
+   "args": [
+    [
+     "CON/a.md"
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "reserved-name",
+     "paths": [
+      "CON/a.md"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "safe vault",
+   "args": [
+    [
+     "notes/Welcome.md",
+     "assets/logo.png"
+    ]
+   ],
+   "expected": []
+  },
+  {
+   "name": "unicode casefold expansion",
+   "args": [
+    [
+     "STRASSE.md",
+     "Straße.md"
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "case-collision",
+     "paths": [
+      "STRASSE.md",
+      "Straße.md"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "interior trailing characters allowed",
+   "args": [
+    [
+     "a. b.md"
+    ]
+   ],
+   "expected": []
+  },
+  {
+   "name": "hidden name allowed",
+   "args": [
+    [
+     ".hidden"
+    ]
+   ],
+   "expected": []
+  },
+  {
+   "name": "DEL is unsafe",
+   "args": [
+    [
+     "a.md"
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "illegal-character",
+     "paths": [
+      "a.md"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "reserved with trailing dot",
+   "args": [
+    [
+     "CON."
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "reserved-name",
+     "paths": [
+      "CON."
+     ]
+    },
+    {
+     "rule": "trailing-character",
+     "paths": [
+      "CON."
+     ]
+    }
+   ]
+  },
+  {
+   "name": "space before extension is allowed",
+   "args": [
+    [
+     "CON .md"
+    ]
+   ],
+   "expected": []
+  },
+  {
+   "name": "link delimiters",
+   "args": [
+    [
+     "a#^[x].md"
+    ]
+   ],
+   "expected": [
+    {
+     "rule": "link-character",
+     "paths": [
+      "a#^[x].md"
+     ]
+    }
+   ]
+  }
+ ]
+}

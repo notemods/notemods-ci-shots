@@ -1,0 +1,28 @@
+{
+	"id": "vault-path-portability",
+	"name": "Vault Path Portability",
+	"version": "1.2.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Adds read-only vault path checks and optional Pro rename and report tools."
+	],
+	"changes_user": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Read-only checks find vault paths that can fail on Windows, macOS, Linux, iOS or Android.",
+		"Pro applies a rename after you review it, scans when paths change and saves the report as a note."
+	],
+	"tip": "Select Copy Markdown to put the whole report on the clipboard. Paste it into a note to use as a checklist for your move.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Vault Path Portability is one of over 100 small plugins that I make. Thank you for using it to keep your vault portable.",
+	"related": [
+		{
+			"id": "vault-loss-alarm",
+			"name": "Vault Loss Alarm",
+			"blurb": "Warn you when notes or attachments vanish from your vault, with the last known size of each path."
+		},
+		{
+			"id": "sync-churn-watch",
+			"name": "Sync Churn Watch",
+			"blurb": "Find the files and settings that your vault rewrites most often."
+		}
+	]
+}

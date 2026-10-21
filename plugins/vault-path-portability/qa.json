@@ -1,0 +1,67 @@
+[
+  {
+    "feature": "report",
+    "caption": "Scan indexed vault paths and review the rule groups.",
+    "note": "Moving a vault.md",
+    "commands": [
+      "vault-path-portability:scan-vault-paths"
+    ],
+    "wait": 900,
+    "eval": "await (async () => { for (const [path, body] of [['Vault Path Portability/CON.md', 'Sample Windows reserved name.'], ['Vault Path Portability/What next?.md', 'Sample unsafe punctuation.']]) { if (!app.vault.getAbstractFileByPath(path)) await app.vault.create(path, body); } for (const leaf of app.workspace.getLeavesOfType('markdown')) leaf.detach(); return 'Sample files created in the dev vault'; })()"
+  },
+  {
+    "feature": "collisions",
+    "caption": "The report groups Note.md and note.md as a case-fold collision.",
+    "note": "Moving a vault.md",
+    "eval": "await (async () => { for (const path of ['Vault Path Portability/Note.md', 'Vault Path Portability/note.md']) { if (!app.vault.getAbstractFileByPath(path)) await app.vault.create(path, 'Case collision example.'); } for (const leaf of app.workspace.getLeavesOfType('markdown')) leaf.detach(); await app.plugins.plugins['vault-path-portability'].showReport(); if (!document.querySelector('.vpp-report')?.textContent.includes('Case-fold collisions')) throw new Error('Case collision finding missing'); })()",
+    "wait": 900
+  },
+  {
+    "feature": "copy",
+    "caption": "Copy the complete report as Markdown.",
+    "note": "Moving a vault.md",
+    "commands": [
+      "vault-path-portability:scan-vault-paths",
+      "vault-path-portability:copy-path-report"
+    ],
+    "wait": 700,
+    "eval": "for (const leaf of app.workspace.getLeavesOfType('markdown')) leaf.detach(); "
+  },
+  {
+    "feature": "rename",
+    "caption": "Free-tier review shows the disabled Pro rename action and a manual rename option.",
+    "note": "Moving a vault.md",
+    "wait": 700,
+    "eval": "await (async () => { for (const leaf of app.workspace.getLeavesOfType('markdown')) leaf.detach(); await app.plugins.plugins['vault-path-portability'].showReport(); const button = [...document.querySelectorAll('.vpp-path')].find(row => row.querySelector('code')?.textContent === 'Vault Path Portability/CON.md')?.querySelector('button:last-child'); if (!button || button.textContent !== 'Review rename') throw new Error('Rename review action missing'); button.click(); })()",
+    "after": "document.querySelector('.vpp-rename-review button:last-child')?.click();"
+  },
+  {
+    "feature": "settings",
+    "caption": "Optional automatic scans and GitHub Sponsors controls.",
+    "eval": "app.setting.open(); app.setting.openTabById('vault-path-portability'); if (!document.querySelector('.modal.mod-settings')) throw new Error('Settings modal missing');",
+    "wait": 900,
+    "after": "app.setting.close();"
+  },
+  {
+    "feature": "portability",
+    "caption": "Scan the vault and review its paths.",
+    "frames": [
+      {
+        "note": "Moving a vault.md",
+        "hold": 1000
+      },
+      {
+        "commands": [
+          "vault-path-portability:scan-vault-paths"
+        ],
+        "hold": 1400
+      },
+      {
+        "commands": [
+          "vault-path-portability:scan-vault-paths"
+        ],
+        "hold": 1000
+      }
+    ]
+  }
+]
