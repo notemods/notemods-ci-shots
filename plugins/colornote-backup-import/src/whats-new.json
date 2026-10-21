@@ -1,0 +1,34 @@
+{
+	"id": "colornote-backup-import",
+	"name": "ColorNote Backup Import",
+	"version": "1.1.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Imports local ColorNote version 7.1 backups into a new folder.",
+		"Converts checklist marks and retains source metadata."
+	],
+	"changes_user": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Checklist lines marked [V] in ColorNote become checked tasks, and [ ] lines become open tasks.",
+		"The import report lists skipped records, such as locked, archive and trash notes, with their source IDs."
+	],
+	"tip": "With Pro, save a profile that maps color indexes to names such as Yellow. Imported notes then get a color_label property.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. ColorNote Backup Import is one of over 100 small plugins that I make. Thank you for moving your notes into Obsidian with it.",
+	"related": [
+		{
+			"id": "zoho-znote-import",
+			"name": "Zoho Znote Import",
+			"blurb": "Import Zoho ZNote exports as notes with card dates, tags, checklists, and local attachments."
+		},
+		{
+			"id": "standard-notes-import",
+			"name": "Standard Notes Import",
+			"blurb": "Import decrypted Standard Notes backups with tags and dates."
+		},
+		{
+			"id": "daylio-backup-import",
+			"name": "Daylio Backup Import",
+			"blurb": "Convert local Daylio version 15 backups into journal notes with moods, activities, and photos."
+		}
+	]
+}
