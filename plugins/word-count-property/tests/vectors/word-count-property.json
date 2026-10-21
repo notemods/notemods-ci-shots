@@ -1,0 +1,127 @@
+{
+ "slug": "word-count-property",
+ "module": "word-count-property",
+ "function": "deriveStats",
+ "cases": [
+  {
+   "name": "counts ordinary source prose",
+   "args": [
+    "One two three",
+    "source",
+    false,
+    200,
+    500
+   ],
+   "expected": {
+    "wordCount": 3,
+    "readingTimeMinutes": 1,
+    "readingTimeSeconds": 1
+   }
+  },
+  {
+   "name": "skips closed YAML frontmatter",
+   "args": [
+    "---\nwordCountTracked: true\nignored: 90\n---\nNotes stay.",
+    "source",
+    false,
+    200,
+    500
+   ],
+   "expected": {
+    "wordCount": 2,
+    "readingTimeMinutes": 1,
+    "readingTimeSeconds": 1
+   }
+  },
+  {
+   "name": "source mode counts link destinations and fenced code",
+   "args": [
+    "Read [the guide](https://example.test/path)\n```js\nconst x = 1;\n```",
+    "source",
+    false,
+    200,
+    500
+   ],
+   "expected": {
+    "wordCount": 11,
+    "readingTimeMinutes": 1,
+    "readingTimeSeconds": 4
+   }
+  },
+  {
+   "name": "rendered mode keeps link text and omits comments and code",
+   "args": [
+    "Read [the guide](https://example.test/path) %% private text %%\n```js\nconst hidden = true;\n```",
+    "rendered",
+    false,
+    200,
+    500
+   ],
+   "expected": {
+    "wordCount": 3,
+    "readingTimeMinutes": 1,
+    "readingTimeSeconds": 1
+   }
+  },
+  {
+   "name": "rendered mode can include fenced code",
+   "args": [
+    "Read [the guide](https://example.test/path) %% private text %%\n```js\nconst hidden = true;\n```",
+    "rendered",
+    true,
+    200,
+    500
+   ],
+   "expected": {
+    "wordCount": 6,
+    "readingTimeMinutes": 1,
+    "readingTimeSeconds": 2
+   }
+  },
+  {
+   "name": "counts CJK characters as length units",
+   "args": [
+    "你好世界",
+    "source",
+    false,
+    200,
+    500
+   ],
+   "expected": {
+    "wordCount": 4,
+    "readingTimeMinutes": 1,
+    "readingTimeSeconds": 1
+   }
+  },
+  {
+   "name": "uses a custom words per minute rate",
+   "args": [
+    "one two three four",
+    "source",
+    false,
+    60,
+    500
+   ],
+   "expected": {
+    "wordCount": 4,
+    "readingTimeMinutes": 1,
+    "readingTimeSeconds": 4
+   }
+  },
+  {
+   "name": "keeps an empty note at zero minutes",
+   "args": [
+    "",
+    "source",
+    false,
+    200,
+    500
+   ],
+   "expected": {
+    "wordCount": 0,
+    "readingTimeMinutes": 0,
+    "readingTimeSeconds": 0
+   }
+  }
+ ]
+}

@@ -1,0 +1,11 @@
+filters:
+  and:
+    - wordCountTracked == true
+views:
+  - type: table
+    name: Chapters
+    order:
+      - file.name
+      - note.chapter
+      - note.wordCount
+      - note.readingTimeMinutes
