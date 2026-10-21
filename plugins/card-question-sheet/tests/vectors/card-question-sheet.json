@@ -1,0 +1,682 @@
+{
+ "slug": "card-question-sheet",
+ "module": "products/card-question-sheet/src/cards.ts",
+ "function": "parseCards",
+ "cases": [
+  {
+   "name": "Two numbered cards",
+   "function": "parse",
+   "args": [
+    "Capital of France::Paris\n2+2::4"
+   ],
+   "expected": {
+    "cards": [
+     {
+      "question": "Capital of France",
+      "answer": "Paris",
+      "line": 1,
+      "source": ""
+     },
+     {
+      "question": "2+2",
+      "answer": "4",
+      "line": 2,
+      "source": ""
+     }
+    ],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "Reversed cards",
+   "function": "parse",
+   "args": [
+    "cat:::chat"
+   ],
+   "expected": {
+    "cards": [
+     {
+      "question": "cat",
+      "answer": "chat",
+      "line": 1,
+      "source": ""
+     },
+     {
+      "question": "chat",
+      "answer": "cat",
+      "line": 1,
+      "source": ""
+     }
+    ],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "Frontmatter and two code fences",
+   "function": "parse",
+   "args": [
+    "---\nfield: Q::A\n---\n```text\nHidden::Answer\n```\n~~~text\nHidden2::Answer2\n~~~\nVisible::Yes"
+   ],
+   "expected": {
+    "cards": [
+     {
+      "question": "Visible",
+      "answer": "Yes",
+      "line": 10,
+      "source": ""
+     }
+    ],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "Selection preserves numbering",
+   "function": "select",
+   "args": [
+    "A::1\nB::2\nC::3",
+    [
+     0,
+     2
+    ]
+   ],
+   "expected": {
+    "questions": [
+     "1. A",
+     "2. C"
+    ],
+    "answers": [
+     "1. 1",
+     "2. 3"
+    ]
+   }
+  },
+  {
+   "name": "Image is reported",
+   "function": "parse",
+   "args": [
+    "Photo::![[x.png]]"
+   ],
+   "expected": {
+    "cards": [],
+    "unsupported": [
+     {
+      "line": 1,
+      "source": "",
+      "text": "Photo::![[x.png]]",
+      "reason": "Image or embed"
+     }
+    ]
+   }
+  },
+  {
+   "name": "Cloze is reported",
+   "function": "parse",
+   "args": [
+    "Gap::{{c1::x}}"
+   ],
+   "expected": {
+    "cards": [],
+    "unsupported": [
+     {
+      "line": 1,
+      "source": "",
+      "text": "Gap::{{c1::x}}",
+      "reason": "Cloze marker"
+     }
+    ]
+   }
+  },
+  {
+   "name": "Math is reported",
+   "function": "parse",
+   "args": [
+    "Sum::$x+y$"
+   ],
+   "expected": {
+    "cards": [],
+    "unsupported": [
+     {
+      "line": 1,
+      "source": "",
+      "text": "Sum::$x+y$",
+      "reason": "Math"
+     }
+    ]
+   }
+  },
+  {
+   "name": "Long word splits without loss",
+   "function": "wrap",
+   "args": [
+    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    40
+   ],
+   "expected": [
+    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+   ]
+  },
+  {
+   "name": "Long answer wraps without loss",
+   "function": "wrap",
+   "args": [
+    "word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word ",
+    50
+   ],
+   "expected": [
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word",
+    "word word word word word word word word word word"
+   ]
+  },
+  {
+   "name": "Bundled Latin Greek and Cyrillic glyphs",
+   "function": "glyphs",
+   "args": [
+    "Café — α Ж"
+   ],
+   "expected": []
+  },
+  {
+   "name": "Missing Han glyph",
+   "function": "glyphs",
+   "args": [
+    "汉"
+   ],
+   "expected": [
+    "汉"
+   ]
+  },
+  {
+   "name": "Collision uses suffix one",
+   "function": "path",
+   "args": [
+    "Cards.md",
+    [
+     "Cards questions.pdf"
+    ]
+   ],
+   "expected": "Cards questions 1.pdf"
+  },
+  {
+   "name": "Two collisions use suffix two",
+   "function": "path",
+   "args": [
+    "Study/Cards.md",
+    [
+     "Study/Cards questions.pdf",
+     "Study/Cards questions 1.pdf"
+    ]
+   ],
+   "expected": "Study/Cards questions 2.pdf"
+  },
+  {
+   "name": "Free browser page settings",
+   "function": "settings",
+   "args": [
+    null
+   ],
+   "expected": {
+    "margin": 48,
+    "textSize": 12,
+    "answerSpace": 48
+   }
+  },
+  {
+   "name": "Blank note",
+   "function": "parse",
+   "args": [
+    ""
+   ],
+   "expected": {
+    "cards": [],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "CRLF line numbers",
+   "function": "parse",
+   "args": [
+    "A::1\r\nB::2"
+   ],
+   "expected": {
+    "cards": [
+     {
+      "question": "A",
+      "answer": "1",
+      "line": 1,
+      "source": ""
+     },
+     {
+      "question": "B",
+      "answer": "2",
+      "line": 2,
+      "source": ""
+     }
+    ],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "Whitespace around cards",
+   "function": "parse",
+   "args": [
+    "  A :: 1  "
+   ],
+   "expected": {
+    "cards": [
+     {
+      "question": "A",
+      "answer": "1",
+      "line": 1,
+      "source": ""
+     }
+    ],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "Colon in plain text",
+   "function": "parse",
+   "args": [
+    "Time: 10:30::Morning"
+   ],
+   "expected": {
+    "cards": [
+     {
+      "question": "Time: 10:30",
+      "answer": "Morning",
+      "line": 1,
+      "source": ""
+     }
+    ],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "Empty answer report",
+   "function": "parse",
+   "args": [
+    "A::"
+   ],
+   "expected": {
+    "cards": [],
+    "unsupported": [
+     {
+      "line": 1,
+      "source": "",
+      "text": "A::",
+      "reason": "Empty question or answer"
+     }
+    ]
+   }
+  },
+  {
+   "name": "Four colons report",
+   "function": "parse",
+   "args": [
+    "A::::B"
+   ],
+   "expected": {
+    "cards": [],
+    "unsupported": [
+     {
+      "line": 1,
+      "source": "",
+      "text": "A::::B",
+      "reason": "Multiple or invalid separators"
+     }
+    ]
+   }
+  },
+  {
+   "name": "Repeated separator report",
+   "function": "parse",
+   "args": [
+    "A::B::C"
+   ],
+   "expected": {
+    "cards": [],
+    "unsupported": [
+     {
+      "line": 1,
+      "source": "",
+      "text": "A::B::C",
+      "reason": "Multiple or invalid separators"
+     }
+    ]
+   }
+  },
+  {
+   "name": "Unclosed fence excludes following cards",
+   "function": "parse",
+   "args": [
+    "```\nA::B"
+   ],
+   "expected": {
+    "cards": [],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "Fence closure must match",
+   "function": "parse",
+   "args": [
+    "~~~~text\n```\nA::B\n~~~~\nC::D"
+   ],
+   "expected": {
+    "cards": [
+     {
+      "question": "C",
+      "answer": "D",
+      "line": 5,
+      "source": ""
+     }
+    ],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "Source path survives parsing",
+   "function": "parse",
+   "args": [
+    "A::B",
+    "Study/Cards.md"
+   ],
+   "expected": {
+    "cards": [
+     {
+      "question": "A",
+      "answer": "B",
+      "line": 1,
+      "source": "Study/Cards.md"
+     }
+    ],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "Folder uses a path boundary",
+   "function": "folder",
+   "args": [
+    "Study2/A.md",
+    "Study"
+   ],
+   "expected": false
+  },
+  {
+   "name": "Subfolder is included",
+   "function": "folder",
+   "args": [
+    "Study/Biology/A.md",
+    "Study"
+   ],
+   "expected": true
+  },
+  {
+   "name": "Clamp saved page settings",
+   "function": "settings",
+   "args": [
+    {
+     "margin": 1,
+     "textSize": 30,
+     "answerSpace": 300
+    }
+   ],
+   "expected": {
+    "margin": 24,
+    "textSize": 24,
+    "answerSpace": 200
+   }
+  },
+  {
+   "name": "Multiline marker report",
+   "function": "parse",
+   "args": [
+    "?"
+   ],
+   "expected": {
+    "cards": [],
+    "unsupported": [
+     {
+      "line": 1,
+      "source": "",
+      "text": "?",
+      "reason": "Multiline card marker"
+     }
+    ]
+   }
+  },
+  {
+   "name": "Right to left text report",
+   "function": "parse",
+   "args": [
+    "Q::שלום"
+   ],
+   "expected": {
+    "cards": [],
+    "unsupported": [
+     {
+      "line": 1,
+      "source": "",
+      "text": "Q::שלום",
+      "reason": "Right-to-left text"
+     }
+    ]
+   }
+  },
+  {
+   "name": "Browser PDF export without a font download",
+   "function": "browserPdf",
+   "args": [
+    "A::1"
+   ],
+   "expected": "%PDF-"
+  }
+ ]
+}

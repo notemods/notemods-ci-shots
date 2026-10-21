@@ -1,0 +1,72 @@
+[
+  {
+    "feature": "text-cards",
+    "caption": "Text study cards and their answers in the preview.",
+    "note": "Study cards.md",
+    "eval": "app.plugins.plugins['card-question-sheet'].preview?.close(); app.plugins.plugins['card-question-sheet'].pro.signOut(); app.plugins.plugins['card-question-sheet'].openCurrent(); 'ready'",
+    "after": "app.plugins.plugins['card-question-sheet'].preview?.close(); app.plugins.plugins['card-question-sheet'].pro.signOut(); 'done'"
+  },
+  {
+    "feature": "unsupported",
+    "caption": "Image, cloze and math forms block export with a report.",
+    "note": "Unsupported.md",
+    "eval": "app.plugins.plugins['card-question-sheet'].preview?.close(); app.plugins.plugins['card-question-sheet'].pro.signOut(); app.plugins.plugins['card-question-sheet'].openCurrent(); 'ready'",
+    "after": "app.plugins.plugins['card-question-sheet'].preview?.close(); app.plugins.plugins['card-question-sheet'].pro.signOut(); 'done'"
+  },
+  {
+    "feature": "selection",
+    "caption": "Clear one card before export.",
+    "note": "Selection.md",
+    "eval": "app.plugins.plugins['card-question-sheet'].preview?.close(); app.plugins.plugins['card-question-sheet'].pro.signOut(); app.plugins.plugins['card-question-sheet'].openCurrent(); const t=document.querySelector('[aria-label=\"Select card 2\"]'); t.click(); 'ready'",
+    "after": "app.plugins.plugins['card-question-sheet'].preview?.close(); app.plugins.plugins['card-question-sheet'].pro.signOut(); 'done'"
+  },
+  {
+    "feature": "question-pages",
+    "caption": "The exported question sheet opens in the vault.",
+    "note": "Study cards.md",
+    "eval": "(async()=>{app.plugins.plugins['card-question-sheet'].preview?.close(); app.plugins.plugins['card-question-sheet'].pro.signOut(); app.plugins.plugins['card-question-sheet'].openCurrent();const p=app.plugins.plugins['card-question-sheet']; const m=p.preview; const f=await p.saveSheet(m.parsed.cards,'Card Question Sheet/Study cards.md',{margin:48,textSize:12,answerSpace:48}); if(!f) throw new Error('No PDF'); m.close(); window.__cqsPdf=f; await app.workspace.getLeaf('tab').openFile(f); return f.path;})()",
+    "wait": 1600,
+    "after": "app.workspace.getMostRecentLeaf()?.detach(); 'done'"
+  },
+  {
+    "feature": "glyph-check",
+    "caption": "The missing Han glyph blocks the PDF save.",
+    "note": "Glyph check.md",
+    "eval": "app.plugins.plugins['card-question-sheet'].preview?.close(); app.plugins.plugins['card-question-sheet'].pro.signOut(); app.plugins.plugins['card-question-sheet'].openCurrent(); 'ready'",
+    "after": "app.plugins.plugins['card-question-sheet'].preview?.close(); app.plugins.plugins['card-question-sheet'].pro.signOut(); 'done'"
+  },
+  {
+    "feature": "page-settings",
+    "caption": "Pro page settings for exam practice.",
+    "note": "Selection.md",
+    "eval": "(async()=>{app.plugins.plugins['card-question-sheet'].preview?.close(); const p=app.plugins.plugins['card-question-sheet']; p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('card-question-sheet-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow();await p.savePreset('Exam practice',{margin:60,textSize:14,answerSpace:72}); p.openCurrent(); const d=p.preview.contentEl.querySelector('select'); d.value='0'; d.dispatchEvent(new Event('change',{bubbles:true})); p.preview.contentEl.scrollTop=p.preview.contentEl.scrollHeight; return 'ready';})()",
+    "after": "app.plugins.plugins['card-question-sheet'].preview?.close(); app.plugins.plugins['card-question-sheet'].pro.signOut(); 'done'"
+  },
+  {
+    "feature": "folder-export",
+    "caption": "Choose a folder and one tag for Pro export.",
+    "note": "Tagged/Planets.md",
+    "eval": "(async()=>{app.plugins.plugins['card-question-sheet'].preview?.close(); const p=app.plugins.plugins['card-question-sheet']; p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('card-question-sheet-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow();app.commands.executeCommandById('card-question-sheet:export-folder'); const inputs=document.querySelectorAll('.modal input[type=text]'); inputs[0].value='Card Question Sheet/Tagged'; inputs[0].dispatchEvent(new Event('input',{bubbles:true})); inputs[1].value='#science'; inputs[1].dispatchEvent(new Event('input',{bubbles:true})); return 'ready';})()",
+    "after": "document.querySelectorAll('.modal button').forEach(b=>{if(b.textContent==='Cancel')b.click();}); app.plugins.plugins['card-question-sheet'].preview?.close(); app.plugins.plugins['card-question-sheet'].pro.signOut(); 'done'"
+  },
+  {
+    "feature": "card-question-sheet",
+    "caption": "Review, select and save a text question sheet.",
+    "frames": [
+      {
+        "note": "Selection.md",
+        "eval": "app.plugins.plugins['card-question-sheet'].preview?.close(); app.plugins.plugins['card-question-sheet'].pro.signOut(); app.plugins.plugins['card-question-sheet'].openCurrent(); 'ready'",
+        "hold": 1200
+      },
+      {
+        "eval": "document.querySelector('[aria-label=\"Select card 2\"]').click(); 'selected'",
+        "hold": 1200
+      },
+      {
+        "eval": "(async()=>{const p=app.plugins.plugins['card-question-sheet'];const m=p.preview;const f=await p.saveSheet(m.parsed.cards.filter((c,i)=>m.selected.has(i)),'Card Question Sheet/Selection.md',{margin:48,textSize:12,answerSpace:48});if(!f)throw new Error('No PDF');m.close();await app.workspace.getLeaf('tab').openFile(f);return f.path;})()",
+        "hold": 1600
+      }
+    ],
+    "after": "app.workspace.getMostRecentLeaf()?.detach(); app.plugins.plugins['card-question-sheet'].preview?.close(); app.plugins.plugins['card-question-sheet'].pro.signOut(); 'done'"
+  }
+]

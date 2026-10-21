@@ -1,0 +1,11 @@
+{
+	"id": "card-question-sheet",
+	"name": "Card Question Sheet",
+	"version": "1.1.0",
+	"minAppVersion": "1.13.4",
+	"description": "Export text study cards as a PDF question sheet with a separate answer key.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}
