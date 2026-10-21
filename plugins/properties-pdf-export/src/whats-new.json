@@ -1,0 +1,34 @@
+{
+	"id": "properties-pdf-export",
+	"name": "Properties in PDF Export",
+	"version": "1.2.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Adds formatted property headers to core PDF exports with free filtering and optional folder layout presets.",
+		"Adds formatted property headers to the built-in PDF export."
+	],
+	"changes_user": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"The properties of a note print as a header in the built-in PDF export.",
+		"Pro can save a table or compact layout for each folder."
+	],
+	"tip": "In reading view, run \"Toggle printable header preview\" to check the header before you export to PDF.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Properties in PDF Export is one of over 100 small plugins that I make. Thank you for using it for the documents you share.",
+	"related": [
+		{
+			"id": "note-word-comments",
+			"name": "Word Comment Export",
+			"blurb": "Export inline note comments as native Word comments in a new DOCX file."
+		},
+		{
+			"id": "property-change-ledger",
+			"name": "Property Change Ledger",
+			"blurb": "Record observed changes to selected note properties in a local history file."
+		},
+		{
+			"id": "tag-properties",
+			"name": "Tag Properties",
+			"blurb": "Browse the values of a list property as tags with note counts."
+		}
+	]
+}
