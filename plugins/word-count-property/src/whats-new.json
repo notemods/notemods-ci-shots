@@ -1,0 +1,32 @@
+{
+	"id": "word-count-property",
+	"name": "Word Count Property",
+	"version": "1.2.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Adds per-note word count and reading-time properties for Bases."
+	],
+	"changes_user": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Tracked notes get number properties for word count and reading time that Bases can sort and sum."
+	],
+	"tip": "In a Bases table, add wordCount and readingTimeMinutes as columns to sort and sum your chapters.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Word Count Property is one of over 100 small plugins that I make. Thank you for using it with your writing.",
+	"related": [
+		{
+			"id": "bases-manual-order",
+			"name": "Bases Manual Order",
+			"blurb": "Drag rows of a base into an order stored in a note property."
+		},
+		{
+			"id": "chapter-batch-export",
+			"name": "Chapter Batch Export",
+			"blurb": "Save each manuscript chapter as its own Markdown file."
+		},
+		{
+			"id": "revision-session-marks",
+			"name": "Revision Session Marks",
+			"blurb": "Save a prose baseline and a marked review of edits."
+		}
+	]
+}

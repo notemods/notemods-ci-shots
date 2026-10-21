@@ -1,0 +1,50 @@
+[
+	{
+		"feature": "bases-columns",
+		"caption": "Bases shows numeric word count and reading-time columns for notes that opted in.",
+		"note": "Word Count Board.base",
+		"zoom": 0.9,
+		"eval": "await new Promise(r => setTimeout(r, 6500)); const p = app.plugins.plugins['word-count-property']; await p.refreshTrackedNotes(); const f = app.vault.getFileByPath('Word Count Property/Chapters/01 The first draft.md'); const fm = app.metadataCache.getFileCache(f)?.frontmatter; if (typeof fm?.wordCount !== 'number') throw new Error('count missing'); const leaf = app.workspace.getLeaf(false); const visible = app.workspace.getActiveFile(); if (!visible) throw new Error('no active file'); await leaf.setViewState({type: 'empty'}); await leaf.openFile(visible); await new Promise(r => setTimeout(r, 500)); 'ok'",
+		"commands": []
+	},
+	{
+		"feature": "tracked-note",
+		"caption": "A note opts in with a frontmatter marker and receives numeric count fields.",
+		"note": "Chapters/01 The first draft.md",
+		"zoom": 0.9,
+		"eval": "await new Promise(r => setTimeout(r, 6500)); const p = app.plugins.plugins['word-count-property']; await p.refreshTrackedNotes(); const f = app.vault.getFileByPath('Word Count Property/Chapters/01 The first draft.md'); const fm = app.metadataCache.getFileCache(f)?.frontmatter; if (typeof fm?.wordCount !== 'number') throw new Error('count missing'); const leaf = app.workspace.getLeaf(false); const visible = app.workspace.getActiveFile(); if (!visible) throw new Error('no active file'); await leaf.setViewState({type: 'empty'}); await leaf.openFile(visible); await new Promise(r => setTimeout(r, 500)); 'ok'",
+		"commands": []
+	},
+	{
+		"feature": "pro-settings",
+		"caption": "Pro settings describe local rendered-text preview and link to the one-time offer.",
+		"eval": "app.setting.open(); app.setting.openTabById('word-count-property'); 'ok'",
+		"after": "app.setting.close(); 'ok'",
+		"commands": []
+	},
+	{
+		"feature": "word-count-update",
+		"caption": "The numeric properties refresh after a change to a tracked note.",
+		"note": "Word Count Board.base",
+		"zoom": 0.9,
+		"eval": "const f = app.vault.getFileByPath('Word Count Property/Chapters/01 The first draft.md'); if (!f) throw new Error('sample note missing'); const before = app.metadataCache.getFileCache(f)?.frontmatter?.wordCount; await app.vault.append(f, '\\n\\nA new sentence makes this chapter longer.'); await new Promise(r => setTimeout(r, 6500)); const fm = app.metadataCache.getFileCache(f)?.frontmatter; if (typeof before !== 'number' || typeof fm?.wordCount !== 'number' || fm.wordCount <= before) throw new Error('count did not increase'); const leaf = app.workspace.getLeaf(false); const visible = app.workspace.getActiveFile(); if (!visible) throw new Error('no active file'); await leaf.setViewState({type: 'empty'}); await leaf.openFile(visible); await new Promise(r => setTimeout(r, 500)); 'updated ' + fm.wordCount",
+		"commands": []
+	},
+	{
+		"feature": "word-count-property",
+		"caption": "The Bases values change after a tracked note grows.",
+		"frames": [
+			{
+				"note": "Word Count Board.base",
+				"zoom": 0.9,
+				"eval": "await new Promise(r => setTimeout(r, 6500)); const p = app.plugins.plugins['word-count-property']; await p.refreshTrackedNotes(); const f = app.vault.getFileByPath('Word Count Property/Chapters/01 The first draft.md'); const fm = app.metadataCache.getFileCache(f)?.frontmatter; if (typeof fm?.wordCount !== 'number') throw new Error('count missing'); const leaf = app.workspace.getLeaf(false); const visible = app.workspace.getActiveFile(); if (!visible) throw new Error('no active file'); await leaf.setViewState({type: 'empty'}); await leaf.openFile(visible); await new Promise(r => setTimeout(r, 500)); 'ok'",
+				"hold": 1800
+			},
+			{
+				"eval": "const f = app.vault.getFileByPath('Word Count Property/Chapters/01 The first draft.md'); if (!f) throw new Error('sample note missing'); const before = app.metadataCache.getFileCache(f)?.frontmatter?.wordCount; await app.vault.append(f, '\\n\\nA new sentence makes this chapter longer.'); await new Promise(r => setTimeout(r, 6500)); const fm = app.metadataCache.getFileCache(f)?.frontmatter; if (typeof before !== 'number' || typeof fm?.wordCount !== 'number' || fm.wordCount <= before) throw new Error('count did not increase'); const leaf = app.workspace.getLeaf(false); const visible = app.workspace.getActiveFile(); if (!visible) throw new Error('no active file'); await leaf.setViewState({type: 'empty'}); await leaf.openFile(visible); await new Promise(r => setTimeout(r, 500)); 'updated ' + fm.wordCount",
+				"zoom": 0.9,
+				"hold": 2200
+			}
+		]
+	}
+]
