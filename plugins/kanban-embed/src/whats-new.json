@@ -1,0 +1,34 @@
+{
+	"id": "kanban-embed",
+	"name": "Kanban Embed",
+	"version": "1.3.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Keeps headings and cards inside longer or mixed code fences out of board embeds.",
+		"Keeps a lane title such as C# whole."
+	],
+	"changes_user": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Lines inside code blocks of a board file no longer show up as lanes or cards.",
+		"A lane title such as C# is no longer cut short."
+	],
+	"tip": "Add hide-done: true to a kanban-embed block to hide checked cards and show how many are hidden.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Kanban Embed is one of over 100 small plugins that I make. Thank you for using it to keep your tasks in order.",
+	"related": [
+		{
+			"id": "task-date-links",
+			"name": "Task Date Links",
+			"blurb": "Link completed tasks to their daily notes for backlinks."
+		},
+		{
+			"id": "kanban-draft-vault",
+			"name": "Kanban Draft Vault",
+			"blurb": "Keep new-card drafts and copy lost text from a recovery list."
+		},
+		{
+			"id": "bases-task-rows",
+			"name": "Bases Task Rows",
+			"blurb": "Shows each checklist task in the notes a base selects as its own row, with due dates, tags and the source note, and ticks tasks from the view."
+		}
+	]
+}
