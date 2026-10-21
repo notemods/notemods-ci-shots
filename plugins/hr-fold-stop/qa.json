@@ -1,0 +1,68 @@
+[
+  {
+    "feature": "fold-stop",
+    "caption": "The heading folds before the rule. The next section stays visible.",
+    "note": "Project Atlas.md",
+    "eval": "(async () => { const p = app.plugins.plugins['hr-fold-stop']; p.pro.signOut(); p.settings = { enabled: true, folders: [], overrideProperty: 'fold-stop' }; await p.saveSettings();const leaf = app.workspace.getMostRecentLeaf(); const path = app.workspace.getActiveFile().path; await leaf.setViewState({type:'markdown',state:{file:path,mode:'source',source:false}}); await new Promise(r => setTimeout(r, 500)); const ed = app.workspace.activeEditor.editor; ed.exec('unfoldAll');ed.setCursor({line:0,ch:0}); ed.exec('toggleFold'); return 'ok'; })()",
+    "wait": 700
+  },
+  {
+    "feature": "fold-child",
+    "caption": "The child heading folds with its parent. The asterisk rule remains visible.",
+    "note": "Week 42.md",
+    "eval": "(async () => { const p = app.plugins.plugins['hr-fold-stop']; p.pro.signOut(); p.settings = { enabled: true, folders: [], overrideProperty: 'fold-stop' }; await p.saveSettings();const leaf = app.workspace.getMostRecentLeaf(); const path = app.workspace.getActiveFile().path; await leaf.setViewState({type:'markdown',state:{file:path,mode:'source',source:false}}); await new Promise(r => setTimeout(r, 500)); const ed = app.workspace.activeEditor.editor; ed.exec('unfoldAll');ed.setCursor({line:0,ch:0}); ed.exec('toggleFold'); return 'ok'; })()",
+    "wait": 700
+  },
+  {
+    "feature": "fold-code",
+    "caption": "The code fence folds with the heading. The top-level rule stays visible.",
+    "note": "Journal.md",
+    "eval": "(async () => { const p = app.plugins.plugins['hr-fold-stop']; p.pro.signOut(); p.settings = { enabled: true, folders: [], overrideProperty: 'fold-stop' }; await p.saveSettings();const leaf = app.workspace.getMostRecentLeaf(); const path = app.workspace.getActiveFile().path; await leaf.setViewState({type:'markdown',state:{file:path,mode:'source',source:false}}); await new Promise(r => setTimeout(r, 500)); const ed = app.workspace.activeEditor.editor; ed.exec('unfoldAll');ed.setCursor({line:0,ch:0}); ed.exec('toggleFold'); return 'ok'; })()",
+    "wait": 700
+  },
+  {
+    "feature": "settings",
+    "caption": "The free vault toggle and the locked Pro controls.",
+    "note": "Project Atlas.md",
+    "eval": "(async () => { const p = app.plugins.plugins['hr-fold-stop']; p.pro.signOut(); p.settings = { enabled: true, folders: [], overrideProperty: 'fold-stop' }; await p.saveSettings();p.settingTab.update();app.setting.open(); app.setting.openTabById('hr-fold-stop'); await new Promise(r => setTimeout(r, 500)); const pane = document.querySelector('.vertical-tab-content'); if (pane) pane.scrollTop = pane.scrollHeight; return 'ok'; })()",
+    "after": "app.setting.close(); 'ok'"
+  },
+  {
+    "feature": "fold-pro",
+    "caption": "Pro folder rules use the longest matching path. The panel shows the active note rule.",
+    "note": "Archive/Active/Plan.md",
+    "eval": "(async () => { const p = app.plugins.plugins['hr-fold-stop']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('hr-fold-stop-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow();p.settings.folders = [{folder:'Fold Stop/Archive',enabled:false},{folder:'Fold Stop/Archive/Active',enabled:true}]; await p.saveSettings();p.settingTab.update();app.setting.open(); app.setting.openTabById('hr-fold-stop'); await new Promise(r => setTimeout(r, 500)); const pane = document.querySelector('.vertical-tab-content'); if (pane) pane.scrollTop = pane.scrollHeight; return 'ok'; })()",
+    "after": "app.setting.close(); 'ok'"
+  },
+  {
+    "feature": "fold-override",
+    "caption": "The effective rule panel shows that a Boolean property overrides the Archive folder rule.",
+    "note": "Archive/Override.md",
+    "eval": "(async () => { const p = app.plugins.plugins['hr-fold-stop']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('hr-fold-stop-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow();p.settings.folders = [{folder:'Fold Stop/Archive',enabled:false},{folder:'Fold Stop/Archive/Active',enabled:true}]; await p.saveSettings();p.settings.overrideProperty = 'fold-stop'; await p.saveSettings();p.settingTab.update();app.setting.open(); app.setting.openTabById('hr-fold-stop'); await new Promise(r => setTimeout(r, 500)); const pane = document.querySelector('.vertical-tab-content'); if (pane) pane.scrollTop = pane.scrollHeight; return 'ok'; })()",
+    "after": "app.setting.close(); app.plugins.plugins['hr-fold-stop'].pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "hr-fold-stop",
+    "caption": "Fold and unfold the first section while the next section stays visible.",
+    "frames": [
+      {
+        "note": "Project Atlas.md",
+        "eval": "(async () => { const p = app.plugins.plugins['hr-fold-stop']; p.pro.signOut(); p.settings = { enabled: true, folders: [], overrideProperty: 'fold-stop' }; await p.saveSettings();const leaf = app.workspace.getMostRecentLeaf(); const path = app.workspace.getActiveFile().path; await leaf.setViewState({type:'markdown',state:{file:path,mode:'source',source:false}}); await new Promise(r => setTimeout(r, 500)); const ed = app.workspace.activeEditor.editor; ed.exec('unfoldAll'); return 'ok'; })()",
+        "hold": 1500
+      },
+      {
+        "eval": "(async () => { const ed = app.workspace.activeEditor.editor; ed.setCursor({line:0,ch:0}); ed.exec('toggleFold'); return 'ok'; })()",
+        "hold": 1800
+      },
+      {
+        "eval": "app.workspace.activeEditor.editor.exec('unfoldAll'); 'ok'",
+        "hold": 1200
+      },
+      {
+        "note": "Week 42.md",
+        "eval": "(async () => { const p = app.plugins.plugins['hr-fold-stop']; p.pro.signOut(); p.settings = { enabled: true, folders: [], overrideProperty: 'fold-stop' }; await p.saveSettings();const leaf = app.workspace.getMostRecentLeaf(); const path = app.workspace.getActiveFile().path; await leaf.setViewState({type:'markdown',state:{file:path,mode:'source',source:false}}); await new Promise(r => setTimeout(r, 500)); const ed = app.workspace.activeEditor.editor; ed.exec('unfoldAll');ed.setCursor({line:0,ch:0}); ed.exec('toggleFold'); return 'ok'; })()",
+        "hold": 1800
+      }
+    ]
+  }
+]

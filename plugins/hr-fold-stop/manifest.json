@@ -1,0 +1,11 @@
+{
+	"id": "hr-fold-stop",
+	"name": "Fold Stop",
+	"version": "1.1.0",
+	"minAppVersion": "1.13.4",
+	"description": "Stop heading folds at horizontal rules so the next section stays visible.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}

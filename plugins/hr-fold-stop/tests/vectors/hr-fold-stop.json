@@ -1,0 +1,701 @@
+{
+ "slug": "hr-fold-stop",
+ "module": "hr-fold-stop/src/boundaries",
+ "function": "foldStopForText",
+ "note": "Pure Markdown fold boundaries. Rule decisions and editor lifetime cases use the separate rule vectors and editor tests.",
+ "cases": [
+  {
+   "name": "case 1 stops before the first top-level rule",
+   "args": [
+    "# A\nBody\n\n---\nTail. Fold A.",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 4,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "case 2 rule ends the fold of the parent and the child",
+   "args": [
+    "# A\nBody\n## Child\nChild body\n\n***\nTail. Fold A.",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 6,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "case 3 equal-level heading ends the fold first",
+   "args": [
+    "# A\nBody\n# B\nOther\n\n---\nTail. Fold A.",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 3,
+    "kind": "heading"
+   }
+  },
+  {
+   "name": "case 4 code fence rule does not end the fold",
+   "args": [
+    "# A\n```text\n---\n```\nBody\n\n___\nTail. Fold A.",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 7,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "case 5 YAML delimiters are not fold boundaries",
+   "args": [
+    "---\ntags: [test]\n---\n# A\nBody\n# B\nTail. Fold A.",
+    4,
+    1
+   ],
+   "expected": {
+    "stop": 6,
+    "kind": "heading"
+   }
+  },
+  {
+   "name": "case 6 Setext underline stays inside the fold",
+   "args": [
+    "# A\nSetext child\n------------\nBody\n\n---\nTail. Fold A.",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 6,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "case 7 indented code rule does not end the fold",
+   "args": [
+    "# A\n\n    ---\n\nBody\n\n---\nTail. Fold A.",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 7,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "case 8a rule inside list item is not top level",
+   "args": [
+    "# A\n- item\n\n    ***\n\nBody\n\n---\nTail.",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 8,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "case 8b rule inside blockquote is not top level",
+   "args": [
+    "# A\n> quote\n>\n> ---\n\nBody\n\n---\nTail.",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 8,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "case 9 four asterisks still make a rule",
+   "args": [
+    "# A\nBody\n\n****\nTail.",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 4,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "four spaces after a blank line form indented code",
+   "args": [
+    "# A\nBody\n\n    ---\nTail2.",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": null,
+    "kind": null
+   }
+  },
+  {
+   "name": "case 11 three spaces before a rule count",
+   "args": [
+    "# A\nBody\n\n   ---\nTail.",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 4,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "case 12 rule of four underscores",
+   "args": [
+    "# A\nBody\n\n____\nTail.",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 4,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "case 13 stars with inner spaces make a rule",
+   "args": [
+    "# A\nBody\n\n* * *\nTail.",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 4,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "case 14 heading level 2 stops before rule",
+   "args": [
+    "## A\nBody\n\n---\nTail.",
+    1,
+    2
+   ],
+   "expected": {
+    "stop": 4,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "case 15 deeper heading after stops first",
+   "args": [
+    "# A\nBody\n## Deep\nMore\n\n---\nTail.",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 6,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "case 16 level 2 folds to rule after level 3 child",
+   "args": [
+    "## A\n### C\nBody\n\n---\nTail.",
+    1,
+    2
+   ],
+   "expected": {
+    "stop": 5,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "case 17 heading with no body and a rule right after",
+   "args": [
+    "# A\n---\nTail.",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 2,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "case 18 CRLF line endings",
+   "args": [
+    "# A\r\nBody\r\n\r\n---\r\nTail.",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 4,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "case 19 no trailing newline",
+   "args": [
+    "# A\nBody\n\n---",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 4,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "case 20 dashes before text are a rule only at line start",
+   "args": [
+    "# A\nBody\n\n--- text\nTail.",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": null,
+    "kind": null
+   }
+  },
+  {
+   "name": "case 21 underscore rule needs three or more",
+   "args": [
+    "# A\nBody\n\n__ text\nTail.",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": null,
+    "kind": null
+   }
+  },
+  {
+   "name": "case 22 heading then rule then deeper heading",
+   "args": [
+    "# A\n---\n## Deep\nTail.",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 2,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "case 23 Setext underline of three chars is still a Setext underline",
+   "args": [
+    "# A\nSetext\n---\nTail.",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": null,
+    "kind": null
+   }
+  },
+  {
+   "name": "case 24 rule then nothing",
+   "args": [
+    "# A\nBody\n\n---",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 4,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "case 25 two rules use the first",
+   "args": [
+    "# A\nBody\n\n---\n\n***\nTail.",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 4,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "Longer closing fence ignores inner rule",
+   "args": [
+    "# A\n````\n---\n`````\n\n***\nTail",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 6,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "Tilde fence ignores inner rule",
+   "args": [
+    "# A\n~~~text\n---\n~~~\n\n___\nTail",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 6,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "Equal Setext heading ends the fold first",
+   "args": [
+    "# A\nBody\n\nNext\n====\n\n---\nTail",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 4,
+    "kind": "heading"
+   }
+  },
+  {
+   "name": "Callout rule is not a boundary",
+   "args": [
+    "# A\n> [!note]\n> ***\n\n___\nTail",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 5,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "Mixed rule marks do not make a boundary",
+   "args": [
+    "# A\n\n-*-\nTail",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": null,
+    "kind": null
+   }
+  },
+  {
+   "name": "Tab indented code is not a rule",
+   "args": [
+    "# A\n\n\t---\n\n***\nTail",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 5,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "Edit before rule shifts boundary",
+   "args": [
+    "# A\nBody\nNew text\n\n---\nTail",
+    1,
+    1
+   ],
+   "expected": {
+    "stop": 5,
+    "kind": "rule"
+   }
+  },
+  {
+   "name": "Higher heading ends a child fold",
+   "args": [
+    "## A\nBody\n# B\n\n---\nTail",
+    1,
+    2
+   ],
+   "expected": {
+    "stop": 3,
+    "kind": "heading"
+   }
+  },
+  {
+   "name": "YAML dot delimiter ends frontmatter",
+   "args": [
+    "---\nfold-stop: true\n...\n# A\n\n***\nTail",
+    4,
+    1
+   ],
+   "expected": {
+    "stop": 6,
+    "kind": "rule"
+   }
+  }
+ ],
+ "ruleCases": [
+  {
+   "name": "Vault disabled gives stock folds",
+   "args": [
+    {
+     "vaultEnabled": false,
+     "folders": [],
+     "overrideProperty": "fold-stop"
+    },
+    "A.md",
+    null
+   ],
+   "expected": {
+    "active": false,
+    "source": "vault",
+    "folder": null,
+    "noteValue": null
+   }
+  },
+  {
+   "name": "Archive uses normal folds",
+   "args": [
+    {
+     "vaultEnabled": true,
+     "folders": [
+      {
+       "folder": "Archive",
+       "enabled": false
+      },
+      {
+       "folder": "Archive/Active",
+       "enabled": true
+      }
+     ],
+     "overrideProperty": "fold-stop"
+    },
+    "Archive/B.md",
+    null
+   ],
+   "expected": {
+    "active": false,
+    "source": "folder",
+    "folder": {
+     "folder": "Archive",
+     "enabled": false
+    },
+    "noteValue": null
+   }
+  },
+  {
+   "name": "Longest folder path enables folds",
+   "args": [
+    {
+     "vaultEnabled": true,
+     "folders": [
+      {
+       "folder": "Archive",
+       "enabled": false
+      },
+      {
+       "folder": "Archive/Active",
+       "enabled": true
+      }
+     ],
+     "overrideProperty": "fold-stop"
+    },
+    "Archive/Active/A.md",
+    null
+   ],
+   "expected": {
+    "active": true,
+    "source": "folder",
+    "folder": {
+     "folder": "Archive/Active",
+     "enabled": true
+    },
+    "noteValue": null
+   }
+  },
+  {
+   "name": "Boolean true overrides folder off",
+   "args": [
+    {
+     "vaultEnabled": true,
+     "folders": [
+      {
+       "folder": "Archive",
+       "enabled": false
+      },
+      {
+       "folder": "Archive/Active",
+       "enabled": true
+      }
+     ],
+     "overrideProperty": "fold-stop"
+    },
+    "Archive/B.md",
+    true
+   ],
+   "expected": {
+    "active": true,
+    "source": "note",
+    "folder": {
+     "folder": "Archive",
+     "enabled": false
+    },
+    "noteValue": true
+   }
+  },
+  {
+   "name": "Boolean false overrides folder on",
+   "args": [
+    {
+     "vaultEnabled": true,
+     "folders": [
+      {
+       "folder": "Archive",
+       "enabled": false
+      },
+      {
+       "folder": "Archive/Active",
+       "enabled": true
+      }
+     ],
+     "overrideProperty": "fold-stop"
+    },
+    "Archive/Active/A.md",
+    false
+   ],
+   "expected": {
+    "active": false,
+    "source": "note",
+    "folder": {
+     "folder": "Archive/Active",
+     "enabled": true
+    },
+    "noteValue": false
+   }
+  },
+  {
+   "name": "Folder name prefix is not a folder match",
+   "args": [
+    {
+     "vaultEnabled": true,
+     "folders": [
+      {
+       "folder": "Archive",
+       "enabled": false
+      },
+      {
+       "folder": "Archive/Active",
+       "enabled": true
+      }
+     ],
+     "overrideProperty": "fold-stop"
+    },
+    "Archive2/A.md",
+    null
+   ],
+   "expected": {
+    "active": true,
+    "source": "vault",
+    "folder": null,
+    "noteValue": null
+   }
+  },
+  {
+   "name": "Case sensitive folder path",
+   "args": [
+    {
+     "vaultEnabled": true,
+     "folders": [
+      {
+       "folder": "Archive",
+       "enabled": false
+      },
+      {
+       "folder": "Archive/Active",
+       "enabled": true
+      }
+     ],
+     "overrideProperty": "fold-stop"
+    },
+    "archive/B.md",
+    null
+   ],
+   "expected": {
+    "active": true,
+    "source": "vault",
+    "folder": null,
+    "noteValue": null
+   }
+  },
+  {
+   "name": "Invalid property text is ignored",
+   "args": [
+    {
+     "vaultEnabled": true,
+     "folders": [
+      {
+       "folder": "Archive",
+       "enabled": false
+      },
+      {
+       "folder": "Archive/Active",
+       "enabled": true
+      }
+     ],
+     "overrideProperty": "fold-stop"
+    },
+    "Archive/B.md",
+    "true"
+   ],
+   "expected": {
+    "active": false,
+    "source": "folder",
+    "folder": {
+     "folder": "Archive",
+     "enabled": false
+    },
+    "noteValue": null
+   }
+  }
+ ],
+ "editorCases": [
+  {
+   "name": "Editor edit maps the range without changing the rule",
+   "args": [
+    "edit",
+    "# A\nBody\n\n---\nTail\n# B\nEnd",
+    {
+     "from": 4,
+     "insert": "Added\n"
+    }
+   ],
+   "expected": {
+    "text": "# A\nAdded\nBody\n\n---\nTail\n# B\nEnd",
+    "folds": [
+     [
+      3,
+      15
+     ]
+    ],
+    "services": 1
+   }
+  },
+  {
+   "name": "Unload removes the custom service and keeps the text",
+   "args": [
+    "unload",
+    "# A\nBody\n\n---\nTail\n# B\nEnd",
+    null
+   ],
+   "expected": {
+    "text": "# A\nBody\n\n---\nTail\n# B\nEnd",
+    "folds": [],
+    "services": 0
+   }
+  },
+  {
+   "name": "Rule change expands the range and keeps the text",
+   "args": [
+    "expand",
+    "# A\nBody\n\n---\nTail\n# B\nEnd",
+    null
+   ],
+   "expected": {
+    "text": "# A\nBody\n\n---\nTail\n# B\nEnd",
+    "folds": [],
+    "services": 1
+   }
+  }
+ ]
+}
