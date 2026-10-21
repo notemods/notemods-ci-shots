@@ -1,0 +1,34 @@
+.date-property-alerts {
+	padding: var(--size-4-4);
+	overflow: auto;
+	height: 100%;
+}
+
+.date-property-alerts .dpa-summary {
+	font-size: var(--font-ui-large);
+	color: var(--text-accent);
+}
+
+.date-property-alerts .dpa-hint, .date-property-alerts .dpa-date {
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+}
+
+.date-property-alerts .dpa-row {
+	padding: var(--size-4-3);
+	margin-bottom: var(--size-4-3);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	background: var(--background-secondary);
+}
+
+.date-property-alerts .dpa-open {
+	margin-bottom: var(--size-4-2);
+}
+
+.date-property-alerts .dpa-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--size-4-2);
+	margin-top: var(--size-4-2);
+}
