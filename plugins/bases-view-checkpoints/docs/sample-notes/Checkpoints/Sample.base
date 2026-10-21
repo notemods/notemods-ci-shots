@@ -1,0 +1,23 @@
+filters:
+  and:
+    - file.inFolder("Bases View Checkpoints/Checkpoints/Notes")
+formulas:
+  total: '1 + 1'
+views:
+  - type: table
+    name: Alpha
+    order:
+      - file.name
+      - note.status
+      - note.priority
+      - formula.total
+    sort:
+      - property: file.name
+        direction: ASC
+  - type: table
+    name: Beta
+    filters: 'status == "done"'
+    order:
+      - file.name
+      - note.status
+      - note.priority

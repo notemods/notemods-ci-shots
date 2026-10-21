@@ -1,0 +1,14 @@
+filters:
+  and:
+    - 'file.hasProperty("status")'
+formulas:
+  total: '1 + 1'
+views:
+  - type: table
+    name: Alpha
+    order:
+      - file.name
+      - asc
+  - type: table
+    name: Beta
+    filters: 'status = todo'
