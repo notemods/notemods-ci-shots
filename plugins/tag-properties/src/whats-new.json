@@ -1,0 +1,33 @@
+{
+	"id": "tag-properties",
+	"name": "Tag Properties",
+	"version": "1.2.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Adds a custom list tag view with note counts, clickable results and native Bases filters.",
+		"Adds optional multiple properties and combined core tags through GitHub Sponsors."
+	],
+	"changes_user": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Settings now end with a More from NoteMods group, where you can turn this tab off or open it again."
+	],
+	"tip": "Select \"Copy bases filter\" to use the current tag selection in the advanced filter editor of a base.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Tag Properties is one of over 100 small plugins that I make. Thank you for using it to browse your notes by topic.",
+	"related": [
+		{
+			"id": "search-operators",
+			"name": "Search Operators",
+			"blurb": "Find notes by date and links, with a preview for each result."
+		},
+		{
+			"id": "context-trees",
+			"name": "Context Trees",
+			"blurb": "Show parent headings and lists in search results."
+		},
+		{
+			"id": "bases-filter-switches",
+			"name": "Bases Filter Switches",
+			"blurb": "Turn saved Bases filters on or off with switches."
+		}
+	]
+}
