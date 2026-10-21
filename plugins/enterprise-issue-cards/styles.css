@@ -1,0 +1,52 @@
+.eic-card {
+	padding: 16px;
+	margin: 12px 0;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	background: var(--background-secondary);
+}
+
+.eic-line {
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	line-height: 1.6;
+
+	/* An empty body line keeps one line of height, so paragraph breaks stay visible. */
+	min-height: 1.6em;
+}
+
+.eic-refresh {
+	margin-top: 12px;
+}
+
+.eic-project {
+	max-height: 65vh;
+	overflow-y: auto;
+}
+
+.eic-ticket-list {
+	width: 24rem;
+	max-width: 100%;
+	min-height: 6rem;
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
