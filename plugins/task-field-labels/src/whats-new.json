@@ -1,0 +1,32 @@
+{
+	"id": "task-field-labels",
+	"name": "Task Field Labels",
+	"version": "1.1.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"A folder rule now selects a preset whose name contains a bar character instead of a different preset."
+	],
+	"changes_user": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea.",
+		"Pro folder rules now pick the right preset when the preset name has a | character in it."
+	],
+	"tip": "Labels show in Reading view. Tasks query results show them in Live Preview too.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Task Field Labels is one of over 100 small plugins that I make. Thank you for using it to keep your tasks in order.",
+	"related": [
+		{
+			"id": "task-format-bridge",
+			"name": "Task Format Bridge",
+			"blurb": "Preview and convert task date fields between emoji and Dataview syntax."
+		},
+		{
+			"id": "task-date-links",
+			"name": "Task Date Links",
+			"blurb": "Add a daily note link to a task when you complete it."
+		},
+		{
+			"id": "bases-task-rows",
+			"name": "Bases Task Rows",
+			"blurb": "Show each checklist task in the notes of a base as its own row, with due dates and tags."
+		}
+	]
+}

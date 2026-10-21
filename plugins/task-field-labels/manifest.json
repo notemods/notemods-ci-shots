@@ -1,0 +1,11 @@
+{
+	"id": "task-field-labels",
+	"name": "Task Field Labels",
+	"version": "1.1.0",
+	"minAppVersion": "1.13.4",
+	"description": "Show text labels for dates, priority, and recurrence in rendered tasks.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}
