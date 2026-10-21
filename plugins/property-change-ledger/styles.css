@@ -1,0 +1,52 @@
+.property-change-ledger-modal {
+  width: min(1000px, 92vw);
+}
+
+.property-change-ledger-results {
+  overflow-x: auto;
+}
+
+.property-change-ledger-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-small);
+}
+
+.property-change-ledger-table th,
+.property-change-ledger-table td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid var(--background-modifier-border);
+  overflow-wrap: anywhere;
+}
+
+.property-change-ledger-note {
+  white-space: normal;
+  height: auto;
+}
+
+.property-change-ledger-modal input[type="text"] {
+  width: 360px;
+  max-width: 40vw;
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}

@@ -1,0 +1,27 @@
+{
+	"id": "property-change-ledger",
+	"name": "Property Change Ledger",
+	"version": "1.1.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea."
+	],
+	"tip": "Run Show recent property changes and set the key filter, such as status, to review one property across your notes.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Property Change Ledger is one of over 100 small plugins that I make. Thank you for using it to keep a history of your property changes.",
+	"related": [
+		{
+			"id": "date-property-alerts",
+			"name": "Date Property Alerts",
+			"blurb": "Get a notice when a date property in a filtered base comes due."
+		},
+		{
+			"id": "bases-multi-edit",
+			"name": "Bases Multi-Row Edit",
+			"blurb": "Set, append or remove a property on selected Bases rows with preview and undo."
+		},
+		{
+			"id": "sync-churn-watch",
+			"name": "Sync Churn Watch",
+			"blurb": "Find the files and settings that your vault rewrites most often."
+		}
+	]
+}
