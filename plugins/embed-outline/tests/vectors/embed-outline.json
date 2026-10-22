@@ -1,0 +1,945 @@
+{
+ "slug": "embed-outline",
+ "module": "embed-outline/src/outline",
+ "function": "buildOutline",
+ "note": "args = [notes: path -> Markdown text, the open note path, options {callouts, listHeadings, maxDepth, words, broken}]. Notes are read by tests/scan.ts, which finds headings, embeds, callouts, list items and block IDs as the app's metadata cache does (test/e2e/outline.e2e.ts checks the same rules in the app). expected.lines = outlineLines(items): one row per line, two spaces per level, H<level> heading, E embed, C callout, L<level> heading in a list item, ! broken embed, @ loop; Nw = words; @N = line in the open note that a click scrolls to. An optional fourth argument is the search query. For these cases, filterOutline runs after buildOutline; expected.lines holds the filtered rows and expected.matches holds the number of matching rows without parent rows.",
+ "cases": [
+  {
+   "name": "own headings only, nested by level",
+   "args": [
+    {
+     "Note.md": "# Title\n## One\n### One a\n## Two\n"
+    },
+    "Note.md",
+    {
+     "callouts": false,
+     "listHeadings": false,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    }
+   ],
+   "expected": {
+    "lines": [
+     "H1 Title @0",
+     "  H2 One @1",
+     "    H3 One a @2",
+     "  H2 Two @3"
+    ],
+    "embeds": 0,
+    "broken": 0,
+    "locked": 0
+   }
+  },
+  {
+   "name": "a whole-note embed nests the embedded headings under the embed row",
+   "args": [
+    {
+     "Book.md": "---\ntitle: Book\n---\n# My book\n\n## Part one\n![[Chapter 1]]\n![[Chapter 2]]\n\n## Part two\n![[Chapter 3#Scene B]]\n",
+     "Chapters/Chapter 1.md": "# Chapter 1\nThe first words of the book.\n## Scene A\nRain falls on the town.\n",
+     "Chapters/Chapter 2.md": "# Chapter 2\nA short chapter with five words.\n",
+     "Chapters/Chapter 3.md": "# Chapter 3\n## Scene A\nOne two three.\n## Scene B\nFour five six seven.\n### Beat\nEight.\n## Scene C\nNine.\n"
+    },
+    "Book.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    }
+   ],
+   "expected": {
+    "lines": [
+     "H1 My book @3",
+     "  H2 Part one @5",
+     "    E Chapter 1 @6",
+     "      H1 Chapter 1 @6",
+     "        H2 Scene A @6",
+     "    E Chapter 2 @7",
+     "      H1 Chapter 2 @7",
+     "  H2 Part two @9",
+     "    E Chapter 3 > Scene B @10",
+     "      H2 Scene B @10",
+     "        H3 Beat @10"
+    ],
+    "embeds": 3,
+    "broken": 0,
+    "locked": 0
+   }
+  },
+  {
+   "name": "a heading embed shows that heading and its subheadings only",
+   "args": [
+    {
+     "Host.md": "# Host\n![[Chapter 3#Scene B]]\n",
+     "Chapter 3.md": "# Chapter 3\n## Scene A\nOne two three.\n## Scene B\nFour five six seven.\n### Beat\nEight.\n## Scene C\nNine.\n"
+    },
+    "Host.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    }
+   ],
+   "expected": {
+    "lines": [
+     "H1 Host @0",
+     "  E Chapter 3 > Scene B @1",
+     "    H2 Scene B @1",
+     "      H3 Beat @1"
+    ],
+    "embeds": 1,
+    "broken": 0,
+    "locked": 0
+   }
+  },
+  {
+   "name": "rows of an embedded note scroll to the embed line in the open note",
+   "args": [
+    {
+     "Host.md": "Intro\n\n\n![[A]]\n",
+     "A.md": "# A1\ntext\n# A2\n"
+    },
+    "Host.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    }
+   ],
+   "expected": {
+    "lines": [
+     "E A @3",
+     "  H1 A1 @3",
+     "  H1 A2 @3"
+    ],
+    "embeds": 1,
+    "broken": 0,
+    "locked": 0
+   }
+  },
+  {
+   "name": "an embed under a heading sits under that heading",
+   "args": [
+    {
+     "Host.md": "# H1\n## H2\n![[A]]\n# Next\n",
+     "A.md": "# Inside\n"
+    },
+    "Host.md",
+    {
+     "callouts": false,
+     "listHeadings": false,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    }
+   ],
+   "expected": {
+    "lines": [
+     "H1 H1 @0",
+     "  H2 H2 @1",
+     "    E A @2",
+     "      H1 Inside @2",
+     "H1 Next @3"
+    ],
+    "embeds": 1,
+    "broken": 0,
+    "locked": 0
+   }
+  },
+  {
+   "name": "embedded heading levels stay relative inside the embed",
+   "args": [
+    {
+     "Host.md": "### Deep\n![[A]]\n",
+     "A.md": "# Top\n## Sub\n"
+    },
+    "Host.md",
+    {
+     "callouts": false,
+     "listHeadings": false,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    }
+   ],
+   "expected": {
+    "lines": [
+     "H3 Deep @0",
+     "  E A @1",
+     "    H1 Top @1",
+     "      H2 Sub @1"
+    ],
+    "embeds": 1,
+    "broken": 0,
+    "locked": 0
+   }
+  },
+  {
+   "name": "images, PDFs and other files are left out",
+   "args": [
+    {
+     "Host.md": "# H\n![[photo.png]]\n![[paper.pdf]]\n![[A]]\n",
+     "photo.png": "",
+     "paper.pdf": "",
+     "A.md": "# A\n"
+    },
+    "Host.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    }
+   ],
+   "expected": {
+    "lines": [
+     "H1 H @0",
+     "  E A @3",
+     "    H1 A @3"
+    ],
+    "embeds": 1,
+    "broken": 0,
+    "locked": 0
+   }
+  },
+  {
+   "name": "free: an embed inside an embedded note is a locked row",
+   "args": [
+    {
+     "Host.md": "![[A]]\n",
+     "A.md": "# A\n![[B]]\n",
+     "B.md": "# B\n"
+    },
+    "Host.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    }
+   ],
+   "expected": {
+    "lines": [
+     "E A @0",
+     "  H1 A @0",
+     "    E B locked @0"
+    ],
+    "embeds": 2,
+    "broken": 0,
+    "locked": 1
+   }
+  },
+  {
+   "name": "pro: nested embeds open down to the depth limit",
+   "args": [
+    {
+     "Host.md": "![[A]]\n",
+     "A.md": "# A\n![[B]]\n",
+     "B.md": "# B\n![[C]]\n",
+     "C.md": "# C\n"
+    },
+    "Host.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 2,
+     "words": false,
+     "broken": true
+    }
+   ],
+   "expected": {
+    "lines": [
+     "E A @0",
+     "  H1 A @0",
+     "    E B @0",
+     "      H1 B @0",
+     "        E C locked @0"
+    ],
+    "embeds": 3,
+    "broken": 0,
+    "locked": 1
+   }
+  },
+  {
+   "name": "callout titles are rows under their heading",
+   "args": [
+    {
+     "Note.md": "# Notes\n> [!warning] Check the dates\n> body\n\n> [!tip]\n> no title\n## Next\n"
+    },
+    "Note.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    }
+   ],
+   "expected": {
+    "lines": [
+     "H1 Notes @0",
+     "  C Check the dates [warning] @1",
+     "  C Tip [tip] @4",
+     "  H2 Next @6"
+    ],
+    "embeds": 0,
+    "broken": 0,
+    "locked": 0
+   }
+  },
+  {
+   "name": "callout titles show as plain text",
+   "args": [
+    {
+     "Note.md": "> [!note]- A **bold** [[Target|link]] and `code`\n> text\n"
+    },
+    "Note.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    }
+   ],
+   "expected": {
+    "lines": [
+     "C A bold link and code [note] @0"
+    ],
+    "embeds": 0,
+    "broken": 0,
+    "locked": 0
+   }
+  },
+  {
+   "name": "callouts are left out when the setting is off",
+   "args": [
+    {
+     "Note.md": "# H\n> [!note] Hidden\n"
+    },
+    "Note.md",
+    {
+     "callouts": false,
+     "listHeadings": false,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    }
+   ],
+   "expected": {
+    "lines": [
+     "H1 H @0"
+    ],
+    "embeds": 0,
+    "broken": 0,
+    "locked": 0
+   }
+  },
+  {
+   "name": "headings inside list items are rows",
+   "args": [
+    {
+     "Note.md": "# Ideas\n- ## First idea\n  - detail\n- [ ] ### A task heading\n1. #### Numbered\n- #notaheading\n"
+    },
+    "Note.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    }
+   ],
+   "expected": {
+    "lines": [
+     "H1 Ideas @0",
+     "  L2 First idea @1",
+     "  L3 A task heading @3",
+     "  L4 Numbered @4"
+    ],
+    "embeds": 0,
+    "broken": 0,
+    "locked": 0
+   }
+  },
+  {
+   "name": "headings and embeds in code blocks and front matter are ignored",
+   "args": [
+    {
+     "Note.md": "---\ntitle: x\n---\n```\n# not a heading\n![[A]]\n```\n# Real\n",
+     "A.md": "# A\n"
+    },
+    "Note.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    }
+   ],
+   "expected": {
+    "lines": [
+     "H1 Real @7"
+    ],
+    "embeds": 0,
+    "broken": 0,
+    "locked": 0
+   }
+  },
+  {
+   "name": "free: broken embeds are left out",
+   "args": [
+    {
+     "Host.md": "# H\n![[Missing note]]\n![[A#No heading]]\n![[A#^nope]]\n",
+     "A.md": "# A\n"
+    },
+    "Host.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    }
+   ],
+   "expected": {
+    "lines": [
+     "H1 H @0"
+    ],
+    "embeds": 0,
+    "broken": 0,
+    "locked": 0
+   }
+  },
+  {
+   "name": "pro: broken embeds are marked with what is missing",
+   "args": [
+    {
+     "Host.md": "# H\n![[Missing note]]\n![[A#No heading]]\n![[A#^nope]]\n",
+     "A.md": "# A\n"
+    },
+    "Host.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 5,
+     "words": false,
+     "broken": true
+    }
+   ],
+   "expected": {
+    "lines": [
+     "H1 H @0",
+     "  ! Missing note missing note @1",
+     "  ! A > No heading missing heading @2",
+     "  ! A > nope missing block @3"
+    ],
+    "embeds": 0,
+    "broken": 3,
+    "locked": 0
+   }
+  },
+  {
+   "name": "pro: a note that embeds itself is a cycle row",
+   "args": [
+    {
+     "Loop.md": "# Loop\n![[Loop]]\n"
+    },
+    "Loop.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 5,
+     "words": false,
+     "broken": true
+    }
+   ],
+   "expected": {
+    "lines": [
+     "H1 Loop @0",
+     "  @ Loop @1"
+    ],
+    "embeds": 0,
+    "broken": 1,
+    "locked": 0
+   }
+  },
+  {
+   "name": "pro: two notes that embed each other stop at the loop",
+   "args": [
+    {
+     "A.md": "# A\n![[B]]\n",
+     "B.md": "# B\n![[A]]\n"
+    },
+    "A.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 5,
+     "words": false,
+     "broken": true
+    }
+   ],
+   "expected": {
+    "lines": [
+     "H1 A @0",
+     "  E B @1",
+     "    H1 B @1",
+     "      @ A @1"
+    ],
+    "embeds": 1,
+    "broken": 1,
+    "locked": 0
+   }
+  },
+  {
+   "name": "the same note embedded twice shows twice",
+   "args": [
+    {
+     "Host.md": "![[A]]\n![[A]]\n",
+     "A.md": "# A\n"
+    },
+    "Host.md",
+    {
+     "callouts": false,
+     "listHeadings": false,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    }
+   ],
+   "expected": {
+    "lines": [
+     "E A @0",
+     "  H1 A @0",
+     "E A @1",
+     "  H1 A @1"
+    ],
+    "embeds": 2,
+    "broken": 0,
+    "locked": 0
+   }
+  },
+  {
+   "name": "a section embed of the same note",
+   "args": [
+    {
+     "Note.md": "# Top\n## Part\ntext\n# Summary\n![[#Part]]\n"
+    },
+    "Note.md",
+    {
+     "callouts": false,
+     "listHeadings": false,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    }
+   ],
+   "expected": {
+    "lines": [
+     "H1 Top @0",
+     "  H2 Part @1",
+     "H1 Summary @3",
+     "  E Part @4",
+     "    H2 Part @4"
+    ],
+    "embeds": 1,
+    "broken": 0,
+    "locked": 0
+   }
+  },
+  {
+   "name": "a block embed is a row with no children",
+   "args": [
+    {
+     "Host.md": "# H\n![[A#^quote]]\n",
+     "A.md": "# A\nA famous line. ^quote\n"
+    },
+    "Host.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    }
+   ],
+   "expected": {
+    "lines": [
+     "H1 H @0",
+     "  E A > quote @1"
+    ],
+    "embeds": 1,
+    "broken": 0,
+    "locked": 0
+   }
+  },
+  {
+   "name": "pro: word counts include embedded text",
+   "args": [
+    {
+     "Book.md": "---\ntitle: Book\n---\n# My book\n\n## Part one\n![[Chapter 1]]\n![[Chapter 2]]\n\n## Part two\n![[Chapter 3#Scene B]]\n",
+     "Chapters/Chapter 1.md": "# Chapter 1\nThe first words of the book.\n## Scene A\nRain falls on the town.\n",
+     "Chapters/Chapter 2.md": "# Chapter 2\nA short chapter with five words.\n",
+     "Chapters/Chapter 3.md": "# Chapter 3\n## Scene A\nOne two three.\n## Scene B\nFour five six seven.\n### Beat\nEight.\n## Scene C\nNine.\n"
+    },
+    "Book.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 5,
+     "words": true,
+     "broken": true
+    }
+   ],
+   "expected": {
+    "lines": [
+     "H1 My book 37w @3",
+     "  H2 Part one 25w @5",
+     "    E Chapter 1 15w @6",
+     "      H1 Chapter 1 15w @6",
+     "        H2 Scene A 7w @6",
+     "    E Chapter 2 8w @7",
+     "      H1 Chapter 2 8w @7",
+     "  H2 Part two 10w @9",
+     "    E Chapter 3 > Scene B 8w @10",
+     "      H2 Scene B 8w @10",
+     "        H3 Beat 2w @10"
+    ],
+    "embeds": 3,
+    "broken": 0,
+    "locked": 0,
+    "words": 37
+   }
+  },
+  {
+   "name": "pro: a heading section count stops at the next heading of its level",
+   "args": [
+    {
+     "Note.md": "# One\nalpha beta\n## Sub\ngamma\n# Two\ndelta epsilon zeta\n"
+    },
+    "Note.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 5,
+     "words": true,
+     "broken": true
+    }
+   ],
+   "expected": {
+    "lines": [
+     "H1 One 5w @0",
+     "  H2 Sub 2w @2",
+     "H1 Two 4w @4"
+    ],
+    "embeds": 0,
+    "broken": 0,
+    "locked": 0,
+    "words": 9
+   }
+  },
+  {
+   "name": "pro: Chinese and Japanese characters count one each",
+   "args": [
+    {
+     "Note.md": "# 第一章\n我们去学校\n"
+    },
+    "Note.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 5,
+     "words": true,
+     "broken": true
+    }
+   ],
+   "expected": {
+    "lines": [
+     "H1 第一章 8w @0"
+    ],
+    "embeds": 0,
+    "broken": 0,
+    "locked": 0,
+    "words": 8
+   }
+  },
+  {
+   "name": "pro: an embed inside a callout counts, and the callout marker is not a word",
+   "args": [
+    {
+     "Host.md": "# H\n> [!quote] Source\n> ![[A]]\n",
+     "A.md": "# A\none two\n"
+    },
+    "Host.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 5,
+     "words": true,
+     "broken": true
+    }
+   ],
+   "expected": {
+    "lines": [
+     "H1 H 5w @0",
+     "  C Source [quote] @1",
+     "  E A 3w @2",
+     "    H1 A 3w @2"
+    ],
+    "embeds": 1,
+    "broken": 0,
+    "locked": 0,
+    "words": 5
+   }
+  },
+  {
+   "name": "an embed with an alias or size keeps the link",
+   "args": [
+    {
+     "Host.md": "![[A#Part|300]]\n",
+     "A.md": "# A\n## Part\n"
+    },
+    "Host.md",
+    {
+     "callouts": false,
+     "listHeadings": false,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    }
+   ],
+   "expected": {
+    "lines": [
+     "E A > Part @0",
+     "  H2 Part @0"
+    ],
+    "embeds": 1,
+    "broken": 0,
+    "locked": 0
+   }
+  },
+  {
+   "name": "an empty note gives no rows",
+   "args": [
+    {
+     "Empty.md": ""
+    },
+    "Empty.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 5,
+     "words": true,
+     "broken": true
+    }
+   ],
+   "expected": {
+    "lines": [],
+    "embeds": 0,
+    "broken": 0,
+    "locked": 0,
+    "words": 0
+   }
+  },
+  {
+   "name": "a missing open note gives an empty outline",
+   "args": [
+    {
+     "Other.md": "# x\n"
+    },
+    "Gone.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 5,
+     "words": true,
+     "broken": true
+    }
+   ],
+   "expected": {
+    "lines": [],
+    "embeds": 0,
+    "broken": 0,
+    "locked": 0
+   }
+  },
+  {
+   "name": "search keeps the parents of an embedded heading",
+   "args": [
+    {
+     "Book.md": "# Book\n![[Chapter]]\n# Other\n",
+     "Chapter.md": "# Chapter\n## The ferry\n## Night watch\n"
+    },
+    "Book.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    },
+    " FERRY "
+   ],
+   "expected": {
+    "lines": [
+     "H1 Book @0",
+     "  E Chapter @1",
+     "    H1 Chapter @1",
+     "      H2 The ferry @1"
+    ],
+    "embeds": 1,
+    "broken": 0,
+    "locked": 0,
+    "matches": 1
+   }
+  },
+  {
+   "name": "search leaves out unrelated children of a matching parent",
+   "args": [
+    {
+     "Book.md": "# Book\n![[Chapter]]\n# Other\n",
+     "Chapter.md": "# Chapter\n## The ferry\n## Night watch\n"
+    },
+    "Book.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    },
+    "Book"
+   ],
+   "expected": {
+    "lines": [
+     "H1 Book @0"
+    ],
+    "embeds": 1,
+    "broken": 0,
+    "locked": 0,
+    "matches": 1
+   }
+  },
+  {
+   "name": "search returns every repeated matching row",
+   "args": [
+    {
+     "Book.md": "# Book\n![[Chapter]]\n# Other\n",
+     "Chapter.md": "# Chapter\n## The ferry\n## Night watch\n"
+    },
+    "Book.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    },
+    "chapter"
+   ],
+   "expected": {
+    "lines": [
+     "H1 Book @0",
+     "  E Chapter @1",
+     "    H1 Chapter @1"
+    ],
+    "embeds": 1,
+    "broken": 0,
+    "locked": 0,
+    "matches": 2
+   }
+  },
+  {
+   "name": "search treats punctuation as literal text",
+   "args": [
+    {
+     "Book.md": "# Book\n![[Chapter]]\n# Other\n",
+     "Chapter.md": "# Chapter\n## The ferry\n## Night watch\n"
+    },
+    "Book.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    },
+    ".*"
+   ],
+   "expected": {
+    "lines": [],
+    "embeds": 1,
+    "broken": 0,
+    "locked": 0,
+    "matches": 0
+   }
+  },
+  {
+   "name": "search with whitespace restores all rows",
+   "args": [
+    {
+     "Book.md": "# Book\n![[Chapter]]\n# Other\n",
+     "Chapter.md": "# Chapter\n## The ferry\n## Night watch\n"
+    },
+    "Book.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    },
+    "   "
+   ],
+   "expected": {
+    "lines": [
+     "H1 Book @0",
+     "  E Chapter @1",
+     "    H1 Chapter @1",
+     "      H2 The ferry @1",
+     "      H2 Night watch @1",
+     "H1 Other @2"
+    ],
+    "embeds": 1,
+    "broken": 0,
+    "locked": 0,
+    "matches": 0
+   }
+  },
+  {
+   "name": "search has no rows for an absent label",
+   "args": [
+    {
+     "Book.md": "# Book\n![[Chapter]]\n# Other\n",
+     "Chapter.md": "# Chapter\n## The ferry\n## Night watch\n"
+    },
+    "Book.md",
+    {
+     "callouts": true,
+     "listHeadings": true,
+     "maxDepth": 1,
+     "words": false,
+     "broken": false
+    },
+    "absent"
+   ],
+   "expected": {
+    "lines": [],
+    "embeds": 1,
+    "broken": 0,
+    "locked": 0,
+    "matches": 0
+   }
+  }
+ ]
+}
