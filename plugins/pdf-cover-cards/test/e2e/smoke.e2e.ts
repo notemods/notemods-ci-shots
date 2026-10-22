@@ -1,0 +1,482 @@
+import { createHash } from 'node:crypto';
+import { existsSync, readFileSync } from 'node:fs';
+import { browser, expect } from '@wdio/globals';
+import { obsidianPage } from 'wdio-obsidian-service';
+import { pluginId, reloadPlugin } from './load';
+
+// Real-app checks of the PDF Cover Cards Bases view on the sample vault: 12 notes in Library/ with 12 made-up PDFs
+// in Library/PDFs (test/e2e/make-pdfs.mjs). 10 notes name their PDF in the "pdf" property, 2 embed it in the body.
+
+interface CardInfo {
+	path: string;
+	status: string;
+	from: string | null;
+	page: number | null;
+	pages: number;
+	aspect: number;
+	/** Average color of the drawn cover image, "#rrggbb", or "" when no image. */
+	color: string;
+	/** Text of the "Open at page N" button, or null when the card has none. */
+	button: string | null;
+	images: number;
+}
+
+interface ViewState {
+	cards: CardInfo[];
+	bar: string;
+	limitText: string;
+	exportButton: boolean;
+}
+
+/** State of the visible cover view in the active tab (the newest one when there are several). */
+async function viewState(): Promise<ViewState | null> {
+	return browser.executeObsidian(({ app }, id) => {
+		interface Card {
+			file: { path: string };
+			choice: { from: string; page: number } | null;
+			status: string;
+			pages: number;
+			aspect: number;
+			coverEl: HTMLElement;
+		}
+		interface V {
+			cards: Card[];
+			containerEl: HTMLElement;
+		}
+		const p = (app as unknown as { plugins: { plugins: Record<string, { views: Set<V> }> } }).plugins.plugins[id];
+		const views = [...(p?.views ?? [])].filter((v) => v.containerEl.isConnected && v.containerEl.offsetParent !== null && v.cards.length > 0);
+		const v = views[views.length - 1];
+		if (!v) return null;
+		const color = (img: HTMLImageElement | null): string => {
+			if (!img || !img.complete || img.naturalWidth === 0) return '';
+			const c = document.createElement('canvas');
+			c.width = 8;
+			c.height = 8;
+			const ctx = c.getContext('2d')!;
+			// The lower middle of the cover: below the title band of the sample books.
+			ctx.drawImage(img, img.naturalWidth * 0.6, img.naturalHeight * 0.92, 8, 8, 0, 0, 8, 8);
+			const d = ctx.getImageData(0, 0, 8, 8).data;
+			const avg = [0, 1, 2].map((k) => Math.round(Array.from({ length: 64 }, (_, i) => d[i * 4 + k]!).reduce((a, b) => a + b, 0) / 64));
+			return '#' + avg.map((x) => x.toString(16).padStart(2, '0')).join('');
+		};
+		return {
+			cards: v.cards.map((c) => ({ path: c.file.path, status: c.status, from: c.choice?.from ?? null, page: c.choice?.page ?? null, pages: c.pages, aspect: c.aspect, color: color(c.coverEl.querySelector('img')), button: c.coverEl.parentElement?.querySelector('.pdf-cover-card-open-pdf')?.textContent ?? null, images: c.coverEl.querySelectorAll('img').length })),
+			bar: v.containerEl.querySelector('.pdf-cover-cards-bar')?.textContent ?? '',
+			limitText: v.containerEl.querySelector('.pdf-cover-cards-limit')?.textContent ?? '',
+			exportButton: v.containerEl.querySelector('.pdf-cover-cards-export') !== null,
+		};
+	}, pluginId);
+}
+
+async function waitFor(pred: (s: ViewState) => boolean, msg: string, timeout = 30000): Promise<ViewState> {
+	let last: ViewState | null = null;
+	await browser.waitUntil(
+		async () => {
+			last = await viewState();
+			return last !== null && pred(last);
+		},
+		{ timeout, interval: 250, timeoutMsg: `${msg}; last state ${JSON.stringify(last)?.slice(0, 1500)}` },
+	);
+	return last!;
+}
+
+/** Draws every cover of the visible view, also those below the fold. */
+async function fillAll(): Promise<void> {
+	await browser.executeObsidian(async ({ app }, id) => {
+		interface V {
+			cards: unknown[];
+			containerEl: HTMLElement;
+			fillAll(): Promise<void>;
+		}
+		const p = (app as unknown as { plugins: { plugins: Record<string, { views: Set<V> }> } }).plugins.plugins[id]!;
+		const v = [...p.views].filter((x) => x.containerEl.isConnected && x.containerEl.offsetParent !== null && x.cards.length > 0).pop();
+		await v?.fillAll();
+	}, pluginId);
+}
+
+/** Pro on: a stubbed GitHub Sponsors reply ($5 a month) and a fake token, then Refresh. Pro off: sign out. No real request. */
+async function setPro(on: boolean): Promise<void> {
+	await browser.executeObsidian(
+		async ({ app }, id, value) => {
+			interface Pro {
+				opts: { http: unknown };
+				refreshNow(): Promise<void>;
+				signOut(): void;
+			}
+			const p = (app as unknown as { plugins: { plugins: Record<string, { pro: Pro }> } }).plugins.plugins[id]!;
+			if (!value) {
+				p.pro.signOut();
+				return;
+			}
+			const reply = { status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } };
+			p.pro.opts.http = () => Promise.resolve(reply);
+			app.secretStorage.setSecret(`${id}-github-token`, 'gho_' + '0'.repeat(36));
+			await p.pro.refreshNow();
+		},
+		pluginId,
+		on,
+	);
+}
+
+const card = (s: ViewState, name: string) => s.cards.find((c) => c.path.endsWith(`/${name}`));
+const near = (hex: string, want: string) => [1, 3, 5].every((i) => Math.abs(parseInt(hex.slice(i, i + 2), 16) - parseInt(want.slice(i, i + 2), 16)) <= 24);
+
+describe(`${pluginId} in the real app`, function () {
+	before(async function () {
+		await setPro(false);
+	});
+
+	it('is enabled and reloads with no console errors', async function () {
+		const state = await reloadPlugin(pluginId);
+		expect(state).toEqual({ enabled: true, reloaded: true, errors: [] });
+	});
+
+	it('runs the exact candidate bytes in the requested app version', async function () {
+		const sha = (file: string) => createHash('sha256').update(readFileSync(file)).digest('hex');
+		const installed = await browser.executeObsidian(async ({ app, obsidian }, id) => {
+			const p = (app as unknown as { plugins: { plugins: Record<string, { manifest: { dir: string; version: string } }> } }).plugins.plugins[id]!;
+			const hashes: Record<string, string> = {};
+			for (const name of ['main.js', 'manifest.json', 'styles.css']) {
+				const data = await app.vault.adapter.readBinary(`${p.manifest.dir}/${name}`);
+				hashes[name] = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', data)), (x) => x.toString(16).padStart(2, '0')).join('');
+			}
+			return { appVersion: obsidian.apiVersion, pluginVersion: p.manifest.version, hashes };
+		}, pluginId);
+		for (const name of ['main.js', 'manifest.json', 'styles.css']) expect(installed.hashes[name]).toBe(sha(name));
+		expect(installed.appVersion).toBe(browser.getObsidianVersion());
+		console.log(`candidate app binding: ${JSON.stringify({ ...installed, packageLockSha256: existsSync('package-lock.json') ? sha('package-lock.json') : null })}`);
+	});
+
+	it('registers the view through the public Bases API', async function () {
+		const ok = await browser.executeObsidian(({ app }) => {
+			const bases = (app as unknown as { internalPlugins: { getEnabledPluginById(id: string): unknown } }).internalPlugins.getEnabledPluginById('bases');
+			return bases !== null;
+		});
+		expect(ok).toBe(true);
+	});
+
+	it('draws the PDF cover of all 12 notes, from the property or the first embed', async function () {
+		await obsidianPage.openFile('Library/Library.base');
+		await waitFor((x) => x.cards.length === 12, 'expected 12 cards');
+		await fillAll();
+		const s = await waitFor((x) => x.cards.every((c) => c.status === 'drawn' && c.color !== ''), 'every cover drawn');
+		expect(s.bar).toContain('12 cards, 12 with a PDF');
+		expect(s.limitText).toBe('');
+		expect(s.cards.filter((c) => c.from === 'property')).toHaveLength(10);
+		expect(s.cards.every((c) => c.images === 1)).toBe(true);
+		expect(card(s, 'Bread at Home.md')?.from).toBe('link');
+		expect(card(s, 'Night Trains.md')?.from).toBe('link');
+		expect(card(s, 'Camera Basics.md')?.pages).toBe(4);
+		// The real page pixels: the dark green and dark blue covers of two sample books.
+		expect(near(card(s, 'Field Guide to Mosses.md')!.color, '#2f5d50')).toBe(true);
+		expect(near(card(s, 'Rivers of the North.md')!.color, '#1d3557')).toBe(true);
+		// A5 sample books keep the page aspect (595 / 420).
+		expect(Math.abs(card(s, 'Field Guide to Mosses.md')!.aspect - 595 / 420)).toBeLessThan(0.01);
+		expect(s.exportButton).toBe(false);
+	});
+
+	it('uses a PDF entry itself as its cover', async function () {
+		await obsidianPage.openFile('Library/PDF files.base');
+		await waitFor((x) => x.cards.length === 12, 'expected 12 PDF cards');
+		await fillAll();
+		const s = await waitFor((x) => x.cards.every((c) => c.status === 'drawn'), 'every PDF drawn');
+		expect(s.cards.every((c) => c.from === 'self')).toBe(true);
+	});
+
+	it('draws the page named with #page=N and redraws when the note changes', async function () {
+		const note = 'Library/Camera Basics.md';
+		const before = await obsidianPage.read(note);
+		await obsidianPage.openFile('Library/Library.base');
+		await waitFor((x) => card(x, 'Camera Basics.md')?.status === 'drawn' || card(x, 'Camera Basics.md')?.status === 'waiting', 'card present');
+		await obsidianPage.write(note, before.replace('[[Camera Basics.pdf]]', '[[Camera Basics.pdf#page=2]]'));
+		await fillAll();
+		// The contents page is white where the cover is dark. "drawn" can be reported before the canvas is
+		// fully painted on a slow runner, so the colour is part of the wait, not a one-shot read.
+		const s = await waitFor((x) => {
+			const c = card(x, 'Camera Basics.md');
+			return c?.page === 2 && c.status === 'drawn' && near(c.color, '#ffffff');
+		}, 'page 2 drawn white');
+		expect(near(card(s, 'Camera Basics.md')!.color, '#ffffff')).toBe(true);
+		await obsidianPage.write(note, before);
+		await waitFor((x) => card(x, 'Camera Basics.md')?.page === 1, 'back to page 1');
+	});
+
+	it('after a plugin reload with the base open, the view runs the new plugin code and follows note edits', async function () {
+		const note = 'Library/Night Trains.md';
+		const before = await obsidianPage.read(note);
+		await obsidianPage.openFile('Library/Library.base');
+		await waitFor((x) => card(x, 'Night Trains.md')?.page === 1, 'card present');
+		expect((await reloadPlugin(pluginId)).errors).toEqual([]);
+		// viewState() only sees views of the loaded plugin, so a stale view of the old code times out here.
+		await waitFor((x) => card(x, 'Night Trains.md')?.page === 1, 'no cover view in the reloaded plugin');
+		const command = await browser.executeObsidian(({ app }, id) => {
+			const commands = (app as unknown as { commands: { findCommand(id: string): { checkCallback?(checking: boolean): boolean } | undefined } }).commands;
+			return commands.findCommand(`${id}:export-contact-sheet`)?.checkCallback?.(true) ?? false;
+		}, pluginId);
+		expect(command).toBe(true);
+		await obsidianPage.write(note, before.replace('[[Night Trains.pdf]]', '[[Night Trains.pdf#page=2]]'));
+		await fillAll();
+		await waitFor((x) => card(x, 'Night Trains.md')?.page === 2, 'page 2 not picked up after the reload');
+		await obsidianPage.write(note, before);
+		await waitFor((x) => card(x, 'Night Trains.md')?.page === 1, 'back to page 1');
+	});
+
+	it('shows a readable message for a PDF that cannot be read', async function () {
+		await browser.executeObsidian(async ({ app }) => {
+			await app.vault.create('Library/PDFs/Broken.pdf', 'this is not a pdf');
+			await app.vault.create('Library/Broken scan.md', '---\ntags: [library]\npdf: "[[Broken.pdf]]"\n---\n');
+		});
+		await obsidianPage.openFile('Library/Library.base');
+		await waitFor((x) => x.cards.length === 13, 'expected 13 cards');
+		await fillAll();
+		const s = await waitFor((x) => card(x, 'Broken scan.md')?.status === 'error', 'error card');
+		expect(s.cards.filter((c) => c.status === 'drawn')).toHaveLength(12);
+		await browser.executeObsidian(async ({ app }) => {
+			for (const p of ['Library/Broken scan.md', 'Library/PDFs/Broken.pdf']) {
+				const f = app.vault.getFileByPath(p);
+				if (f) await app.vault.delete(f);
+			}
+		});
+	});
+
+	it('shows an Open at page button on each card with a PDF', async function () {
+		await obsidianPage.openFile('Library/Library.base');
+		const s = await waitFor((x) => x.cards.length === 12, 'expected 12 cards');
+		// 12 cards with a PDF: one button each, with the page of the cover.
+		expect(s.cards.filter((c) => c.button !== null)).toHaveLength(12);
+		expect(s.cards.every((c) => c.button === `Open at page ${c.page}`)).toBe(true);
+		expect(s.cards.find((c) => c.path.endsWith('Bread at Home.md'))?.button).toBe('Open at page 1');
+	});
+
+	it('the Enter key on the Open at page button opens the PDF at the page of the cover, not the note', async function () {
+		const note = 'Library/Camera Basics.md';
+		const before = await obsidianPage.read(note);
+		try {
+			await obsidianPage.write(note, before.replace('[[Camera Basics.pdf]]', '[[Camera Basics.pdf#page=2]]'));
+			await obsidianPage.openFile('Library/Library.base');
+			await waitFor((x) => card(x, 'Camera Basics.md')?.button === 'Open at page 2', 'button for page 2');
+			// Focus the button of the visible view; hidden leaves of earlier tests have the same cards.
+			const focused = await browser.executeObsidian(({ app }, id) => {
+				const p = (app as unknown as { plugins: { plugins: Record<string, { views: Set<{ containerEl: HTMLElement }> }> } }).plugins.plugins[id]!;
+				const v = [...p.views].filter((x) => x.containerEl.isConnected && x.containerEl.offsetParent !== null).pop();
+				const b = v?.containerEl.querySelector<HTMLElement>('.pdf-cover-card[data-path="Library/Camera Basics.md"] .pdf-cover-card-open-pdf');
+				const tracking = window as typeof window & { pccOpened?: string[]; pccStop?: () => void };
+				tracking.pccOpened = [];
+				const ref = app.workspace.on('file-open', (file) => { if (file) tracking.pccOpened!.push(file.path); });
+				tracking.pccStop = () => app.workspace.offref(ref);
+				b?.scrollIntoView({ block: 'center' });
+				b?.focus();
+				return b !== null && b !== undefined && document.activeElement === b;
+			}, pluginId);
+			expect(focused).toBe(true);
+			await browser.keys('Enter');
+			await browser.waitUntil(
+				() => browser.executeObsidian(({ app }) => app.workspace.getActiveFile()?.path === 'Library/PDFs/Camera Basics.pdf'),
+				{ timeout: 15000, timeoutMsg: 'the PDF did not open' },
+			);
+			// Wait for the actual PDF page, independent of the reader's load time.
+			const pageBox = () => browser.executeObsidian(({ app }) => app.workspace.getMostRecentLeaf()?.view.containerEl.querySelector<HTMLInputElement>('.pdf-page-input')?.value ?? '');
+			await browser.waitUntil(async () => (await pageBox()) === '2', { timeout: 15000, timeoutMsg: 'the PDF did not show page 2' });
+			const opened = await browser.executeObsidian(({ app }) => ({
+				file: app.workspace.getActiveFile()?.path ?? '',
+				type: app.workspace.getMostRecentLeaf()?.view.getViewType() ?? '',
+			}));
+			expect(opened).toEqual({ file: 'Library/PDFs/Camera Basics.pdf', type: 'pdf' });
+			expect(await pageBox()).toBe('2');
+			const openedFiles = await browser.executeObsidian(() => (window as typeof window & { pccOpened?: string[] }).pccOpened ?? []);
+			expect(openedFiles).toContain('Library/PDFs/Camera Basics.pdf');
+			expect(openedFiles).not.toContain(note);
+		} finally {
+			await browser.executeObsidian(() => {
+				const tracking = window as typeof window & { pccOpened?: string[]; pccStop?: () => void };
+				tracking.pccStop?.();
+				delete tracking.pccStop;
+				delete tracking.pccOpened;
+			});
+			await obsidianPage.write(note, before);
+		}
+	});
+
+	it('draws the cards inside a note that embeds the view', async function () {
+		await obsidianPage.openFile('Library/Reading list.md');
+		const s = await waitFor((x) => x.cards.length === 12 && x.cards.some((c) => c.status === 'drawn'), 'embedded view drawn');
+		expect(s.cards[0]?.path.startsWith('Library/')).toBe(true);
+	});
+
+	it('free limit of 30 covers, then Pro: every cover, crop, saved covers and the contact sheet', async function () {
+		await browser.executeObsidian(async ({ app }) => {
+			await app.vault.createFolder('Bulk').catch(() => undefined);
+			const pdfs = app.vault.getFiles().filter((f) => f.path.startsWith('Library/PDFs/')).map((f) => f.basename).sort();
+			const jobs: Promise<unknown>[] = [];
+			for (let i = 0; i < 40; i++) {
+				const path = `Bulk/Item ${String(i).padStart(2, '0')}.md`;
+				if (!app.vault.getFileByPath(path)) jobs.push(app.vault.create(path, `---\ntags: [bulk]\npdf: "[[${pdfs[i % pdfs.length]}.pdf]]"\n---\n`));
+			}
+			await Promise.all(jobs);
+			if (!app.vault.getFileByPath('Bulk/Bulk.base')) await app.vault.create('Bulk/Bulk.base', 'filters:\n  and:\n    - file.hasTag("bulk")\nviews:\n  - type: pdf-cover-cards\n    name: Bulk\n    pdfProperty: note.pdf\n    cardWidth: 120\n    crop: top-half\n');
+		});
+		await obsidianPage.openFile('Bulk/Bulk.base');
+		await waitFor((x) => x.cards.length === 40, 'expected 40 cards');
+		await fillAll();
+		const free = await waitFor((x) => x.cards.filter((c) => c.status === 'drawn').length === 30, '30 free covers');
+		expect(free.cards.filter((c) => c.status === 'locked')).toHaveLength(10);
+		expect(free.limitText).toContain('10 more covers are not drawn');
+		// The crop option is Pro: free covers show the whole page.
+		expect(free.cards[0]!.aspect).toBeGreaterThan(1.3);
+
+		await setPro(true);
+		await waitFor((x) => x.exportButton && x.cards.every((c) => c.status !== 'locked'), 'Pro: no locked cards');
+		await fillAll();
+		const pro = await waitFor((x) => x.cards.every((c) => c.status === 'drawn'), 'Pro: 40 covers');
+		expect(pro.limitText).toBe('');
+		// Top half of an A5 page (0.5 x 595 / 420) or of an A4 paper (0.5 x 842 / 595).
+		for (const c of pro.cards) expect(c.aspect).toBeLessThan(0.75);
+
+		const disk = await browser.executeObsidian(async ({ app }, id) => {
+			interface R {
+				diskFolder: string;
+				fromDisk: number;
+				drawn: number;
+				memory: { clear(): void };
+				clear(): Promise<number>;
+			}
+			interface V {
+				cards: unknown[];
+				containerEl: HTMLElement;
+				fillAll(): Promise<void>;
+				draw(): void;
+			}
+			interface P {
+				renderer: R;
+				views: Set<V>;
+				targetView(): V;
+				exportSheet(v: V): Promise<{ path: string } | null>;
+			}
+			const p = (app as unknown as { plugins: { plugins: Record<string, P> } }).plugins.plugins[id]!;
+			const saved = (await app.vault.adapter.list(p.renderer.diskFolder)).files.filter((f) => f.endsWith('.jpg')).length;
+			// Empty the memory cache and draw again: the covers come from the saved files, not from pdf.js.
+			p.renderer.memory.clear();
+			const drawnBefore = p.renderer.drawn;
+			const v = p.targetView();
+			v.draw();
+			await v.fillAll();
+			const fromDisk = p.renderer.fromDisk;
+			const redrawn = p.renderer.drawn - drawnBefore;
+			const sheet = await p.exportSheet(v);
+			const file = sheet ? app.vault.getFileByPath(sheet.path) : null;
+			let size = [0, 0];
+			if (file) {
+				const bmp = await createImageBitmap(new Blob([await app.vault.readBinary(file)], { type: 'image/png' }));
+				size = [bmp.width, bmp.height];
+				app.workspace.getLeaf(false).detach();
+				await app.vault.delete(file);
+			}
+			const files = (await app.vault.adapter.list(p.renderer.diskFolder)).files.length;
+			const cleared = await p.renderer.clear();
+			const after = (await app.vault.adapter.exists(p.renderer.diskFolder)) ? (await app.vault.adapter.list(p.renderer.diskFolder)).files.length : 0;
+			return { saved, fromDisk, redrawn, name: sheet?.path ?? '', size, files, cleared, after };
+		}, pluginId);
+		// 40 cards use 12 distinct PDFs, so 12 covers are saved (each as a .jpg and a .json file).
+		expect(disk.saved).toBe(12);
+		expect(disk.fromDisk).toBeGreaterThanOrEqual(12);
+		expect(disk.redrawn).toBe(0);
+		expect(disk.name).toMatch(/Bulk covers \d{4}-\d{2}-\d{2} \d{4}\.png$/);
+		// 5 columns of 240 px with 24 px gaps; 8 rows.
+		expect(disk.size[0]).toBe(24 + 5 * (240 + 24));
+		expect(disk.size[1]).toBeGreaterThan(8 * 120);
+		expect(disk.files).toBe(disk.saved * 2);
+		expect(disk.cleared).toBe(disk.files);
+		expect(disk.after).toBe(0);
+		await setPro(false);
+		await waitFor((x) => !x.exportButton && x.cards.filter((c) => c.status === 'locked').length === 10, 'free again');
+	});
+
+	it('recovers a nonempty corrupt JPEG on an actual card and keeps valid caches', async function () {
+		await setPro(true);
+		try {
+			await browser.executeObsidian(async ({ app }) => {
+				await app.vault.create('Cache recovery.base', 'filters:\n  and:\n    - file.path == "Library/PDFs/Field Guide to Mosses.pdf"\nviews:\n  - type: pdf-cover-cards\n    name: Cache recovery\n    cardWidth: 173\n');
+			});
+			await obsidianPage.openFile('Cache recovery.base');
+			await waitFor((x) => x.cards.length === 1, 'one native PDF card');
+			await fillAll();
+			const receipt = await browser.executeObsidian(async ({ app }, id) => {
+				interface Cover { blob: Blob; page: number; pages: number; aspect: number }
+				interface V { cards: { status: string; coverEl: HTMLElement }[]; draw(): void; fillAll(): Promise<void> }
+				interface R { drawn: number; fromDisk: number; diskFolder: string; memory: { clear(): void; bytes: number }; clear(): Promise<number> }
+				const p = (app as unknown as { plugins: { plugins: Record<string, { renderer: R; targetView(): V; settings: { saveCovers: boolean } }> } }).plugins.plugins[id]!;
+				const r = p.renderer;
+				const v = p.targetView();
+				p.settings.saveCovers = true;
+				await r.clear();
+				v.draw(); await v.fillAll();
+				const adapter = app.vault.adapter;
+				const jpeg = (await adapter.list(r.diskFolder)).files.find((x) => x.endsWith('.jpg'))!;
+				const original = Array.from(new Uint8Array(await adapter.readBinary(jpeg)));
+				const pdf = app.vault.getFileByPath('Library/PDFs/Field Guide to Mosses.pdf')!;
+				const sourceBefore = Array.from(new Uint8Array(await app.vault.readBinary(pdf)));
+				await adapter.writeBinary(jpeg, new TextEncoder().encode('nonempty invalid cached JPEG').buffer);
+				r.memory.clear();
+				const before = r.drawn;
+				v.draw(); await Promise.all([v.fillAll(), v.fillAll()]);
+				const recovered = r.drawn - before;
+				const image = v.cards[0]!.coverEl.querySelector('img')!;
+				await image.decode();
+				const repaired = Array.from(new Uint8Array(await adapter.readBinary(jpeg)));
+				const status = v.cards[0]!.status;
+				const dimensions = [image.naturalWidth, image.naturalHeight];
+				const images = v.cards[0]!.coverEl.querySelectorAll('img').length;
+				const memoryBytes = r.memory.bytes;
+				const diskBefore = r.fromDisk;
+				for (let n = 0; n < 3; n++) { r.memory.clear(); v.draw(); await v.fillAll(); }
+				const validDiskHits = r.fromDisk - diskBefore;
+				// Reopen/redraw from memory too: no extra PDF renders.
+				v.draw(); await v.fillAll();
+				const sourceAfter = Array.from(new Uint8Array(await app.vault.readBinary(pdf)));
+				return { recovered, finalDraws: r.drawn - before, status, dimensions, images, memoryBytes,
+					validDiskHits, savedMatchesOriginal: JSON.stringify(repaired) === JSON.stringify(original),
+					sourceUnchanged: JSON.stringify(sourceBefore) === JSON.stringify(sourceAfter),
+					metadata: JSON.parse(await adapter.read(`${jpeg}.json`)) as Omit<Cover, 'blob'> };
+			}, pluginId);
+			console.log(`native corrupt-cache receipt: ${JSON.stringify(receipt)}`);
+			expect(receipt.recovered).toBe(1);
+			expect(receipt.finalDraws).toBe(1);
+			expect(receipt.status).toBe('drawn');
+			expect(receipt.dimensions.every((n) => n > 0)).toBe(true);
+			expect(receipt.images).toBe(1);
+			expect(receipt.memoryBytes).toBeGreaterThan(0);
+			expect(receipt.validDiskHits).toBe(3);
+			expect(receipt.savedMatchesOriginal).toBe(true);
+			expect(receipt.sourceUnchanged).toBe(true);
+			expect(receipt.metadata.pages).toBe(4);
+		} finally {
+			await setPro(false);
+		}
+	});
+
+	it('draws the first 30 covers of 200 notes and keeps the other 170 locked', async function () {
+		await browser.executeObsidian(async ({ app }) => {
+			await app.vault.createFolder('Perf').catch(() => undefined);
+			const pdfs = app.vault.getFiles().filter((f) => f.path.startsWith('Library/PDFs/')).map((f) => f.basename).sort();
+			const jobs: Promise<unknown>[] = [];
+			for (let i = 0; i < 200; i++) {
+				const path = `Perf/Note ${String(i).padStart(3, '0')}.md`;
+				if (!app.vault.getFileByPath(path)) jobs.push(app.vault.create(path, `---\ntags: [perf]\npdf: "[[${pdfs[i % pdfs.length]}.pdf]]"\n---\n`));
+			}
+			await Promise.all(jobs);
+			await app.vault.create('Perf/Perf.base', 'filters:\n  and:\n    - file.hasTag("perf")\nviews:\n  - type: pdf-cover-cards\n    name: Perf\n    pdfProperty: note.pdf\n    cardWidth: 200\n').catch(() => undefined);
+			const p = (app as unknown as { plugins: { plugins: Record<string, { renderer: { memory: { clear(): void } } }> } }).plugins.plugins['pdf-cover-cards']!;
+			p.renderer.memory.clear();
+		});
+		const t0 = Date.now();
+		await obsidianPage.openFile('Perf/Perf.base');
+		await waitFor((x) => x.cards.length === 200, '200 cards', 60000);
+		await fillAll();
+		const state = await waitFor((x) => x.cards.filter((c) => c.status === 'drawn').length === 30, '30 covers', 60000);
+		expect(state.cards.filter((c) => c.status === 'locked')).toHaveLength(170);
+		const ms = Date.now() - t0;
+		console.log(`perf: 200 cards, 30 covers from 12 PDFs drawn in ${ms} ms (cold memory cache)`);
+		// Measure speed only in an explicit benchmark run; shared runners check completed covers.
+		if (process.env.FX_PERF_STRICT === '1') expect(ms).toBeLessThan(3000);
+	});
+});
