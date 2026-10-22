@@ -1,0 +1,895 @@
+{
+ "slug": "pocket-markwhen",
+ "module": "pocket-markwhen/src/timeline",
+ "function": "timelineCase",
+ "cases": [
+  {
+   "name": "A single day in an mw block",
+   "args": [
+    "2026-03-01: Fly out",
+    {},
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "Fly out",
+      "to": "2026-03-01",
+      "date": "2026-03-01",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-01"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "A range ends on the inclusive day",
+   "args": [
+    "2026-03-02 / 2026-03-05: Rome #italy",
+    {},
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "Rome",
+      "to": "2026-03-05",
+      "date": "2026-03-02 to 2026-03-05",
+      "tags": [
+       "italy"
+      ],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-02"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "A top level event and a heading group",
+   "args": [
+    "2026-03-01: A\n\n# Later\n2026-04: B",
+    {},
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "A",
+      "to": "2026-03-01",
+      "date": "2026-03-01",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-01"
+     },
+     {
+      "text": "B",
+      "to": "2026-04-30",
+      "date": "2026-04-01 to 2026-04-30",
+      "tags": [],
+      "groups": [
+       "Later"
+      ],
+      "path": "",
+      "from": "2026-04-01"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "A year covers twelve months",
+   "args": [
+    "2027: Year event",
+    {},
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "Year event",
+      "to": "2027-12-31",
+      "date": "2027-01-01 to 2027-12-31",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2027-01-01"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "An empty block",
+   "args": [
+    "",
+    {},
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "Text without dates",
+   "args": [
+    "hello\nworld",
+    {},
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "A title in the YAML header",
+   "args": [
+    "---\ntitle: Trip\n---\n2026-03-01: Fly out",
+    {},
+    ""
+   ],
+   "expected": {
+    "title": "Trip",
+    "events": [
+     {
+      "text": "Fly out",
+      "to": "2026-03-01",
+      "date": "2026-03-01",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-01"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "Source after an added line",
+   "args": [
+    "2026-03-01: A\n2026-05-01: New",
+    {},
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "A",
+      "to": "2026-03-01",
+      "date": "2026-03-01",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-01"
+     },
+     {
+      "text": "New",
+      "to": "2026-05-01",
+      "date": "2026-05-01",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2026-05-01"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "A March filter keeps Rome",
+   "args": [
+    "2026-03-01: A\n2026-03-02 / 2026-03-05: Rome #italy\n\n# Later\n2026-04: B",
+    {
+     "from": "2026-03-02",
+     "to": "2026-03-31"
+    },
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "Rome",
+      "to": "2026-03-05",
+      "date": "2026-03-02 to 2026-03-05",
+      "tags": [
+       "italy"
+      ],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-02"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "Today selects the next year",
+   "args": [
+    "2026-03-01: A\n2027: Year event",
+    {},
+    "2026-10-12"
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "A",
+      "to": "2026-03-01",
+      "date": "2026-03-01",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-01"
+     },
+     {
+      "text": "Year event",
+      "to": "2027-12-31",
+      "date": "2027-01-01 to 2027-12-31",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2027-01-01"
+     }
+    ],
+    "error": "",
+    "todayIndex": 1
+   }
+  },
+  {
+   "name": "A block still parses when mw has another view",
+   "args": [
+    "2026-03-01: Fly out",
+    {},
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "Fly out",
+      "to": "2026-03-01",
+      "date": "2026-03-01",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-01"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "Leap year February",
+   "args": [
+    "2028-02: Leap",
+    {},
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "Leap",
+      "to": "2028-02-29",
+      "date": "2028-02-01 to 2028-02-29",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2028-02-01"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "April has thirty days",
+   "args": [
+    "2026-04: Month",
+    {},
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "Month",
+      "to": "2026-04-30",
+      "date": "2026-04-01 to 2026-04-30",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2026-04-01"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "Nested headings",
+   "args": [
+    "2026-03-01: A\n\n# Trip\n2026-03-02: B\n\n## Rome\n2026-03-03: C",
+    {},
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "A",
+      "to": "2026-03-01",
+      "date": "2026-03-01",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-01"
+     },
+     {
+      "text": "B",
+      "to": "2026-03-02",
+      "date": "2026-03-02",
+      "tags": [],
+      "groups": [
+       "Trip"
+      ],
+      "path": "",
+      "from": "2026-03-02"
+     },
+     {
+      "text": "C",
+      "to": "2026-03-03",
+      "date": "2026-03-03",
+      "tags": [],
+      "groups": [
+       "Trip",
+       "Rome"
+      ],
+      "path": "",
+      "from": "2026-03-03"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "An exact tag filter",
+   "args": [
+    "2026-03-01: A\n2026-03-02 / 2026-03-05: Rome #italy\n\n# Later\n2026-04: B",
+    {
+     "tag": "italy"
+    },
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "Rome",
+      "to": "2026-03-05",
+      "date": "2026-03-02 to 2026-03-05",
+      "tags": [
+       "italy"
+      ],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-02"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "A tag prefix can be typed",
+   "args": [
+    "2026-03-01: A\n2026-03-02 / 2026-03-05: Rome #italy\n\n# Later\n2026-04: B",
+    {
+     "tag": "#italy"
+    },
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "Rome",
+      "to": "2026-03-05",
+      "date": "2026-03-02 to 2026-03-05",
+      "tags": [
+       "italy"
+      ],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-02"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "Tag substrings do not match",
+   "args": [
+    "2026-03-01: A\n2026-03-02 / 2026-03-05: Rome #italy\n\n# Later\n2026-04: B",
+    {
+     "tag": "ital"
+    },
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "An empty filter keeps the source",
+   "args": [
+    "2026-03-01: A\n2026-03-02 / 2026-03-05: Rome #italy\n\n# Later\n2026-04: B",
+    {},
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "A",
+      "to": "2026-03-01",
+      "date": "2026-03-01",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-01"
+     },
+     {
+      "text": "Rome",
+      "to": "2026-03-05",
+      "date": "2026-03-02 to 2026-03-05",
+      "tags": [
+       "italy"
+      ],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-02"
+     },
+     {
+      "text": "B",
+      "to": "2026-04-30",
+      "date": "2026-04-01 to 2026-04-30",
+      "tags": [],
+      "groups": [
+       "Later"
+      ],
+      "path": "",
+      "from": "2026-04-01"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "The end boundary is included",
+   "args": [
+    "2026-03-01: A\n2026-03-02 / 2026-03-05: Rome #italy\n\n# Later\n2026-04: B",
+    {
+     "from": "2026-03-05",
+     "to": "2026-03-05"
+    },
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "Rome",
+      "to": "2026-03-05",
+      "date": "2026-03-02 to 2026-03-05",
+      "tags": [
+       "italy"
+      ],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-02"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "A surrounding range overlaps",
+   "args": [
+    "2026-03-01 / 2026-03-31: Long",
+    {
+     "from": "2026-03-10",
+     "to": "2026-03-11"
+    },
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "Long",
+      "to": "2026-03-31",
+      "date": "2026-03-01 to 2026-03-31",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-01"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "No future event",
+   "args": [
+    "2026-03-01: A",
+    {},
+    "2026-10-12"
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "A",
+      "to": "2026-03-01",
+      "date": "2026-03-01",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-01"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "Today is included",
+   "args": [
+    "2026-10-12: Now",
+    {},
+    "2026-10-12"
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "Now",
+      "to": "2026-10-12",
+      "date": "2026-10-12",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2026-10-12"
+     }
+    ],
+    "error": "",
+    "todayIndex": 0
+   }
+  },
+  {
+   "name": "Today chooses the earliest date in source order",
+   "args": [
+    "2027: Year event\n2026-10-13: Next",
+    {},
+    "2026-10-12"
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "Year event",
+      "to": "2027-12-31",
+      "date": "2027-01-01 to 2027-12-31",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2027-01-01"
+     },
+     {
+      "text": "Next",
+      "to": "2026-10-13",
+      "date": "2026-10-13",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2026-10-13"
+     }
+    ],
+    "error": "",
+    "todayIndex": 1
+   }
+  },
+  {
+   "name": "HTML stays in event text",
+   "args": [
+    "2026-03-01: <script>bad()</script>",
+    {},
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "<script>bad()</script>",
+      "to": "2026-03-01",
+      "date": "2026-03-01",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-01"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "A saved date and tag filter model",
+   "args": [
+    "2026-03-01: A\n2026-03-02 / 2026-03-05: Rome #italy\n\n# Later\n2026-04: B",
+    {
+     "from": "2026-03-02",
+     "to": "2026-03-31",
+     "tag": "italy"
+    },
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "Rome",
+      "to": "2026-03-05",
+      "date": "2026-03-02 to 2026-03-05",
+      "tags": [
+       "italy"
+      ],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-02"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "The export uses filtered rows",
+   "args": [
+    "2026-03-01: A\n2026-03-02 / 2026-03-05: Rome #italy\n\n# Later\n2026-04: B",
+    {
+     "tag": "italy"
+    },
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "Rome",
+      "to": "2026-03-05",
+      "date": "2026-03-02 to 2026-03-05",
+      "tags": [
+       "italy"
+      ],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-02"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "Header and blank lines survive an edit",
+   "args": [
+    "---\ntitle: Trip\n---\n\n2026-03-01: A\n\n2026-05-01: New\n",
+    {},
+    ""
+   ],
+   "expected": {
+    "title": "Trip",
+    "events": [
+     {
+      "text": "A",
+      "to": "2026-03-01",
+      "date": "2026-03-01",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-01"
+     },
+     {
+      "text": "New",
+      "to": "2026-05-01",
+      "date": "2026-05-01",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2026-05-01"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "Mobile uses the same date model",
+   "args": [
+    "2027: Year event",
+    {},
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "Year event",
+      "to": "2027-12-31",
+      "date": "2027-01-01 to 2027-12-31",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2027-01-01"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "A missing tag shows no rows",
+   "args": [
+    "2026-03-01: A\n2026-03-02 / 2026-03-05: Rome #italy\n\n# Later\n2026-04: B",
+    {
+     "tag": "missing"
+    },
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "The lower boundary keeps a range",
+   "args": [
+    "2026-03-01: A\n2026-03-02 / 2026-03-05: Rome #italy\n\n# Later\n2026-04: B",
+    {
+     "from": "2026-03-05"
+    },
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "Rome",
+      "to": "2026-03-05",
+      "date": "2026-03-02 to 2026-03-05",
+      "tags": [
+       "italy"
+      ],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-02"
+     },
+     {
+      "text": "B",
+      "to": "2026-04-30",
+      "date": "2026-04-01 to 2026-04-30",
+      "tags": [],
+      "groups": [
+       "Later"
+      ],
+      "path": "",
+      "from": "2026-04-01"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "The upper boundary keeps a range",
+   "args": [
+    "2026-03-01: A\n2026-03-02 / 2026-03-05: Rome #italy\n\n# Later\n2026-04: B",
+    {
+     "to": "2026-03-02"
+    },
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "A",
+      "to": "2026-03-01",
+      "date": "2026-03-01",
+      "tags": [],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-01"
+     },
+     {
+      "text": "Rome",
+      "to": "2026-03-05",
+      "date": "2026-03-02 to 2026-03-05",
+      "tags": [
+       "italy"
+      ],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-02"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  },
+  {
+   "name": "Two tags make two chips",
+   "args": [
+    "2026-03-01: A #work #travel",
+    {},
+    ""
+   ],
+   "expected": {
+    "title": "",
+    "events": [
+     {
+      "text": "A",
+      "to": "2026-03-01",
+      "date": "2026-03-01",
+      "tags": [
+       "work",
+       "travel"
+      ],
+      "groups": [],
+      "path": "",
+      "from": "2026-03-01"
+     }
+    ],
+    "error": "",
+    "todayIndex": -1
+   }
+  }
+ ]
+}

@@ -1,0 +1,152 @@
+.pocket-markwhen-view {
+	padding: var(--size-4-4);
+	overflow: auto;
+}
+
+.pocket-markwhen {
+	max-width: 52rem;
+	margin-inline: auto;
+	padding: var(--size-4-3);
+}
+
+.pocket-markwhen-tabs,
+.pocket-markwhen-tools {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: end;
+	gap: var(--size-4-2);
+	margin-bottom: var(--size-4-3);
+}
+
+.pocket-markwhen-tabs [aria-selected="true"] {
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+}
+
+.pocket-markwhen-tools label,
+.pocket-markwhen-pro label {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-1);
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+}
+
+.pocket-markwhen input,
+.pocket-markwhen select {
+	max-width: 100%;
+	min-width: 0;
+}
+
+.pocket-markwhen-source {
+	width: 100%;
+	min-height: 65vh;
+	resize: vertical;
+	font-family: var(--font-monospace);
+	font-size: var(--font-text-size);
+	line-height: 1.6;
+	padding: var(--size-4-3);
+}
+
+.pocket-markwhen-status {
+	color: var(--text-muted);
+	margin-block: var(--size-4-3);
+}
+
+.pocket-markwhen-pro {
+	margin-bottom: var(--size-4-4);
+	font-size: var(--font-ui-small);
+}
+
+.pocket-markwhen-pro details > :not(summary) {
+	margin: var(--size-4-2);
+}
+
+.pocket-markwhen-pro summary,
+.pocket-markwhen-group summary {
+	cursor: pointer;
+	padding-block: var(--size-4-2);
+}
+
+.pocket-markwhen-group {
+	margin-block: var(--size-4-3);
+}
+
+.pocket-markwhen-group summary {
+	font-weight: var(--font-semibold);
+}
+
+.pocket-markwhen-group > div {
+	padding-inline-start: var(--size-4-3);
+}
+
+.pocket-markwhen-event {
+	border-inline-start: 3px solid var(--interactive-accent);
+	background: var(--background-secondary);
+	border-radius: var(--radius-s);
+	margin-block: var(--size-4-3);
+	padding: var(--size-4-3) var(--size-4-4);
+	overflow-wrap: anywhere;
+}
+
+.pocket-markwhen-event time {
+	font-size: var(--font-ui-small);
+	color: var(--text-muted);
+	font-variant-numeric: tabular-nums;
+}
+
+.pocket-markwhen-text {
+	font-size: var(--font-text-size);
+	margin-block: var(--size-4-2);
+	white-space: pre-wrap;
+}
+
+.pocket-markwhen-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--size-4-1);
+}
+
+.pocket-markwhen-tag {
+	border-radius: var(--radius-s);
+	background: var(--background-modifier-hover);
+	color: var(--text-accent);
+	font-size: var(--font-ui-small);
+	padding: var(--size-2-1) var(--size-4-2);
+}
+
+.pocket-markwhen-path {
+	color: var(--text-faint);
+	font-size: var(--font-ui-smaller);
+	margin-top: var(--size-4-2);
+}
+
+.pocket-markwhen-today {
+	outline: 2px solid var(--interactive-accent);
+	outline-offset: 2px;
+}
+
+.pocket-markwhen-mobile button {
+	min-height: 44px;
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
