@@ -1,0 +1,21 @@
+= Command reference
+
+[[exit-codes]]
+== Exit codes
+
+|===
+|Code |Meaning
+
+|0 |The command finished without problems.
+|1 |A check failed. The output names the check.
+|2 |The configuration file has an error.
+|===
+
+[#config-keys]
+== Configuration keys
+
+`channel`:: The release channel: `stable`, `beta` or `nightly`.
+`target`:: The build target, for example `linux-x86_64`.
+`sign`:: Sign the packages with the release key.
+
+Back to the xref:Handbook.adoc#_release_checklist[release checklist].

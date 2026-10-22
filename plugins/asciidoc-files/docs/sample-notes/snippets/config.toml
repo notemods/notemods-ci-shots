@@ -1,0 +1,7 @@
+[release]
+channel = "stable"
+target = "linux-x86_64"
+sign = true
+
+[notify]
+chat = "#releases"
