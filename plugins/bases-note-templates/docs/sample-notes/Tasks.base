@@ -1,0 +1,34 @@
+filters:
+  and:
+    - file.inFolder("Bases Note Templates/Tasks")
+views:
+  - type: table
+    name: Apollo to do
+    filters:
+      and:
+        - project == "[[Apollo]]"
+        - status == "todo"
+    order:
+      - file.name
+      - status
+      - project
+      - priority
+      - due
+  - type: table
+    name: Bugs
+    filters:
+      and:
+        - file.hasTag("bug")
+    order:
+      - file.name
+      - severity
+      - project
+      - status
+  - type: table
+    name: All tasks
+    order:
+      - file.name
+      - status
+      - project
+      - priority
+      - due
