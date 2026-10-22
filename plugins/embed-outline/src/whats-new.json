@@ -1,0 +1,28 @@
+{
+	"id": "embed-outline",
+	"name": "Embed Outline",
+	"version": "1.4.0",
+	"changes": [
+		"As you scroll, the outline marks the section at the top of the note, also inside embedded notes.",
+		"Turn the mark off with the new setting Highlight the current section."
+	],
+	"tip": "Click a heading row in an embedded note to scroll to that heading inside the embed.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Embed Outline is one of over 100 small plugins that I make. Thank you for using it.",
+	"related": [
+		{
+			"id": "embedded-text-finder",
+			"name": "Embedded Text Finder",
+			"blurb": "Find the notes that hold a text inside their embeds."
+		},
+		{
+			"id": "heading-link-sync",
+			"name": "Heading Link Sync",
+			"blurb": "Update heading links and embeds when you edit a heading."
+		},
+		{
+			"id": "hr-fold-stop",
+			"name": "Fold Stop",
+			"blurb": "Stop heading folds at horizontal rules."
+		}
+	]
+}
