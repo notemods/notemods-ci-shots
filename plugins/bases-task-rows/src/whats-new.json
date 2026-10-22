@@ -1,0 +1,28 @@
+{
+	"id": "bases-task-rows",
+	"name": "Bases Task Rows",
+	"version": "1.4.0",
+	"changes": [
+		"New Task progress view: one row per note with open, done and total tasks and a progress bar.",
+		"It also shows the next due date and the number of overdue tasks of each note, and never changes a note."
+	],
+	"tip": "Select the calendar button on a row to move the task's due date to today, with Pro.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Bases Task Rows is one of over 100 small plugins that I make. Thank you for using it with Bases. Bases is still new, and your setups teach me a lot.",
+	"related": [
+		{
+			"id": "kanban-embed",
+			"name": "Kanban Embed",
+			"blurb": "Use a Kanban board inside a project or daily note."
+		},
+		{
+			"id": "task-field-labels",
+			"name": "Task Field Labels",
+			"blurb": "Show text labels for dates, priority, and recurrence in rendered tasks."
+		},
+		{
+			"id": "task-date-links",
+			"name": "Task Date Links",
+			"blurb": "Adds a real daily note link to a task when you complete it, so backlinks show what you finished each day."
+		}
+	]
+}

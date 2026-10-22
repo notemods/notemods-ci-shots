@@ -1,0 +1,14 @@
+filters:
+  and:
+    - file.inFolder("Bases Task Rows/Projects")
+views:
+  - type: task-rows
+    name: By project
+    status: open
+    sort: due
+    group: note
+  - type: table
+    name: Notes
+    order:
+      - file.name
+      - status
