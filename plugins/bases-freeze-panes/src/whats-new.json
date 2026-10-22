@@ -1,0 +1,28 @@
+{
+	"id": "bases-freeze-panes",
+	"name": "Bases Freeze Panes",
+	"version": "1.5.0",
+	"changes": [
+		"New command \"Set frozen panes for the current view\". Each view of a base can turn frozen panes off or keep its own header choice.",
+		"Pro can set the frozen columns for one view, for example 3 for a wide view and none for a narrow one."
+	],
+	"tip": "Turn on 'Freeze Markdown and Dataview tables' to pin headers in ordinary note tables.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Bases Freeze Panes is one of over 100 small plugins that I make. Thank you for using it with Bases. Bases is still new, and your setups teach me a lot.",
+	"related": [
+		{
+			"id": "bases-filter-switches",
+			"name": "Bases Filter Switches",
+			"blurb": "Turn saved Bases filters on or off with switches."
+		},
+		{
+			"id": "bases-link-graph",
+			"name": "Bases Link Graph",
+			"blurb": "See the notes and links from a filtered base as a graph."
+		},
+		{
+			"id": "pdf-cover-cards",
+			"name": "PDF Cover Cards",
+			"blurb": "Show the first PDF page as a cover in your base."
+		}
+	]
+}

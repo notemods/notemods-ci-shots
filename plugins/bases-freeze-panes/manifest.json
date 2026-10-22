@@ -1,0 +1,11 @@
+{
+	"id": "bases-freeze-panes",
+	"name": "Bases Freeze Panes",
+	"version": "1.5.0",
+	"minAppVersion": "1.13.4",
+	"description": "Keeps the header row and the first columns of a Bases table in view while you scroll, in base files and in bases embedded in notes.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}
