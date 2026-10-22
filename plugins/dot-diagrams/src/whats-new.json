@@ -1,0 +1,28 @@
+{
+	"id": "dot-diagrams",
+	"name": "DOT Diagrams",
+	"version": "1.3.0",
+	"changes": [
+		"Set the width of one diagram with a line such as // width: 60%, // width: 480px or // width: natural.",
+		"// align: left, center or right moves a diagram. Two new settings give the default width and alignment."
+	],
+	"tip": "Add '// engine: neato' to a dot block to use a spring layout.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. DOT Diagrams is one of over 100 small plugins that I make. Thank you for keeping it in your editor.",
+	"related": [
+		{
+			"id": "visual-line-numbers",
+			"name": "Visual Line Numbers",
+			"blurb": "Show a line number for each wrapped row in the editor."
+		},
+		{
+			"id": "shortcuts-bridge",
+			"name": "Shortcuts Bridge",
+			"blurb": "Run Apple Shortcuts with selected text or note details."
+		},
+		{
+			"id": "hr-fold-stop",
+			"name": "Fold Stop",
+			"blurb": "Fold a heading to the first horizontal rule at the top level."
+		}
+	]
+}
