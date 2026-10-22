@@ -1,0 +1,117 @@
+[
+	{
+		"feature": "board-in-note",
+		"caption": "The Website redesign board inside a project page: four lanes, card counts, and In progress over its limit of 3.",
+		"note": "Website project.md",
+		"eval": "(async () => { await app.workspace.getLeaf(false).openFile(app.workspace.getActiveFile(), { state: { mode: 'preview', source: false } });  if (!window.__keWeb) { window.__keWeb = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Website redesign.md')); window.__keMob = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Mobile app.md')); } app.plugins.plugins['kanban-embed'].pro.signOut(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"wait": 1200,
+		"zoom": 0.85
+	},
+	{
+		"feature": "pick-lanes",
+		"caption": "A standup note that shows only In progress and Review, with done cards hidden.",
+		"note": "Standup.md",
+		"eval": "(async () => { if (!window.__keWeb) { window.__keWeb = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Website redesign.md')); window.__keMob = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Mobile app.md')); } app.plugins.plugins['kanban-embed'].pro.signOut(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"wait": 1200,
+		"zoom": 0.85
+	},
+	{
+		"feature": "check-off",
+		"caption": "Check off a card in the embed; the board file changes on that one line.",
+		"note": "Website project.md",
+		"eval": "(async () => { if (!window.__keWeb) { window.__keWeb = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Website redesign.md')); window.__keMob = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Mobile app.md')); } app.plugins.plugins['kanban-embed'].pro.signOut(); await new Promise((r) => setTimeout(r, 700)); [...document.querySelectorAll('.workspace-leaf.mod-active .kanban-embed-card')].filter((x) => x.offsetParent !== null).find((c) => c.textContent.includes('Compress hero images')).querySelector('input').click(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { if (window.__keWeb) { await app.vault.modify(app.vault.getFileByPath('Kanban Embed/Boards/Website redesign.md'), window.__keWeb); await app.vault.modify(app.vault.getFileByPath('Kanban Embed/Boards/Mobile app.md'), window.__keMob); } document.querySelectorAll('.menu').forEach((m) => m.remove()); app.plugins.plugins['kanban-embed'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200,
+		"zoom": 0.85
+	},
+	{
+		"feature": "move-cards",
+		"caption": "Pro: the card menu moves a card to another lane of its board.",
+		"note": "Website project.md",
+		"eval": "(async () => { app.vault.setConfig('nativeMenus', false); if (!window.__keWeb) { window.__keWeb = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Website redesign.md')); window.__keMob = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Mobile app.md')); } app.plugins.plugins['kanban-embed'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('kanban-embed-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['kanban-embed'].pro.refreshNow(); await new Promise((r) => setTimeout(r, 700)); const b = [...document.querySelectorAll('.workspace-leaf.mod-active .kanban-embed-card')].filter((x) => x.offsetParent !== null).find((c) => c.textContent.includes('Cookie banner text')).querySelector('.kanban-embed-more'); { const r = b.getBoundingClientRect(); b.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: r.left, clientY: r.bottom })); } await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { if (window.__keWeb) { await app.vault.modify(app.vault.getFileByPath('Kanban Embed/Boards/Website redesign.md'), window.__keWeb); await app.vault.modify(app.vault.getFileByPath('Kanban Embed/Boards/Mobile app.md'), window.__keMob); } document.querySelectorAll('.menu').forEach((m) => m.remove()); app.plugins.plugins['kanban-embed'].pro.signOut(); return 'ok'; })()",
+		"wait": 900,
+		"zoom": 0.85
+	},
+	{
+		"feature": "add-card",
+		"caption": "Pro: add a card at the end of a lane.",
+		"note": "Website project.md",
+		"eval": "(async () => { if (!window.__keWeb) { window.__keWeb = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Website redesign.md')); window.__keMob = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Mobile app.md')); } app.plugins.plugins['kanban-embed'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('kanban-embed-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['kanban-embed'].pro.refreshNow(); await new Promise((r) => setTimeout(r, 700)); [...document.querySelectorAll('.workspace-leaf.mod-active .kanban-embed-lane')].filter((x) => x.offsetParent !== null).find((l) => l.dataset.lane === 'Backlog').querySelector('.kanban-embed-add').click(); await new Promise((r) => setTimeout(r, 700)); const i = [...document.querySelectorAll('.workspace-leaf.mod-active .kanban-embed-add-input')].find((x) => x.offsetParent !== null); i.value = 'Order the launch cake'; await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { if (window.__keWeb) { await app.vault.modify(app.vault.getFileByPath('Kanban Embed/Boards/Website redesign.md'), window.__keWeb); await app.vault.modify(app.vault.getFileByPath('Kanban Embed/Boards/Mobile app.md'), window.__keMob); } document.querySelectorAll('.menu').forEach((m) => m.remove()); app.plugins.plugins['kanban-embed'].pro.signOut(); return 'ok'; })()",
+		"wait": 900,
+		"zoom": 0.85
+	},
+	{
+		"feature": "several-boards",
+		"caption": "Pro: the In progress and Review lanes of two boards in one embed.",
+		"note": "This week.md",
+		"eval": "(async () => { if (!window.__keWeb) { window.__keWeb = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Website redesign.md')); window.__keMob = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Mobile app.md')); } app.plugins.plugins['kanban-embed'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('kanban-embed-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['kanban-embed'].pro.refreshNow(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { if (window.__keWeb) { await app.vault.modify(app.vault.getFileByPath('Kanban Embed/Boards/Website redesign.md'), window.__keWeb); await app.vault.modify(app.vault.getFileByPath('Kanban Embed/Boards/Mobile app.md'), window.__keMob); } document.querySelectorAll('.menu').forEach((m) => m.remove()); app.plugins.plugins['kanban-embed'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200,
+		"zoom": 0.85
+	},
+	{
+		"feature": "filter",
+		"caption": "Pro: only the cards tagged design, from both boards.",
+		"note": "Design queue.md",
+		"eval": "(async () => { if (!window.__keWeb) { window.__keWeb = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Website redesign.md')); window.__keMob = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Mobile app.md')); } app.plugins.plugins['kanban-embed'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('kanban-embed-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['kanban-embed'].pro.refreshNow(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { if (window.__keWeb) { await app.vault.modify(app.vault.getFileByPath('Kanban Embed/Boards/Website redesign.md'), window.__keWeb); await app.vault.modify(app.vault.getFileByPath('Kanban Embed/Boards/Mobile app.md'), window.__keMob); } document.querySelectorAll('.menu').forEach((m) => m.remove()); app.plugins.plugins['kanban-embed'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200,
+		"zoom": 0.85
+	},
+	{
+		"feature": "swimlanes",
+		"caption": "Pro: the Sprint board in rows by the #project/ tag; the Unassigned row is folded.",
+		"note": "Sprint by project.md",
+		"eval": "(async () => { app.plugins.plugins['kanban-embed'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('kanban-embed-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['kanban-embed'].pro.refreshNow(); await new Promise((r) => setTimeout(r, 900)); const row = [...document.querySelectorAll('.workspace-leaf.mod-active .kanban-embed-swim-row')].filter((x) => x.offsetParent !== null).find((r) => r.dataset.row === 'Unassigned'); row.querySelector('.kanban-embed-swim-row-head').click(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { const p = app.plugins.plugins['kanban-embed']; p.settings.collapsedRows = {}; await p.saveData(p.settings); document.querySelectorAll('.menu').forEach((m) => m.remove()); p.pro.signOut(); return 'ok'; })()",
+		"wait": 1200,
+		"zoom": 0.85
+	},
+	{
+		"feature": "settings",
+		"caption": "Settings after sign in: the Pro section, lane width and hide done cards.",
+		"eval": "(async () => { if (!window.__keWeb) { window.__keWeb = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Website redesign.md')); window.__keMob = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Mobile app.md')); } app.plugins.plugins['kanban-embed'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('kanban-embed-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['kanban-embed'].pro.refreshNow(); await new Promise((r) => setTimeout(r, 700)); app.setting.open(); app.setting.openTabById('kanban-embed'); await new Promise((r) => setTimeout(r, 500)); return 'ok'; })()",
+		"after": "app.setting.close(); app.plugins.plugins['kanban-embed'].pro.signOut(); 'ok'",
+		"zoom": 0.85
+	},
+	{
+		"feature": "kanban-embed",
+		"caption": "Open the project page, check off a card, then with Pro move a card and see two boards in one embed.",
+		"frames": [
+			{
+				"note": "Website project.md",
+				"eval": "(async () => { if (!window.__keWeb) { window.__keWeb = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Website redesign.md')); window.__keMob = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Mobile app.md')); } app.plugins.plugins['kanban-embed'].pro.signOut(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 1800,
+				"zoom": 0.85
+			},
+			{
+				"eval": "(async () => { if (!window.__keWeb) { window.__keWeb = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Website redesign.md')); window.__keMob = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Mobile app.md')); } [...document.querySelectorAll('.workspace-leaf.mod-active .kanban-embed-card')].filter((x) => x.offsetParent !== null).find((c) => c.textContent.includes('Compress hero images')).querySelector('input').click(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 1500,
+				"zoom": 0.85
+			},
+			{
+				"eval": "(async () => { app.vault.setConfig('nativeMenus', false); if (!window.__keWeb) { window.__keWeb = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Website redesign.md')); window.__keMob = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Mobile app.md')); } app.plugins.plugins['kanban-embed'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('kanban-embed-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['kanban-embed'].pro.refreshNow(); await new Promise((r) => setTimeout(r, 700)); const b = [...document.querySelectorAll('.workspace-leaf.mod-active .kanban-embed-card')].filter((x) => x.offsetParent !== null).find((c) => c.textContent.includes('Cookie banner text')).querySelector('.kanban-embed-more'); { const r = b.getBoundingClientRect(); b.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: r.left, clientY: r.bottom })); } await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 1500,
+				"zoom": 0.85
+			},
+			{
+				"eval": "(async () => { if (!window.__keWeb) { window.__keWeb = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Website redesign.md')); window.__keMob = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Mobile app.md')); } document.querySelectorAll('.menu').forEach((m) => m.remove()); const e = [...app.plugins.plugins['kanban-embed'].embeds].find((x) => x.containerEl.isConnected && x.view); const c = e.view.columns.find((x) => x.title === 'In progress').cards.find((x) => x.text.startsWith('Cookie banner')); await app.plugins.plugins['kanban-embed'].move(e.boards[c.board].path, c, 2, 1); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 1800,
+				"zoom": 0.85
+			},
+			{
+				"note": "This week.md",
+				"eval": "(async () => { if (!window.__keWeb) { window.__keWeb = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Website redesign.md')); window.__keMob = await app.vault.read(app.vault.getFileByPath('Kanban Embed/Boards/Mobile app.md')); } await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 2000,
+				"zoom": 0.85
+			},
+			{
+				"eval": "(async () => { if (window.__keWeb) { await app.vault.modify(app.vault.getFileByPath('Kanban Embed/Boards/Website redesign.md'), window.__keWeb); await app.vault.modify(app.vault.getFileByPath('Kanban Embed/Boards/Mobile app.md'), window.__keMob); } document.querySelectorAll('.menu').forEach((m) => m.remove()); app.plugins.plugins['kanban-embed'].pro.signOut(); return 'ok'; })()",
+				"hold": 300,
+				"zoom": 0.85
+			}
+		]
+	}
+]

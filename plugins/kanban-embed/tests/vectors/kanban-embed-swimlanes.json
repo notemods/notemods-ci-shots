@@ -1,0 +1,486 @@
+{
+ "slug": "kanban-embed-swimlanes",
+ "module": "kanban-embed/src/swimlanes",
+ "function": "swimlaneRows",
+ "note": "args = [board markdown, the value of the swimlane line]. expected = one entry per row: {row, count, lanes: {lane title: [card text]}} in the order the rows are drawn. A card is in exactly one row, so the counts add up to the cards of the board (the archive excluded). tests/swimlanes.test.ts builds the view with buildView and calls parseSwimlane and groupSwimlanes. Expected values are written by hand from the fixture.",
+ "cases": [
+  {
+   "name": "tag: one row per first tag, sorted, cards without a tag last",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Plan launch #project/alpha owner:: Ana\n- [ ] Draft pricing #project/beta [owner:: Ben]\n- [ ] Hire designer #hiring\n\n\n## Doing\n\n- [ ] Build login #project/alpha (owner:: Ana) @{2026-10-14}\n- [ ] Fix typo\n- [ ] Write docs #project/beta #docs owner:: Ben\n\n\n## Done\n\n**Complete**\n- [x] Set up repo #project/alpha [owner:: ana]\n- [x] Choose font #design #project/beta\n\n\n***\n\n## Archive\n\n- [x] Old card #project/alpha\n",
+    "tag"
+   ],
+   "expected": [
+    {
+     "row": "#design",
+     "count": 1,
+     "lanes": {
+      "Todo": [],
+      "Doing": [],
+      "Done": [
+       "Choose font #design #project/beta"
+      ]
+     }
+    },
+    {
+     "row": "#hiring",
+     "count": 1,
+     "lanes": {
+      "Todo": [
+       "Hire designer #hiring"
+      ],
+      "Doing": [],
+      "Done": []
+     }
+    },
+    {
+     "row": "#project/alpha",
+     "count": 3,
+     "lanes": {
+      "Todo": [
+       "Plan launch #project/alpha owner:: Ana"
+      ],
+      "Doing": [
+       "Build login #project/alpha (owner:: Ana) @{2026-10-14}"
+      ],
+      "Done": [
+       "Set up repo #project/alpha [owner:: ana]"
+      ]
+     }
+    },
+    {
+     "row": "#project/beta",
+     "count": 2,
+     "lanes": {
+      "Todo": [
+       "Draft pricing #project/beta [owner:: Ben]"
+      ],
+      "Doing": [
+       "Write docs #project/beta #docs owner:: Ben"
+      ],
+      "Done": []
+     }
+    },
+    {
+     "row": "Unassigned",
+     "count": 1,
+     "lanes": {
+      "Todo": [],
+      "Doing": [
+       "Fix typo"
+      ],
+      "Done": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "prefix: rows are the part after the prefix",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Plan launch #project/alpha owner:: Ana\n- [ ] Draft pricing #project/beta [owner:: Ben]\n- [ ] Hire designer #hiring\n\n\n## Doing\n\n- [ ] Build login #project/alpha (owner:: Ana) @{2026-10-14}\n- [ ] Fix typo\n- [ ] Write docs #project/beta #docs owner:: Ben\n\n\n## Done\n\n**Complete**\n- [x] Set up repo #project/alpha [owner:: ana]\n- [x] Choose font #design #project/beta\n\n\n***\n\n## Archive\n\n- [x] Old card #project/alpha\n",
+    "#project/"
+   ],
+   "expected": [
+    {
+     "row": "alpha",
+     "count": 3,
+     "lanes": {
+      "Todo": [
+       "Plan launch #project/alpha owner:: Ana"
+      ],
+      "Doing": [
+       "Build login #project/alpha (owner:: Ana) @{2026-10-14}"
+      ],
+      "Done": [
+       "Set up repo #project/alpha [owner:: ana]"
+      ]
+     }
+    },
+    {
+     "row": "beta",
+     "count": 3,
+     "lanes": {
+      "Todo": [
+       "Draft pricing #project/beta [owner:: Ben]"
+      ],
+      "Doing": [
+       "Write docs #project/beta #docs owner:: Ben"
+      ],
+      "Done": [
+       "Choose font #design #project/beta"
+      ]
+     }
+    },
+    {
+     "row": "Unassigned",
+     "count": 2,
+     "lanes": {
+      "Todo": [
+       "Hire designer #hiring"
+      ],
+      "Doing": [
+       "Fix typo"
+      ],
+      "Done": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "tag list: rows in the order of the line, empty rows stay",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Plan launch #project/alpha owner:: Ana\n- [ ] Draft pricing #project/beta [owner:: Ben]\n- [ ] Hire designer #hiring\n\n\n## Doing\n\n- [ ] Build login #project/alpha (owner:: Ana) @{2026-10-14}\n- [ ] Fix typo\n- [ ] Write docs #project/beta #docs owner:: Ben\n\n\n## Done\n\n**Complete**\n- [x] Set up repo #project/alpha [owner:: ana]\n- [x] Choose font #design #project/beta\n\n\n***\n\n## Archive\n\n- [x] Old card #project/alpha\n",
+    "#hiring, #nothing, #docs"
+   ],
+   "expected": [
+    {
+     "row": "#hiring",
+     "count": 1,
+     "lanes": {
+      "Todo": [
+       "Hire designer #hiring"
+      ],
+      "Doing": [],
+      "Done": []
+     }
+    },
+    {
+     "row": "#nothing",
+     "count": 0,
+     "lanes": {
+      "Todo": [],
+      "Doing": [],
+      "Done": []
+     }
+    },
+    {
+     "row": "#docs",
+     "count": 1,
+     "lanes": {
+      "Todo": [],
+      "Doing": [
+       "Write docs #project/beta #docs owner:: Ben"
+      ],
+      "Done": []
+     }
+    },
+    {
+     "row": "Unassigned",
+     "count": 6,
+     "lanes": {
+      "Todo": [
+       "Plan launch #project/alpha owner:: Ana",
+       "Draft pricing #project/beta [owner:: Ben]"
+      ],
+      "Doing": [
+       "Build login #project/alpha (owner:: Ana) @{2026-10-14}",
+       "Fix typo"
+      ],
+      "Done": [
+       "Set up repo #project/alpha [owner:: ana]",
+       "Choose font #design #project/beta"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "tag list: a card goes to the first row of the line that it matches",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Plan launch #project/alpha owner:: Ana\n- [ ] Draft pricing #project/beta [owner:: Ben]\n- [ ] Hire designer #hiring\n\n\n## Doing\n\n- [ ] Build login #project/alpha (owner:: Ana) @{2026-10-14}\n- [ ] Fix typo\n- [ ] Write docs #project/beta #docs owner:: Ben\n\n\n## Done\n\n**Complete**\n- [x] Set up repo #project/alpha [owner:: ana]\n- [x] Choose font #design #project/beta\n\n\n***\n\n## Archive\n\n- [x] Old card #project/alpha\n",
+    "#docs, #project/beta"
+   ],
+   "expected": [
+    {
+     "row": "#docs",
+     "count": 1,
+     "lanes": {
+      "Todo": [],
+      "Doing": [
+       "Write docs #project/beta #docs owner:: Ben"
+      ],
+      "Done": []
+     }
+    },
+    {
+     "row": "#project/beta",
+     "count": 2,
+     "lanes": {
+      "Todo": [
+       "Draft pricing #project/beta [owner:: Ben]"
+      ],
+      "Doing": [],
+      "Done": [
+       "Choose font #design #project/beta"
+      ]
+     }
+    },
+    {
+     "row": "Unassigned",
+     "count": 5,
+     "lanes": {
+      "Todo": [
+       "Plan launch #project/alpha owner:: Ana",
+       "Hire designer #hiring"
+      ],
+      "Doing": [
+       "Build login #project/alpha (owner:: Ana) @{2026-10-14}",
+       "Fix typo"
+      ],
+      "Done": [
+       "Set up repo #project/alpha [owner:: ana]"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "tag list: a parent tag matches the tags below it",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Plan launch #project/alpha owner:: Ana\n- [ ] Draft pricing #project/beta [owner:: Ben]\n- [ ] Hire designer #hiring\n\n\n## Doing\n\n- [ ] Build login #project/alpha (owner:: Ana) @{2026-10-14}\n- [ ] Fix typo\n- [ ] Write docs #project/beta #docs owner:: Ben\n\n\n## Done\n\n**Complete**\n- [x] Set up repo #project/alpha [owner:: ana]\n- [x] Choose font #design #project/beta\n\n\n***\n\n## Archive\n\n- [x] Old card #project/alpha\n",
+    "#project"
+   ],
+   "expected": [
+    {
+     "row": "#project",
+     "count": 6,
+     "lanes": {
+      "Todo": [
+       "Plan launch #project/alpha owner:: Ana",
+       "Draft pricing #project/beta [owner:: Ben]"
+      ],
+      "Doing": [
+       "Build login #project/alpha (owner:: Ana) @{2026-10-14}",
+       "Write docs #project/beta #docs owner:: Ben"
+      ],
+      "Done": [
+       "Set up repo #project/alpha [owner:: ana]",
+       "Choose font #design #project/beta"
+      ]
+     }
+    },
+    {
+     "row": "Unassigned",
+     "count": 2,
+     "lanes": {
+      "Todo": [
+       "Hire designer #hiring"
+      ],
+      "Doing": [
+       "Fix typo"
+      ],
+      "Done": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "field owner: bracket, parenthesis and bare forms, case blind",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Plan launch #project/alpha owner:: Ana\n- [ ] Draft pricing #project/beta [owner:: Ben]\n- [ ] Hire designer #hiring\n\n\n## Doing\n\n- [ ] Build login #project/alpha (owner:: Ana) @{2026-10-14}\n- [ ] Fix typo\n- [ ] Write docs #project/beta #docs owner:: Ben\n\n\n## Done\n\n**Complete**\n- [x] Set up repo #project/alpha [owner:: ana]\n- [x] Choose font #design #project/beta\n\n\n***\n\n## Archive\n\n- [x] Old card #project/alpha\n",
+    "@{owner}"
+   ],
+   "expected": [
+    {
+     "row": "Ana",
+     "count": 3,
+     "lanes": {
+      "Todo": [
+       "Plan launch #project/alpha owner:: Ana"
+      ],
+      "Doing": [
+       "Build login #project/alpha (owner:: Ana) @{2026-10-14}"
+      ],
+      "Done": [
+       "Set up repo #project/alpha [owner:: ana]"
+      ]
+     }
+    },
+    {
+     "row": "Ben",
+     "count": 2,
+     "lanes": {
+      "Todo": [
+       "Draft pricing #project/beta [owner:: Ben]"
+      ],
+      "Doing": [
+       "Write docs #project/beta #docs owner:: Ben"
+      ],
+      "Done": []
+     }
+    },
+    {
+     "row": "Unassigned",
+     "count": 3,
+     "lanes": {
+      "Todo": [
+       "Hire designer #hiring"
+      ],
+      "Doing": [
+       "Fix typo"
+      ],
+      "Done": [
+       "Choose font #design #project/beta"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "field date: the Kanban date of the card",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Plan launch #project/alpha owner:: Ana\n- [ ] Draft pricing #project/beta [owner:: Ben]\n- [ ] Hire designer #hiring\n\n\n## Doing\n\n- [ ] Build login #project/alpha (owner:: Ana) @{2026-10-14}\n- [ ] Fix typo\n- [ ] Write docs #project/beta #docs owner:: Ben\n\n\n## Done\n\n**Complete**\n- [x] Set up repo #project/alpha [owner:: ana]\n- [x] Choose font #design #project/beta\n\n\n***\n\n## Archive\n\n- [x] Old card #project/alpha\n",
+    "@{date}"
+   ],
+   "expected": [
+    {
+     "row": "2026-10-14",
+     "count": 1,
+     "lanes": {
+      "Todo": [],
+      "Doing": [
+       "Build login #project/alpha (owner:: Ana) @{2026-10-14}"
+      ],
+      "Done": []
+     }
+    },
+    {
+     "row": "Unassigned",
+     "count": 7,
+     "lanes": {
+      "Todo": [
+       "Plan launch #project/alpha owner:: Ana",
+       "Draft pricing #project/beta [owner:: Ben]",
+       "Hire designer #hiring"
+      ],
+      "Doing": [
+       "Fix typo",
+       "Write docs #project/beta #docs owner:: Ben"
+      ],
+      "Done": [
+       "Set up repo #project/alpha [owner:: ana]",
+       "Choose font #design #project/beta"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "field with no card value: everything is Unassigned",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Plan launch #project/alpha owner:: Ana\n- [ ] Draft pricing #project/beta [owner:: Ben]\n- [ ] Hire designer #hiring\n\n\n## Doing\n\n- [ ] Build login #project/alpha (owner:: Ana) @{2026-10-14}\n- [ ] Fix typo\n- [ ] Write docs #project/beta #docs owner:: Ben\n\n\n## Done\n\n**Complete**\n- [x] Set up repo #project/alpha [owner:: ana]\n- [x] Choose font #design #project/beta\n\n\n***\n\n## Archive\n\n- [x] Old card #project/alpha\n",
+    "@{team}"
+   ],
+   "expected": [
+    {
+     "row": "Unassigned",
+     "count": 8,
+     "lanes": {
+      "Todo": [
+       "Plan launch #project/alpha owner:: Ana",
+       "Draft pricing #project/beta [owner:: Ben]",
+       "Hire designer #hiring"
+      ],
+      "Doing": [
+       "Build login #project/alpha (owner:: Ana) @{2026-10-14}",
+       "Fix typo",
+       "Write docs #project/beta #docs owner:: Ben"
+      ],
+      "Done": [
+       "Set up repo #project/alpha [owner:: ana]",
+       "Choose font #design #project/beta"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "archived cards are not rows",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Plan launch #project/alpha owner:: Ana\n- [ ] Draft pricing #project/beta [owner:: Ben]\n- [ ] Hire designer #hiring\n\n\n## Doing\n\n- [ ] Build login #project/alpha (owner:: Ana) @{2026-10-14}\n- [ ] Fix typo\n- [ ] Write docs #project/beta #docs owner:: Ben\n\n\n## Done\n\n**Complete**\n- [x] Set up repo #project/alpha [owner:: ana]\n- [x] Choose font #design #project/beta\n\n\n***\n\n## Archive\n\n- [x] Old card #project/alpha\n",
+    "#project/"
+   ],
+   "expected": [
+    {
+     "row": "alpha",
+     "count": 3,
+     "lanes": {
+      "Todo": [
+       "Plan launch #project/alpha owner:: Ana"
+      ],
+      "Doing": [
+       "Build login #project/alpha (owner:: Ana) @{2026-10-14}"
+      ],
+      "Done": [
+       "Set up repo #project/alpha [owner:: ana]"
+      ]
+     }
+    },
+    {
+     "row": "beta",
+     "count": 3,
+     "lanes": {
+      "Todo": [
+       "Draft pricing #project/beta [owner:: Ben]"
+      ],
+      "Doing": [
+       "Write docs #project/beta #docs owner:: Ben"
+      ],
+      "Done": [
+       "Choose font #design #project/beta"
+      ]
+     }
+    },
+    {
+     "row": "Unassigned",
+     "count": 2,
+     "lanes": {
+      "Todo": [
+       "Hire designer #hiring"
+      ],
+      "Doing": [
+       "Fix typo"
+      ],
+      "Done": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "rows sort with numbers as numbers",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] a [sprint:: 10]\n- [ ] b [sprint:: 2]\n- [ ] c [sprint:: 1]\n",
+    "@{sprint}"
+   ],
+   "expected": [
+    {
+     "row": "1",
+     "count": 1,
+     "lanes": {
+      "Todo": [
+       "c [sprint:: 1]"
+      ]
+     }
+    },
+    {
+     "row": "2",
+     "count": 1,
+     "lanes": {
+      "Todo": [
+       "b [sprint:: 2]"
+      ]
+     }
+    },
+    {
+     "row": "10",
+     "count": 1,
+     "lanes": {
+      "Todo": [
+       "a [sprint:: 10]"
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}
