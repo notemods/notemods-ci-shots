@@ -1,0 +1,28 @@
+{
+	"id": "bases-link-graph",
+	"name": "Bases Link Graph",
+	"version": "1.4.0",
+	"changes": [
+		"Turn on Show arrows to see the direction of each link, and hover over a note to see its relations, such as parent or friend.",
+		"Pro can color links by relation, with a Links legend that the SVG export keeps."
+	],
+	"tip": "Right-click a node and choose Show only notes near this one to limit depth with Pro.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Bases Link Graph is one of over 100 small plugins that I make. Thank you for using it with Bases. Bases is still new, and your setups teach me a lot.",
+	"related": [
+		{
+			"id": "bases-filter-switches",
+			"name": "Bases Filter Switches",
+			"blurb": "Turn saved Bases filters on or off with switches."
+		},
+		{
+			"id": "bases-freeze-panes",
+			"name": "Bases Freeze Panes",
+			"blurb": "Keep column and note names visible as you scroll a base."
+		},
+		{
+			"id": "pdf-cover-cards",
+			"name": "PDF Cover Cards",
+			"blurb": "Show the first PDF page as a cover in your base."
+		}
+	]
+}
