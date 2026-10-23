@@ -1,0 +1,833 @@
+{
+ "slug": "paragraph-enter",
+ "module": "products/paragraph-enter/src/enter.ts",
+ "function": "enterAction",
+ "cases": [
+  {
+   "name": "1 Enter at the end of a paragraph",
+   "args": [
+    "Hello",
+    5,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": {
+    "changes": [
+     {
+      "from": 5,
+      "to": 5,
+      "insert": "\n\n"
+     }
+    ],
+    "cursor": 7,
+    "doc": "Hello\n\n"
+   }
+  },
+  {
+   "name": "2 Next line already empty opens a separate paragraph",
+   "args": [
+    "Hello\n\nNext",
+    5,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": {
+    "changes": [
+     {
+      "from": 5,
+      "to": 5,
+      "insert": "\n\n"
+     }
+    ],
+    "cursor": 7,
+    "doc": "Hello\n\n\n\nNext"
+   }
+  },
+  {
+   "name": "3 Middle of a word splits the paragraph",
+   "args": [
+    "Hello",
+    3,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": {
+    "changes": [
+     {
+      "from": 3,
+      "to": 3,
+      "insert": "\n\n"
+     }
+    ],
+    "cursor": 5,
+    "doc": "Hel\n\nlo"
+   }
+  },
+  {
+   "name": "4 Shift+Enter line break",
+   "args": [
+    "Hello",
+    5,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline",
+     "key": "Shift-Enter"
+    }
+   ],
+   "expected": {
+    "changes": [
+     {
+      "from": 5,
+      "to": 5,
+      "insert": "\n"
+     }
+    ],
+    "cursor": 6,
+    "doc": "Hello\n"
+   }
+  },
+  {
+   "name": "4 Shift+Enter two spaces",
+   "args": [
+    "Hello",
+    5,
+    {
+     "enabled": true,
+     "lineBreakStyle": "spaces",
+     "key": "Shift-Enter"
+    }
+   ],
+   "expected": {
+    "changes": [
+     {
+      "from": 5,
+      "to": 5,
+      "insert": "  \n"
+     }
+    ],
+    "cursor": 8,
+    "doc": "Hello  \n"
+   }
+  },
+  {
+   "name": "4 Shift+Enter HTML",
+   "args": [
+    "Hello",
+    5,
+    {
+     "enabled": true,
+     "lineBreakStyle": "html",
+     "key": "Shift-Enter"
+    }
+   ],
+   "expected": {
+    "changes": [
+     {
+      "from": 5,
+      "to": 5,
+      "insert": "<br>\n"
+     }
+    ],
+    "cursor": 10,
+    "doc": "Hello<br>\n"
+   }
+  },
+  {
+   "name": "5 List item",
+   "args": [
+    "- item",
+    6,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "5 Task",
+   "args": [
+    "- [ ] task",
+    10,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "5 Blockquote",
+   "args": [
+    "> quote",
+    7,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "5 Callout",
+   "args": [
+    "> [!note] x",
+    11,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "5 Table row",
+   "args": [
+    "| a | b |",
+    9,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "5 Heading",
+   "args": [
+    "# Head",
+    6,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "5 Line in a code fence",
+   "args": [
+    "```\ncode\n```",
+    8,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "5 Line in a tilde fence",
+   "args": [
+    "~~~js\nlet a\n~~~",
+    11,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "5 Numbered list item",
+   "args": [
+    "1. one",
+    6,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "5 Math block",
+   "args": [
+    "$$\nx+y\n$$",
+    6,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "5 Front matter",
+   "args": [
+    "---\ntitle: x\n---\nText",
+    12,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "5 Comment block",
+   "args": [
+    "%%\nnote\n%%",
+    7,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "5 HTML block",
+   "args": [
+    "<div>box</div>",
+    14,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "5 Table without outer pipes",
+   "args": [
+    "a | b\n--|--\nc | d",
+    17,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "5 Setext heading",
+   "args": [
+    "Title\n===",
+    5,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "5 Lazy list continuation",
+   "args": [
+    "- item\nmore",
+    11,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "5 Indented code",
+   "args": [
+    "    code",
+    8,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "5 Shift+Enter in a list item",
+   "args": [
+    "- item",
+    6,
+    {
+     "enabled": true,
+     "lineBreakStyle": "spaces",
+     "key": "Shift-Enter"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "6 Non-empty selection",
+   "args": [
+    "Hello",
+    {
+     "anchor": 0,
+     "head": 5
+    },
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "6 Backward selection",
+   "args": [
+    "Hello",
+    {
+     "anchor": 5,
+     "head": 2
+    },
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "7 Setting off at the end of a paragraph",
+   "args": [
+    "Hello",
+    5,
+    {
+     "enabled": false,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "7 Setting off with an empty next line",
+   "args": [
+    "Hello\n\nNext",
+    5,
+    {
+     "enabled": false,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "7 Setting off in the middle of a word",
+   "args": [
+    "Hello",
+    3,
+    {
+     "enabled": false,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "7 Setting off with Shift+Enter",
+   "args": [
+    "Hello",
+    5,
+    {
+     "enabled": false,
+     "lineBreakStyle": "html",
+     "key": "Shift-Enter"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "8 Undo after case 1 is one step",
+   "args": [
+    "Hello",
+    5,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": {
+    "changes": [
+     {
+      "from": 5,
+      "to": 5,
+      "insert": "\n\n"
+     }
+    ],
+    "cursor": 7,
+    "doc": "Hello\n\n"
+   },
+   "undo": {
+    "typed": "Hello",
+    "doc": "Hello",
+    "cursor": 5,
+    "steps": 1
+   }
+  },
+  {
+   "name": "Empty last line gets only the missing break",
+   "args": [
+    "Hello\n",
+    5,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": {
+    "changes": [
+     {
+      "from": 5,
+      "to": 6,
+      "insert": "\n\n"
+     }
+    ],
+    "cursor": 7,
+    "doc": "Hello\n\n"
+   }
+  },
+  {
+   "name": "Two empty lines before text get one more line",
+   "args": [
+    "Hello\n\n\nNext",
+    5,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": {
+    "changes": [
+     {
+      "from": 7,
+      "to": 7,
+      "insert": "\n"
+     }
+    ],
+    "cursor": 7,
+    "doc": "Hello\n\n\n\nNext"
+   }
+  },
+  {
+   "name": "Three empty lines before text move to the middle one",
+   "args": [
+    "Hello\n\n\n\nNext",
+    5,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": {
+    "changes": [],
+    "cursor": 7,
+    "doc": "Hello\n\n\n\nNext"
+   }
+  },
+  {
+   "name": "Two empty last lines move to the second one",
+   "args": [
+    "Hello\n\n",
+    5,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": {
+    "changes": [],
+    "cursor": 7,
+    "doc": "Hello\n\n"
+   }
+  },
+  {
+   "name": "A list after the paragraph gets a blank line on both sides",
+   "args": [
+    "Hello\n- item",
+    5,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": {
+    "changes": [
+     {
+      "from": 5,
+      "to": 5,
+      "insert": "\n\n\n"
+     }
+    ],
+    "cursor": 7,
+    "doc": "Hello\n\n\n\n- item"
+   }
+  },
+  {
+   "name": "Indented continuation line is split without its indent",
+   "args": [
+    "One\n  two",
+    3,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": {
+    "changes": [
+     {
+      "from": 3,
+      "to": 6,
+      "insert": "\n\n"
+     }
+    ],
+    "cursor": 5,
+    "doc": "One\n\ntwo"
+   }
+  },
+  {
+   "name": "A line with only an embed keeps the default",
+   "args": [
+    "![[photo.png]]",
+    14,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "Start of a line keeps the default",
+   "args": [
+    "Hello",
+    0,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "Empty line keeps the default",
+   "args": [
+    "Hello\n\n",
+    6,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  },
+  {
+   "name": "Space after the cursor is not carried over",
+   "args": [
+    "Hello world",
+    5,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": {
+    "changes": [
+     {
+      "from": 5,
+      "to": 6,
+      "insert": "\n\n"
+     }
+    ],
+    "cursor": 7,
+    "doc": "Hello\n\nworld"
+   }
+  },
+  {
+   "name": "Trailing spaces at the end are replaced",
+   "args": [
+    "Hello  ",
+    5,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": {
+    "changes": [
+     {
+      "from": 5,
+      "to": 7,
+      "insert": "\n\n"
+     }
+    ],
+    "cursor": 7,
+    "doc": "Hello\n\n"
+   }
+  },
+  {
+   "name": "Soft line break at the line end splits the paragraph",
+   "args": [
+    "One\nTwo",
+    3,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": {
+    "changes": [
+     {
+      "from": 3,
+      "to": 4,
+      "insert": "\n\n"
+     }
+    ],
+    "cursor": 5,
+    "doc": "One\n\nTwo"
+   }
+  },
+  {
+   "name": "Two spaces style replaces spaces before the cursor",
+   "args": [
+    "Hello ",
+    6,
+    {
+     "enabled": true,
+     "lineBreakStyle": "spaces",
+     "key": "Shift-Enter"
+    }
+   ],
+   "expected": {
+    "changes": [
+     {
+      "from": 5,
+      "to": 6,
+      "insert": "  \n"
+     }
+    ],
+    "cursor": 8,
+    "doc": "Hello  \n"
+   }
+  },
+  {
+   "name": "Pipes without a delimiter row are a paragraph",
+   "args": [
+    "a | b",
+    5,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": {
+    "changes": [
+     {
+      "from": 5,
+      "to": 5,
+      "insert": "\n\n"
+     }
+    ],
+    "cursor": 7,
+    "doc": "a | b\n\n"
+   }
+  },
+  {
+   "name": "Paragraph under a heading",
+   "args": [
+    "# Head\nText",
+    11,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": {
+    "changes": [
+     {
+      "from": 11,
+      "to": 11,
+      "insert": "\n\n"
+     }
+    ],
+    "cursor": 13,
+    "doc": "# Head\nText\n\n"
+   }
+  },
+  {
+   "name": "Paragraph after a closed fence",
+   "args": [
+    "```\nx\n```\nText",
+    14,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": {
+    "changes": [
+     {
+      "from": 14,
+      "to": 14,
+      "insert": "\n\n"
+     }
+    ],
+    "cursor": 16,
+    "doc": "```\nx\n```\nText\n\n"
+   }
+  },
+  {
+   "name": "Paragraph with inline math",
+   "args": [
+    "Sum $x$ here",
+    12,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": {
+    "changes": [
+     {
+      "from": 12,
+      "to": 12,
+      "insert": "\n\n"
+     }
+    ],
+    "cursor": 14,
+    "doc": "Sum $x$ here\n\n"
+   }
+  },
+  {
+   "name": "Unicode and emoji",
+   "args": [
+    "Zażółć 😀",
+    9,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": {
+    "changes": [
+     {
+      "from": 9,
+      "to": 9,
+      "insert": "\n\n"
+     }
+    ],
+    "cursor": 11,
+    "doc": "Zażółć 😀\n\n"
+   }
+  },
+  {
+   "name": "Unclosed fence above keeps the default",
+   "args": [
+    "```\nText",
+    8,
+    {
+     "enabled": true,
+     "lineBreakStyle": "newline"
+    }
+   ],
+   "expected": "default"
+  }
+ ]
+}

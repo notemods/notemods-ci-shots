@@ -1,0 +1,68 @@
+[
+  {
+    "feature": "enter-new-paragraph",
+    "caption": "One Enter at the end of a paragraph adds a blank line and starts the next paragraph.",
+    "note": "Morning pages.md",
+    "eval": "(async () => { const p = app.plugins.plugins['paragraph-enter']; p.settings.enabled = true; p.settings.lineBreakStyle = 'newline'; p.refreshStatus(); const leaf = app.workspace.getMostRecentLeaf(); const s = leaf.getViewState(); await leaf.setViewState({ ...s, state: { ...s.state, mode: 'source', source: false } }); const view = app.workspace.getMostRecentLeaf().view; const e = view.editor; e.focus(); const content = view.containerEl.querySelector('.cm-content'); const key = (k, shift) => content.dispatchEvent(new KeyboardEvent('keydown', { key: k, shiftKey: !!shift, bubbles: true, cancelable: true })); const at = e.getValue().indexOf(\"opens the next one.\"); if (at < 0) throw new Error('Missing text'); e.setCursor(e.offsetToPos(at + \"opens the next one.\".length)); key('Enter'); e.replaceSelection('The second paragraph starts here, after one key press.'); return 'ok'; })()"
+  },
+  {
+    "feature": "split-paragraph",
+    "caption": "Enter in the middle of a paragraph splits it into two paragraphs.",
+    "note": "Revising a draft.md",
+    "eval": "(async () => { const p = app.plugins.plugins['paragraph-enter']; p.settings.enabled = true; p.settings.lineBreakStyle = 'newline'; p.refreshStatus(); const leaf = app.workspace.getMostRecentLeaf(); const s = leaf.getViewState(); await leaf.setViewState({ ...s, state: { ...s.state, mode: 'source', source: true } }); const view = app.workspace.getMostRecentLeaf().view; const e = view.editor; e.focus(); const content = view.containerEl.querySelector('.cm-content'); const key = (k, shift) => content.dispatchEvent(new KeyboardEvent('keydown', { key: k, shiftKey: !!shift, bubbles: true, cancelable: true })); const at = e.getValue().indexOf(\"three days.\"); if (at < 0) throw new Error('Missing text'); e.setCursor(e.offsetToPos(at + \"three days.\".length)); key('Enter'); return 'ok'; })()"
+  },
+  {
+    "feature": "line-breaks",
+    "caption": "Shift+Enter with the HTML style adds a tag and a line break in the same paragraph.",
+    "note": "Line breaks.md",
+    "eval": "(async () => { const p = app.plugins.plugins['paragraph-enter']; p.settings.enabled = true; p.settings.lineBreakStyle = 'html'; p.refreshStatus(); const leaf = app.workspace.getMostRecentLeaf(); const s = leaf.getViewState(); await leaf.setViewState({ ...s, state: { ...s.state, mode: 'source', source: true } }); const view = app.workspace.getMostRecentLeaf().view; const e = view.editor; e.focus(); const content = view.containerEl.querySelector('.cm-content'); const key = (k, shift) => content.dispatchEvent(new KeyboardEvent('keydown', { key: k, shiftKey: !!shift, bubbles: true, cancelable: true })); const at = e.getValue().indexOf(\"a visible tag.\"); if (at < 0) throw new Error('Missing text'); e.setCursor(e.offsetToPos(at + \"a visible tag.\".length)); key('Enter'); e.replaceSelection('Roses are red,'); key('Enter', true); e.replaceSelection('violets are blue.'); return 'ok'; })()"
+  },
+  {
+    "feature": "default-contexts",
+    "caption": "In a list, Enter continues the list as in core Obsidian.",
+    "note": "Where Enter keeps its default.md",
+    "eval": "(async () => { const p = app.plugins.plugins['paragraph-enter']; p.settings.enabled = true; p.settings.lineBreakStyle = 'newline'; p.refreshStatus(); const leaf = app.workspace.getMostRecentLeaf(); const s = leaf.getViewState(); await leaf.setViewState({ ...s, state: { ...s.state, mode: 'source', source: false } }); const view = app.workspace.getMostRecentLeaf().view; const e = view.editor; e.focus(); const content = view.containerEl.querySelector('.cm-content'); const key = (k, shift) => content.dispatchEvent(new KeyboardEvent('keydown', { key: k, shiftKey: !!shift, bubbles: true, cancelable: true })); const at = e.getValue().indexOf(\"- Lists continue\"); if (at < 0) throw new Error('Missing text'); e.setCursor(e.offsetToPos(at + \"- Lists continue\".length)); key('Enter'); return 'ok'; })()"
+  },
+  {
+    "feature": "toggle",
+    "caption": "The paragraph mark in the status bar is crossed out when the mode is off.",
+    "note": "Morning pages.md",
+    "eval": "(async () => { const p = app.plugins.plugins['paragraph-enter']; p.settings.enabled = true; p.settings.lineBreakStyle = 'newline'; p.refreshStatus(); const leaf = app.workspace.getMostRecentLeaf(); const s = leaf.getViewState(); await leaf.setViewState({ ...s, state: { ...s.state, mode: 'source', source: false } }); const view = app.workspace.getMostRecentLeaf().view; const e = view.editor; e.focus(); const content = view.containerEl.querySelector('.cm-content'); const key = (k, shift) => content.dispatchEvent(new KeyboardEvent('keydown', { key: k, shiftKey: !!shift, bubbles: true, cancelable: true })); const last = e.lastLine(); e.setCursor({ line: last, ch: e.getLine(last).length }); await p.toggle(); return 'ok'; })()",
+    "after": "(async () => { const p = app.plugins.plugins['paragraph-enter']; p.settings.enabled = true; await p.saveSettings(); p.refreshStatus(); return 'ok'; })()"
+  },
+  {
+    "feature": "settings",
+    "caption": "The two settings of Paragraph Enter.",
+    "note": "Morning pages.md",
+    "eval": "(async () => { app.setting.open(); app.setting.openTabById('paragraph-enter'); return 'ok'; })()",
+    "after": "app.setting.close()"
+  },
+  {
+    "feature": "paragraph-enter",
+    "caption": "Type a sentence, press Enter once, type the next sentence, then read the two paragraphs.",
+    "note": "Quick note.md",
+    "frames": [
+      {
+        "note": "Quick note.md",
+        "eval": "(async () => { const p = app.plugins.plugins['paragraph-enter']; p.settings.enabled = true; p.settings.lineBreakStyle = 'newline'; p.refreshStatus(); const leaf = app.workspace.getMostRecentLeaf(); const s = leaf.getViewState(); await leaf.setViewState({ ...s, state: { ...s.state, mode: 'source', source: false } }); const view = app.workspace.getMostRecentLeaf().view; const e = view.editor; e.focus(); const content = view.containerEl.querySelector('.cm-content'); const key = (k, shift) => content.dispatchEvent(new KeyboardEvent('keydown', { key: k, shiftKey: !!shift, bubbles: true, cancelable: true })); const last = e.lastLine(); e.setCursor({ line: last, ch: e.getLine(last).length }); return 'ok'; })()",
+        "hold": 700
+      },
+      {
+        "eval": "(async () => { const p = app.plugins.plugins['paragraph-enter']; const view = app.workspace.getMostRecentLeaf().view; const e = view.editor; e.focus(); const content = view.containerEl.querySelector('.cm-content'); const key = (k, shift) => content.dispatchEvent(new KeyboardEvent('keydown', { key: k, shiftKey: !!shift, bubbles: true, cancelable: true })); e.replaceSelection('One idea per paragraph.'); return 'ok'; })()",
+        "hold": 900
+      },
+      {
+        "eval": "(async () => { const p = app.plugins.plugins['paragraph-enter']; const view = app.workspace.getMostRecentLeaf().view; const e = view.editor; e.focus(); const content = view.containerEl.querySelector('.cm-content'); const key = (k, shift) => content.dispatchEvent(new KeyboardEvent('keydown', { key: k, shiftKey: !!shift, bubbles: true, cancelable: true })); key('Enter'); return 'ok'; })()",
+        "hold": 1100
+      },
+      {
+        "eval": "(async () => { const p = app.plugins.plugins['paragraph-enter']; const view = app.workspace.getMostRecentLeaf().view; const e = view.editor; e.focus(); const content = view.containerEl.querySelector('.cm-content'); const key = (k, shift) => content.dispatchEvent(new KeyboardEvent('keydown', { key: k, shiftKey: !!shift, bubbles: true, cancelable: true })); e.replaceSelection('The next idea starts here.'); return 'ok'; })()",
+        "hold": 1100
+      },
+      {
+        "eval": "(async () => { const leaf = app.workspace.getMostRecentLeaf(); const s = leaf.getViewState(); await leaf.setViewState({ ...s, state: { ...s.state, mode: 'preview' } }); return 'ok'; })()",
+        "hold": 1800
+      }
+    ]
+  }
+]

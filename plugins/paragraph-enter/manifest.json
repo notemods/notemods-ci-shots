@@ -1,0 +1,11 @@
+{
+	"id": "paragraph-enter",
+	"name": "Paragraph Enter",
+	"version": "1.0.0",
+	"minAppVersion": "1.13.4",
+	"description": "Press Enter once to start a new paragraph, and use Shift-Enter for a line break.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}
