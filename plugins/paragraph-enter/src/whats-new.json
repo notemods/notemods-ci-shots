@@ -1,0 +1,25 @@
+{
+	"id": "paragraph-enter",
+	"name": "Paragraph Enter",
+	"version": "1.0.0",
+	"changes": [],
+	"tip": "The Toggle paragraph Enter and Insert line break commands have no default hotkey. Assign them in Settings, then Hotkeys. You can also select the paragraph mark in the status bar to switch the mode.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Paragraph Enter is one of over 100 small plugins that I make. Thank you for writing with it.",
+	"related": [
+		{
+			"id": "reading-pace",
+			"name": "Reading Pace",
+			"blurb": "See how long the current note or selection takes to read, with your own words per minute."
+		},
+		{
+			"id": "paragraph-spell-focus",
+			"name": "Paragraph Spell Focus",
+			"blurb": "Limit native spellcheck to the paragraph under the cursor."
+		},
+		{
+			"id": "heading-case",
+			"name": "Heading Case",
+			"blurb": "Convert the headings in a note to sentence case or title case."
+		}
+	]
+}
