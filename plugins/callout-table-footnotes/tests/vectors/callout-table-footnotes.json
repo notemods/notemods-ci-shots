@@ -1,0 +1,1186 @@
+{
+ "slug": "callout-table-footnotes",
+ "module": "callout-table-footnotes/src/footnotes",
+ "function": "scanFootnotes",
+ "note": "args = [note text]; expected = numbers (id to number, in order of first reference, only ids with a definition), missing (referenced, no definition), unused (defined, never referenced), refs as [id, zero based line, zero based column of \"[\", context body|callout|quote|table], defs as [id, zero based line, definition text]. References in code spans, code blocks, front matter and after a backslash do not count. Reviewed by hand against each text. Inline footnotes on one line use an id with their line and column. Inline and named footnotes share one number order. Cases with function locateInline: args = [note text, named], expected = the marks of paragraph, list, task and blockquote footnotes as {id, kind, from, to, textFrom, text, number}; numbers come from the scanFootnotes counter, so callout and table footnotes count too. Code, math, comments, front matter, definitions, escaped carets and footnotes across a line break give no mark. Cases with function locateInlineLarge: the note is the lines of args[0] repeated args[1] times and joined with a newline; expected gives the mark count, the first and last number and the time limit in ms.",
+ "cases": [
+  {
+   "name": "one body reference",
+   "args": [
+    "A claim.[^1]\n\n[^1]: The source.\n"
+   ],
+   "expected": {
+    "numbers": {
+     "1": 1
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "1",
+      0,
+      8,
+      "body"
+     ]
+    ],
+    "defs": [
+     [
+      "1",
+      2,
+      "The source."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "reference inside a callout",
+   "args": [
+    "> [!note] Title\n> Text[^a] here.\n\n[^a]: Def A.\n"
+   ],
+   "expected": {
+    "numbers": {
+     "a": 1
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "a",
+      1,
+      6,
+      "callout"
+     ]
+    ],
+    "defs": [
+     [
+      "a",
+      3,
+      "Def A."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "reference inside a table cell",
+   "args": [
+    "| H | I |\n| - | - |\n| x[^t] | y |\n\n[^t]: Def T.\n"
+   ],
+   "expected": {
+    "numbers": {
+     "t": 1
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "t",
+      2,
+      3,
+      "table"
+     ]
+    ],
+    "defs": [
+     [
+      "t",
+      4,
+      "Def T."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "reference inside a plain quote",
+   "args": [
+    "> Quoted[^q] text.\n\n[^q]: Def Q.\n"
+   ],
+   "expected": {
+    "numbers": {
+     "q": 1
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "q",
+      0,
+      8,
+      "quote"
+     ]
+    ],
+    "defs": [
+     [
+      "q",
+      2,
+      "Def Q."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "numbers follow the first reference, not the definitions",
+   "args": [
+    "B[^b] then A[^a] then B again[^b].\n\n[^a]: Def A.\n[^b]: Def B.\n"
+   ],
+   "expected": {
+    "numbers": {
+     "b": 1,
+     "a": 2
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "b",
+      0,
+      1,
+      "body"
+     ],
+     [
+      "a",
+      0,
+      12,
+      "body"
+     ],
+     [
+      "b",
+      0,
+      29,
+      "body"
+     ]
+    ],
+    "defs": [
+     [
+      "a",
+      2,
+      "Def A."
+     ],
+     [
+      "b",
+      3,
+      "Def B."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "a reference with no definition is missing and gets no number",
+   "args": [
+    "One[^1] and two[^2].\n\n[^1]: Def one.\n"
+   ],
+   "expected": {
+    "numbers": {
+     "1": 1
+    },
+    "missing": [
+     "2"
+    ],
+    "unused": [],
+    "refs": [
+     [
+      "1",
+      0,
+      3,
+      "body"
+     ],
+     [
+      "2",
+      0,
+      15,
+      "body"
+     ]
+    ],
+    "defs": [
+     [
+      "1",
+      2,
+      "Def one."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "a definition with no reference is unused",
+   "args": [
+    "Text.\n\n[^x]: Never used.\n[^y]: Also never used.\n"
+   ],
+   "expected": {
+    "numbers": {},
+    "missing": [],
+    "unused": [
+     "x",
+     "y"
+    ],
+    "refs": [],
+    "defs": [
+     [
+      "x",
+      2,
+      "Never used."
+     ],
+     [
+      "y",
+      3,
+      "Also never used."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "a reference in an inline code span is ignored",
+   "args": [
+    "Code `[^1]` and real[^2].\n\n[^1]: One.\n[^2]: Two.\n"
+   ],
+   "expected": {
+    "numbers": {
+     "2": 1
+    },
+    "missing": [],
+    "unused": [
+     "1"
+    ],
+    "refs": [
+     [
+      "2",
+      0,
+      20,
+      "body"
+     ]
+    ],
+    "defs": [
+     [
+      "1",
+      2,
+      "One."
+     ],
+     [
+      "2",
+      3,
+      "Two."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "a reference in a fenced code block is ignored",
+   "args": [
+    "```\nlet a = b[^1];\n```\n\nReal[^2].\n\n[^2]: Two.\n"
+   ],
+   "expected": {
+    "numbers": {
+     "2": 1
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "2",
+      4,
+      4,
+      "body"
+     ]
+    ],
+    "defs": [
+     [
+      "2",
+      6,
+      "Two."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "an escaped bracket is not a reference",
+   "args": [
+    "Not a ref \\[^1] but this is[^2].\n\n[^2]: Two.\n"
+   ],
+   "expected": {
+    "numbers": {
+     "2": 1
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "2",
+      0,
+      27,
+      "body"
+     ]
+    ],
+    "defs": [
+     [
+      "2",
+      2,
+      "Two."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "front matter is skipped",
+   "args": [
+    "---\ntags: [^1]\n---\nBody[^1].\n\n[^1]: One.\n"
+   ],
+   "expected": {
+    "numbers": {
+     "1": 1
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "1",
+      3,
+      4,
+      "body"
+     ]
+    ],
+    "defs": [
+     [
+      "1",
+      5,
+      "One."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "a definition continues on indented lines",
+   "args": [
+    "Text[^1].\n\n[^1]: First line\n    second line\n    third line\n\nNext paragraph.\n"
+   ],
+   "expected": {
+    "numbers": {
+     "1": 1
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "1",
+      0,
+      4,
+      "body"
+     ]
+    ],
+    "defs": [
+     [
+      "1",
+      2,
+      "First line second line third line"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "ids may hold letters, digits and hyphens",
+   "args": [
+    "Text[^note-2] and[^Source_A].\n\n[^note-2]: Two.\n[^Source_A]: A.\n"
+   ],
+   "expected": {
+    "numbers": {
+     "note-2": 1,
+     "Source_A": 2
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "note-2",
+      0,
+      4,
+      "body"
+     ],
+     [
+      "Source_A",
+      0,
+      17,
+      "body"
+     ]
+    ],
+    "defs": [
+     [
+      "note-2",
+      2,
+      "Two."
+     ],
+     [
+      "Source_A",
+      3,
+      "A."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "the same id twice gives two references and one number",
+   "args": [
+    "First[^1] and second[^1].\n\n[^1]: One.\n"
+   ],
+   "expected": {
+    "numbers": {
+     "1": 1
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "1",
+      0,
+      5,
+      "body"
+     ],
+     [
+      "1",
+      0,
+      20,
+      "body"
+     ]
+    ],
+    "defs": [
+     [
+      "1",
+      2,
+      "One."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "a definition line is not a reference",
+   "args": [
+    "[^1]: Only a definition.\n"
+   ],
+   "expected": {
+    "numbers": {},
+    "missing": [],
+    "unused": [
+     "1"
+    ],
+    "refs": [],
+    "defs": [
+     [
+      "1",
+      0,
+      "Only a definition."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "a nested callout is a callout",
+   "args": [
+    "> [!note] Outer\n> > [!tip] Inner\n> > Deep[^d] text.\n\n[^d]: Def D.\n"
+   ],
+   "expected": {
+    "numbers": {
+     "d": 1
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "d",
+      2,
+      8,
+      "callout"
+     ]
+    ],
+    "defs": [
+     [
+      "d",
+      4,
+      "Def D."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "a list item in a callout is a callout reference",
+   "args": [
+    "> [!note] List\n> - item one[^1]\n> - item two\n\n[^1]: One.\n"
+   ],
+   "expected": {
+    "numbers": {
+     "1": 1
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "1",
+      1,
+      12,
+      "callout"
+     ]
+    ],
+    "defs": [
+     [
+      "1",
+      4,
+      "One."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "an empty note has no footnotes",
+   "args": [
+    ""
+   ],
+   "expected": {
+    "numbers": {},
+    "missing": [],
+    "unused": [],
+    "refs": [],
+    "defs": []
+   }
+  },
+  {
+   "name": "two references on one line have their columns",
+   "args": [
+    "A[^1]B[^2]C\n\n[^1]: One.\n[^2]: Two.\n"
+   ],
+   "expected": {
+    "numbers": {
+     "1": 1,
+     "2": 2
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "1",
+      0,
+      1,
+      "body"
+     ],
+     [
+      "2",
+      0,
+      6,
+      "body"
+     ]
+    ],
+    "defs": [
+     [
+      "1",
+      2,
+      "One."
+     ],
+     [
+      "2",
+      3,
+      "Two."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "a pipe line outside a table stays body text",
+   "args": [
+    "a | b[^1] | c\n\n[^1]: One.\n"
+   ],
+   "expected": {
+    "numbers": {
+     "1": 1
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "1",
+      0,
+      5,
+      "body"
+     ]
+    ],
+    "defs": [
+     [
+      "1",
+      2,
+      "One."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "a table in the middle of a note ends at the first line without a pipe",
+   "args": [
+    "Before[^1]\n\n| A | B |\n| - | - |\n| c[^2] | d |\nAfter table[^3]\n\n[^1]: One.\n[^2]: Two.\n[^3]: Three.\n"
+   ],
+   "expected": {
+    "numbers": {
+     "1": 1,
+     "2": 2,
+     "3": 3
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "1",
+      0,
+      6,
+      "body"
+     ],
+     [
+      "2",
+      4,
+      3,
+      "table"
+     ],
+     [
+      "3",
+      5,
+      11,
+      "body"
+     ]
+    ],
+    "defs": [
+     [
+      "1",
+      7,
+      "One."
+     ],
+     [
+      "2",
+      8,
+      "Two."
+     ],
+     [
+      "3",
+      9,
+      "Three."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "a callout ends at the first line without a quote mark",
+   "args": [
+    "> [!note] N\n> in[^1]\nout[^2]\n\n[^1]: One.\n[^2]: Two.\n"
+   ],
+   "expected": {
+    "numbers": {
+     "1": 1,
+     "2": 2
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "1",
+      1,
+      4,
+      "callout"
+     ],
+     [
+      "2",
+      2,
+      3,
+      "body"
+     ]
+    ],
+    "defs": [
+     [
+      "1",
+      4,
+      "One."
+     ],
+     [
+      "2",
+      5,
+      "Two."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "one inline body footnote",
+   "args": [
+    "A^[One.]"
+   ],
+   "expected": {
+    "numbers": {
+     "inline 0:1": 1
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "inline 0:1",
+      0,
+      1,
+      "body"
+     ]
+    ],
+    "defs": [
+     [
+      "inline 0:1",
+      0,
+      "One."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "inline and named references in a callout",
+   "args": [
+    "> [!note] N\n> A^[One.] B[^n]\n\n[^n]: Named."
+   ],
+   "expected": {
+    "numbers": {
+     "inline 1:3": 1,
+     "n": 2
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "inline 1:3",
+      1,
+      3,
+      "callout"
+     ],
+     [
+      "n",
+      1,
+      12,
+      "callout"
+     ]
+    ],
+    "defs": [
+     [
+      "inline 1:3",
+      1,
+      "One."
+     ],
+     [
+      "n",
+      3,
+      "Named."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "inline references in a table header and body",
+   "args": [
+    "| H^[Header.] |\n| --- |\n| A^[Body.] |"
+   ],
+   "expected": {
+    "numbers": {
+     "inline 0:3": 1,
+     "inline 2:3": 2
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "inline 0:3",
+      0,
+      3,
+      "table"
+     ],
+     [
+      "inline 2:3",
+      2,
+      3,
+      "table"
+     ]
+    ],
+    "defs": [
+     [
+      "inline 0:3",
+      0,
+      "Header."
+     ],
+     [
+      "inline 2:3",
+      2,
+      "Body."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "equal inline text stays separate",
+   "args": [
+    "A^[Same.] B^[Same.]"
+   ],
+   "expected": {
+    "numbers": {
+     "inline 0:1": 1,
+     "inline 0:11": 2
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "inline 0:1",
+      0,
+      1,
+      "body"
+     ],
+     [
+      "inline 0:11",
+      0,
+      11,
+      "body"
+     ]
+    ],
+    "defs": [
+     [
+      "inline 0:1",
+      0,
+      "Same."
+     ],
+     [
+      "inline 0:11",
+      0,
+      "Same."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "inline Markdown link text stays intact",
+   "args": [
+    "A^[See [source](https://example.com).]"
+   ],
+   "expected": {
+    "numbers": {
+     "inline 0:1": 1
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "inline 0:1",
+      0,
+      1,
+      "body"
+     ]
+    ],
+    "defs": [
+     [
+      "inline 0:1",
+      0,
+      "See [source](https://example.com)."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "escaped and code inline footnotes do not count",
+   "args": [
+    "`^[Code.]` \\^[Escape.] ^[Real.]"
+   ],
+   "expected": {
+    "numbers": {
+     "inline 0:23": 1
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "inline 0:23",
+      0,
+      23,
+      "body"
+     ]
+    ],
+    "defs": [
+     [
+      "inline 0:23",
+      0,
+      "Real."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "inline code in a callout is not a footnote",
+   "args": [
+    "> [!note] N\n> ```md\n> ^[Code.]\n> ```\n> A^[Real.]"
+   ],
+   "expected": {
+    "numbers": {
+     "inline 4:3": 1
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "inline 4:3",
+      4,
+      3,
+      "callout"
+     ]
+    ],
+    "defs": [
+     [
+      "inline 4:3",
+      4,
+      "Real."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "inline front matter is skipped",
+   "args": [
+    "---\nkey: ^[Hidden.]\n---\nA^[Shown.]"
+   ],
+   "expected": {
+    "numbers": {
+     "inline 3:1": 1
+    },
+    "missing": [],
+    "unused": [],
+    "refs": [
+     [
+      "inline 3:1",
+      3,
+      1,
+      "body"
+     ]
+    ],
+    "defs": [
+     [
+      "inline 3:1",
+      3,
+      "Shown."
+     ]
+    ]
+   }
+  },
+  {
+   "name": "paragraph inline footnotes get 1 and 2",
+   "function": "locateInline",
+   "args": [
+    "A^[one] and B^[two].",
+    false
+   ],
+   "expected": [
+    {
+     "id": "inline 0:1",
+     "kind": "inline",
+     "from": 1,
+     "to": 7,
+     "textFrom": 3,
+     "text": "one",
+     "number": 1
+    },
+    {
+     "id": "inline 0:13",
+     "kind": "inline",
+     "from": 13,
+     "to": 19,
+     "textFrom": 15,
+     "text": "two",
+     "number": 2
+    }
+   ]
+  },
+  {
+   "name": "named reference counts before an inline footnote",
+   "function": "locateInline",
+   "args": [
+    "Named[^x] then inline^[y]\n\n[^x]: def",
+    false
+   ],
+   "expected": [
+    {
+     "id": "inline 0:21",
+     "kind": "inline",
+     "from": 21,
+     "to": 25,
+     "textFrom": 23,
+     "text": "y",
+     "number": 2
+    }
+   ]
+  },
+  {
+   "name": "named reference in a paragraph shows as a number when named is on",
+   "function": "locateInline",
+   "args": [
+    "Named[^x] then inline^[y]\n\n[^x]: def",
+    true
+   ],
+   "expected": [
+    {
+     "id": "x",
+     "kind": "named",
+     "from": 5,
+     "to": 9,
+     "textFrom": 5,
+     "text": "",
+     "number": 1
+    },
+    {
+     "id": "inline 0:21",
+     "kind": "inline",
+     "from": 21,
+     "to": 25,
+     "textFrom": 23,
+     "text": "y",
+     "number": 2
+    }
+   ]
+  },
+  {
+   "name": "callout footnote above a paragraph footnote keeps one order",
+   "function": "locateInline",
+   "args": [
+    "> [!note] Source\n> Callout^[c]\n\nParagraph^[p].",
+    false
+   ],
+   "expected": [
+    {
+     "id": "inline 3:9",
+     "kind": "inline",
+     "from": 41,
+     "to": 45,
+     "textFrom": 43,
+     "text": "p",
+     "number": 2
+    }
+   ]
+  },
+  {
+   "name": "code span, escaped caret and code fence give no mark",
+   "function": "locateInline",
+   "args": [
+    "`code ^[no]` and \\^[no]\n\n```\nfenced^[no]\n```",
+    false
+   ],
+   "expected": []
+  },
+  {
+   "name": "nested link and code stay in the inline text",
+   "function": "locateInline",
+   "args": [
+    "Text^[see [[Note]] and `x`].",
+    false
+   ],
+   "expected": [
+    {
+     "id": "inline 0:4",
+     "kind": "inline",
+     "from": 4,
+     "to": 27,
+     "textFrom": 6,
+     "text": "see [[Note]] and `x`",
+     "number": 1
+    }
+   ]
+  },
+  {
+   "name": "a footnote across a line break gives no mark",
+   "function": "locateInline",
+   "args": [
+    "Start^[crosses\nthe break] end.",
+    false
+   ],
+   "expected": []
+  },
+  {
+   "name": "math and comments give no mark and no number",
+   "function": "locateInline",
+   "args": [
+    "$x^[m]$ and %%^[c]%% then B^[real].\n$$\n^[block]\n$$\n%%\n^[hidden]\n%%\n<!-- ^[html] -->",
+    false
+   ],
+   "expected": [
+    {
+     "id": "inline 0:27",
+     "kind": "inline",
+     "from": 27,
+     "to": 34,
+     "textFrom": 29,
+     "text": "real",
+     "number": 1
+    }
+   ]
+  },
+  {
+   "name": "list items, tasks and blockquotes give marks",
+   "function": "locateInline",
+   "args": [
+    "- Item^[a]\n- [ ] Task^[b]\n> Quote^[c]",
+    false
+   ],
+   "expected": [
+    {
+     "id": "inline 0:6",
+     "kind": "inline",
+     "from": 6,
+     "to": 10,
+     "textFrom": 8,
+     "text": "a",
+     "number": 1
+    },
+    {
+     "id": "inline 1:10",
+     "kind": "inline",
+     "from": 21,
+     "to": 25,
+     "textFrom": 23,
+     "text": "b",
+     "number": 2
+    },
+    {
+     "id": "inline 2:7",
+     "kind": "inline",
+     "from": 33,
+     "to": 37,
+     "textFrom": 35,
+     "text": "c",
+     "number": 3
+    }
+   ]
+  },
+  {
+   "name": "definition lines and front matter give no mark",
+   "function": "locateInline",
+   "args": [
+    "---\nkey: ^[meta]\n---\nBody[^d]\n\n[^d]: Text^[inner]\n  more^[cont]",
+    true
+   ],
+   "expected": [
+    {
+     "id": "d",
+     "kind": "named",
+     "from": 25,
+     "to": 29,
+     "textFrom": 25,
+     "text": "",
+     "number": 1
+    }
+   ]
+  },
+  {
+   "name": "5,000 lines with 1,000 inline footnotes",
+   "function": "locateInlineLarge",
+   "args": [
+    [
+     "Fact^[n] text.",
+     "Plain line.",
+     "- Item line.",
+     "> Quote line.",
+     ""
+    ],
+    1000
+   ],
+   "expected": {
+    "count": 1000,
+    "first": 1,
+    "last": 1000,
+    "maxMs": 100
+   }
+  }
+ ]
+}
