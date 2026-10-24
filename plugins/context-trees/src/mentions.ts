@@ -1,0 +1,159 @@
+// Pure rules for unlinked mentions (forum topic 8599). No Obsidian imports.
+// A name match is not an unlinked mention when it touches a link, a Markdown link, a URL, a tag, inline code,
+// a fenced code block, the properties block or an ignored term.
+import { findMentions, lowerSameLength } from './search';
+import type { Hit } from './tree';
+
+export interface MentionRules {
+	/** Count mentions inside fenced code blocks (some people keep prose in code blocks). Inline code never counts. */
+	codeBlocks?: boolean;
+	/** Words or phrases that never count, matched as whole words in any case. */
+	ignore?: string[];
+}
+
+const FENCE = /^ {0,3}(`{3,}|~{3,})/;
+// Wiki links and embeds, Markdown links and images, autolinks, bare URLs.
+const LINKISH = /!?\[\[[^\]\n]*\]\]|!?\[[^\]\n]*\]\((?:<[^>\n]*>|(?:[^\s()\\]|\\.|\([^\n()]*\))*)(?:\s+"[^"\n]*")?\)|<[a-z][a-z\d+.-]*:[^>\s]*>|\b[a-z][a-z\d+.-]*:\/\/[^\s<>]*|\bwww\.[^\s<>]+/giu;
+// A tag starts after a line start or white space. Letters, digits, _, - and / follow.
+const TAG = /(^|\s)(#[\p{L}\p{N}_\-/]+)/gu;
+
+function escapedAt(text: string, at: number): boolean {
+	let n = 0;
+	for (let i = at - 1; i >= 0 && text[i] === '\\'; i--) n++;
+	return n % 2 === 1;
+}
+
+/** Ranges of inline code spans in one line. An unclosed run of backticks is plain text. */
+export function codeSpans(line: string): [number, number][] {
+	const out: [number, number][] = [];
+	const ticks = /`+/g;
+	let open: { at: number; len: number } | null = null;
+	for (let m = ticks.exec(line); m !== null; m = ticks.exec(line)) {
+		if (open === null) {
+			if (!escapedAt(line, m.index)) open = { at: m.index, len: m[0].length };
+		} else if (m[0].length === open.len) {
+			out.push([open.at, m.index + m[0].length]);
+			open = null;
+		}
+	}
+	return out;
+}
+
+/** Ranges of one line where a mention does not count: code spans, links, URLs, tags and ignored terms. */
+export function lineExclusions(line: string, ignore: string[] = []): [number, number][] {
+	const out = codeSpans(line);
+	const inCode = (a: number): boolean => out.some(([x, y]) => a >= x && a < y);
+	LINKISH.lastIndex = 0;
+	for (let m = LINKISH.exec(line); m !== null; m = LINKISH.exec(line)) {
+		if (m[0].startsWith('[') && escapedAt(line, m.index)) {
+			// "\[[Name]]" is text. Step past the escaped bracket only.
+			LINKISH.lastIndex = m.index + 1;
+			continue;
+		}
+		if (!inCode(m.index)) out.push([m.index, m.index + m[0].length]);
+	}
+	TAG.lastIndex = 0;
+	for (let m = TAG.exec(line); m !== null; m = TAG.exec(line)) {
+		const at = m.index + (m[1] as string).length;
+		const tag = m[2] as string;
+		// "#123" is not a tag in Obsidian: a tag needs one character that is not a digit.
+		if (/^#\d+$/.test(tag) || escapedAt(line, at)) continue;
+		out.push([at, at + tag.length]);
+	}
+	if (ignore.length > 0) {
+		const hay = lowerSameLength(line);
+		for (const term of ignore) {
+			const t = lowerSameLength(term.trim());
+			if (t.length === 0) continue;
+			for (let at = hay.indexOf(t); at >= 0; at = hay.indexOf(t, at + t.length)) {
+				if (isWordAt(hay, at - 1) || isWordAt(hay, at + t.length)) continue;
+				out.push([at, at + t.length]);
+			}
+		}
+	}
+	return out;
+}
+
+function isWordAt(s: string, i: number): boolean {
+	if (i < 0 || i >= s.length) return false;
+	return /[\p{L}\p{M}\p{N}_]/u.test(s[i] as string);
+}
+
+/**
+ * Excluded ranges for each line of a note, from line `from` on (after the properties block).
+ * Lines in a fenced code block, fence lines included, are excluded as a whole unless rules.codeBlocks is true.
+ */
+export function exclusionsByLine(lines: string[], from: number, rules: MentionRules = {}): Map<number, [number, number][]> {
+	const out = new Map<number, [number, number][]>();
+	const ignore = (rules.ignore ?? []).filter((t) => t.trim().length > 0);
+	let fence = '';
+	for (let i = Math.max(0, from); i < lines.length; i++) {
+		const line = lines[i] as string;
+		const f = FENCE.exec(line);
+		let inFence = false;
+		let fenceLine = false;
+		if (fence !== '') {
+			inFence = true;
+			const run = f?.[1];
+			if (run !== undefined && run[0] === fence[0] && run.length >= fence.length && line.trim() === run) {
+				fence = '';
+				fenceLine = true;
+			}
+		} else if (f) {
+			fence = f[1] as string;
+			inFence = true;
+			fenceLine = true;
+		}
+		// A fence line holds the language tag (topic 8599 post 26): it never counts.
+		if (fenceLine || (inFence && rules.codeBlocks !== true)) {
+			out.set(i, [[0, Number.MAX_SAFE_INTEGER]]);
+			continue;
+		}
+		const r = lineExclusions(line, ignore);
+		if (r.length > 0) out.set(i, r);
+	}
+	return out;
+}
+
+/** Unlinked mentions of the names in a note, with every rule applied. `from` is the first line after the properties block. */
+export function findUnlinked(lines: string[], names: string[], from: number, rules: MentionRules = {}, links?: Map<number, [number, number][]>): Hit[] {
+	const ignored = new Set((rules.ignore ?? []).map((t) => lowerSameLength(t.trim())).filter((t) => t.length > 0));
+	const wanted = names.filter((n) => n.trim().length > 1 && !ignored.has(lowerSameLength(n.trim())));
+	if (wanted.length === 0) return [];
+	// Fast path: most notes do not hold the name at all. Skip the rules for them.
+	const all = lowerSameLength(lines.join('\n'));
+	if (!wanted.some((n) => all.includes(lowerSameLength(n.trim())))) return [];
+	const ex = exclusionsByLine(lines, from, rules);
+	// Links that the metadata cache knows also count as links (the cache reads forms that the text rules do not).
+	for (const [line, ranges] of links ?? []) ex.set(line, [...(ex.get(line) ?? []), ...ranges]);
+	return findMentions(lines, wanted, ex, from);
+}
+
+/** Lines of a setting text box: trimmed, no blanks, no duplicates. */
+export function listOf(text: string): string[] {
+	const out: string[] = [];
+	for (const raw of text.split(/\r?\n/)) {
+		const t = raw.trim();
+		if (t !== '' && !out.includes(t)) out.push(t);
+	}
+	return out;
+}
+
+/** True when a vault path sits in one of the folders (subfolders too). A folder "/" or "" is ignored. */
+export function inFolders(path: string, folders: string[]): boolean {
+	return folders.some((f) => {
+		const clean = f.replace(/^\/+|\/+$/g, '');
+		return clean !== '' && (path === clean || path.startsWith(`${clean}/`));
+	});
+}
+
+export const OPT_OUT_KEY = 'context-trees-mentions';
+
+/** Reads the opt-out property of a note: false or "none" opts out both ways, "source" or "target" one way. */
+export function optOut(frontmatter: Record<string, unknown> | null | undefined): { source: boolean; target: boolean } {
+	const v = frontmatter?.[OPT_OUT_KEY];
+	if (v === false || (typeof v === 'string' && ['false', 'none', 'no', 'off'].includes(v.trim().toLowerCase()))) return { source: true, target: true };
+	if (typeof v === 'string' && v.trim().toLowerCase() === 'source') return { source: true, target: false };
+	if (typeof v === 'string' && v.trim().toLowerCase() === 'target') return { source: false, target: true };
+	return { source: false, target: false };
+}
