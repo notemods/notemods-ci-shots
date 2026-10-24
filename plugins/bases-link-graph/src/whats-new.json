@@ -1,0 +1,29 @@
+{
+	"id": "bases-link-graph",
+	"name": "Bases Link Graph",
+	"version": "1.4.0",
+	"changes": [
+		"Adds link arrows and relation names on hover, and Pro link colors by relation.",
+		"Adds optional trackpad pan and pinch controls.",
+		"Keeps checkbox values typed when the graph reads mixed properties."
+	],
+	"tip": "Click a heading node to open its note at that heading.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Bases Link Graph is one of over 100 small plugins that I make. Thank you for using it with Bases. Bases is still new, and your setups teach me a lot.",
+	"related": [
+		{
+			"id": "bases-filter-switches",
+			"name": "Bases Filter Switches",
+			"blurb": "Turn saved Bases filters on or off with switches."
+		},
+		{
+			"id": "bases-freeze-panes",
+			"name": "Bases Freeze Panes",
+			"blurb": "Keep column and note names visible as you scroll a base."
+		},
+		{
+			"id": "pdf-cover-cards",
+			"name": "PDF Cover Cards",
+			"blurb": "Show the first PDF page as a cover in your base."
+		}
+	]
+}
