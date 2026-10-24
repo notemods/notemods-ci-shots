@@ -1,0 +1,44 @@
+// Hand-made zip files for the zip bomb vectors (review round 1, probes P1 and P2).
+import { strToU8, zipSync } from 'fflate';
+import { crc32 } from '../src/bundle';
+
+const u16 = (n: number) => [n & 0xff, (n >>> 8) & 0xff];
+const u32 = (n: number) => [n & 0xff, (n >>> 8) & 0xff, (n >>> 16) & 0xff, (n >>> 24) & 0xff];
+
+/**
+ * One stored text file and one stored payload, plus n central directory entries that all point at the payload.
+ * honest: the entries declare the real size. Not honest: they declare 0 bytes.
+ */
+export function overlapZip(payloadLength: number, n: number, honest: boolean): Uint8Array {
+	const text = strToU8('# t\n');
+	const payload = new Uint8Array(payloadLength).fill(65);
+	const local = (name: string, data: Uint8Array) => [...u32(0x04034b50), ...u16(20), ...u16(0), ...u16(0), ...u32(0), ...u32(crc32(data)), ...u32(data.length), ...u32(data.length), ...u16(name.length), ...u16(0), ...strToU8(name)];
+	const l1 = local('text.md', text);
+	const l2 = local('assets/a.png', payload);
+	const central = (name: string, offset: number, compressed: number, size: number, crc: number) => [...u32(0x02014b50), ...u16(20), ...u16(20), ...u16(0), ...u16(0), ...u32(0), ...u32(crc), ...u32(compressed), ...u32(size), ...u16(name.length), ...u16(0), ...u16(0), ...u16(0), ...u16(0), ...u32(0), ...u32(offset), ...strToU8(name)];
+	const cd: number[] = [...central('text.md', 0, text.length, text.length, crc32(text))];
+	const dataStart = l1.length + text.length;
+	for (let i = 0; i < n; i++) cd.push(...central(`assets/a${i}.png`, dataStart, payload.length, honest ? payload.length : 0, crc32(payload)));
+	const cdOffset = dataStart + l2.length + payload.length;
+	const eocd = [...u32(0x06054b50), ...u16(0), ...u16(0), ...u16(n + 1), ...u16(n + 1), ...u32(cd.length), ...u32(cdOffset), ...u16(0)];
+	const out = new Uint8Array(cdOffset + cd.length + eocd.length);
+	out.set([...l1, ...text], 0);
+	out.set(l2, dataStart);
+	out.set(payload, dataStart + l2.length);
+	out.set(cd, cdOffset);
+	out.set(eocd, cdOffset + cd.length);
+	return out;
+}
+
+/** A deflate entry whose central directory declares 10 bytes for 100,000 bytes of data. */
+export function lyingZip(): Uint8Array {
+	const zip = zipSync({ 'text.md': strToU8('# t\n![](assets/a.png)\n'), 'assets/a.png': new Uint8Array(100000).fill(7) }, { level: 6 });
+	const name = strToU8('assets/a.png');
+	for (let at = zip.length - name.length; at >= 46; at--) {
+		if (zip[at - 46] === 0x50 && zip[at - 45] === 0x4b && zip[at - 44] === 0x01 && zip[at - 43] === 0x02 && name.every((b, i) => zip[at + i] === b)) {
+			zip.set(u32(10), at - 46 + 24);
+			return zip;
+		}
+	}
+	throw new Error('no central entry');
+}
