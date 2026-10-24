@@ -1,0 +1,142 @@
+[
+	{
+		"feature": "graph",
+		"caption": "The 30 notes of a team base as a graph: projects, people and meetings, joined by their links.",
+		"note": "Team graph.base",
+		"eval": "(async () => { app.plugins.plugins['bases-link-graph'].pro.signOut(); await app.workspace.openLinkText('Bases Link Graph/Team graph.base#Graph', '', false); await new Promise((r) => setTimeout(r, 1500)); return 'ok'; })()",
+		"wait": 800
+	},
+	{
+		"feature": "link-source",
+		"caption": "The free view shows only links from the project property.",
+		"note": "Team graph.base",
+		"eval": "(async () => { app.plugins.plugins['bases-link-graph'].pro.signOut(); await app.workspace.openLinkText('Bases Link Graph/Team graph.base#Project links', '', false); await new Promise((r) => setTimeout(r, 1800)); const v = [...app.plugins.plugins['bases-link-graph'].views].filter((v) => v.containerEl.isConnected && v.containerEl.offsetParent !== null && v.graph).pop(); if (v.graph.nodes.length !== 16 || v.graph.edges.length !== 10 || v.opts.linkSource !== 'frontmatter') throw new Error('Wrong property-link graph'); const positions = { 'Atlas': [0, 100], '2026-09-01 Atlas kickoff': [-60, 0], '2026-09-08 Atlas design review': [60, 200], '2026-09-22 Atlas planning': [-60, 300], 'Beacon': [450, 100], '2026-09-03 Beacon interviews': [390, 0], '2026-09-15 Beacon findings': [510, 200], 'Cobalt': [900, 100], '2026-09-10 Cobalt scoping': [840, 200], 'Delta': [0, 500], '2026-09-12 Delta retro': [-60, 400], '2026-09-29 Delta follow-up': [60, 600], 'Ember': [450, 500], '2026-09-17 Ember idea': [510, 600], 'Fjord': [900, 500], '2026-09-19 Fjord handover': [840, 600] }; v.graph.nodes.forEach((n, i) => { const p = positions[n.label]; v.layout.x[i] = p[0]; v.layout.y[i] = p[1]; }); v.layout.alpha = 0; v.layout.alphaTarget = 0; v.fit(); v.draw(); return '16 notes, 10 project links, Pro off'; })()",
+		"wait": 800
+	},
+	{
+		"feature": "link-types",
+		"caption": "Pro: a family base with arrows, a color for each relation and the Links legend.",
+		"note": "Family tree.base",
+		"eval": "(async () => { app.plugins.plugins['bases-link-graph'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-link-graph-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['bases-link-graph'].pro.refreshNow(); await app.workspace.openLinkText('Bases Link Graph/Family tree.base#Relations', '', false); await new Promise((r) => setTimeout(r, 1800)); const v = [...app.plugins.plugins['bases-link-graph'].views].filter((v) => v.containerEl.isConnected && v.containerEl.offsetParent !== null && v.graph).pop(); if (!v || v.graph.nodes.length !== 6 || v.graph.edges.length !== 7 || !v.opts.arrows) throw new Error('Wrong family graph'); const positions = { Rose: [200, 0], Tom: [70, 140], Mia: [330, 140], Leo: [0, 290], Zoe: [150, 340], Sam: [360, 290] }; v.graph.nodes.forEach((n, i) => { const p = positions[n.label]; v.layout.x[i] = p[0]; v.layout.y[i] = p[1]; }); v.layout.alpha = 0; v.layout.alphaTarget = 0; v.fit(); v.draw(); if (!v.linkColor || v.linkColor.legend.length !== 2) throw new Error('No link colors'); return '6 notes, 7 links, parent and friend colors'; })()",
+		"wait": 800,
+		"after": "(async () => { app.plugins.plugins['bases-link-graph'].pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "link-hover",
+		"caption": "Free: arrows show the direction of each link, and the hover card lists the relations of Tom.",
+		"note": "Family tree.base",
+		"eval": "(async () => { app.plugins.plugins['bases-link-graph'].pro.signOut(); await app.workspace.openLinkText('Bases Link Graph/Family tree.base#Relations', '', false); await new Promise((r) => setTimeout(r, 1800)); const v = [...app.plugins.plugins['bases-link-graph'].views].filter((v) => v.containerEl.isConnected && v.containerEl.offsetParent !== null && v.graph).pop(); if (!v || v.graph.nodes.length !== 6 || v.graph.edges.length !== 7 || !v.opts.arrows) throw new Error('Wrong family graph'); const positions = { Rose: [200, 0], Tom: [70, 140], Mia: [330, 140], Leo: [0, 290], Zoe: [150, 340], Sam: [360, 290] }; v.graph.nodes.forEach((n, i) => { const p = positions[n.label]; v.layout.x[i] = p[0]; v.layout.y[i] = p[1]; }); v.layout.alpha = 0; v.layout.alphaTarget = 0; v.fit(); v.draw(); const p = v.screenPos('Bases Link Graph/Family/Tom.md'); const c = v.containerEl.querySelector('canvas'); const r = c.getBoundingClientRect(); c.dispatchEvent(new PointerEvent('pointermove', { clientX: r.left + p.x, clientY: r.top + p.y, bubbles: true })); await new Promise((r) => setTimeout(r, 300)); if (!v.containerEl.querySelector('.bases-link-graph-tip-relation')) throw new Error('No relation lines'); return 'hover Tom'; })()",
+		"wait": 500
+	},
+	{
+		"feature": "headings",
+		"caption": "Free: Linked headings and blocks. Each link to a heading or block points to a small node on its note.",
+		"note": "Book graph.base",
+		"eval": "(async () => { app.plugins.plugins['bases-link-graph'].pro.signOut(); await app.workspace.openLinkText('Bases Link Graph/Book graph.base#Linked headings', '', false); await new Promise((r) => setTimeout(r, 1800)); let v = null; for (let k = 0; k < 40; k++) { v = [...app.plugins.plugins['bases-link-graph'].views].filter((x) => x.containerEl.isConnected && x.containerEl.offsetParent !== null && x.graph && x.config.name === 'Linked headings').pop(); if (v && v.graph.nodes.length === 11) break; await new Promise((r) => setTimeout(r, 150)); } if (!v || v.graph.nodes.length !== 11) throw new Error('Wrong Linked headings graph: ' + (v ? v.graph.nodes.length : 'none')); if (v.graph.edges.filter((e) => e.kind === 'part').length !== 6) throw new Error('Wrong part lines'); return '5 notes, 6 headings and blocks, 10 links'; })()",
+		"wait": 800
+	},
+	{
+		"feature": "all-headings",
+		"caption": "Free: All headings. The image hangs from the Damage chapter, and Ideas links to Methods.",
+		"note": "Book graph.base",
+		"eval": "(async () => { app.plugins.plugins['bases-link-graph'].pro.signOut(); await app.workspace.openLinkText('Bases Link Graph/Book graph.base#All headings', '', false); await new Promise((r) => setTimeout(r, 1800)); let v = null; for (let k = 0; k < 40; k++) { v = [...app.plugins.plugins['bases-link-graph'].views].filter((x) => x.containerEl.isConnected && x.containerEl.offsetParent !== null && x.graph && x.config.name === 'All headings').pop(); if (v && v.graph.nodes.length === 14) break; await new Promise((r) => setTimeout(r, 150)); } if (!v || v.graph.nodes.length !== 14) throw new Error('Wrong All headings graph: ' + (v ? v.graph.nodes.length : 'none')); const g = v.graph; const ids = g.edges.filter((e) => e.kind === 'link').map((e) => g.nodes[e.source].id + ' > ' + g.nodes[e.target].id); if (!ids.includes('Bases Link Graph/Book/Ending Aging.md#Damage > Bases Link Graph/Book/cell-diagram.png')) throw new Error('No link from the Damage heading to the image'); return '14 nodes, 11 links'; })()",
+		"wait": 800
+	},
+	{
+		"feature": "nested-headings",
+		"caption": "Pro: headings nest under their parent heading, with levels 1 and 2 shown.",
+		"note": "Book graph.base",
+		"eval": "(async () => { app.plugins.plugins['bases-link-graph'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-link-graph-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['bases-link-graph'].pro.refreshNow(); await app.workspace.openLinkText('Bases Link Graph/Book graph.base#Nested', '', false); await new Promise((r) => setTimeout(r, 1800)); let v = null; for (let k = 0; k < 40; k++) { v = [...app.plugins.plugins['bases-link-graph'].views].filter((x) => x.containerEl.isConnected && x.containerEl.offsetParent !== null && x.graph && x.config.name === 'Nested').pop(); if (v && v.graph.nodes.length === 13) break; await new Promise((r) => setTimeout(r, 150)); } if (!v || v.graph.nodes.length !== 13) throw new Error('Wrong Nested graph: ' + (v ? v.graph.nodes.length : 'none')); const g = v.graph; const d = g.nodes.find((n) => n.id === 'Bases Link Graph/Book/Ending Aging.md#Damage'); if (!d || g.nodes[d.sub.parent].id !== 'Bases Link Graph/Book/Ending Aging.md#Ending Aging') throw new Error('Damage is not nested'); return '13 nodes, nested'; })()",
+		"wait": 800,
+		"after": "(async () => { app.plugins.plugins['bases-link-graph'].pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "hover",
+		"caption": "Hover a note to light up its links and see its name. Click it to open the note.",
+		"note": "Team graph.base",
+		"eval": "(async () => { app.plugins.plugins['bases-link-graph'].pro.signOut(); await app.workspace.openLinkText('Bases Link Graph/Team graph.base#Graph', '', false); await new Promise((r) => setTimeout(r, 1500)); const v = [...app.plugins.plugins['bases-link-graph'].views].filter((v) => v.containerEl.isConnected && v.containerEl.offsetParent !== null && v.graph).pop(); const p = v.screenPos('Bases Link Graph/Notes/Atlas.md'); const c = v.containerEl.querySelector('canvas'); const r = c.getBoundingClientRect(); c.dispatchEvent(new PointerEvent('pointermove', { clientX: r.left + p.x, clientY: r.top + p.y, bubbles: true })); await new Promise((r) => setTimeout(r, 300)); return 'ok'; })()",
+		"wait": 500
+	},
+	{
+		"feature": "embedded",
+		"caption": "The graph embedded in a weekly review note.",
+		"note": "Weekly review.md",
+		"eval": "(async () => { app.plugins.plugins['bases-link-graph'].pro.signOut(); await new Promise((r) => setTimeout(r, 1500)); return 'ok'; })()",
+		"wait": 800
+	},
+	{
+		"feature": "size-color",
+		"caption": "Pro: color by type with a legend, size by hours.",
+		"note": "Team graph.base",
+		"eval": "(async () => { app.plugins.plugins['bases-link-graph'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-link-graph-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['bases-link-graph'].pro.refreshNow(); await app.workspace.openLinkText('Bases Link Graph/Team graph.base#By type', '', false); await new Promise((r) => setTimeout(r, 300)); await new Promise((r) => setTimeout(r, 1500)); return 'ok'; })()",
+		"wait": 800,
+		"after": "(async () => { app.plugins.plugins['bases-link-graph'].pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "shared-values",
+		"caption": "Pro: dashed edges join the notes that share a team.",
+		"note": "Team graph.base",
+		"eval": "(async () => { app.plugins.plugins['bases-link-graph'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-link-graph-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['bases-link-graph'].pro.refreshNow(); await app.workspace.openLinkText('Bases Link Graph/Team graph.base#Shared teams', '', false); await new Promise((r) => setTimeout(r, 1500)); return 'ok'; })()",
+		"wait": 800,
+		"after": "(async () => { app.plugins.plugins['bases-link-graph'].pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "local-depth",
+		"caption": "Pro: only Atlas and the notes one link away.",
+		"note": "Team graph.base",
+		"eval": "(async () => { app.plugins.plugins['bases-link-graph'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-link-graph-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['bases-link-graph'].pro.refreshNow(); await app.workspace.openLinkText('Bases Link Graph/Team graph.base#Near Atlas', '', false); await new Promise((r) => setTimeout(r, 1500)); return 'ok'; })()",
+		"wait": 800,
+		"after": "(async () => { app.plugins.plugins['bases-link-graph'].pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "export",
+		"caption": "Pro: the graph exported to an SVG image with its legend, opened in a new tab.",
+		"note": "Team graph.base",
+		"eval": "(async () => { app.plugins.plugins['bases-link-graph'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-link-graph-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['bases-link-graph'].pro.refreshNow(); await app.workspace.openLinkText('Bases Link Graph/Team graph.base#By type', '', false); await new Promise((r) => setTimeout(r, 1500)); let tv = null; for (let i = 0; i < 15; i++) { const v = app.plugins.plugins['bases-link-graph'].targetView(); if (v && v.isActive() && v.layout && v.opts && v.opts.colorBy) { tv = v; break; } await new Promise((r) => setTimeout(r, 200)); } if (!tv) throw new Error('No drawn By type graph to export'); const f = await app.plugins.plugins['bases-link-graph'].exportView(tv, 'svg'); if (!f) throw new Error('Export returned no file'); window.__blgExport = f.path; await app.workspace.getLeaf('tab').openFile(f); await new Promise((r) => setTimeout(r, 800)); return 'ok'; })()",
+		"wait": 6000,
+		"after": "(async () => { const f = app.vault.getFileByPath(window.__blgExport); app.workspace.getMostRecentLeaf()?.detach(); if (f) await app.vault.delete(f); await app.workspace.openLinkText('Bases Link Graph/Team graph.base#Graph', '', false); app.plugins.plugins['bases-link-graph'].pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "settings",
+		"caption": "Settings after sign in: the Pro section with the GitHub account and status, animation and live update delay.",
+		"eval": "(async () => { app.plugins.plugins['bases-link-graph'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-link-graph-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['bases-link-graph'].pro.refreshNow(); app.setting.open(); app.setting.openTabById('bases-link-graph'); await new Promise((r) => setTimeout(r, 500)); return 'ok'; })()",
+		"after": "app.setting.close(); app.plugins.plugins['bases-link-graph'].pro.signOut(); 'ok'"
+	},
+	{
+		"feature": "bases-link-graph",
+		"caption": "Open the base, hover a note, then switch to the Pro views: color by type, shared teams, local depth.",
+		"frames": [
+			{
+				"note": "Team graph.base",
+				"eval": "(async () => { app.plugins.plugins['bases-link-graph'].pro.signOut(); await app.workspace.openLinkText('Bases Link Graph/Team graph.base#Graph', '', false); await new Promise((r) => setTimeout(r, 1500)); return 'ok'; })()",
+				"hold": 1800
+			},
+			{
+				"eval": "(async () => { const v = [...app.plugins.plugins['bases-link-graph'].views].filter((v) => v.containerEl.isConnected && v.containerEl.offsetParent !== null && v.graph).pop(); const p = v.screenPos('Bases Link Graph/Notes/Atlas.md'); const c = v.containerEl.querySelector('canvas'); const r = c.getBoundingClientRect(); c.dispatchEvent(new PointerEvent('pointermove', { clientX: r.left + p.x, clientY: r.top + p.y, bubbles: true })); await new Promise((r) => setTimeout(r, 300)); return 'ok'; })()",
+				"hold": 1600
+			},
+			{
+				"eval": "(async () => { app.plugins.plugins['bases-link-graph'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-link-graph-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['bases-link-graph'].pro.refreshNow(); await app.workspace.openLinkText('Bases Link Graph/Team graph.base#By type', '', false); await new Promise((r) => setTimeout(r, 1500)); return 'ok'; })()",
+				"hold": 1800
+			},
+			{
+				"eval": "(async () => { await app.workspace.openLinkText('Bases Link Graph/Team graph.base#Shared teams', '', false); await new Promise((r) => setTimeout(r, 1500)); return 'ok'; })()",
+				"hold": 1800
+			},
+			{
+				"eval": "(async () => { await app.workspace.openLinkText('Bases Link Graph/Team graph.base#Near Atlas', '', false); await new Promise((r) => setTimeout(r, 1500)); return 'ok'; })()",
+				"hold": 1800
+			},
+			{
+				"eval": "(async () => { await app.workspace.openLinkText('Bases Link Graph/Team graph.base#Graph', '', false); app.plugins.plugins['bases-link-graph'].pro.signOut(); await new Promise((r) => setTimeout(r, 1500)); return 'ok'; })()",
+				"hold": 600
+			}
+		]
+	},
+	{
+		"feature": "trackpad",
+		"caption": "The free setting enables swipe to pan and pinch to zoom.",
+		"eval": "(async () => { const p = app.plugins.plugins['bases-link-graph']; p.pro.signOut(); p.settings.trackpad = true; app.setting.open(); app.setting.openTabById('bases-link-graph'); return 'trackpad setting on'; })()",
+		"after": "app.setting.close(); app.plugins.plugins['bases-link-graph'].settings.trackpad = false; 'ok'"
+	}
+]
