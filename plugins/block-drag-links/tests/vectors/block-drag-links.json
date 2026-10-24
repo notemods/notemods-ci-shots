@@ -1,0 +1,1348 @@
+{
+ "slug": "block-drag-links",
+ "module": "block-drag-links/src/blocks",
+ "function": "findBlock",
+ "note": "Each case names its function in fn. findBlock(lines, line) gives the block at a 0-based line (kind, start, end, existing id, heading text) or a refusal. idInsertion(lines, block, id) gives the line and the text to add for a new id. applyInsertion(text, insertion) adds it and keeps every other byte. newBlockId(taken, seq) uses seq as the random source in a loop. headingSubpath, buildLink(generated, subpath, sameNote, embed), readableBlockId (Pro), blocksInRange (Pro) and collectIds. Names that start with a number are spec acceptance cases A1 to A9. Reviewed by hand against each input.",
+ "cases": [
+  {
+   "name": "1 paragraph block spans its lines and keeps its id",
+   "fn": "findBlock",
+   "args": [
+    [
+     "Intro line one",
+     "line two ^old",
+     "",
+     "## Plan: next #2 ##",
+     "Para after heading",
+     "",
+     "- item one",
+     "  continued text",
+     "  - child item ^c1",
+     "- [ ] Call Bob",
+     "",
+     "> quote a",
+     "> quote b",
+     "",
+     "> [!note] Title",
+     "> body",
+     "",
+     "^cal1",
+     "",
+     "| a | b |",
+     "| - | - |",
+     "| 1 | 2 |",
+     "Next para",
+     "",
+     "```js",
+     "code ^x",
+     "```",
+     "",
+     "$$",
+     "x^2",
+     "$$",
+     ""
+    ],
+    0
+   ],
+   "expected": {
+    "kind": "paragraph",
+    "start": 0,
+    "end": 1,
+    "id": "old",
+    "heading": null
+   }
+  },
+  {
+   "name": "1 second line of a paragraph gives the same block",
+   "fn": "findBlock",
+   "args": [
+    [
+     "Intro line one",
+     "line two ^old",
+     "",
+     "## Plan: next #2 ##",
+     "Para after heading",
+     "",
+     "- item one",
+     "  continued text",
+     "  - child item ^c1",
+     "- [ ] Call Bob",
+     "",
+     "> quote a",
+     "> quote b",
+     "",
+     "> [!note] Title",
+     "> body",
+     "",
+     "^cal1",
+     "",
+     "| a | b |",
+     "| - | - |",
+     "| 1 | 2 |",
+     "Next para",
+     "",
+     "```js",
+     "code ^x",
+     "```",
+     "",
+     "$$",
+     "x^2",
+     "$$",
+     ""
+    ],
+    1
+   ],
+   "expected": {
+    "kind": "paragraph",
+    "start": 0,
+    "end": 1,
+    "id": "old",
+    "heading": null
+   }
+  },
+  {
+   "name": "1 heading gives its text without the closing hashes",
+   "fn": "findBlock",
+   "args": [
+    [
+     "Intro line one",
+     "line two ^old",
+     "",
+     "## Plan: next #2 ##",
+     "Para after heading",
+     "",
+     "- item one",
+     "  continued text",
+     "  - child item ^c1",
+     "- [ ] Call Bob",
+     "",
+     "> quote a",
+     "> quote b",
+     "",
+     "> [!note] Title",
+     "> body",
+     "",
+     "^cal1",
+     "",
+     "| a | b |",
+     "| - | - |",
+     "| 1 | 2 |",
+     "Next para",
+     "",
+     "```js",
+     "code ^x",
+     "```",
+     "",
+     "$$",
+     "x^2",
+     "$$",
+     ""
+    ],
+    3
+   ],
+   "expected": {
+    "kind": "heading",
+    "start": 3,
+    "end": 3,
+    "id": null,
+    "heading": "Plan: next #2"
+   }
+  },
+  {
+   "name": "1 paragraph right after a heading starts below the heading",
+   "fn": "findBlock",
+   "args": [
+    [
+     "Intro line one",
+     "line two ^old",
+     "",
+     "## Plan: next #2 ##",
+     "Para after heading",
+     "",
+     "- item one",
+     "  continued text",
+     "  - child item ^c1",
+     "- [ ] Call Bob",
+     "",
+     "> quote a",
+     "> quote b",
+     "",
+     "> [!note] Title",
+     "> body",
+     "",
+     "^cal1",
+     "",
+     "| a | b |",
+     "| - | - |",
+     "| 1 | 2 |",
+     "Next para",
+     "",
+     "```js",
+     "code ^x",
+     "```",
+     "",
+     "$$",
+     "x^2",
+     "$$",
+     ""
+    ],
+    4
+   ],
+   "expected": {
+    "kind": "paragraph",
+    "start": 4,
+    "end": 4,
+    "id": null,
+    "heading": null
+   }
+  },
+  {
+   "name": "1 list item includes its lazy continuation line",
+   "fn": "findBlock",
+   "args": [
+    [
+     "Intro line one",
+     "line two ^old",
+     "",
+     "## Plan: next #2 ##",
+     "Para after heading",
+     "",
+     "- item one",
+     "  continued text",
+     "  - child item ^c1",
+     "- [ ] Call Bob",
+     "",
+     "> quote a",
+     "> quote b",
+     "",
+     "> [!note] Title",
+     "> body",
+     "",
+     "^cal1",
+     "",
+     "| a | b |",
+     "| - | - |",
+     "| 1 | 2 |",
+     "Next para",
+     "",
+     "```js",
+     "code ^x",
+     "```",
+     "",
+     "$$",
+     "x^2",
+     "$$",
+     ""
+    ],
+    7
+   ],
+   "expected": {
+    "kind": "list",
+    "start": 6,
+    "end": 7,
+    "id": null,
+    "heading": null
+   }
+  },
+  {
+   "name": "1 child list item is its own block with its id",
+   "fn": "findBlock",
+   "args": [
+    [
+     "Intro line one",
+     "line two ^old",
+     "",
+     "## Plan: next #2 ##",
+     "Para after heading",
+     "",
+     "- item one",
+     "  continued text",
+     "  - child item ^c1",
+     "- [ ] Call Bob",
+     "",
+     "> quote a",
+     "> quote b",
+     "",
+     "> [!note] Title",
+     "> body",
+     "",
+     "^cal1",
+     "",
+     "| a | b |",
+     "| - | - |",
+     "| 1 | 2 |",
+     "Next para",
+     "",
+     "```js",
+     "code ^x",
+     "```",
+     "",
+     "$$",
+     "x^2",
+     "$$",
+     ""
+    ],
+    8
+   ],
+   "expected": {
+    "kind": "list",
+    "start": 8,
+    "end": 8,
+    "id": "c1",
+    "heading": null
+   }
+  },
+  {
+   "name": "1 task is kind task",
+   "fn": "findBlock",
+   "args": [
+    [
+     "Intro line one",
+     "line two ^old",
+     "",
+     "## Plan: next #2 ##",
+     "Para after heading",
+     "",
+     "- item one",
+     "  continued text",
+     "  - child item ^c1",
+     "- [ ] Call Bob",
+     "",
+     "> quote a",
+     "> quote b",
+     "",
+     "> [!note] Title",
+     "> body",
+     "",
+     "^cal1",
+     "",
+     "| a | b |",
+     "| - | - |",
+     "| 1 | 2 |",
+     "Next para",
+     "",
+     "```js",
+     "code ^x",
+     "```",
+     "",
+     "$$",
+     "x^2",
+     "$$",
+     ""
+    ],
+    9
+   ],
+   "expected": {
+    "kind": "task",
+    "start": 9,
+    "end": 9,
+    "id": null,
+    "heading": null
+   }
+  },
+  {
+   "name": "1 quote lines are one block",
+   "fn": "findBlock",
+   "args": [
+    [
+     "Intro line one",
+     "line two ^old",
+     "",
+     "## Plan: next #2 ##",
+     "Para after heading",
+     "",
+     "- item one",
+     "  continued text",
+     "  - child item ^c1",
+     "- [ ] Call Bob",
+     "",
+     "> quote a",
+     "> quote b",
+     "",
+     "> [!note] Title",
+     "> body",
+     "",
+     "^cal1",
+     "",
+     "| a | b |",
+     "| - | - |",
+     "| 1 | 2 |",
+     "Next para",
+     "",
+     "```js",
+     "code ^x",
+     "```",
+     "",
+     "$$",
+     "x^2",
+     "$$",
+     ""
+    ],
+    12
+   ],
+   "expected": {
+    "kind": "quote",
+    "start": 11,
+    "end": 12,
+    "id": null,
+    "heading": null
+   }
+  },
+  {
+   "name": "1 callout is one block and finds its id after a blank line",
+   "fn": "findBlock",
+   "args": [
+    [
+     "Intro line one",
+     "line two ^old",
+     "",
+     "## Plan: next #2 ##",
+     "Para after heading",
+     "",
+     "- item one",
+     "  continued text",
+     "  - child item ^c1",
+     "- [ ] Call Bob",
+     "",
+     "> quote a",
+     "> quote b",
+     "",
+     "> [!note] Title",
+     "> body",
+     "",
+     "^cal1",
+     "",
+     "| a | b |",
+     "| - | - |",
+     "| 1 | 2 |",
+     "Next para",
+     "",
+     "```js",
+     "code ^x",
+     "```",
+     "",
+     "$$",
+     "x^2",
+     "$$",
+     ""
+    ],
+    15
+   ],
+   "expected": {
+    "kind": "callout",
+    "start": 14,
+    "end": 15,
+    "id": "cal1",
+    "heading": null
+   }
+  },
+  {
+   "name": "1 table rows are one block",
+   "fn": "findBlock",
+   "args": [
+    [
+     "Intro line one",
+     "line two ^old",
+     "",
+     "## Plan: next #2 ##",
+     "Para after heading",
+     "",
+     "- item one",
+     "  continued text",
+     "  - child item ^c1",
+     "- [ ] Call Bob",
+     "",
+     "> quote a",
+     "> quote b",
+     "",
+     "> [!note] Title",
+     "> body",
+     "",
+     "^cal1",
+     "",
+     "| a | b |",
+     "| - | - |",
+     "| 1 | 2 |",
+     "Next para",
+     "",
+     "```js",
+     "code ^x",
+     "```",
+     "",
+     "$$",
+     "x^2",
+     "$$",
+     ""
+    ],
+    20
+   ],
+   "expected": {
+    "kind": "table",
+    "start": 19,
+    "end": 21,
+    "id": null,
+    "heading": null
+   }
+  },
+  {
+   "name": "1 text right after a table is a paragraph",
+   "fn": "findBlock",
+   "args": [
+    [
+     "Intro line one",
+     "line two ^old",
+     "",
+     "## Plan: next #2 ##",
+     "Para after heading",
+     "",
+     "- item one",
+     "  continued text",
+     "  - child item ^c1",
+     "- [ ] Call Bob",
+     "",
+     "> quote a",
+     "> quote b",
+     "",
+     "> [!note] Title",
+     "> body",
+     "",
+     "^cal1",
+     "",
+     "| a | b |",
+     "| - | - |",
+     "| 1 | 2 |",
+     "Next para",
+     "",
+     "```js",
+     "code ^x",
+     "```",
+     "",
+     "$$",
+     "x^2",
+     "$$",
+     ""
+    ],
+    22
+   ],
+   "expected": {
+    "kind": "paragraph",
+    "start": 22,
+    "end": 22,
+    "id": null,
+    "heading": null
+   }
+  },
+  {
+   "name": "2 code block line is refused even with an id",
+   "fn": "findBlock",
+   "args": [
+    [
+     "Intro line one",
+     "line two ^old",
+     "",
+     "## Plan: next #2 ##",
+     "Para after heading",
+     "",
+     "- item one",
+     "  continued text",
+     "  - child item ^c1",
+     "- [ ] Call Bob",
+     "",
+     "> quote a",
+     "> quote b",
+     "",
+     "> [!note] Title",
+     "> body",
+     "",
+     "^cal1",
+     "",
+     "| a | b |",
+     "| - | - |",
+     "| 1 | 2 |",
+     "Next para",
+     "",
+     "```js",
+     "code ^x",
+     "```",
+     "",
+     "$$",
+     "x^2",
+     "$$",
+     ""
+    ],
+    25
+   ],
+   "expected": {
+    "kind": "code",
+    "refused": true
+   }
+  },
+  {
+   "name": "2 code fence line is refused",
+   "fn": "findBlock",
+   "args": [
+    [
+     "Intro line one",
+     "line two ^old",
+     "",
+     "## Plan: next #2 ##",
+     "Para after heading",
+     "",
+     "- item one",
+     "  continued text",
+     "  - child item ^c1",
+     "- [ ] Call Bob",
+     "",
+     "> quote a",
+     "> quote b",
+     "",
+     "> [!note] Title",
+     "> body",
+     "",
+     "^cal1",
+     "",
+     "| a | b |",
+     "| - | - |",
+     "| 1 | 2 |",
+     "Next para",
+     "",
+     "```js",
+     "code ^x",
+     "```",
+     "",
+     "$$",
+     "x^2",
+     "$$",
+     ""
+    ],
+    24
+   ],
+   "expected": {
+    "kind": "code",
+    "refused": true
+   }
+  },
+  {
+   "name": "2 math block line is refused",
+   "fn": "findBlock",
+   "args": [
+    [
+     "Intro line one",
+     "line two ^old",
+     "",
+     "## Plan: next #2 ##",
+     "Para after heading",
+     "",
+     "- item one",
+     "  continued text",
+     "  - child item ^c1",
+     "- [ ] Call Bob",
+     "",
+     "> quote a",
+     "> quote b",
+     "",
+     "> [!note] Title",
+     "> body",
+     "",
+     "^cal1",
+     "",
+     "| a | b |",
+     "| - | - |",
+     "| 1 | 2 |",
+     "Next para",
+     "",
+     "```js",
+     "code ^x",
+     "```",
+     "",
+     "$$",
+     "x^2",
+     "$$",
+     ""
+    ],
+    29
+   ],
+   "expected": {
+    "kind": "math",
+    "refused": true
+   }
+  },
+  {
+   "name": "2 empty line is refused",
+   "fn": "findBlock",
+   "args": [
+    [
+     "Intro line one",
+     "line two ^old",
+     "",
+     "## Plan: next #2 ##",
+     "Para after heading",
+     "",
+     "- item one",
+     "  continued text",
+     "  - child item ^c1",
+     "- [ ] Call Bob",
+     "",
+     "> quote a",
+     "> quote b",
+     "",
+     "> [!note] Title",
+     "> body",
+     "",
+     "^cal1",
+     "",
+     "| a | b |",
+     "| - | - |",
+     "| 1 | 2 |",
+     "Next para",
+     "",
+     "```js",
+     "code ^x",
+     "```",
+     "",
+     "$$",
+     "x^2",
+     "$$",
+     ""
+    ],
+    2
+   ],
+   "expected": {
+    "kind": "empty",
+    "refused": true
+   }
+  },
+  {
+   "name": "2 lone id line after a callout is refused",
+   "fn": "findBlock",
+   "args": [
+    [
+     "Intro line one",
+     "line two ^old",
+     "",
+     "## Plan: next #2 ##",
+     "Para after heading",
+     "",
+     "- item one",
+     "  continued text",
+     "  - child item ^c1",
+     "- [ ] Call Bob",
+     "",
+     "> quote a",
+     "> quote b",
+     "",
+     "> [!note] Title",
+     "> body",
+     "",
+     "^cal1",
+     "",
+     "| a | b |",
+     "| - | - |",
+     "| 1 | 2 |",
+     "Next para",
+     "",
+     "```js",
+     "code ^x",
+     "```",
+     "",
+     "$$",
+     "x^2",
+     "$$",
+     ""
+    ],
+    17
+   ],
+   "expected": {
+    "kind": "id-line",
+    "refused": true
+   }
+  },
+  {
+   "name": "2 front matter is refused",
+   "fn": "findBlock",
+   "args": [
+    [
+     "---",
+     "tags: a",
+     "---",
+     "Body text"
+    ],
+    1
+   ],
+   "expected": {
+    "kind": "frontmatter",
+    "refused": true
+   }
+  },
+  {
+   "name": "2 body after front matter is a paragraph",
+   "fn": "findBlock",
+   "args": [
+    [
+     "---",
+     "tags: a",
+     "---",
+     "Body text"
+    ],
+    3
+   ],
+   "expected": {
+    "kind": "paragraph",
+    "start": 3,
+    "end": 3,
+    "id": null,
+    "heading": null
+   }
+  },
+  {
+   "name": "2 heading with only hashes is refused",
+   "fn": "findBlock",
+   "args": [
+    [
+     "##",
+     "x"
+    ],
+    0
+   ],
+   "expected": {
+    "kind": "empty",
+    "refused": true
+   }
+  },
+  {
+   "name": "3 existing id is kept: no insertion",
+   "fn": "idInsertion",
+   "args": [
+    [
+     "Intro line one",
+     "line two ^old",
+     "",
+     "## Plan: next #2 ##",
+     "Para after heading",
+     "",
+     "- item one",
+     "  continued text",
+     "  - child item ^c1",
+     "- [ ] Call Bob",
+     "",
+     "> quote a",
+     "> quote b",
+     "",
+     "> [!note] Title",
+     "> body",
+     "",
+     "^cal1",
+     "",
+     "| a | b |",
+     "| - | - |",
+     "| 1 | 2 |",
+     "Next para",
+     "",
+     "```js",
+     "code ^x",
+     "```",
+     "",
+     "$$",
+     "x^2",
+     "$$",
+     ""
+    ],
+    {
+     "kind": "paragraph",
+     "start": 0,
+     "end": 1,
+     "id": "old",
+     "heading": null
+    },
+    "zzz111"
+   ],
+   "expected": null
+  },
+  {
+   "name": "3 collectIds finds every id without case",
+   "fn": "collectIds",
+   "args": [
+    "A ^One\n- b ^two-2\n\n^Tb\ncode `^no` here\nx^y"
+   ],
+   "expected": [
+    "one",
+    "two-2",
+    "tb"
+   ]
+  },
+  {
+   "name": "4 new id has 6 characters a-z 0-9",
+   "fn": "newBlockId",
+   "args": [
+    [],
+    [
+     0,
+     0.5,
+     0.99,
+     0.1,
+     0.2,
+     0.3
+    ]
+   ],
+   "expected": "as9dhk"
+  },
+  {
+   "name": "4 new id skips a taken id without case",
+   "fn": "newBlockId",
+   "args": [
+    [
+     "AAAAAA"
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0.03,
+     0.03,
+     0.03,
+     0.03,
+     0.03,
+     0.03
+    ]
+   ],
+   "expected": "bbbbbb"
+  },
+  {
+   "name": "5 paragraph id goes at the end of the last line with a space",
+   "fn": "idInsertion",
+   "args": [
+    [
+     "Text one",
+     "Text two"
+    ],
+    {
+     "kind": "paragraph",
+     "start": 0,
+     "end": 1,
+     "id": null,
+     "heading": null
+    },
+    "abc123"
+   ],
+   "expected": {
+    "line": 1,
+    "text": " ^abc123"
+   }
+  },
+  {
+   "name": "5 line that ends with a space gets no second space",
+   "fn": "idInsertion",
+   "args": [
+    [
+     "Text "
+    ],
+    {
+     "kind": "paragraph",
+     "start": 0,
+     "end": 0,
+     "id": null,
+     "heading": null
+    },
+    "abc123"
+   ],
+   "expected": {
+    "line": 0,
+    "text": "^abc123"
+   }
+  },
+  {
+   "name": "5 table id goes on its own line with a blank line before and after",
+   "fn": "idInsertion",
+   "args": [
+    [
+     "| a |",
+     "| - |",
+     "Next"
+    ],
+    {
+     "kind": "table",
+     "start": 0,
+     "end": 1,
+     "id": null,
+     "heading": null
+    },
+    "tb0001"
+   ],
+   "expected": {
+    "line": 1,
+    "text": "\n\n^tb0001\n"
+   }
+  },
+  {
+   "name": "5 callout at the end of the note gets no blank line after",
+   "fn": "idInsertion",
+   "args": [
+    [
+     "> [!tip] T",
+     "> body"
+    ],
+    {
+     "kind": "callout",
+     "start": 0,
+     "end": 1,
+     "id": null,
+     "heading": null
+    },
+    "cc0001"
+   ],
+   "expected": {
+    "line": 1,
+    "text": "\n\n^cc0001"
+   }
+  },
+  {
+   "name": "5 heading needs no id",
+   "fn": "idInsertion",
+   "args": [
+    [
+     "Intro line one",
+     "line two ^old",
+     "",
+     "## Plan: next #2 ##",
+     "Para after heading",
+     "",
+     "- item one",
+     "  continued text",
+     "  - child item ^c1",
+     "- [ ] Call Bob",
+     "",
+     "> quote a",
+     "> quote b",
+     "",
+     "> [!note] Title",
+     "> body",
+     "",
+     "^cal1",
+     "",
+     "| a | b |",
+     "| - | - |",
+     "| 1 | 2 |",
+     "Next para",
+     "",
+     "```js",
+     "code ^x",
+     "```",
+     "",
+     "$$",
+     "x^2",
+     "$$",
+     ""
+    ],
+    {
+     "kind": "heading",
+     "start": 3,
+     "end": 3,
+     "id": null,
+     "heading": "Plan: next #2"
+    },
+    "zzz111"
+   ],
+   "expected": null
+  },
+  {
+   "name": "5 applyInsertion keeps every other byte",
+   "fn": "applyInsertion",
+   "args": [
+    "a\nTask line\nc",
+    {
+     "line": 1,
+     "text": " ^abc123"
+    }
+   ],
+   "expected": "a\nTask line ^abc123\nc"
+  },
+  {
+   "name": "5 applyInsertion keeps CRLF line ends",
+   "fn": "applyInsertion",
+   "args": [
+    "a\r\nb\r\nc",
+    {
+     "line": 1,
+     "text": " ^abc123"
+    }
+   ],
+   "expected": "a\r\nb ^abc123\r\nc"
+  },
+  {
+   "name": "5 applyInsertion on the last line with no newline",
+   "fn": "applyInsertion",
+   "args": [
+    "a\nlast",
+    {
+     "line": 1,
+     "text": " ^abc123"
+    }
+   ],
+   "expected": "a\nlast ^abc123"
+  },
+  {
+   "name": "6 heading subpath replaces colon and hash with a space",
+   "fn": "headingSubpath",
+   "args": [
+    "Plan: next #2"
+   ],
+   "expected": "Plan next 2"
+  },
+  {
+   "name": "6 heading subpath replaces pipe caret backslash and brackets",
+   "fn": "headingSubpath",
+   "args": [
+    "A|B ^c \\ [[d]] %%e%%"
+   ],
+   "expected": "A B c d e"
+  },
+  {
+   "name": "6 heading subpath keeps other characters",
+   "fn": "headingSubpath",
+   "args": [
+    "Café (draft) & notes, v1.2!"
+   ],
+   "expected": "Café (draft) & notes, v1.2!"
+  },
+  {
+   "name": "7 link from another note keeps the generated link",
+   "fn": "buildLink",
+   "args": [
+    "[[Source#^abc123]]",
+    "#^abc123",
+    false,
+    false
+   ],
+   "expected": "[[Source#^abc123]]"
+  },
+  {
+   "name": "7 embed adds an exclamation mark",
+   "fn": "buildLink",
+   "args": [
+    "[[Source#Plan next 2]]",
+    "#Plan next 2",
+    false,
+    true
+   ],
+   "expected": "![[Source#Plan next 2]]"
+  },
+  {
+   "name": "7 same note drops the note name",
+   "fn": "buildLink",
+   "args": [
+    "[[Source#Plan next 2]]",
+    "#Plan next 2",
+    true,
+    false
+   ],
+   "expected": "[[#Plan next 2]]"
+  },
+  {
+   "name": "7 same note block embed",
+   "fn": "buildLink",
+   "args": [
+    "[[Source#^abc123]]",
+    "#^abc123",
+    true,
+    true
+   ],
+   "expected": "![[#^abc123]]"
+  },
+  {
+   "name": "7 same note in Markdown link format",
+   "fn": "buildLink",
+   "args": [
+    "[Source](Source.md#Plan%20next%202)",
+    "#Plan next 2",
+    true,
+    false
+   ],
+   "expected": "[Plan next 2](#Plan%20next%202)"
+  },
+  {
+   "name": "7 Markdown link format embed from another note",
+   "fn": "buildLink",
+   "args": [
+    "[Source](Source.md#%5Eabc123)",
+    "#^abc123",
+    false,
+    true
+   ],
+   "expected": "![Source](Source.md#%5Eabc123)"
+  },
+  {
+   "name": "8 readable id from the first three words",
+   "fn": "readableBlockId",
+   "args": [
+    "- [ ] Call Bob about the plan",
+    []
+   ],
+   "expected": "call-bob-about"
+  },
+  {
+   "name": "8 readable id adds a number when taken",
+   "fn": "readableBlockId",
+   "args": [
+    "Call Bob",
+    [
+     "call-bob",
+     "CALL-BOB-2"
+    ]
+   ],
+   "expected": "call-bob-3"
+  },
+  {
+   "name": "8 readable id drops accents and the callout marker",
+   "fn": "readableBlockId",
+   "args": [
+    "> [!note] Café crème brûlée",
+    []
+   ],
+   "expected": "cafe-creme-brulee"
+  },
+  {
+   "name": "8 readable id of a number gets a prefix",
+   "fn": "readableBlockId",
+   "args": [
+    "2024",
+    []
+   ],
+   "expected": "b-2024"
+  },
+  {
+   "name": "8 readable id of symbols only is null",
+   "fn": "readableBlockId",
+   "args": [
+    "--- !!!",
+    []
+   ],
+   "expected": null
+  },
+  {
+   "name": "9 range gives each block one time and skips empty lines",
+   "fn": "blocksInRange",
+   "args": [
+    [
+     "Intro line one",
+     "line two ^old",
+     "",
+     "## Plan: next #2 ##",
+     "Para after heading",
+     "",
+     "- item one",
+     "  continued text",
+     "  - child item ^c1",
+     "- [ ] Call Bob",
+     "",
+     "> quote a",
+     "> quote b",
+     "",
+     "> [!note] Title",
+     "> body",
+     "",
+     "^cal1",
+     "",
+     "| a | b |",
+     "| - | - |",
+     "| 1 | 2 |",
+     "Next para",
+     "",
+     "```js",
+     "code ^x",
+     "```",
+     "",
+     "$$",
+     "x^2",
+     "$$",
+     ""
+    ],
+    6,
+    12
+   ],
+   "expected": [
+    {
+     "kind": "list",
+     "start": 6,
+     "end": 7,
+     "id": null,
+     "heading": null
+    },
+    {
+     "kind": "list",
+     "start": 8,
+     "end": 8,
+     "id": "c1",
+     "heading": null
+    },
+    {
+     "kind": "task",
+     "start": 9,
+     "end": 9,
+     "id": null,
+     "heading": null
+    },
+    {
+     "kind": "quote",
+     "start": 11,
+     "end": 12,
+     "id": null,
+     "heading": null
+    }
+   ]
+  },
+  {
+   "name": "9 range skips the code block",
+   "fn": "blocksInRange",
+   "args": [
+    [
+     "Intro line one",
+     "line two ^old",
+     "",
+     "## Plan: next #2 ##",
+     "Para after heading",
+     "",
+     "- item one",
+     "  continued text",
+     "  - child item ^c1",
+     "- [ ] Call Bob",
+     "",
+     "> quote a",
+     "> quote b",
+     "",
+     "> [!note] Title",
+     "> body",
+     "",
+     "^cal1",
+     "",
+     "| a | b |",
+     "| - | - |",
+     "| 1 | 2 |",
+     "Next para",
+     "",
+     "```js",
+     "code ^x",
+     "```",
+     "",
+     "$$",
+     "x^2",
+     "$$",
+     ""
+    ],
+    22,
+    31
+   ],
+   "expected": [
+    {
+     "kind": "paragraph",
+     "start": 22,
+     "end": 22,
+     "id": null,
+     "heading": null
+    }
+   ]
+  }
+ ]
+}
