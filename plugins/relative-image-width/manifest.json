@@ -1,0 +1,11 @@
+{
+	"id": "relative-image-width",
+	"name": "Relative Image Width",
+	"version": "1.0.0",
+	"minAppVersion": "1.13.4",
+	"description": "Sizes embedded images with percent, em, rem and viewport units in Reading view and Live Preview.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}
