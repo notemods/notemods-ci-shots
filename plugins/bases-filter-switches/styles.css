@@ -1,0 +1,152 @@
+/* Bases Filter Switches: one row of chips under the Bases toolbar. Theme variables only. */
+.fsw-bar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--size-4-2);
+	padding: var(--size-4-1) 0 var(--size-4-2);
+	font-size: var(--font-ui-small);
+}
+
+.fsw-group {
+	display: inline-flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--size-4-1);
+	padding-right: var(--size-4-2);
+	border-right: var(--border-width) solid var(--background-modifier-border);
+}
+
+.fsw-group-name {
+	color: var(--text-muted);
+	margin-right: var(--size-2-1);
+}
+
+.fsw-bar button.fsw-chip,
+.fsw-bar button.fsw-button {
+	height: auto;
+	padding: var(--size-2-1) var(--size-4-2);
+	border-radius: var(--radius-l);
+	border: var(--border-width) solid var(--background-modifier-border);
+	background-color: var(--background-primary);
+	color: var(--text-normal);
+	box-shadow: none;
+	font-size: var(--font-ui-small);
+	line-height: var(--line-height-tight);
+	cursor: var(--cursor);
+}
+
+.fsw-bar button.fsw-chip:hover,
+.fsw-bar button.fsw-button:hover {
+	background-color: var(--background-modifier-hover);
+}
+
+.fsw-bar button.fsw-chip.is-active {
+	background-color: var(--interactive-accent);
+	border-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+}
+
+.fsw-bar button.fsw-chip.is-active:hover {
+	background-color: var(--interactive-accent-hover);
+}
+
+.fsw-bar button:focus-visible {
+	box-shadow: 0 0 0 2px var(--background-modifier-border-focus);
+	outline: none;
+}
+
+.fsw-bar button.fsw-add {
+	color: var(--text-muted);
+	border-style: dashed;
+}
+
+.fsw-bar.fsw-empty button.fsw-add {
+	opacity: 0.7;
+}
+
+.fsw-more {
+	color: var(--text-faint);
+}
+
+.fsw-bar button.fsw-quick {
+	display: inline-flex;
+	align-items: center;
+	color: var(--text-muted);
+}
+
+.fsw-quick-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--size-2-1);
+	padding: 0 var(--size-2-1) 0 var(--size-4-2);
+	border-radius: var(--radius-l);
+	border: var(--border-width) solid var(--interactive-accent);
+	color: var(--text-normal);
+	line-height: var(--line-height-tight);
+}
+
+.fsw-bar button.fsw-quick-remove {
+	display: inline-flex;
+	align-items: center;
+	height: auto;
+	padding: var(--size-2-1);
+	border: none;
+	background-color: transparent;
+	box-shadow: none;
+	color: var(--text-muted);
+	cursor: var(--cursor);
+}
+
+.fsw-bar button.fsw-quick-remove:hover {
+	color: var(--text-normal);
+}
+
+.fsw-bar button.fsw-quick svg,
+.fsw-bar button.fsw-quick-remove svg {
+	width: var(--icon-xs);
+	height: var(--icon-xs);
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
+
+/* Excluded: the bar names the state, and the Bases container gets an outline while it shows the excluded files. */
+.fsw-excluded-mark {
+	color: var(--text-warning);
+	font-weight: var(--font-semibold);
+}
+
+.fsw-bar button.fsw-button.fsw-excluded.is-active {
+	background-color: color-mix(in srgb, var(--color-orange) 20%, transparent);
+	border-color: var(--text-warning);
+	color: var(--text-normal);
+}
+
+.fsw-bar.fsw-excluded-on button:disabled {
+	opacity: 0.5;
+	cursor: default;
+}
+
+.fsw-showing-excluded {
+	outline: 2px dashed var(--text-warning);
+	outline-offset: -2px;
+}

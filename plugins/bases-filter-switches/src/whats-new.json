@@ -1,0 +1,29 @@
+{
+	"id": "bases-filter-switches",
+	"name": "Bases Filter Switches",
+	"version": "1.4.0",
+	"changes": [
+		"Adds a \"Filter by property\" button that shows only the notes where one property is or contains a value.",
+		"Adds free Pause and Resume controls for a filter group.",
+		"Corrects mixed list and scalar filters."
+	],
+	"tip": "To turn a filter that the base already has into a switch, select the + button and pick it under \"Use a filter of this base\".",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Bases Filter Switches is one of over 100 small plugins that I make. Thank you for using it with Bases. Bases is still new, and your setups teach me a lot.",
+	"related": [
+		{
+			"id": "bases-view-tabs",
+			"name": "Bases View Tabs",
+			"blurb": "Switch between the saved views of a base from a tab strip."
+		},
+		{
+			"id": "bases-view-checkpoints",
+			"name": "Bases View Checkpoints",
+			"blurb": "Save the setup of a view and restore it after quick changes."
+		},
+		{
+			"id": "bases-freeze-panes",
+			"name": "Bases Freeze Panes",
+			"blurb": "Keep column and note names visible as you scroll a base."
+		}
+	]
+}
