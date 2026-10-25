@@ -1,0 +1,25 @@
+{
+	"id": "relative-image-width",
+	"name": "Relative Image Width",
+	"version": "1.0.0",
+	"changes": [],
+	"tip": "Write a relative size as the last part of an image link, for example ![[photo.png|50%]] or ![[photo.png|20rem]]. A size in pixels works as before.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Relative Image Width is one of over 100 small plugins that I make. Thank you for trusting it with your notes.",
+	"related": [
+		{
+			"id": "inline-block-embeds",
+			"name": "Inline Block Embeds",
+			"blurb": "Show a block embed inside a sentence as inline text."
+		},
+		{
+			"id": "embed-outline",
+			"name": "Embed Outline",
+			"blurb": "See the headings of embedded notes in one outline."
+		},
+		{
+			"id": "callout-table-footnotes",
+			"name": "Footnotes in Callouts and Tables",
+			"blurb": "Show footnote references in callouts and tables as numbered links."
+		}
+	]
+}
