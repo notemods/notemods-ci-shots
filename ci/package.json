@@ -1,5 +1,6 @@
 {
 	"name": "notemods-ci-shots",
+	"repository": {"type": "git", "url": "theluckystrike/notemods-ci-shots.git"},
 	"version": "1.0.0",
 	"private": true,
 	"type": "module",
