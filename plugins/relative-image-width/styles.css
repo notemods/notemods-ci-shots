@@ -1,0 +1,36 @@
+/* Styles for Relative Image Width. Obsidian loads this file while the plugin is enabled. */
+
+/* Rule 7: Reading view and PDF export hide a Pandoc attribute block that sized its image. */
+.riw-hidden {
+	display: none;
+}
+
+/* Rule 4: an embed whose image has a percent width spans the line, so the percent is a share of the text column. */
+.internal-embed.riw-pct {
+	width: 100%;
+}
+
+.internal-embed.riw-pct > .image-wrapper {
+	width: var(--riw-width, auto);
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
