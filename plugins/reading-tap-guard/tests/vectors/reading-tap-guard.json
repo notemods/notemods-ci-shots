@@ -1,0 +1,750 @@
+{
+ "slug": "reading-tap-guard",
+ "module": "reading-tap-guard/src/taps",
+ "function": "doubleTaps",
+ "note": "Each case names its function in fn: doubleTaps(taps, intervalMs) gives the index of each tap that completes a double tap (core rule from Obsidian app.js: release-to-release under the interval, under 30 px apart, press 500 ms or shorter, moved under 30 px; a tap on a control clears the count); effective(action, intervalMs, pro) gives the behavior in effect; normalizeSettings(saved) repairs data.json. The leading number is the spec rule. Reviewed by hand against each input. wordBounds(text, offset) gives the UTF-16 [start, end] of the word at offset for Select the word, or null.",
+ "cases": [
+  {
+   "name": "1 two quick taps at one point are a double tap",
+   "fn": "doubleTaps",
+   "args": [
+    [
+     {
+      "down": 0,
+      "up": 80,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     },
+     {
+      "down": 200,
+      "up": 280,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     }
+    ],
+    500
+   ],
+   "expected": [
+    1
+   ]
+  },
+  {
+   "name": "1 single tap is not a double tap",
+   "fn": "doubleTaps",
+   "args": [
+    [
+     {
+      "down": 0,
+      "up": 80,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     }
+    ],
+    500
+   ],
+   "expected": []
+  },
+  {
+   "name": "2 second tap 500 ms or later after the first is not a double tap",
+   "fn": "doubleTaps",
+   "args": [
+    [
+     {
+      "down": 0,
+      "up": 80,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     },
+     {
+      "down": 500,
+      "up": 580,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     }
+    ],
+    500
+   ],
+   "expected": []
+  },
+  {
+   "name": "2 second tap 499 ms after the first is a double tap",
+   "fn": "doubleTaps",
+   "args": [
+    [
+     {
+      "down": 0,
+      "up": 80,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     },
+     {
+      "down": 499,
+      "up": 579,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     }
+    ],
+    500
+   ],
+   "expected": [
+    1
+   ]
+  },
+  {
+   "name": "3 first press of 501 ms is not a tap",
+   "fn": "doubleTaps",
+   "args": [
+    [
+     {
+      "down": 0,
+      "up": 501,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     },
+     {
+      "down": 600,
+      "up": 680,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     }
+    ],
+    500
+   ],
+   "expected": []
+  },
+  {
+   "name": "3 first press of exactly 500 ms is a tap",
+   "fn": "doubleTaps",
+   "args": [
+    [
+     {
+      "down": 0,
+      "up": 500,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     },
+     {
+      "down": 600,
+      "up": 680,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     }
+    ],
+    500
+   ],
+   "expected": [
+    1
+   ]
+  },
+  {
+   "name": "3 finger that moved 30 px is not a tap (scroll)",
+   "fn": "doubleTaps",
+   "args": [
+    [
+     {
+      "down": 0,
+      "up": 80,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     },
+     {
+      "down": 150,
+      "up": 230,
+      "x": 100,
+      "y": 100,
+      "moved": 30,
+      "control": false
+     }
+    ],
+    500
+   ],
+   "expected": []
+  },
+  {
+   "name": "3 finger that moved 29 px is a tap",
+   "fn": "doubleTaps",
+   "args": [
+    [
+     {
+      "down": 0,
+      "up": 80,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     },
+     {
+      "down": 150,
+      "up": 230,
+      "x": 100,
+      "y": 100,
+      "moved": 29,
+      "control": false
+     }
+    ],
+    500
+   ],
+   "expected": [
+    1
+   ]
+  },
+  {
+   "name": "4 second tap 30 px away is not a double tap",
+   "fn": "doubleTaps",
+   "args": [
+    [
+     {
+      "down": 0,
+      "up": 80,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     },
+     {
+      "down": 150,
+      "up": 230,
+      "x": 130,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     }
+    ],
+    500
+   ],
+   "expected": []
+  },
+  {
+   "name": "4 second tap 29 px away is a double tap",
+   "fn": "doubleTaps",
+   "args": [
+    [
+     {
+      "down": 0,
+      "up": 80,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     },
+     {
+      "down": 150,
+      "up": 230,
+      "x": 120,
+      "y": 120,
+      "moved": 0,
+      "control": false
+     }
+    ],
+    500
+   ],
+   "expected": [
+    1
+   ]
+  },
+  {
+   "name": "5 tap on a link or checkbox clears the count",
+   "fn": "doubleTaps",
+   "args": [
+    [
+     {
+      "down": 0,
+      "up": 80,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     },
+     {
+      "down": 150,
+      "up": 230,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": true
+     },
+     {
+      "down": 300,
+      "up": 380,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     }
+    ],
+    500
+   ],
+   "expected": []
+  },
+  {
+   "name": "5 two taps on a control are not a double tap",
+   "fn": "doubleTaps",
+   "args": [
+    [
+     {
+      "down": 0,
+      "up": 80,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": true
+     },
+     {
+      "down": 150,
+      "up": 230,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": true
+     }
+    ],
+    500
+   ],
+   "expected": []
+  },
+  {
+   "name": "6 triple tap gives one double tap, the third tap starts a new pair",
+   "fn": "doubleTaps",
+   "args": [
+    [
+     {
+      "down": 0,
+      "up": 80,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     },
+     {
+      "down": 150,
+      "up": 230,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     },
+     {
+      "down": 300,
+      "up": 380,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     }
+    ],
+    500
+   ],
+   "expected": [
+    1
+   ]
+  },
+  {
+   "name": "6 four quick taps give two double taps",
+   "fn": "doubleTaps",
+   "args": [
+    [
+     {
+      "down": 0,
+      "up": 80,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     },
+     {
+      "down": 150,
+      "up": 230,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     },
+     {
+      "down": 300,
+      "up": 380,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     },
+     {
+      "down": 450,
+      "up": 530,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     }
+    ],
+    500
+   ],
+   "expected": [
+    1,
+    3
+   ]
+  },
+  {
+   "name": "7 Pro interval 250 ms drops a 300 ms pair",
+   "fn": "doubleTaps",
+   "args": [
+    [
+     {
+      "down": 0,
+      "up": 80,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     },
+     {
+      "down": 300,
+      "up": 380,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     }
+    ],
+    250
+   ],
+   "expected": []
+  },
+  {
+   "name": "7 Pro interval 250 ms keeps a 200 ms pair",
+   "fn": "doubleTaps",
+   "args": [
+    [
+     {
+      "down": 0,
+      "up": 80,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     },
+     {
+      "down": 200,
+      "up": 280,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     }
+    ],
+    250
+   ],
+   "expected": [
+    1
+   ]
+  },
+  {
+   "name": "7 a rejected first tap does not pair with later taps",
+   "fn": "doubleTaps",
+   "args": [
+    [
+     {
+      "down": 0,
+      "up": 800,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     },
+     {
+      "down": 850,
+      "up": 930,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     },
+     {
+      "down": 1500,
+      "up": 1580,
+      "x": 100,
+      "y": 100,
+      "moved": 0,
+      "control": false
+     }
+    ],
+    500
+   ],
+   "expected": []
+  },
+  {
+   "name": "8 default settings block core and do not detect",
+   "fn": "effective",
+   "args": [
+    "nothing",
+    500,
+    false
+   ],
+   "expected": {
+    "action": "nothing",
+    "interval": 500,
+    "blockCore": true,
+    "detect": false
+   }
+  },
+  {
+   "name": "8 select word blocks core and detects",
+   "fn": "effective",
+   "args": [
+    "select-word",
+    500,
+    false
+   ],
+   "expected": {
+    "action": "select-word",
+    "interval": 500,
+    "blockCore": true,
+    "detect": true
+   }
+  },
+  {
+   "name": "8 switch to editing leaves core in charge",
+   "fn": "effective",
+   "args": [
+    "edit",
+    500,
+    false
+   ],
+   "expected": {
+    "action": "edit",
+    "interval": 500,
+    "blockCore": false,
+    "detect": false
+   }
+  },
+  {
+   "name": "8 interval without Pro is the core value",
+   "fn": "effective",
+   "args": [
+    "edit",
+    250,
+    false
+   ],
+   "expected": {
+    "action": "edit",
+    "interval": 500,
+    "blockCore": false,
+    "detect": false
+   }
+  },
+  {
+   "name": "8 Pro interval with switch to editing blocks core and detects",
+   "fn": "effective",
+   "args": [
+    "edit",
+    250,
+    true
+   ],
+   "expected": {
+    "action": "edit",
+    "interval": 250,
+    "blockCore": true,
+    "detect": true
+   }
+  },
+  {
+   "name": "8 Pro interval below 150 ms is raised to 150",
+   "fn": "effective",
+   "args": [
+    "select-word",
+    20,
+    true
+   ],
+   "expected": {
+    "action": "select-word",
+    "interval": 150,
+    "blockCore": true,
+    "detect": true
+   }
+  },
+  {
+   "name": "8 Pro interval above 500 ms is lowered to 500",
+   "fn": "effective",
+   "args": [
+    "edit",
+    900,
+    true
+   ],
+   "expected": {
+    "action": "edit",
+    "interval": 500,
+    "blockCore": false,
+    "detect": false
+   }
+  },
+  {
+   "name": "9 empty saved data gives the defaults",
+   "fn": "normalizeSettings",
+   "args": [
+    null
+   ],
+   "expected": {
+    "action": "nothing",
+    "interval": 500
+   }
+  },
+  {
+   "name": "9 bad saved values give the defaults",
+   "fn": "normalizeSettings",
+   "args": [
+    {
+     "action": "zoom",
+     "interval": "fast"
+    }
+   ],
+   "expected": {
+    "action": "nothing",
+    "interval": 500
+   }
+  },
+  {
+   "name": "9 good saved values stay",
+   "fn": "normalizeSettings",
+   "args": [
+    {
+     "action": "select-word",
+     "interval": 300
+    }
+   ],
+   "expected": {
+    "action": "select-word",
+    "interval": 300
+   }
+  },
+  {
+   "name": "9 saved interval out of range is clamped",
+   "fn": "normalizeSettings",
+   "args": [
+    {
+     "action": "edit",
+     "interval": 5000
+    }
+   ],
+   "expected": {
+    "action": "edit",
+    "interval": 500
+   }
+  },
+  {
+   "name": "10 word in the middle",
+   "fn": "wordBounds",
+   "args": [
+    "The quick fox",
+    6
+   ],
+   "expected": [
+    4,
+    9
+   ]
+  },
+  {
+   "name": "10 offset at the end of a word takes that word",
+   "fn": "wordBounds",
+   "args": [
+    "The quick fox",
+    9
+   ],
+   "expected": [
+    4,
+    9
+   ]
+  },
+  {
+   "name": "10 offset at the start of a word takes that word",
+   "fn": "wordBounds",
+   "args": [
+    "The quick fox",
+    4
+   ],
+   "expected": [
+    4,
+    9
+   ]
+  },
+  {
+   "name": "10 space between two spaces is no word",
+   "fn": "wordBounds",
+   "args": [
+    "a  b",
+    2
+   ],
+   "expected": null
+  },
+  {
+   "name": "10 apostrophe inside a word",
+   "fn": "wordBounds",
+   "args": [
+    "I don't know",
+    3
+   ],
+   "expected": [
+    2,
+    7
+   ]
+  },
+  {
+   "name": "10 accented letters",
+   "fn": "wordBounds",
+   "args": [
+    "Zażółć gęślą",
+    2
+   ],
+   "expected": [
+    0,
+    6
+   ]
+  },
+  {
+   "name": "10 punctuation ends the word",
+   "fn": "wordBounds",
+   "args": [
+    "(alpha), beta",
+    3
+   ],
+   "expected": [
+    1,
+    6
+   ]
+  },
+  {
+   "name": "10 emoji before a word keeps UTF-16 offsets",
+   "fn": "wordBounds",
+   "args": [
+    "😀 word",
+    4
+   ],
+   "expected": [
+    3,
+    7
+   ]
+  }
+ ]
+}
