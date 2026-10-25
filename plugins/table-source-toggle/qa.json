@@ -1,0 +1,9 @@
+[
+	{
+		"feature": "spike-inside",
+		"caption": "Spike, cursor set inside the table text.",
+		"note": "Spike.md",
+		"eval": "(async () => { const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); l.view.editor.setCursor({line:4,ch:3}); l.view.editor.focus(); await new Promise(r=>setTimeout(r,800)); return 'ok'; })()",
+		"wait": 600
+	}
+]
