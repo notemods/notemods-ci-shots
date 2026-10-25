@@ -1,0 +1,93 @@
+[
+	{
+		"feature": "without-plugin",
+		"caption": "Without the plugin, a GitHub-style heading link fails with the core notice.",
+		"note": "Project guide.md",
+		"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); document.querySelectorAll('.notice').forEach(n => n.remove()); await app.plugins.disablePlugin('gfm-heading-slugs'); app.workspace.getMostRecentLeaf().rebuildView(); await new Promise(r => setTimeout(r, 1200)); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); l.view.editor.setCursor({line:2,ch:0}); l.view.editor.scrollTo(0,0); const el=Array.from(document.querySelectorAll('.workspace-leaf.mod-active .cm-content .cm-underline, .workspace-leaf.mod-active .cm-content .cm-link')).find(e=>e.textContent==='Setup steps'); if(!el) throw new Error('no link'); const r=el.getBoundingClientRect(); const o={bubbles:true,cancelable:true,button:0,clientX:r.x+3,clientY:r.y+3,view:window}; el.dispatchEvent(new MouseEvent('mousedown',o)); el.dispatchEvent(new MouseEvent('mouseup',o)); el.dispatchEvent(new MouseEvent('click',o)); await new Promise(r=>setTimeout(r,900)); const t=Array.from(document.querySelectorAll('.notice')).map(n=>n.textContent).join(' '); if(!t.includes('Unable to find')) throw new Error('no core notice: '+t); return t; })()",
+		"after": "(async () => { await app.plugins.enablePlugin('gfm-heading-slugs'); await new Promise(r => setTimeout(r, 300)); app.workspace.getMostRecentLeaf().rebuildView(); await new Promise(r => setTimeout(r, 1000)); return 'ok'; })()",
+		"wait": 400,
+		"zoom": 1.1
+	},
+	{
+		"feature": "live-preview",
+		"caption": "With the plugin, a click on the link in Live Preview moves to the Setup steps heading.",
+		"note": "Project guide.md",
+		"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); document.querySelectorAll('.notice').forEach(n => n.remove()); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); l.view.editor.setCursor({line:2,ch:0}); l.view.editor.scrollTo(0,0); await new Promise(r => setTimeout(r, 600)); const el=Array.from(document.querySelectorAll('.workspace-leaf.mod-active .cm-content .cm-underline, .workspace-leaf.mod-active .cm-content .cm-link')).find(e=>e.textContent==='Setup steps'); if(!el) throw new Error('no link'); const r=el.getBoundingClientRect(); const o={bubbles:true,cancelable:true,button:0,clientX:r.x+3,clientY:r.y+3,view:window}; el.dispatchEvent(new MouseEvent('mousedown',o)); el.dispatchEvent(new MouseEvent('mouseup',o)); el.dispatchEvent(new MouseEvent('click',o)); await new Promise(r=>setTimeout(r,900)); return app.workspace.activeEditor.editor.getCursor().line; })()",
+		"wait": 600,
+		"zoom": 1.1
+	},
+	{
+		"feature": "reading-view",
+		"caption": "Reading view: each heading gets its GitHub slug as id, and the second Hello World link opens the second heading.",
+		"note": "Project guide.md",
+		"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); document.querySelectorAll('.notice').forEach(n => n.remove()); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'preview'}}); for (let i=0;i<40 && !document.querySelector('.workspace-leaf.mod-active .markdown-reading-view [data-gfm-slug]');i++) await new Promise(r=>setTimeout(r,100)); const a=document.querySelector('.workspace-leaf.mod-active .markdown-reading-view a[data-gfm-href=\"#hello-world-1\"]'); if(!a) throw new Error('no link'); a.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,button:0})); await new Promise(r=>setTimeout(r,1000)); return Array.from(document.querySelectorAll('.workspace-leaf.mod-active [data-gfm-slug]')).map(h=>h.id).join(' '); })()",
+		"after": "(async () => { const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); l.view.editor.setCursor({line:2,ch:0}); l.view.editor.scrollTo(0,0); return 'ok'; })()",
+		"wait": 600,
+		"zoom": 1.1
+	},
+	{
+		"feature": "copy-link",
+		"caption": "The copy command puts a GitHub-style link to the current heading on the clipboard.",
+		"note": "Project guide.md",
+		"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); document.querySelectorAll('.notice').forEach(n => n.remove()); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); l.view.editor.setCursor({line:2,ch:0}); l.view.editor.scrollTo(0,0); const e=app.workspace.activeEditor.editor; e.setCursor({line:58,ch:0}); e.scrollIntoView({from:{line:50,ch:0},to:{line:62,ch:0}},true); await new Promise(r=>setTimeout(r,400)); app.commands.executeCommandById('gfm-heading-slugs:copy-github-heading-link'); await new Promise(r=>setTimeout(r,600)); return document.querySelector('.notice')?.textContent ?? 'none'; })()",
+		"wait": 300,
+		"zoom": 1.1
+	},
+	{
+		"feature": "convert",
+		"caption": "The convert command lists each change before it writes, and one undo reverts all of them.",
+		"note": "Old links.md",
+		"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); document.querySelectorAll('.notice').forEach(n => n.remove()); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); l.view.editor.setCursor({line:2,ch:0}); l.view.editor.scrollTo(0,0); app.commands.executeCommandById('gfm-heading-slugs:convert-note-links'); await new Promise(r=>setTimeout(r,700)); const n=document.querySelectorAll('.modal .gfm-slugs-preview-list li').length; if(n!==3) throw new Error('rows '+n); return n; })()",
+		"after": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); return 'ok'; })()",
+		"wait": 400,
+		"zoom": 1.1
+	},
+	{
+		"feature": "inserted-link",
+		"caption": "An inserted heading link gets the slug as its target in the same edit.",
+		"note": "Old links.md",
+		"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); document.querySelectorAll('.notice').forEach(n => n.remove()); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); l.view.editor.setCursor({line:2,ch:0}); l.view.editor.scrollTo(0,0); const e=app.workspace.activeEditor.editor; const end={line:e.lastLine(),ch:0}; e.replaceRange('See [Team notes](#Team%20notes%202026)', end); await new Promise(r=>setTimeout(r,400)); const t=e.getLine(end.line); if(t!=='See [Team notes](#team-notes-2026)') throw new Error('line '+t); e.setCursor({line:end.line,ch:t.length}); return t; })()",
+		"after": "(async () => { app.workspace.activeEditor.editor.undo(); return 'ok'; })()",
+		"wait": 400,
+		"zoom": 1.2
+	},
+	{
+		"feature": "settings",
+		"caption": "The settings tab with the two settings first and the Pro section below them.",
+		"note": "Project guide.md",
+		"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); document.querySelectorAll('.notice').forEach(n => n.remove()); app.setting.open(); app.setting.openTabById('gfm-heading-slugs'); await new Promise(r=>setTimeout(r,800)); return 'ok'; })()",
+		"after": "(async () => { app.setting.close(); return 'ok'; })()",
+		"wait": 400
+	},
+	{
+		"feature": "gfm-heading-slugs",
+		"caption": "A click on a GitHub-style link fails without the plugin and opens the heading with it.",
+		"frames": [
+			{
+				"note": "Project guide.md",
+				"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); document.querySelectorAll('.notice').forEach(n => n.remove()); await app.plugins.disablePlugin('gfm-heading-slugs'); app.workspace.getMostRecentLeaf().rebuildView(); await new Promise(r => setTimeout(r, 1200)); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); l.view.editor.setCursor({line:2,ch:0}); l.view.editor.scrollTo(0,0); await new Promise(r=>setTimeout(r,400)); return 'off'; })()",
+				"wait": 300,
+				"hold": 1600,
+				"zoom": 1.1
+			},
+			{
+				"eval": "(async () => { const el=Array.from(document.querySelectorAll('.workspace-leaf.mod-active .cm-content .cm-underline, .workspace-leaf.mod-active .cm-content .cm-link')).find(e=>e.textContent==='Setup steps'); if(!el) throw new Error('no link'); const r=el.getBoundingClientRect(); const o={bubbles:true,cancelable:true,button:0,clientX:r.x+3,clientY:r.y+3,view:window}; el.dispatchEvent(new MouseEvent('mousedown',o)); el.dispatchEvent(new MouseEvent('mouseup',o)); el.dispatchEvent(new MouseEvent('click',o)); await new Promise(r=>setTimeout(r,900)); return document.querySelector('.notice')?.textContent ?? 'none'; })()",
+				"wait": 200,
+				"hold": 2200,
+				"zoom": 1.1
+			},
+			{
+				"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); document.querySelectorAll('.notice').forEach(n => n.remove()); await app.plugins.enablePlugin('gfm-heading-slugs'); await new Promise(r => setTimeout(r, 300)); app.workspace.getMostRecentLeaf().rebuildView(); await new Promise(r => setTimeout(r, 1200)); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); l.view.editor.setCursor({line:2,ch:0}); l.view.editor.scrollTo(0,0); await new Promise(r=>setTimeout(r,400)); return 'on'; })()",
+				"wait": 300,
+				"hold": 1600,
+				"zoom": 1.1
+			},
+			{
+				"eval": "(async () => { const el=Array.from(document.querySelectorAll('.workspace-leaf.mod-active .cm-content .cm-underline, .workspace-leaf.mod-active .cm-content .cm-link')).find(e=>e.textContent==='Setup steps'); if(!el) throw new Error('no link'); const r=el.getBoundingClientRect(); const o={bubbles:true,cancelable:true,button:0,clientX:r.x+3,clientY:r.y+3,view:window}; el.dispatchEvent(new MouseEvent('mousedown',o)); el.dispatchEvent(new MouseEvent('mouseup',o)); el.dispatchEvent(new MouseEvent('click',o)); await new Promise(r=>setTimeout(r,900)); return app.workspace.activeEditor.editor.getCursor().line; })()",
+				"wait": 300,
+				"hold": 2400,
+				"zoom": 1.1
+			}
+		]
+	}
+]

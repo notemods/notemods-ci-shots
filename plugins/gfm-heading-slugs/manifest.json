@@ -1,0 +1,11 @@
+{
+	"id": "gfm-heading-slugs",
+	"name": "GFM Heading Slugs",
+	"version": "1.0.0",
+	"minAppVersion": "1.13.4",
+	"description": "Opens GitHub-style heading links like my-heading, gives each rendered heading its GitHub slug as id, and writes slugs in new heading links.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}

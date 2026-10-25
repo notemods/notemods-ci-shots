@@ -1,0 +1,25 @@
+{
+	"id": "gfm-heading-slugs",
+	"name": "GFM Heading Slugs",
+	"version": "1.0.0",
+	"changes": [],
+	"tip": "Run the command \"Copy GitHub-style link to the current heading\" to get a link that works in Obsidian and on GitHub.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. GFM Heading Slugs is one of over 100 small plugins that I make. Thank you for trusting it with your notes.",
+	"related": [
+		{
+			"id": "heading-link-sync",
+			"name": "Heading Link Sync",
+			"blurb": "Keep links to a heading working when you edit the heading."
+		},
+		{
+			"id": "embed-outline",
+			"name": "Embed Outline",
+			"blurb": "See the headings of embedded notes in one outline."
+		},
+		{
+			"id": "inline-block-embeds",
+			"name": "Inline Block Embeds",
+			"blurb": "Show a block embed inside a sentence as inline text."
+		}
+	]
+}

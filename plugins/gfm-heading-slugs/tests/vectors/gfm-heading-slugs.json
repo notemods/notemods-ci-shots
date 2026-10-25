@@ -1,0 +1,805 @@
+{
+ "slug": "gfm-heading-slugs",
+ "module": "gfm-heading-slugs/src/slug",
+ "function": "slugAll",
+ "note": "Each case names its function in fn. slugify and slugAll expected values are the ids of the GitHub Markdown API (gh api markdown, mode markdown, fetched 2026-10-25, raw output in the B6 lane folder golden/). Names that start with a number are acceptance cases of the spec. planConvert offsets were checked by hand and by the unit test.",
+ "cases": [
+  {
+   "name": "1 slugify 'This is an Internal Heading'",
+   "fn": "slugify",
+   "args": [
+    "This is an Internal Heading"
+   ],
+   "expected": "this-is-an-internal-heading"
+  },
+  {
+   "name": "1 slugify 'Hello World'",
+   "fn": "slugify",
+   "args": [
+    "Hello World"
+   ],
+   "expected": "hello-world"
+  },
+  {
+   "name": "1 slugify 'Café au lait'",
+   "fn": "slugify",
+   "args": [
+    "Café au lait"
+   ],
+   "expected": "café-au-lait"
+  },
+  {
+   "name": "1 slugify 'Ünïcödé Tëst'",
+   "fn": "slugify",
+   "args": [
+    "Ünïcödé Tëst"
+   ],
+   "expected": "ünïcödé-tëst"
+  },
+  {
+   "name": "1 slugify '日本語の見出し'",
+   "fn": "slugify",
+   "args": [
+    "日本語の見出し"
+   ],
+   "expected": "日本語の見出し"
+  },
+  {
+   "name": "1 slugify 'Привет мир'",
+   "fn": "slugify",
+   "args": [
+    "Привет мир"
+   ],
+   "expected": "привет-мир"
+  },
+  {
+   "name": "1 slugify 'Emoji 🎉 party'",
+   "fn": "slugify",
+   "args": [
+    "Emoji 🎉 party"
+   ],
+   "expected": "emoji--party"
+  },
+  {
+   "name": "1 slugify '🚀 Launch'",
+   "fn": "slugify",
+   "args": [
+    "🚀 Launch"
+   ],
+   "expected": "-launch"
+  },
+  {
+   "name": "1 slugify ':smile: shortcode'",
+   "fn": "slugify",
+   "args": [
+    ":smile: shortcode"
+   ],
+   "expected": "smile-shortcode"
+  },
+  {
+   "name": "1 slugify \"What's new?\"",
+   "fn": "slugify",
+   "args": [
+    "What's new?"
+   ],
+   "expected": "whats-new"
+  },
+  {
+   "name": "1 slugify 'C++ & C# notes'",
+   "fn": "slugify",
+   "args": [
+    "C++ & C# notes"
+   ],
+   "expected": "c--c-notes"
+  },
+  {
+   "name": "1 slugify '100% done!'",
+   "fn": "slugify",
+   "args": [
+    "100% done!"
+   ],
+   "expected": "100-done"
+  },
+  {
+   "name": "1 slugify 'Version 1.2.3'",
+   "fn": "slugify",
+   "args": [
+    "Version 1.2.3"
+   ],
+   "expected": "version-123"
+  },
+  {
+   "name": "1 slugify 'foo_bar_baz'",
+   "fn": "slugify",
+   "args": [
+    "foo_bar_baz"
+   ],
+   "expected": "foo_bar_baz"
+  },
+  {
+   "name": "1 slugify '**Bold** and _italic_'",
+   "fn": "slugify",
+   "args": [
+    "**Bold** and _italic_"
+   ],
+   "expected": "bold-and-italic"
+  },
+  {
+   "name": "1 slugify '`code span` here'",
+   "fn": "slugify",
+   "args": [
+    "`code span` here"
+   ],
+   "expected": "code-span-here"
+  },
+  {
+   "name": "1 slugify 'Use `npm i -D pkg`'",
+   "fn": "slugify",
+   "args": [
+    "Use `npm i -D pkg`"
+   ],
+   "expected": "use-npm-i--d-pkg"
+  },
+  {
+   "name": "1 slugify '[Link text](https://example.com) rest'",
+   "fn": "slugify",
+   "args": [
+    "[Link text](https://example.com) rest"
+   ],
+   "expected": "link-text-rest"
+  },
+  {
+   "name": "1 slugify '[[Wiki Link]] heading'",
+   "fn": "slugify",
+   "args": [
+    "[[Wiki Link]] heading"
+   ],
+   "expected": "wiki-link-heading"
+  },
+  {
+   "name": "1 slugify 'Multiple   spaces   here'",
+   "fn": "slugify",
+   "args": [
+    "Multiple   spaces   here"
+   ],
+   "expected": "multiple---spaces---here"
+  },
+  {
+   "name": "1 slugify 'Trailing hyphen -'",
+   "fn": "slugify",
+   "args": [
+    "Trailing hyphen -"
+   ],
+   "expected": "trailing-hyphen--"
+  },
+  {
+   "name": "1 slugify '--double--hyphen--'",
+   "fn": "slugify",
+   "args": [
+    "--double--hyphen--"
+   ],
+   "expected": "--double--hyphen--"
+  },
+  {
+   "name": "1 slugify 'Tab\\tinside'",
+   "fn": "slugify",
+   "args": [
+    "Tab\tinside"
+   ],
+   "expected": "tabinside"
+  },
+  {
+   "name": "1 slugify 'A/B testing (2026)'",
+   "fn": "slugify",
+   "args": [
+    "A/B testing (2026)"
+   ],
+   "expected": "ab-testing-2026"
+  },
+  {
+   "name": "1 slugify 'Q&amp;A session'",
+   "fn": "slugify",
+   "args": [
+    "Q&amp;A session"
+   ],
+   "expected": "qa-session"
+  },
+  {
+   "name": "1 slugify 'Quotes \"double\" and \\'single\\''",
+   "fn": "slugify",
+   "args": [
+    "Quotes \"double\" and 'single'"
+   ],
+   "expected": "quotes-double-and-single"
+  },
+  {
+   "name": "1 slugify 'Dots... and, commas; colons: end'",
+   "fn": "slugify",
+   "args": [
+    "Dots... and, commas; colons: end"
+   ],
+   "expected": "dots-and-commas-colons-end"
+  },
+  {
+   "name": "1 slugify 'Ends with hashes ##'",
+   "fn": "slugify",
+   "args": [
+    "Ends with hashes ##"
+   ],
+   "expected": "ends-with-hashes"
+  },
+  {
+   "name": "1 slugify '#hashtag heading'",
+   "fn": "slugify",
+   "args": [
+    "#hashtag heading"
+   ],
+   "expected": "hashtag-heading"
+  },
+  {
+   "name": "1 slugify 'Ümlaut ÄÖÜ'",
+   "fn": "slugify",
+   "args": [
+    "Ümlaut ÄÖÜ"
+   ],
+   "expected": "ümlaut-äöü"
+  },
+  {
+   "name": "1 slugify '½ half and ² square'",
+   "fn": "slugify",
+   "args": [
+    "½ half and ² square"
+   ],
+   "expected": "-half-and--square"
+  },
+  {
+   "name": "1 slugify 'Ελληνικά κείμενο'",
+   "fn": "slugify",
+   "args": [
+    "Ελληνικά κείμενο"
+   ],
+   "expected": "ελληνικά-κείμενο"
+  },
+  {
+   "name": "1 slugify 'emoji_with_underscore_🙂_end'",
+   "fn": "slugify",
+   "args": [
+    "emoji_with_underscore_🙂_end"
+   ],
+   "expected": "emoji_with_underscore__end"
+  },
+  {
+   "name": "1 slugify 'x <b>html</b> tag'",
+   "fn": "slugify",
+   "args": [
+    "x <b>html</b> tag"
+   ],
+   "expected": "x-html-tag"
+  },
+  {
+   "name": "1 slugify 'Escaped \\\\* star'",
+   "fn": "slugify",
+   "args": [
+    "Escaped \\* star"
+   ],
+   "expected": "escaped--star"
+  },
+  {
+   "name": "1 slugify 'Straße'",
+   "fn": "slugify",
+   "args": [
+    "Straße"
+   ],
+   "expected": "straße"
+  },
+  {
+   "name": "1 slugify 'İstanbul'",
+   "fn": "slugify",
+   "args": [
+    "İstanbul"
+   ],
+   "expected": "i̇stanbul"
+  },
+  {
+   "name": "1 slugify 'Setext Heading'",
+   "fn": "slugify",
+   "args": [
+    "Setext Heading"
+   ],
+   "expected": "setext-heading"
+  },
+  {
+   "name": "1 slugify 'Top level'",
+   "fn": "slugify",
+   "args": [
+    "Top level"
+   ],
+   "expected": "top-level"
+  },
+  {
+   "name": "1 slugify '[[Note|Alias]] text'",
+   "fn": "slugify",
+   "args": [
+    "[[Note|Alias]] text"
+   ],
+   "expected": "notealias-text"
+  },
+  {
+   "name": "1 slugify '![alt text](img.png) Title'",
+   "fn": "slugify",
+   "args": [
+    "![alt text](img.png) Title"
+   ],
+   "expected": "-title"
+  },
+  {
+   "name": "1 slugify '~~strike~~ through'",
+   "fn": "slugify",
+   "args": [
+    "~~strike~~ through"
+   ],
+   "expected": "strike-through"
+  },
+  {
+   "name": "1 slugify '==highlight== mark'",
+   "fn": "slugify",
+   "args": [
+    "==highlight== mark"
+   ],
+   "expected": "highlight-mark"
+  },
+  {
+   "name": "1 slugify '_emph_ word'",
+   "fn": "slugify",
+   "args": [
+    "_emph_ word"
+   ],
+   "expected": "emph-word"
+  },
+  {
+   "name": "1 slugify 'snake_case_word'",
+   "fn": "slugify",
+   "args": [
+    "snake_case_word"
+   ],
+   "expected": "snake_case_word"
+  },
+  {
+   "name": "1 slugify '__double__ under'",
+   "fn": "slugify",
+   "args": [
+    "__double__ under"
+   ],
+   "expected": "double-under"
+  },
+  {
+   "name": "1 slugify '***both*** stars'",
+   "fn": "slugify",
+   "args": [
+    "***both*** stars"
+   ],
+   "expected": "both-stars"
+  },
+  {
+   "name": "1 slugify '2026'",
+   "fn": "slugify",
+   "args": [
+    "2026"
+   ],
+   "expected": "2026"
+  },
+  {
+   "name": "1 slugify '&copy; Copyright'",
+   "fn": "slugify",
+   "args": [
+    "&copy; Copyright"
+   ],
+   "expected": "-copyright"
+  },
+  {
+   "name": "1 slugify 'Heading with `a_b` code'",
+   "fn": "slugify",
+   "args": [
+    "Heading with `a_b` code"
+   ],
+   "expected": "heading-with-a_b-code"
+  },
+  {
+   "name": "1 slugify 'Mixed [link](#x) and `c`'",
+   "fn": "slugify",
+   "args": [
+    "Mixed [link](#x) and `c`"
+   ],
+   "expected": "mixed-link-and-c"
+  },
+  {
+   "name": "1 slugify '<span>inline</span> html'",
+   "fn": "slugify",
+   "args": [
+    "<span>inline</span> html"
+   ],
+   "expected": "inline-html"
+  },
+  {
+   "name": "1 doc 1 all 43 headings match the GitHub API ids",
+   "fn": "slugAll",
+   "args": [
+    [
+     "This is an Internal Heading",
+     "Hello World",
+     "Hello World",
+     "Hello World",
+     "hello-world-1",
+     "Café au lait",
+     "Ünïcödé Tëst",
+     "日本語の見出し",
+     "Привет мир",
+     "Emoji 🎉 party",
+     "🚀 Launch",
+     ":smile: shortcode",
+     "What's new?",
+     "C++ & C# notes",
+     "100% done!",
+     "Version 1.2.3",
+     "foo_bar_baz",
+     "**Bold** and _italic_",
+     "`code span` here",
+     "Use `npm i -D pkg`",
+     "[Link text](https://example.com) rest",
+     "[[Wiki Link]] heading",
+     "Multiple   spaces   here",
+     "Trailing hyphen -",
+     "--double--hyphen--",
+     "Tab\tinside",
+     "A/B testing (2026)",
+     "Q&amp;A session",
+     "Quotes \"double\" and 'single'",
+     "Dots... and, commas; colons: end",
+     "Ends with hashes ##",
+     "#hashtag heading",
+     "Ümlaut ÄÖÜ",
+     "½ half and ² square",
+     "Ελληνικά κείμενο",
+     "emoji_with_underscore_🙂_end",
+     "x <b>html</b> tag",
+     "Escaped \\* star",
+     "Straße",
+     "İstanbul",
+     "Hello World",
+     "Setext Heading",
+     "Top level"
+    ]
+   ],
+   "expected": [
+    "this-is-an-internal-heading",
+    "hello-world",
+    "hello-world-1",
+    "hello-world-2",
+    "hello-world-1-1",
+    "café-au-lait",
+    "ünïcödé-tëst",
+    "日本語の見出し",
+    "привет-мир",
+    "emoji--party",
+    "-launch",
+    "smile-shortcode",
+    "whats-new",
+    "c--c-notes",
+    "100-done",
+    "version-123",
+    "foo_bar_baz",
+    "bold-and-italic",
+    "code-span-here",
+    "use-npm-i--d-pkg",
+    "link-text-rest",
+    "wiki-link-heading",
+    "multiple---spaces---here",
+    "trailing-hyphen--",
+    "--double--hyphen--",
+    "tabinside",
+    "ab-testing-2026",
+    "qa-session",
+    "quotes-double-and-single",
+    "dots-and-commas-colons-end",
+    "ends-with-hashes",
+    "hashtag-heading",
+    "ümlaut-äöü",
+    "-half-and--square",
+    "ελληνικά-κείμενο",
+    "emoji_with_underscore__end",
+    "x-html-tag",
+    "escaped--star",
+    "straße",
+    "i̇stanbul",
+    "hello-world-3",
+    "setext-heading",
+    "top-level"
+   ]
+  },
+  {
+   "name": "1 doc 2 all 13 headings match the GitHub API ids",
+   "fn": "slugAll",
+   "args": [
+    [
+     "[[Note|Alias]] text",
+     "![alt text](img.png) Title",
+     "~~strike~~ through",
+     "==highlight== mark",
+     "_emph_ word",
+     "snake_case_word",
+     "__double__ under",
+     "***both*** stars",
+     "2026",
+     "&copy; Copyright",
+     "Heading with `a_b` code",
+     "Mixed [link](#x) and `c`",
+     "<span>inline</span> html"
+    ]
+   ],
+   "expected": [
+    "notealias-text",
+    "-title",
+    "strike-through",
+    "highlight-mark",
+    "emph-word",
+    "snake_case_word",
+    "double-under",
+    "both-stars",
+    "2026",
+    "-copyright",
+    "heading-with-a_b-code",
+    "mixed-link-and-c",
+    "inline-html"
+   ]
+  },
+  {
+   "name": "2 duplicates get -1 -2 and a taken slug counts up (GitHub doc 1 order)",
+   "fn": "slugAll",
+   "args": [
+    [
+     "Hello World",
+     "Hello World",
+     "Hello World",
+     "hello-world-1",
+     "Hello World"
+    ]
+   ],
+   "expected": [
+    "hello-world",
+    "hello-world-1",
+    "hello-world-2",
+    "hello-world-1-1",
+    "hello-world-3"
+   ]
+  },
+  {
+   "name": "3 parse a same note slug link",
+   "fn": "parseLinks",
+   "args": [
+    "See [This is a link](#this-is-an-internal-heading) now."
+   ],
+   "expected": [
+    {
+     "from": 4,
+     "to": 50,
+     "destFrom": 21,
+     "destTo": 49,
+     "text": "This is a link",
+     "path": "",
+     "fragment": "this-is-an-internal-heading"
+    }
+   ]
+  },
+  {
+   "name": "3 parse cross note, angle form, skip image, URL and code span",
+   "fn": "parseLinks",
+   "args": [
+    "[a](other.md#my-heading) and [b](<my note.md#My Heading>) and ![img](x.png#y) and [web](https://x.com/#a) `[c](#d)`"
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "to": 24,
+     "destFrom": 4,
+     "destTo": 23,
+     "text": "a",
+     "path": "other.md",
+     "fragment": "my-heading"
+    },
+    {
+     "from": 29,
+     "to": 57,
+     "destFrom": 34,
+     "destTo": 55,
+     "text": "b",
+     "path": "my note.md",
+     "fragment": "My Heading"
+    }
+   ]
+  },
+  {
+   "name": "3 linkAt finds the link under the cursor",
+   "fn": "linkAt",
+   "args": [
+    "x [t](#a-b) y",
+    4
+   ],
+   "expected": {
+    "from": 2,
+    "to": 11,
+    "destFrom": 6,
+    "destTo": 10,
+    "text": "t",
+    "path": "",
+    "fragment": "a-b"
+   }
+  },
+  {
+   "name": "3 linkAt outside a link gives null",
+   "fn": "linkAt",
+   "args": [
+    "x [t](#a-b) y",
+    12
+   ],
+   "expected": null
+  },
+  {
+   "name": "3 findSlug resolves the second duplicate",
+   "fn": "findSlug",
+   "args": [
+    [
+     "intro",
+     "setup",
+     "intro-1"
+    ],
+    "intro-1"
+   ],
+   "expected": 2
+  },
+  {
+   "name": "3 findSlug does not match the Obsidian form",
+   "fn": "findSlug",
+   "args": [
+    [
+     "this-is-an-internal-heading"
+    ],
+    "This is an Internal Heading"
+   ],
+   "expected": -1
+  },
+  {
+   "name": "3 findObsidian matches the %20 form after decode",
+   "fn": "findObsidian",
+   "args": [
+    [
+     "Intro",
+     "This is an Internal Heading"
+    ],
+    "This is an Internal Heading"
+   ],
+   "expected": 1
+  },
+  {
+   "name": "3 findObsidian ignores case and colon like core",
+   "fn": "findObsidian",
+   "args": [
+    [
+     "Part 1: Setup"
+    ],
+    "part 1 setup"
+   ],
+   "expected": 0
+  },
+  {
+   "name": "4 convert plan changes %20 links, keeps slugs, code, missing",
+   "fn": "planConvert",
+   "args": [
+    "# Doc\n\n## This is an Internal Heading\n\n[same](#This%20is%20an%20Internal%20Heading)\n[done](#this-is-an-internal-heading)\n[other](Other%20note.md#Setup%20Steps)\n```\n[code](#This%20is%20an%20Internal%20Heading)\n```\n[missing](#Nope)\n[dup](#Intro)",
+    {
+     "": [
+      "Doc",
+      "This is an Internal Heading",
+      "Intro",
+      "Intro"
+     ],
+     "Other note.md": [
+      "Setup Steps"
+     ]
+    }
+   ],
+   "expected": [
+    {
+     "line": 4,
+     "from": 46,
+     "to": 82,
+     "old": "#This%20is%20an%20Internal%20Heading",
+     "new": "#this-is-an-internal-heading"
+    },
+    {
+     "line": 6,
+     "from": 129,
+     "to": 158,
+     "old": "Other%20note.md#Setup%20Steps",
+     "new": "Other%20note.md#setup-steps"
+    },
+    {
+     "line": 11,
+     "from": 236,
+     "to": 242,
+     "old": "#Intro",
+     "new": "#intro"
+    }
+   ]
+  },
+  {
+   "name": "4 applyPlan writes the converted note",
+   "fn": "convertText",
+   "args": [
+    "# Doc\n\n## This is an Internal Heading\n\n[same](#This%20is%20an%20Internal%20Heading)\n[done](#this-is-an-internal-heading)\n[other](Other%20note.md#Setup%20Steps)\n```\n[code](#This%20is%20an%20Internal%20Heading)\n```\n[missing](#Nope)\n[dup](#Intro)",
+    {
+     "": [
+      "Doc",
+      "This is an Internal Heading",
+      "Intro",
+      "Intro"
+     ],
+     "Other note.md": [
+      "Setup Steps"
+     ]
+    }
+   ],
+   "expected": "# Doc\n\n## This is an Internal Heading\n\n[same](#this-is-an-internal-heading)\n[done](#this-is-an-internal-heading)\n[other](Other%20note.md#setup-steps)\n```\n[code](#This%20is%20an%20Internal%20Heading)\n```\n[missing](#Nope)\n[dup](#intro)"
+  },
+  {
+   "name": "5 one typed character cannot hold a link",
+   "fn": "mayHoldLink",
+   "args": [
+    "#"
+   ],
+   "expected": false
+  },
+  {
+   "name": "5 an inserted markdown heading link can",
+   "fn": "mayHoldLink",
+   "args": [
+    "[Setup](#Setup%20Steps)"
+   ],
+   "expected": true
+  },
+  {
+   "name": "7 copy link text for a heading with code and brackets",
+   "fn": "githubLink",
+   "args": [
+    "Use `npm i` [beta]",
+    "use-npm-i-beta",
+    ""
+   ],
+   "expected": "[Use npm i \\[beta\\]](#use-npm-i-beta)"
+  },
+  {
+   "name": "7 heading at the cursor is the nearest above",
+   "fn": "headingAtLine",
+   "args": [
+    [
+     0,
+     4,
+     9
+    ],
+    7
+   ],
+   "expected": 1
+  },
+  {
+   "name": "7 cursor above the first heading gives -1",
+   "fn": "headingAtLine",
+   "args": [
+    [
+     3,
+     9
+    ],
+    1
+   ],
+   "expected": -1
+  }
+ ]
+}
