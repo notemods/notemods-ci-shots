@@ -1,0 +1,49 @@
+# toggl-mobile-timer
+
+## 1.2.1
+
+### Patch Changes
+
+- The Pro notice for the offline queue now has a Sponsor on GitHub button.
+
+## 1.2.0
+
+### Minor Changes
+
+- After a minor or major update, Mobile Timer for Toggl Track opens one What's new tab in the background. The tab and settings card suggest other NoteMods plugins and Zovo Chat and link to notemods.com for feedback ([privacy](https://notemods.com/privacy/)). The tab sends no data. Turn the tab off in Settings. Add the Send feedback command. The plugin makes no new network requests.
+
+## 1.1.3
+
+### Patch Changes
+
+- b0b08cb: Coordinate timer requests and saved queue progress across disable and re-enable, preserving unsent work and newer settings.
+
+## 1.1.2
+
+### Patch Changes
+
+- 85e6f8b: Treat a GitHub sponsorship reply without an amount as a failed check, not a refusal, and stop the GitHub sign in when the settings close or the plugin unloads.
+
+## 1.1.1
+
+### Patch Changes
+
+- b1ee7a0: A refresh that sends the offline queue no longer hangs the timer, and Enter that confirms an input method word no longer starts the timer.
+
+## 1.1.0
+
+### Minor Changes
+
+- 1f92ab7: Add a free command to log today's finished timer entries under a heading in the open note.
+
+## 1.0.2
+
+### Patch Changes
+
+- efdff8f: Correct the GitHub Sponsors payment, check and token storage text in the README.
+
+## 1.0.1
+
+### Patch Changes
+
+- 8a4e3dc: Say exactly what goes to Toggl. When you start a timer from a note, the title of the note becomes the description of the time entry and is sent to Toggl, both from "Start timer for this note" and from the Start window that offers it. The README and the settings now say so, with the list of requests and when they run. New setting "Use the note title as the description" (on by default): turn it off to send no note title.
