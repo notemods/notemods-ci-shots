@@ -1,0 +1,45 @@
+.brl-locked .bases-toolbar-item:not(.bases-toolbar-views-menu, .bases-toolbar-search),
+.brl-locked .bases-kanban-column-create,
+.brl-locked .bases-kanban-column-footer {
+	display: none;
+}
+
+.brl-status {
+	cursor: pointer;
+}
+
+.brl-status[aria-disabled="true"] {
+	color: var(--text-muted);
+	cursor: default;
+}
+
+.brl-status-locked {
+	color: var(--text-accent);
+}
+
+.bases-toolbar-menu.brl-locked [data-group="actions"],
+.bases-toolbar-menu.brl-locked [data-group="views"] .clickable-icon,
+.bases-toolbar-menu.brl-locked .bases-toolbar-menu-action-icon {
+	display: none;
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}

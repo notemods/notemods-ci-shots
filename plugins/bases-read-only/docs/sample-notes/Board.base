@@ -1,0 +1,14 @@
+filters:
+  and:
+    - file.inFolder("Bases Read Only/Notes")
+views:
+  - type: kanban
+    name: Board
+    groupBy:
+      property: note.status
+      direction: ASC
+    order:
+      - file.name
+      - note.project
+      - note.owner
+      - note.done

@@ -1,0 +1,11 @@
+{
+	"id": "bases-read-only",
+	"name": "Bases Read Only",
+	"version": "1.1.1",
+	"minAppVersion": "1.13.4",
+	"description": "Lock chosen bases to block clicks, keys and drags that change cells, cards or view settings.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}

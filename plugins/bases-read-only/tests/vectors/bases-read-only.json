@@ -1,0 +1,1009 @@
+{
+ "slug": "bases-read-only",
+ "module": "bases-read-only/src/policy",
+ "function": "shouldBlock",
+ "cases": [
+  {
+   "name": "locked text double click",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "cell",
+     "type": "dblclick"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "locked checkbox click",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "cell",
+     "type": "click"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "internal file link click",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "link",
+     "type": "click"
+    }
+   ],
+   "expected": false
+  },
+  {
+   "name": "kanban card drag",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "drag",
+     "type": "dragstart"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "kanban pointer down",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "drag",
+     "type": "pointerdown"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "cell typing a",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "cell",
+     "type": "keydown",
+     "key": "a"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "cell Enter",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "cell",
+     "type": "keydown",
+     "key": "Enter"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "cell control paste",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "cell",
+     "type": "keydown",
+     "key": "v",
+     "ctrl": true
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "cell command paste",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "cell",
+     "type": "keydown",
+     "key": "v",
+     "meta": true
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "locked toolbar click",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "toolbar",
+     "type": "click"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "view switch menu",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "switch",
+     "type": "click"
+    }
+   ],
+   "expected": false
+  },
+  {
+   "name": "unlocked base text double click",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Other.base",
+    false,
+    {
+     "zone": "cell",
+     "type": "dblclick"
+    }
+   ],
+   "expected": false
+  },
+  {
+   "name": "Projects embed locked",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false
+   ],
+   "expected": true,
+   "function": "isLocked"
+  },
+  {
+   "name": "Other embed unlocked",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Other.base",
+    false
+   ],
+   "expected": false,
+   "function": "isLocked"
+  },
+  {
+   "name": "toggle persists Projects path",
+   "args": [
+    {
+     "locked": [],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base"
+   ],
+   "expected": {
+    "locked": [
+     "Projects.base"
+    ],
+    "rules": [],
+    "editable": [],
+    "kiosk": false
+   },
+   "function": "toggleLocked"
+  },
+  {
+   "name": "second toggle removes path",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base"
+   ],
+   "expected": {
+    "locked": [],
+    "rules": [],
+    "editable": [],
+    "kiosk": false
+   },
+   "function": "toggleLocked"
+  },
+  {
+   "name": "rename keeps base locked",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    "Archive/Projects.base"
+   ],
+   "expected": {
+    "locked": [
+     "Archive/Projects.base"
+    ],
+    "rules": [],
+    "editable": [],
+    "kiosk": false
+   },
+   "function": "renameLocked"
+  },
+  {
+   "name": "paste event",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "cell",
+     "type": "paste"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "beforeinput event",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "cell",
+     "type": "beforeinput"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "row drag",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "drag",
+     "type": "dragstart"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "column drag pointer",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "drag",
+     "type": "pointerdown"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "drop on cell",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "cell",
+     "type": "drop"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "copy keyboard",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "cell",
+     "type": "keydown",
+     "key": "c",
+     "ctrl": true
+    }
+   ],
+   "expected": false
+  },
+  {
+   "name": "select keyboard",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "cell",
+     "type": "keydown",
+     "key": "a",
+     "meta": true
+    }
+   ],
+   "expected": false
+  },
+  {
+   "name": "arrow navigation",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "cell",
+     "type": "keydown",
+     "key": "ArrowDown"
+    }
+   ],
+   "expected": false
+  },
+  {
+   "name": "Tab navigation",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "cell",
+     "type": "keydown",
+     "key": "Tab"
+    }
+   ],
+   "expected": false
+  },
+  {
+   "name": "scroll event",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "cell",
+     "type": "wheel"
+    }
+   ],
+   "expected": false
+  },
+  {
+   "name": "text selection mouse down",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "cell",
+     "type": "mousedown"
+    }
+   ],
+   "expected": false
+  },
+  {
+   "name": "context menu edit entry",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "cell",
+     "type": "contextmenu"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "cut keyboard",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "cell",
+     "type": "keydown",
+     "key": "x",
+     "ctrl": true
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "touch card drag",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "drag",
+     "type": "touchstart"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "touch cell selection",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "cell",
+     "type": "touchstart"
+    }
+   ],
+   "expected": false
+  },
+  {
+   "name": "glob needs Pro",
+   "args": [
+    {
+     "locked": [],
+     "rules": [
+      "Archive/**.base"
+     ],
+     "editable": [],
+     "kiosk": false
+    },
+    "Archive/Projects.base",
+    false
+   ],
+   "expected": false,
+   "function": "isLocked"
+  },
+  {
+   "name": "Pro glob lock",
+   "args": [
+    {
+     "locked": [],
+     "rules": [
+      "Archive/**.base"
+     ],
+     "editable": [],
+     "kiosk": false
+    },
+    "Archive/Projects.base",
+    true
+   ],
+   "expected": true,
+   "function": "isLocked"
+  },
+  {
+   "name": "glob nested path",
+   "args": [
+    {
+     "locked": [],
+     "rules": [
+      "Archive/**.base"
+     ],
+     "editable": [],
+     "kiosk": false
+    },
+    "Archive/2026/Projects.base",
+    true
+   ],
+   "expected": true,
+   "function": "isLocked"
+  },
+  {
+   "name": "glob ignores note",
+   "args": [
+    {
+     "locked": [],
+     "rules": [
+      "Archive/**.base"
+     ],
+     "editable": [],
+     "kiosk": false
+    },
+    "Archive/Notes.md",
+    true
+   ],
+   "expected": false,
+   "function": "isLocked"
+  },
+  {
+   "name": "plain folder lock",
+   "args": [
+    {
+     "locked": [],
+     "rules": [
+      "Archive"
+     ],
+     "editable": [],
+     "kiosk": false
+    },
+    "Archive/2026/Projects.base",
+    true
+   ],
+   "expected": true,
+   "function": "isLocked"
+  },
+  {
+   "name": "folder prefix boundary",
+   "args": [
+    {
+     "locked": [],
+     "rules": [
+      "Archive"
+     ],
+     "editable": [],
+     "kiosk": false
+    },
+    "Archived/Projects.base",
+    true
+   ],
+   "expected": false,
+   "function": "isLocked"
+  },
+  {
+   "name": "editable done with Pro",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [
+      "done"
+     ],
+     "kiosk": false
+    },
+    "Projects.base",
+    true,
+    {
+     "zone": "cell",
+     "type": "click",
+     "property": "note.done"
+    }
+   ],
+   "expected": false
+  },
+  {
+   "name": "editable done ignored without Pro",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [
+      "done"
+     ],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "cell",
+     "type": "click",
+     "property": "done"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "unknown property remains locked",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [
+      "done"
+     ],
+     "kiosk": false
+    },
+    "Projects.base",
+    true,
+    {
+     "zone": "cell",
+     "type": "click"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "allow list does not allow drag",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [
+      "done"
+     ],
+     "kiosk": false
+    },
+    "Projects.base",
+    true,
+    {
+     "zone": "drag",
+     "type": "dragstart",
+     "property": "done"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "kiosk with Pro",
+   "args": [
+    {
+     "locked": [],
+     "rules": [],
+     "editable": [],
+     "kiosk": true
+    },
+    "New.base",
+    true
+   ],
+   "expected": true,
+   "function": "isLocked"
+  },
+  {
+   "name": "kiosk ignored without Pro",
+   "args": [
+    {
+     "locked": [],
+     "rules": [],
+     "editable": [],
+     "kiosk": true
+    },
+    "New.base",
+    false
+   ],
+   "expected": false,
+   "function": "isLocked"
+  },
+  {
+   "name": "folder move carries manual lock",
+   "args": [
+    {
+     "locked": [
+      "Archive/Projects.base",
+      "Other.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Archive",
+    "Records"
+   ],
+   "expected": {
+    "locked": [
+     "Records/Projects.base",
+     "Other.base"
+    ],
+    "rules": [],
+    "editable": [],
+    "kiosk": false
+   },
+   "function": "renameLocked"
+  },
+  {
+   "name": "wildcard one folder",
+   "args": [
+    "Archive/2026/Projects.base",
+    "Archive/*.base"
+   ],
+   "expected": false,
+   "function": "matchesRule"
+  },
+  {
+   "name": "glob zero folders",
+   "args": [
+    "Projects.base",
+    "**/*.base"
+   ],
+   "expected": true,
+   "function": "matchesRule"
+  },
+  {
+   "name": "link context menu stays locked",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "link",
+     "type": "contextmenu"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "link keyboard Enter opens note",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "link",
+     "type": "keydown",
+     "key": "Enter"
+    }
+   ],
+   "expected": false
+  },
+  {
+   "name": "link paste stays locked",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "Projects.base",
+    false,
+    {
+     "zone": "link",
+     "type": "paste"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "unloaded scope has no base path",
+   "args": [
+    {
+     "locked": [
+      "Projects.base"
+     ],
+     "rules": [],
+     "editable": [],
+     "kiosk": false
+    },
+    "",
+    false,
+    {
+     "zone": "cell",
+     "type": "dblclick"
+    }
+   ],
+   "expected": false
+  }
+ ]
+}
