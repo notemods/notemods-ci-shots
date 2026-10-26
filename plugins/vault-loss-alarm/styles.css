@@ -1,0 +1,44 @@
+.vault-loss-alarm {
+	width: min(760px, 90vw);
+}
+
+.vault-loss-alarm .vla-summary {
+	color: var(--text-error);
+	font-weight: var(--font-semibold);
+}
+
+.vault-loss-alarm .vla-paths {
+	width: 100%;
+	font-size: var(--font-small);
+}
+
+.vault-loss-alarm .vla-paths td {
+	overflow-wrap: anywhere;
+	border-bottom: 1px solid var(--background-modifier-border);
+	padding: var(--size-4-2);
+}
+
+.vault-loss-alarm .vla-paths th {
+	text-align: left;
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
