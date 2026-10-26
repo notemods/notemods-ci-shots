@@ -1,0 +1,797 @@
+{
+ "slug": "property-change-ledger",
+ "module": "property-change-ledger/src/ledger",
+ "function": "runScenario",
+ "cases": [
+  {
+   "name": "Initial draft sets a baseline with zero records",
+   "args": [
+    [
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": "draft"
+      }
+     }
+    ]
+   ],
+   "expected": []
+  },
+  {
+   "name": "Draft changes to done with UTC time and path",
+   "args": [
+    [
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": "draft"
+      }
+     },
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": "done"
+      }
+     }
+    ]
+   ],
+   "expected": [
+    {
+     "time": "2026-10-13T09:00:00.000Z",
+     "path": "Notes/A.md",
+     "key": "status",
+     "old": {
+      "value": "draft"
+     },
+     "new": {
+      "value": "done"
+     }
+    }
+   ]
+  },
+  {
+   "name": "Body edit keeps the properties",
+   "args": [
+    [
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": "draft"
+      }
+     },
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": "draft"
+      }
+     }
+    ]
+   ],
+   "expected": []
+  },
+  {
+   "name": "Deleted due has an explicit missing marker",
+   "args": [
+    [
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "due": "2026-10-20"
+      }
+     },
+     {
+      "path": "Notes/A.md",
+      "props": {}
+     }
+    ]
+   ],
+   "expected": [
+    {
+     "time": "2026-10-13T09:00:00.000Z",
+     "path": "Notes/A.md",
+     "key": "due",
+     "old": {
+      "value": "2026-10-20"
+     },
+     "new": {
+      "missing": true
+     }
+    }
+   ]
+  },
+  {
+   "name": "List order is preserved",
+   "args": [
+    [
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "tags": [
+        "a",
+        "b"
+       ]
+      }
+     },
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "tags": [
+        "b",
+        "a"
+       ]
+      }
+     }
+    ]
+   ],
+   "expected": [
+    {
+     "time": "2026-10-13T09:00:00.000Z",
+     "path": "Notes/A.md",
+     "key": "tags",
+     "old": {
+      "value": [
+       "a",
+       "b"
+      ]
+     },
+     "new": {
+      "value": [
+       "b",
+       "a"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "Duplicate cache values give one transition",
+   "args": [
+    [
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": "draft"
+      }
+     },
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": "done"
+      }
+     },
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": "done"
+      }
+     }
+    ]
+   ],
+   "expected": [
+    {
+     "time": "2026-10-13T09:00:00.000Z",
+     "path": "Notes/A.md",
+     "key": "status",
+     "old": {
+      "value": "draft"
+     },
+     "new": {
+      "value": "done"
+     }
+    }
+   ]
+  },
+  {
+   "name": "Two notes keep two changes",
+   "args": [
+    [
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": "draft"
+      }
+     },
+     {
+      "path": "Notes/B.md",
+      "props": {
+       "status": "draft"
+      }
+     },
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": "done"
+      }
+     },
+     {
+      "path": "Notes/B.md",
+      "props": {
+       "status": "done"
+      }
+     }
+    ]
+   ],
+   "expected": [
+    {
+     "time": "2026-10-13T09:00:00.000Z",
+     "path": "Notes/A.md",
+     "key": "status",
+     "old": {
+      "value": "draft"
+     },
+     "new": {
+      "value": "done"
+     }
+    },
+    {
+     "time": "2026-10-13T09:00:00.000Z",
+     "path": "Notes/B.md",
+     "key": "status",
+     "old": {
+      "value": "draft"
+     },
+     "new": {
+      "value": "done"
+     }
+    }
+   ]
+  },
+  {
+   "name": "Ledger events do not loop",
+   "args": [
+    [
+     {
+      "path": "History.md",
+      "props": {
+       "status": "draft"
+      }
+     },
+     {
+      "path": "History.md",
+      "props": {
+       "status": "done"
+      }
+     }
+    ]
+   ],
+   "expected": []
+  },
+  {
+   "name": "Rename moves baseline without a change",
+   "args": [
+    [
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": "draft"
+      }
+     },
+     {
+      "path": "Notes/A.md",
+      "rename": "Notes/Renamed.md"
+     },
+     {
+      "path": "Notes/Renamed.md",
+      "props": {
+       "status": "draft"
+      }
+     }
+    ]
+   ],
+   "expected": []
+  },
+  {
+   "name": "Offline edit sets a new baseline",
+   "args": [
+    [
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": "draft"
+      }
+     },
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": "done"
+      },
+      "restart": true
+     }
+    ]
+   ],
+   "expected": []
+  },
+  {
+   "name": "A new key logs missing to present",
+   "args": [
+    [
+     {
+      "path": "Notes/A.md",
+      "props": {}
+     },
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": "draft"
+      }
+     }
+    ]
+   ],
+   "expected": [
+    {
+     "time": "2026-10-13T09:00:00.000Z",
+     "path": "Notes/A.md",
+     "key": "status",
+     "old": {
+      "missing": true
+     },
+     "new": {
+      "value": "draft"
+     }
+    }
+   ]
+  },
+  {
+   "name": "Null differs from missing",
+   "args": [
+    [
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": null
+      }
+     },
+     {
+      "path": "Notes/A.md",
+      "props": {}
+     }
+    ]
+   ],
+   "expected": [
+    {
+     "time": "2026-10-13T09:00:00.000Z",
+     "path": "Notes/A.md",
+     "key": "status",
+     "old": {
+      "value": null
+     },
+     "new": {
+      "missing": true
+     }
+    }
+   ]
+  },
+  {
+   "name": "False differs from zero",
+   "args": [
+    [
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": false
+      }
+     },
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": 0
+      }
+     }
+    ]
+   ],
+   "expected": [
+    {
+     "time": "2026-10-13T09:00:00.000Z",
+     "path": "Notes/A.md",
+     "key": "status",
+     "old": {
+      "value": false
+     },
+     "new": {
+      "value": 0
+     }
+    }
+   ]
+  },
+  {
+   "name": "Number differs from text",
+   "args": [
+    [
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": 1
+      }
+     },
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": "1"
+      }
+     }
+    ]
+   ],
+   "expected": [
+    {
+     "time": "2026-10-13T09:00:00.000Z",
+     "path": "Notes/A.md",
+     "key": "status",
+     "old": {
+      "value": 1
+     },
+     "new": {
+      "value": "1"
+     }
+    }
+   ]
+  },
+  {
+   "name": "Object key order does not change the value",
+   "args": [
+    [
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": {
+        "a": 1,
+        "b": 2
+       }
+      }
+     },
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": {
+        "b": 2,
+        "a": 1
+       }
+      }
+     }
+    ]
+   ],
+   "expected": []
+  },
+  {
+   "name": "Nested value changes",
+   "args": [
+    [
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": {
+        "a": [
+         1,
+         2
+        ]
+       }
+      }
+     },
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": {
+        "a": [
+         1,
+         3
+        ]
+       }
+      }
+     }
+    ]
+   ],
+   "expected": [
+    {
+     "time": "2026-10-13T09:00:00.000Z",
+     "path": "Notes/A.md",
+     "key": "status",
+     "old": {
+      "value": {
+       "a": [
+        1,
+        2
+       ]
+      }
+     },
+     "new": {
+      "value": {
+       "a": [
+        1,
+        3
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "Keys match case",
+   "args": [
+    [
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "Status": "draft"
+      }
+     },
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "Status": "done"
+      }
+     }
+    ]
+   ],
+   "expected": []
+  },
+  {
+   "name": "Unselected key is ignored",
+   "args": [
+    [
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "title": "draft"
+      }
+     },
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "title": "done"
+      }
+     }
+    ]
+   ],
+   "expected": []
+  },
+  {
+   "name": "Folder boundary excludes NotesExtra",
+   "args": [
+    [
+     {
+      "path": "NotesExtra/A.md",
+      "props": {
+       "status": "draft"
+      }
+     },
+     {
+      "path": "NotesExtra/A.md",
+      "props": {
+       "status": "done"
+      }
+     }
+    ]
+   ],
+   "expected": []
+  },
+  {
+   "name": "Subfolders are included",
+   "args": [
+    [
+     {
+      "path": "Notes/Sub/A.md",
+      "props": {
+       "status": "draft"
+      }
+     },
+     {
+      "path": "Notes/Sub/A.md",
+      "props": {
+       "status": "done"
+      }
+     }
+    ]
+   ],
+   "expected": [
+    {
+     "time": "2026-10-13T09:00:00.000Z",
+     "path": "Notes/Sub/A.md",
+     "key": "status",
+     "old": {
+      "value": "draft"
+     },
+     "new": {
+      "value": "done"
+     }
+    }
+   ]
+  },
+  {
+   "name": "Rename then property edit uses new path",
+   "args": [
+    [
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": "draft"
+      }
+     },
+     {
+      "path": "Notes/A.md",
+      "rename": "Notes/New.md"
+     },
+     {
+      "path": "Notes/New.md",
+      "props": {
+       "status": "done"
+      }
+     }
+    ]
+   ],
+   "expected": [
+    {
+     "time": "2026-10-13T09:00:00.000Z",
+     "path": "Notes/New.md",
+     "key": "status",
+     "old": {
+      "value": "draft"
+     },
+     "new": {
+      "value": "done"
+     }
+    }
+   ]
+  },
+  {
+   "name": "Delete then recreate sets baseline",
+   "args": [
+    [
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": "draft"
+      }
+     },
+     {
+      "path": "Notes/A.md",
+      "delete": true
+     },
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": "done"
+      }
+     }
+    ]
+   ],
+   "expected": []
+  },
+  {
+   "name": "Folder rename moves note baseline",
+   "args": [
+    [
+     {
+      "path": "Notes/Sub/A.md",
+      "props": {
+       "status": "draft"
+      }
+     },
+     {
+      "path": "Notes/Sub",
+      "rename": "Notes/New"
+     },
+     {
+      "path": "Notes/New/A.md",
+      "props": {
+       "status": "done"
+      }
+     }
+    ]
+   ],
+   "expected": [
+    {
+     "time": "2026-10-13T09:00:00.000Z",
+     "path": "Notes/New/A.md",
+     "key": "status",
+     "old": {
+      "value": "draft"
+     },
+     "new": {
+      "value": "done"
+     }
+    }
+   ]
+  },
+  {
+   "name": "Two selected keys give two records",
+   "args": [
+    [
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": "draft",
+       "due": "today"
+      }
+     },
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "status": "done",
+       "due": "tomorrow"
+      }
+     }
+    ]
+   ],
+   "expected": [
+    {
+     "time": "2026-10-13T09:00:00.000Z",
+     "path": "Notes/A.md",
+     "key": "status",
+     "old": {
+      "value": "draft"
+     },
+     "new": {
+      "value": "done"
+     }
+    },
+    {
+     "time": "2026-10-13T09:00:00.000Z",
+     "path": "Notes/A.md",
+     "key": "due",
+     "old": {
+      "value": "today"
+     },
+     "new": {
+      "value": "tomorrow"
+     }
+    }
+   ]
+  },
+  {
+   "name": "Empty list differs from missing",
+   "args": [
+    [
+     {
+      "path": "Notes/A.md",
+      "props": {
+       "tags": []
+      }
+     },
+     {
+      "path": "Notes/A.md",
+      "props": {}
+     }
+    ]
+   ],
+   "expected": [
+    {
+     "time": "2026-10-13T09:00:00.000Z",
+     "path": "Notes/A.md",
+     "key": "tags",
+     "old": {
+      "value": []
+     },
+     "new": {
+      "missing": true
+     }
+    }
+   ]
+  },
+  {
+   "name": "Root watch excludes its ledger",
+   "args": [
+    [
+     {
+      "path": "History.md",
+      "props": {
+       "status": "draft"
+      }
+     },
+     {
+      "path": "History.md",
+      "props": {
+       "status": "done"
+      }
+     }
+    ],
+    {
+     "folder": "",
+     "keys": [
+      "status"
+     ],
+     "ledger": "History.md"
+    }
+   ],
+   "expected": []
+  }
+ ]
+}

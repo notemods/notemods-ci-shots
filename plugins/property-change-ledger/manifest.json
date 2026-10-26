@@ -1,0 +1,11 @@
+{
+	"id": "property-change-ledger",
+	"name": "Property Change Ledger",
+	"version": "1.1.1",
+	"minAppVersion": "1.13.4",
+	"description": "Record observed changes to selected note properties in a local history file.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}

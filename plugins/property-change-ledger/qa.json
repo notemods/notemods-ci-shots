@@ -1,0 +1,72 @@
+[
+  {
+    "feature": "watch",
+    "caption": "Set one folder and the exact keys beside a sample project.",
+    "note": "Notes/Atlas.md",
+    "eval": "(async () => { app.plugins.plugins['property-change-ledger'].closeModal(); app.setting.close();const p = app.plugins.plugins['property-change-ledger']; p.pro.signOut(); await p.applyWatch({ folder: 'Property Change Ledger/Notes', keys: 'status, due, tags', ledger: 'Property Change Ledger/Property history.md' });app.commands.executeCommandById('property-change-ledger:configure-watch'); return 'ok'; })()",
+    "after": "app.plugins.plugins['property-change-ledger'].closeModal(); app.setting.close();"
+  },
+  {
+    "feature": "baseline",
+    "caption": "The sample project properties start as a baseline.",
+    "note": "Notes/Atlas.md",
+    "eval": "(async () => { app.plugins.plugins['property-change-ledger'].closeModal(); app.setting.close();const p = app.plugins.plugins['property-change-ledger']; p.pro.signOut(); await p.applyWatch({ folder: 'Property Change Ledger/Notes', keys: 'status, due, tags', ledger: 'Property Change Ledger/Property history.md' }); return 'ok'; })()"
+  },
+  {
+    "feature": "ledger",
+    "caption": "Local Markdown records keep observation time and typed values.",
+    "eval": "(async () => { app.plugins.plugins['property-change-ledger'].closeModal(); app.setting.close();const p = app.plugins.plugins['property-change-ledger']; p.pro.signOut(); await p.applyWatch({ folder: 'Property Change Ledger/Notes', keys: 'status, due, tags', ledger: 'Property Change Ledger/Property history.md' });p.ready = false; const ledger = app.vault.getFileByPath('Property Change Ledger/Property history.md'); if (ledger) await app.vault.process(ledger, () => '# Property change ledger\\n\\nObserved on this device. Times are UTC.\\n\\n'); async function update(file, text) { if (await app.vault.read(file) === text) return; const event = new Promise(resolve => { const ref = app.metadataCache.on('changed', f => { if (f.path === file.path) { app.metadataCache.offref(ref); resolve(); } }); }); await app.vault.process(file, () => text); await event; } const files = ['Atlas', 'Beacon'].map(name => app.vault.getFileByPath('Property Change Ledger/Notes/' + name + '.md')); for (const file of files) { const text = await app.vault.read(file); await update(file, text.replace(/status: [^\\n]+/, 'status: draft').replace(/tags: [^\\n]+/, 'tags: [research, design]')); } p.setBaseline(); await update(files[0], (await app.vault.read(files[0])).replace('status: draft', 'status: done')); await update(files[1], (await app.vault.read(files[1])).replace('status: draft', 'status: review')); await update(files[0], (await app.vault.read(files[0])).replace('status: done', 'status: archived').replace('due: 2026-10-20\\n', '').replace('tags: [research, design]', 'tags: [design, research]')); await p.flush(); if ((await p.history()).length < 5) throw new Error('Missing sample changes'); await p.openLedger(); return 'ok'; })()"
+  },
+  {
+    "feature": "recent",
+    "caption": "Recent records from Atlas and Beacon with Pro off.",
+    "eval": "(async () => { app.plugins.plugins['property-change-ledger'].closeModal(); app.setting.close();const p = app.plugins.plugins['property-change-ledger']; p.pro.signOut();app.commands.executeCommandById('property-change-ledger:recent-history'); return 'ok'; })()",
+    "after": "app.plugins.plugins['property-change-ledger'].closeModal(); app.setting.close();"
+  },
+  {
+    "feature": "filter",
+    "caption": "Filter recent history by Atlas and the exact key status.",
+    "eval": "(async () => { app.plugins.plugins['property-change-ledger'].closeModal(); app.setting.close();const p = app.plugins.plugins['property-change-ledger']; p.pro.signOut();app.commands.executeCommandById('property-change-ledger:recent-history');await Promise.resolve(); const inputs = document.querySelectorAll('.property-change-ledger-modal input'); inputs[0].value = 'Atlas'; inputs[0].dispatchEvent(new Event('input', { bubbles: true })); inputs[1].value = 'status'; inputs[1].dispatchEvent(new Event('input', { bubbles: true })); return 'ok'; })()",
+    "after": "app.plugins.plugins['property-change-ledger'].closeModal(); app.setting.close();"
+  },
+  {
+    "feature": "profiles",
+    "caption": "Pro stores a named watch profile for a project review.",
+    "eval": "(async () => { app.plugins.plugins['property-change-ledger'].closeModal(); app.setting.close();const p = app.plugins.plugins['property-change-ledger']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('property-change-ledger-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow();p.settings.profiles = []; await p.saveProfile('Project review'); app.commands.executeCommandById('property-change-ledger:configure-watch'); return 'ok'; })()",
+    "after": "app.plugins.plugins['property-change-ledger'].closeModal(); app.setting.close();"
+  },
+  {
+    "feature": "csv",
+    "caption": "Pro exports the filtered status history as a local CSV file.",
+    "eval": "(async () => { app.plugins.plugins['property-change-ledger'].closeModal(); app.setting.close();const p = app.plugins.plugins['property-change-ledger']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('property-change-ledger-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow();app.commands.executeCommandById('property-change-ledger:recent-history');await Promise.resolve(); const inputs = document.querySelectorAll('.property-change-ledger-modal input'); inputs[0].value = 'Atlas'; inputs[0].dispatchEvent(new Event('input', { bubbles: true })); inputs[1].value = 'status'; inputs[1].dispatchEvent(new Event('input', { bubbles: true }));await p.exportCsv('Atlas', 'status'); return 'ok'; })()",
+    "after": "app.plugins.plugins['property-change-ledger'].closeModal(); app.setting.close();"
+  },
+  {
+    "feature": "counts",
+    "caption": "Pro counts observed status changes for each sample note.",
+    "eval": "(async () => { app.plugins.plugins['property-change-ledger'].closeModal(); app.setting.close();const p = app.plugins.plugins['property-change-ledger']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('property-change-ledger-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow();app.commands.executeCommandById('property-change-ledger:recent-history');await Promise.resolve(); const input = document.querySelectorAll('.property-change-ledger-modal input')[1]; input.value = 'status'; input.dispatchEvent(new Event('input', { bubbles: true })); return 'ok'; })()",
+    "after": "app.plugins.plugins['property-change-ledger'].closeModal(); app.setting.close();app.plugins.plugins['property-change-ledger'].pro.signOut();"
+  },
+  {
+    "feature": "property-change-ledger",
+    "caption": "Review recent changes, filter a note, then read the local ledger.",
+    "frames": [
+      {
+        "eval": "(async () => { app.plugins.plugins['property-change-ledger'].closeModal(); app.setting.close();const p = app.plugins.plugins['property-change-ledger']; p.pro.signOut();app.commands.executeCommandById('property-change-ledger:recent-history'); return 'ok'; })()",
+        "hold": 1700
+      },
+      {
+        "eval": "(async () => { app.plugins.plugins['property-change-ledger'].closeModal(); app.setting.close();const p = app.plugins.plugins['property-change-ledger']; p.pro.signOut();app.commands.executeCommandById('property-change-ledger:recent-history');await Promise.resolve(); const t = document.querySelector('.property-change-ledger-modal input'); t.value = 'Atlas'; t.dispatchEvent(new Event('input', { bubbles: true })); return 'ok'; })()",
+        "hold": 1700
+      },
+      {
+        "eval": "(async () => { app.plugins.plugins['property-change-ledger'].closeModal(); app.setting.close();const p = app.plugins.plugins['property-change-ledger']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('property-change-ledger-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow();app.commands.executeCommandById('property-change-ledger:recent-history');await Promise.resolve(); const input = document.querySelectorAll('.property-change-ledger-modal input')[1]; input.value = 'status'; input.dispatchEvent(new Event('input', { bubbles: true })); return 'ok'; })()",
+        "hold": 1700
+      },
+      {
+        "eval": "(async () => { app.plugins.plugins['property-change-ledger'].closeModal(); app.setting.close();const p = app.plugins.plugins['property-change-ledger']; p.pro.signOut(); await p.openLedger(); return 'ok'; })()",
+        "hold": 1700
+      }
+    ]
+  }
+]
