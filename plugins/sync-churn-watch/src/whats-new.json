@@ -1,0 +1,27 @@
+{
+	"id": "sync-churn-watch",
+	"name": "Sync Churn Watch",
+	"version": "1.1.1",
+	"changes": [
+		"The Pro notice for folder suggestions now has a Sponsor on GitHub button."
+	],
+	"tip": "Run Copy results as Markdown to put a write table on the clipboard.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Sync Churn Watch is one of over 100 small plugins that I make. Thank you for using it to keep your sync history in check.",
+	"related": [
+		{
+			"id": "vault-loss-alarm",
+			"name": "Vault Loss Alarm",
+			"blurb": "Check missing files against a saved vault record."
+		},
+		{
+			"id": "vault-path-portability",
+			"name": "Vault Path Portability",
+			"blurb": "Find vault paths that can fail when moved between devices."
+		},
+		{
+			"id": "property-change-ledger",
+			"name": "Property Change Ledger",
+			"blurb": "Record observed changes to selected note properties in a local history file."
+		}
+	]
+}
