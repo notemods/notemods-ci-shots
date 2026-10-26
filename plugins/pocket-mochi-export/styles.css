@@ -1,0 +1,35 @@
+/* Styles for Pocket Mochi Export. Obsidian loads this file while the plugin is enabled. */
+
+.pocket-mochi-export-section {
+	margin-bottom: var(--size-4-3);
+}
+
+.pocket-mochi-export-label {
+	font-weight: var(--font-semibold);
+	color: var(--text-muted);
+}
+
+.pocket-mochi-export-section ul {
+	margin: var(--size-4-1) 0 0;
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}

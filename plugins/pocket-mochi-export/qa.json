@@ -1,0 +1,94 @@
+[
+	{
+		"feature": "cards-note",
+		"caption": "A note with three cards: a line with the card tag is the front, the lines up to --- or *** are the back.",
+		"note": "Cell biology.md",
+		"eval": "(async () => { document.querySelectorAll('.pocket-mochi-export-preview button').forEach((b) => { if (b.textContent === 'Cancel') b.click(); }); document.querySelectorAll('.modal-close-button').forEach((b) => b.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))); app.workspace.leftSplit.collapse(); app.plugins.plugins['pocket-mochi-export'].pro.signOut(); await new Promise((r) => setTimeout(r, 500)); return 'ok'; })()",
+		"wait": 800
+	},
+	{
+		"feature": "preview",
+		"caption": "The preview before the export: card count, deck name, images and the file name.",
+		"note": "Cell biology.md",
+		"eval": "(async () => { document.querySelectorAll('.pocket-mochi-export-preview button').forEach((b) => { if (b.textContent === 'Cancel') b.click(); }); document.querySelectorAll('.modal-close-button').forEach((b) => b.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))); app.workspace.leftSplit.collapse(); app.plugins.plugins['pocket-mochi-export'].pro.signOut(); void app.plugins.plugins['pocket-mochi-export'].exportNote(app.workspace.getActiveFile()); await new Promise((r) => setTimeout(r, 800)); return 'ok'; })()",
+		"wait": 800,
+		"after": "(async () => { document.querySelectorAll('.pocket-mochi-export-preview button').forEach((b) => { if (b.textContent === 'Cancel') b.click(); }); document.querySelectorAll('.modal-close-button').forEach((b) => b.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))); return 'ok'; })()"
+	},
+	{
+		"feature": "images",
+		"caption": "The leaf.png embed on this card goes into the archive, and the card points to @media/leaf.png.",
+		"note": "Plant biology.md",
+		"eval": "(async () => { document.querySelectorAll('.pocket-mochi-export-preview button').forEach((b) => { if (b.textContent === 'Cancel') b.click(); }); document.querySelectorAll('.modal-close-button').forEach((b) => b.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))); app.workspace.leftSplit.collapse(); app.plugins.plugins['pocket-mochi-export'].pro.signOut(); await new Promise((r) => setTimeout(r, 500)); return 'ok'; })()",
+		"wait": 800
+	},
+	{
+		"feature": "missing",
+		"caption": "The preview lists stoma.png as a missing attachment. The export still runs and keeps the link as text.",
+		"note": "Plant biology.md",
+		"eval": "(async () => { document.querySelectorAll('.pocket-mochi-export-preview button').forEach((b) => { if (b.textContent === 'Cancel') b.click(); }); document.querySelectorAll('.modal-close-button').forEach((b) => b.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))); app.workspace.leftSplit.collapse(); app.plugins.plugins['pocket-mochi-export'].pro.signOut(); void app.plugins.plugins['pocket-mochi-export'].exportNote(app.workspace.getActiveFile()); await new Promise((r) => setTimeout(r, 800)); return 'ok'; })()",
+		"wait": 800,
+		"after": "(async () => { document.querySelectorAll('.pocket-mochi-export-preview button').forEach((b) => { if (b.textContent === 'Cancel') b.click(); }); document.querySelectorAll('.modal-close-button').forEach((b) => b.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))); return 'ok'; })()"
+	},
+	{
+		"feature": "exported",
+		"caption": "After Export, the notice shows the card count and the new .mochi file in the Mochi exports folder.",
+		"note": "Cell biology.md",
+		"eval": "(async () => { document.querySelectorAll('.pocket-mochi-export-preview button').forEach((b) => { if (b.textContent === 'Cancel') b.click(); }); document.querySelectorAll('.modal-close-button').forEach((b) => b.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))); app.workspace.leftSplit.collapse(); app.plugins.plugins['pocket-mochi-export'].pro.signOut(); const d = app.vault.getFolderByPath('Mochi exports'); if (d) await app.fileManager.trashFile(d); void app.plugins.plugins['pocket-mochi-export'].exportNote(app.workspace.getActiveFile()); await new Promise((r) => setTimeout(r, 800)); document.querySelector('.modal-container button.mod-cta').click(); await new Promise((r) => setTimeout(r, 800)); const f = app.vault.getAbstractFileByPath('Mochi exports/Cell biology.mochi'); if (!f) throw new Error('no archive'); (app.vault.setConfig('showUnsupportedFiles', true), app.workspace.leftSplit.expand(), app.workspace.getLeavesOfType('file-explorer')[0].view.revealInFolder(f)); await new Promise((r) => setTimeout(r, 500)); return 'ok'; })()",
+		"wait": 500,
+		"after": "(async () => { const d = app.vault.getFolderByPath('Mochi exports'); if (d) await app.fileManager.trashFile(d); return 'ok'; })()"
+	},
+	{
+		"feature": "folder-decks",
+		"caption": "Pro: the Biology folder with one deck for each note.",
+		"note": "Biology/Genetics.md",
+		"eval": "(async () => { document.querySelectorAll('.pocket-mochi-export-preview button').forEach((b) => { if (b.textContent === 'Cancel') b.click(); }); document.querySelectorAll('.modal-close-button').forEach((b) => b.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))); app.workspace.leftSplit.collapse(); app.plugins.plugins['pocket-mochi-export'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('pocket-mochi-export-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['pocket-mochi-export'].pro.refreshNow(); void app.plugins.plugins['pocket-mochi-export'].exportFolder(app.workspace.getActiveFile().parent, 'one-deck-per-note'); await new Promise((r) => setTimeout(r, 800)); return 'ok'; })()",
+		"wait": 800,
+		"after": "(async () => { document.querySelectorAll('.pocket-mochi-export-preview button').forEach((b) => { if (b.textContent === 'Cancel') b.click(); }); document.querySelectorAll('.modal-close-button').forEach((b) => b.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))); app.plugins.plugins['pocket-mochi-export'].pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "subdecks",
+		"caption": "Pro: the Biology folder as one deck with a sub-deck for each note.",
+		"note": "Biology/Genetics.md",
+		"eval": "(async () => { document.querySelectorAll('.pocket-mochi-export-preview button').forEach((b) => { if (b.textContent === 'Cancel') b.click(); }); document.querySelectorAll('.modal-close-button').forEach((b) => b.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))); app.workspace.leftSplit.collapse(); app.plugins.plugins['pocket-mochi-export'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('pocket-mochi-export-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['pocket-mochi-export'].pro.refreshNow(); void app.plugins.plugins['pocket-mochi-export'].exportFolder(app.workspace.getActiveFile().parent, 'sub-decks'); await new Promise((r) => setTimeout(r, 800)); return 'ok'; })()",
+		"wait": 800,
+		"after": "(async () => { document.querySelectorAll('.pocket-mochi-export-preview button').forEach((b) => { if (b.textContent === 'Cancel') b.click(); }); document.querySelectorAll('.modal-close-button').forEach((b) => b.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))); app.plugins.plugins['pocket-mochi-export'].pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "presets",
+		"caption": "Pro: choose a named preset for the tag, the output folder and the deck name.",
+		"note": "Cell biology.md",
+		"eval": "(async () => { document.querySelectorAll('.pocket-mochi-export-preview button').forEach((b) => { if (b.textContent === 'Cancel') b.click(); }); document.querySelectorAll('.modal-close-button').forEach((b) => b.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))); app.workspace.leftSplit.collapse(); app.plugins.plugins['pocket-mochi-export'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('pocket-mochi-export-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['pocket-mochi-export'].pro.refreshNow(); app.plugins.plugins['pocket-mochi-export'].settings.presets = 'Biology | #card | Mochi exports/Biology | Biology 101\\nQuick review | #card | Mochi exports | Review'; app.commands.executeCommandById('pocket-mochi-export:export-with-preset'); await new Promise((r) => setTimeout(r, 800)); return 'ok'; })()",
+		"wait": 800,
+		"after": "(async () => { document.querySelectorAll('.pocket-mochi-export-preview button').forEach((b) => { if (b.textContent === 'Cancel') b.click(); }); document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', keyCode: 27, which: 27, bubbles: true })); app.plugins.plugins['pocket-mochi-export'].pro.signOut(); app.plugins.plugins['pocket-mochi-export'].settings.presets = ''; return 'ok'; })()"
+	},
+	{
+		"feature": "settings",
+		"caption": "Settings: card tag, output folder, presets and the Pro section.",
+		"eval": "(async () => { document.querySelectorAll('.pocket-mochi-export-preview button').forEach((b) => { if (b.textContent === 'Cancel') b.click(); }); document.querySelectorAll('.modal-close-button').forEach((b) => b.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))); app.workspace.leftSplit.collapse(); app.plugins.plugins['pocket-mochi-export'].pro.signOut(); app.setting.open(); app.setting.openTabById('pocket-mochi-export'); await new Promise((r) => setTimeout(r, 500)); return 'ok'; })()",
+		"after": "app.setting.close(); 'ok'",
+		"note": "Cell biology.md"
+	},
+	{
+		"feature": "pocket-mochi-export",
+		"caption": "Open a card note, run the export command, check the preview, export, and find the .mochi file.",
+		"frames": [
+			{
+				"note": "Cell biology.md",
+				"eval": "(async () => { document.querySelectorAll('.pocket-mochi-export-preview button').forEach((b) => { if (b.textContent === 'Cancel') b.click(); }); document.querySelectorAll('.modal-close-button').forEach((b) => b.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))); app.workspace.leftSplit.collapse(); app.plugins.plugins['pocket-mochi-export'].pro.signOut(); const d = app.vault.getFolderByPath('Mochi exports'); if (d) await app.fileManager.trashFile(d); await new Promise((r) => setTimeout(r, 500)); return 'ok'; })()",
+				"hold": 1800
+			},
+			{
+				"eval": "(async () => { void app.plugins.plugins['pocket-mochi-export'].exportNote(app.workspace.getActiveFile()); await new Promise((r) => setTimeout(r, 800)); return 'ok'; })()",
+				"hold": 2200
+			},
+			{
+				"eval": "(async () => { document.querySelector('.modal-container button.mod-cta').click(); await new Promise((r) => setTimeout(r, 800)); const f = app.vault.getAbstractFileByPath('Mochi exports/Cell biology.mochi'); if (f) (app.vault.setConfig('showUnsupportedFiles', true), app.workspace.leftSplit.expand(), app.workspace.getLeavesOfType('file-explorer')[0].view.revealInFolder(f)); await new Promise((r) => setTimeout(r, 500)); return 'ok'; })()",
+				"hold": 2200
+			},
+			{
+				"eval": "(async () => { const d = app.vault.getFolderByPath('Mochi exports'); if (d) await app.fileManager.trashFile(d); return 'ok'; })()",
+				"hold": 600
+			}
+		]
+	}
+]

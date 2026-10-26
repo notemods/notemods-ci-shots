@@ -1,0 +1,11 @@
+{
+	"id": "pocket-mochi-export",
+	"name": "Pocket Mochi Export",
+	"version": "1.1.1",
+	"minAppVersion": "1.13.4",
+	"description": "Export card tagged notes and their local images to a .mochi archive for Mochi.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}
