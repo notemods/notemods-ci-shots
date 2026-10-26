@@ -1,0 +1,64 @@
+.cherrytree-import-modal {
+	width: min(760px, 95vw);
+	}
+
+.cherrytree-import-preview {
+	max-height: 290px;
+	overflow: auto;
+	padding: var(--size-4-2);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	}
+
+.cherrytree-import-tree {
+	list-style: none;
+	padding: 0;
+	font-family: var(--font-monospace);
+	}
+
+.cherrytree-import-tree li {
+	padding: var(--size-2-1) 0;
+	}
+
+.cherrytree-import-summary {
+	color: var(--text-accent);
+	font-weight: var(--font-semibold);
+	}
+
+.cherrytree-import-warning, .cherrytree-import-error {
+	color: var(--text-warning);
+	}
+
+.cherrytree-import-error {
+	padding: var(--size-4-1) 0;
+	}
+
+.cherrytree-import-complete {
+	color: var(--text-success);
+	}
+
+.cherrytree-import-modal .is-importing {
+	pointer-events: none;
+	opacity: 0.7;
+	}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
