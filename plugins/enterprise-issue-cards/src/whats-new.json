@@ -1,0 +1,27 @@
+{
+	"id": "enterprise-issue-cards",
+	"name": "Enterprise Issue Cards",
+	"version": "1.1.1",
+	"changes": [
+		"The Pro notice for the local project list now has a Sponsor on GitHub button."
+	],
+	"tip": "A card keeps a local copy of the ticket. Select Refresh on the card to read the current copy from the server.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Enterprise Issue Cards is one of over 100 small plugins that I make. Thank you for using it.",
+	"related": [
+		{
+			"id": "discussion-brief-cards",
+			"name": "Discussion Brief Cards",
+			"blurb": "Read GitHub discussions beside project notes."
+		},
+		{
+			"id": "conventional-commit-draft",
+			"name": "Conventional Commit Draft",
+			"blurb": "Group selected conventional commit subjects into a new release draft."
+		},
+		{
+			"id": "junit-failure-notes",
+			"name": "JUnit Failure Notes",
+			"blurb": "Turn a local JUnit XML report into a note with test counts and failure logs."
+		}
+	]
+}
