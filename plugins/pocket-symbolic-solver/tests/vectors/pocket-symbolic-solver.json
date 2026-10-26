@@ -1,0 +1,592 @@
+{
+ "slug": "pocket-symbolic-solver",
+ "module": "pocket-symbolic-solver/src/solve",
+ "function": "solveEquation",
+ "note": "solveEquation cases: args = [equation, symbol]; expected = the whole result. Cases with a \"function\" field call that export of src/solve.ts (solveToInsert, noteAfter, substituteTable, parseTable) or of src/settings.ts (searchHistory) with args and compare the whole result. noteAfter models the modal: the note after Insert or Cancel on a selection.",
+ "cases": [
+  {
+   "name": "linear a*x+b=c for x (acceptance 1)",
+   "args": [
+    "a*x+b=c",
+    "x"
+   ],
+   "expected": {
+    "ok": true,
+    "symbol": "x",
+    "solutions": [
+     {
+      "text": "-a^-1*(b-c)",
+      "tex": "-\\frac{b-c}{a}"
+     }
+    ],
+    "complex": false,
+    "family": false,
+    "params": [
+     "a",
+     "b",
+     "c"
+    ]
+   }
+  },
+  {
+   "name": "quadratic with roots 2 and 3 (acceptance 2)",
+   "args": [
+    "x^2-5*x+6=0",
+    "x"
+   ],
+   "expected": {
+    "ok": true,
+    "symbol": "x",
+    "solutions": [
+     {
+      "text": "2",
+      "tex": "2"
+     },
+     {
+      "text": "3",
+      "tex": "3"
+     }
+    ],
+    "complex": false,
+    "family": false,
+    "params": []
+   }
+  },
+  {
+   "name": "F=m*a for a (acceptance 3)",
+   "args": [
+    "F=m*a",
+    "a"
+   ],
+   "expected": {
+    "ok": true,
+    "symbol": "a",
+    "solutions": [
+     {
+      "text": "F*m^-1",
+      "tex": "\\frac{F}{m}"
+     }
+    ],
+    "complex": false,
+    "family": false,
+    "params": [
+     "F",
+     "m"
+    ]
+   }
+  },
+  {
+   "name": "v=u+a*t for t (acceptance 4)",
+   "args": [
+    "v=u+a*t",
+    "t"
+   ],
+   "expected": {
+    "ok": true,
+    "symbol": "t",
+    "solutions": [
+     {
+      "text": "-a^-1*(u-v)",
+      "tex": "-\\frac{u-v}{a}"
+     }
+    ],
+    "complex": false,
+    "family": false,
+    "params": [
+     "a",
+     "u",
+     "v"
+    ]
+   }
+  },
+  {
+   "name": "x^2+1=0 gives i and -i with the complex flag (acceptance 5)",
+   "args": [
+    "x^2+1=0",
+    "x"
+   ],
+   "expected": {
+    "ok": true,
+    "symbol": "x",
+    "solutions": [
+     {
+      "text": "i",
+      "tex": "i"
+     },
+     {
+      "text": "-i",
+      "tex": "-i"
+     }
+    ],
+    "complex": true,
+    "family": false,
+    "params": []
+   }
+  },
+  {
+   "name": "no equals sign means expression = 0 (acceptance 6)",
+   "args": [
+    "x+1",
+    "x"
+   ],
+   "expected": {
+    "ok": true,
+    "symbol": "x",
+    "solutions": [
+     {
+      "text": "-1",
+      "tex": "-1"
+     }
+    ],
+    "complex": false,
+    "family": false,
+    "params": []
+   }
+  },
+  {
+   "name": "symbol not in the equation (acceptance 7)",
+   "args": [
+    "2*y=4",
+    "x"
+   ],
+   "expected": {
+    "ok": false,
+    "error": "x is not in the equation"
+   }
+  },
+  {
+   "name": "unbalanced brackets (acceptance 8)",
+   "args": [
+    "((x",
+    "x"
+   ],
+   "expected": {
+    "ok": false,
+    "error": "Cannot parse the equation"
+   }
+  },
+  {
+   "name": "insert F=m*a for a replaces the selection (acceptance 9)",
+   "function": "noteAfter",
+   "args": [
+    "Force: F=m*a here",
+    7,
+    12,
+    "a",
+    "insert"
+   ],
+   "expected": "Force: $$a = \\frac{F}{m}$$ here"
+  },
+  {
+   "name": "cancel keeps the note byte-identical (acceptance 10)",
+   "function": "noteAfter",
+   "args": [
+    "Force: F=m*a here",
+    7,
+    12,
+    "a",
+    "cancel"
+   ],
+   "expected": "Force: F=m*a here"
+  },
+  {
+   "name": "insert text for F=m*a",
+   "function": "solveToInsert",
+   "args": [
+    "F=m*a",
+    "a"
+   ],
+   "expected": {
+    "insert": "$$a = \\frac{F}{m}$$"
+   }
+  },
+  {
+   "name": "insert text for two roots",
+   "function": "solveToInsert",
+   "args": [
+    "x^2-5*x+6=0",
+    "x"
+   ],
+   "expected": {
+    "insert": "$$x = 2 \\quad\\text{or}\\quad x = 3$$"
+   }
+  },
+  {
+   "name": "insert text for a bad symbol is an error",
+   "function": "solveToInsert",
+   "args": [
+    "2*y=4",
+    "x"
+   ],
+   "expected": {
+    "error": "x is not in the equation"
+   }
+  },
+  {
+   "name": "failed solve leaves the note unchanged",
+   "function": "noteAfter",
+   "args": [
+    "Bad: ((x end",
+    5,
+    8,
+    "x",
+    "insert"
+   ],
+   "expected": "Bad: ((x end"
+  },
+  {
+   "name": "E=m*c^2 for c gives two roots",
+   "args": [
+    "E=m*c^2",
+    "c"
+   ],
+   "expected": {
+    "ok": true,
+    "symbol": "c",
+    "solutions": [
+     {
+      "text": "-m^-1*(m*E)^(1/2)",
+      "tex": "-\\frac{\\sqrt{E \\cdot m}}{m}"
+     },
+     {
+      "text": "m^-1*(m*E)^(1/2)",
+      "tex": "\\frac{\\sqrt{E \\cdot m}}{m}"
+     }
+    ],
+    "complex": false,
+    "family": false,
+    "params": [
+     "E",
+     "m"
+    ]
+   }
+  },
+  {
+   "name": "reciprocal 1/x=2",
+   "args": [
+    "1/x=2",
+    "x"
+   ],
+   "expected": {
+    "ok": true,
+    "symbol": "x",
+    "solutions": [
+     {
+      "text": "1/2",
+      "tex": "\\frac{1}{2}"
+     }
+    ],
+    "complex": false,
+    "family": false,
+    "params": []
+   }
+  },
+  {
+   "name": "x^2=2 gives the square roots in order",
+   "args": [
+    "x^2=2",
+    "x"
+   ],
+   "expected": {
+    "ok": true,
+    "symbol": "x",
+    "solutions": [
+     {
+      "text": "-2^(1/2)",
+      "tex": "-\\sqrt{2}"
+     },
+     {
+      "text": "2^(1/2)",
+      "tex": "\\sqrt{2}"
+     }
+    ],
+    "complex": false,
+    "family": false,
+    "params": []
+   }
+  },
+  {
+   "name": "identity x=x",
+   "args": [
+    "x=x",
+    "x"
+   ],
+   "expected": {
+    "ok": false,
+    "error": "The equation is true for each value of x"
+   }
+  },
+  {
+   "name": "contradiction x=x+1",
+   "args": [
+    "x=x+1",
+    "x"
+   ],
+   "expected": {
+    "ok": false,
+    "error": "No solution for x"
+   }
+  },
+  {
+   "name": "two equals signs",
+   "args": [
+    "a=b=c",
+    "a"
+   ],
+   "expected": {
+    "ok": false,
+    "error": "Cannot parse the equation"
+   }
+  },
+  {
+   "name": "empty equation",
+   "args": [
+    "   ",
+    "x"
+   ],
+   "expected": {
+    "ok": false,
+    "error": "Type an equation"
+   }
+  },
+  {
+   "name": "symbol with a space is refused",
+   "args": [
+    "x+1=0",
+    "x y"
+   ],
+   "expected": {
+    "ok": false,
+    "error": "Type one symbol, for example x"
+   }
+  },
+  {
+   "name": "sin(x)=0 gives a family with integer k",
+   "args": [
+    "sin(x)=0",
+    "x"
+   ],
+   "expected": {
+    "ok": true,
+    "symbol": "x",
+    "solutions": [
+     {
+      "text": "k*pi",
+      "tex": "k \\cdot \\pi"
+     }
+    ],
+    "complex": false,
+    "family": true,
+    "params": []
+   }
+  },
+  {
+   "name": "exp(x)=5 prints ln",
+   "args": [
+    "exp(x)=5",
+    "x"
+   ],
+   "expected": {
+    "ok": true,
+    "symbol": "x",
+    "solutions": [
+     {
+      "text": "log(5)",
+      "tex": "\\ln\\left(5\\right)"
+     }
+    ],
+    "complex": false,
+    "family": false,
+    "params": []
+   }
+  },
+  {
+   "name": "cubic with three real roots",
+   "args": [
+    "x^3-6*x^2+11*x-6=0",
+    "x"
+   ],
+   "expected": {
+    "ok": true,
+    "symbol": "x",
+    "solutions": [
+     {
+      "text": "1",
+      "tex": "1"
+     },
+     {
+      "text": "2",
+      "tex": "2"
+     },
+     {
+      "text": "3",
+      "tex": "3"
+     }
+    ],
+    "complex": false,
+    "family": false,
+    "params": []
+   }
+  },
+  {
+   "name": "P*V=n*R*T for T",
+   "args": [
+    "P*V=n*R*T",
+    "T"
+   ],
+   "expected": {
+    "ok": true,
+    "symbol": "T",
+    "solutions": [
+     {
+      "text": "P*V*(R*n)^-1",
+      "tex": "\\frac{P \\cdot V}{R \\cdot n}"
+     }
+    ],
+    "complex": false,
+    "family": false,
+    "params": [
+     "P",
+     "R",
+     "V",
+     "n"
+    ]
+   }
+  },
+  {
+   "name": "table of F and m for a=F/m, with m=0 undefined (Pro)",
+   "function": "substituteTable",
+   "args": [
+    "F=m*a",
+    "a",
+    [
+     "F*m^-1"
+    ],
+    [
+     "F",
+     "m"
+    ],
+    [
+     [
+      "10",
+      "2"
+     ],
+     [
+      "9",
+      "3"
+     ],
+     [
+      "1",
+      "0"
+     ]
+    ]
+   ],
+   "expected": {
+    "ok": true,
+    "markdown": "| F | m | a |\n| --- | --- | --- |\n| 10 | 2 | 5 |\n| 9 | 3 | 3 |\n| 1 | 0 | undefined |"
+   }
+  },
+  {
+   "name": "table for x^2-p=0 with real and complex roots (Pro)",
+   "function": "substituteTable",
+   "args": [
+    "x^2-p=0",
+    "x",
+    [
+     "-p^(1/2)",
+     "p^(1/2)"
+    ],
+    [
+     "p"
+    ],
+    [
+     [
+      "4"
+     ],
+     [
+      "2"
+     ],
+     [
+      "-1"
+     ]
+    ]
+   ],
+   "expected": {
+    "ok": true,
+    "markdown": "| p | x |\n| --- | --- |\n| 4 | -2, 2 |\n| 2 | -1.41421, 1.41421 |\n| -1 | -i, i |"
+   }
+  },
+  {
+   "name": "table row with the wrong number of values (Pro)",
+   "function": "substituteTable",
+   "args": [
+    "F=m*a",
+    "a",
+    [
+     "F*m^-1"
+    ],
+    [
+     "F",
+     "m"
+    ],
+    [
+     [
+      "10"
+     ]
+    ]
+   ],
+   "expected": {
+    "ok": false,
+    "error": "Row 1 has 1 value, not 2"
+   }
+  },
+  {
+   "name": "parse a comma table with a Markdown rule line",
+   "function": "parseTable",
+   "args": [
+    "| F | m |\n|---|---|\n| 10 | 2 |"
+   ],
+   "expected": {
+    "header": [
+     "F",
+     "m"
+    ],
+    "rows": [
+     [
+      "10",
+      "2"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "history search matches each word (Pro)",
+   "function": "searchHistory",
+   "args": [
+    [
+     {
+      "equation": "F=m*a",
+      "symbol": "a",
+      "result": "$$a = \\frac{F}{m}$$",
+      "at": 1
+     },
+     {
+      "equation": "v=u+a*t",
+      "symbol": "t",
+      "result": "$$t = -\\frac{u-v}{a}$$",
+      "at": 2
+     }
+    ],
+    "m*a frac"
+   ],
+   "expected": [
+    {
+     "equation": "F=m*a",
+     "symbol": "a",
+     "result": "$$a = \\frac{F}{m}$$",
+     "at": 1
+    }
+   ]
+  }
+ ]
+}

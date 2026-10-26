@@ -1,0 +1,114 @@
+[
+	{
+		"feature": "solve-preview",
+		"caption": "F=m*a selected in a note, solved for a. The modal shows the MathJax preview; the note does not change yet.",
+		"note": "Physics formulas.md",
+		"eval": "(async () => { app.plugins.plugins['pocket-symbolic-solver'].pro.signOut(); for (let i = 0; i < 50 && !app.workspace.activeEditor.editor.getValue().split('\\n').includes('`F=m*a`'); i++) await new Promise((r) => setTimeout(r, 100)); var ed = app.workspace.activeEditor.editor; var line = ed.getValue().split('\\n').indexOf('`F=m*a`'); if (line < 0) throw new Error('line not found'); ed.setSelection({ line, ch: 0 }, { line, ch: 7 }); const m = app.plugins.plugins['pocket-symbolic-solver'].openSolver(ed); m.setInputs(m.equation, 'a'); const r = await m.solve(); if (!r.ok) throw new Error(r.error);  return 'ok'; })()",
+		"wait": 900,
+		"after": "(async () => { app.plugins.plugins['pocket-symbolic-solver'].openModal?.close(); app.plugins.plugins['pocket-symbolic-solver'].pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "two-roots",
+		"caption": "x^2-5*x+6=0 solved for x: both roots, 2 and 3, are listed.",
+		"note": "Algebra practice.md",
+		"eval": "(async () => { app.plugins.plugins['pocket-symbolic-solver'].pro.signOut(); for (let i = 0; i < 50 && !app.workspace.activeEditor.editor.getValue().split('\\n').includes('`x^2-5*x+6=0`'); i++) await new Promise((r) => setTimeout(r, 100)); var ed = app.workspace.activeEditor.editor; var line = ed.getValue().split('\\n').indexOf('`x^2-5*x+6=0`'); if (line < 0) throw new Error('line not found'); ed.setSelection({ line, ch: 0 }, { line, ch: 13 }); const m = app.plugins.plugins['pocket-symbolic-solver'].openSolver(ed); m.setInputs(m.equation, 'x'); const r = await m.solve(); if (!r.ok) throw new Error(r.error);  return 'ok'; })()",
+		"wait": 900,
+		"after": "(async () => { app.plugins.plugins['pocket-symbolic-solver'].openModal?.close(); app.plugins.plugins['pocket-symbolic-solver'].pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "complex-roots",
+		"caption": "x^2+1=0 has the complex roots i and -i, with a note.",
+		"note": "Algebra practice.md",
+		"eval": "(async () => { app.plugins.plugins['pocket-symbolic-solver'].pro.signOut(); for (let i = 0; i < 50 && !app.workspace.activeEditor.editor.getValue().split('\\n').includes('`x^2+1=0`'); i++) await new Promise((r) => setTimeout(r, 100)); var ed = app.workspace.activeEditor.editor; var line = ed.getValue().split('\\n').indexOf('`x^2+1=0`'); if (line < 0) throw new Error('line not found'); ed.setSelection({ line, ch: 0 }, { line, ch: 9 }); const m = app.plugins.plugins['pocket-symbolic-solver'].openSolver(ed); m.setInputs(m.equation, 'x'); const r = await m.solve(); if (!r.ok) throw new Error(r.error);  return 'ok'; })()",
+		"wait": 900,
+		"after": "(async () => { app.plugins.plugins['pocket-symbolic-solver'].openModal?.close(); app.plugins.plugins['pocket-symbolic-solver'].pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "error",
+		"caption": "A clear error when the symbol is not in the equation. Insert stays off and the note does not change.",
+		"note": "Physics formulas.md",
+		"eval": "(async () => { app.plugins.plugins['pocket-symbolic-solver'].pro.signOut(); for (let i = 0; i < 50 && !app.workspace.activeEditor.editor.getValue().split('\\n').includes('`F=m*a`'); i++) await new Promise((r) => setTimeout(r, 100)); var ed = app.workspace.activeEditor.editor; var line = ed.getValue().split('\\n').indexOf('`F=m*a`'); if (line < 0) throw new Error('line not found'); ed.setSelection({ line, ch: 0 }, { line, ch: 7 }); const m = app.plugins.plugins['pocket-symbolic-solver'].openSolver(ed); m.setInputs('2*y=4', 'x'); await m.solve(); return 'ok'; })()",
+		"wait": 900,
+		"after": "(async () => { app.plugins.plugins['pocket-symbolic-solver'].openModal?.close(); app.plugins.plugins['pocket-symbolic-solver'].pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "inserted",
+		"caption": "After Insert: the selection is now display math, a = F/m, and v=u+a*t solved for t.",
+		"note": "Kinematics.md",
+		"eval": "(async () => { app.plugins.plugins['pocket-symbolic-solver'].pro.signOut(); for (let i = 0; i < 50 && !app.workspace.activeEditor.editor.getValue().split('\\n').includes('`F=m*a`'); i++) await new Promise((r) => setTimeout(r, 100)); var ed = app.workspace.activeEditor.editor; var line = ed.getValue().split('\\n').indexOf('`F=m*a`'); if (line < 0) throw new Error('line not found'); ed.setSelection({ line, ch: 0 }, { line, ch: 7 }); let m = app.plugins.plugins['pocket-symbolic-solver'].openSolver(ed); m.setInputs(m.equation, 'a'); await m.solve(); m.insert(); for (let i = 0; i < 50 && !app.workspace.activeEditor.editor.getValue().split('\\n').includes('`v=u+a*t`'); i++) await new Promise((r) => setTimeout(r, 100)); var ed = app.workspace.activeEditor.editor; var line = ed.getValue().split('\\n').indexOf('`v=u+a*t`'); if (line < 0) throw new Error('line not found'); ed.setSelection({ line, ch: 0 }, { line, ch: 9 }); m = app.plugins.plugins['pocket-symbolic-solver'].openSolver(ed); m.setInputs(m.equation, 't'); await m.solve(); m.insert(); ed.setCursor({ line: 0, ch: 0 }); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "time-limit",
+		"caption": "x^x^x=5 does not end in nerdamer. After 5 seconds the plugin stops the worker and shows an error.",
+		"note": "Algebra practice.md",
+		"eval": "(async () => { app.plugins.plugins['pocket-symbolic-solver'].pro.signOut(); var ed = app.workspace.activeEditor.editor; ed.setCursor({ line: 0, ch: 0 }); const m = app.plugins.plugins['pocket-symbolic-solver'].openSolver(ed); m.setInputs('x^x^x=5', 'x'); await m.solve(); return 'ok'; })()",
+		"wait": 900,
+		"after": "(async () => { app.plugins.plugins['pocket-symbolic-solver'].openModal?.close(); return 'ok'; })()"
+	},
+	{
+		"feature": "saved-equations",
+		"caption": "Pro: pick a saved equation from the list at the top of the modal. Parameter sets have their own list.",
+		"note": "Algebra practice.md",
+		"eval": "(async () => { app.plugins.plugins['pocket-symbolic-solver'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('pocket-symbolic-solver-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['pocket-symbolic-solver'].pro.refreshNow(); const p = app.plugins.plugins['pocket-symbolic-solver']; await p.saveParamSet('Lab 3 masses', 'F, m\\n10, 2\\n9, 3'); await p.saveEquation('Kinetic energy', 'E=(1/2)*m*v^2', 'v'); await p.saveEquation('Ideal gas', 'P*V=n*R*T', 'T'); var ed = app.workspace.activeEditor.editor; ed.setCursor({ line: 0, ch: 0 }); const m = p.openSolver(ed); const sel = m.contentEl.querySelector('.pss-saved'); sel.value = '0'; sel.dispatchEvent(new Event('change')); await m.solve(); return 'ok'; })()",
+		"wait": 900,
+		"after": "(async () => { app.plugins.plugins['pocket-symbolic-solver'].openModal?.close(); app.plugins.plugins['pocket-symbolic-solver'].pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "pro-table",
+		"caption": "Pro: put a table of F and m values into a = F/m. A row with m = 0 gives undefined.",
+		"note": "Physics formulas.md",
+		"eval": "(async () => { app.plugins.plugins['pocket-symbolic-solver'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('pocket-symbolic-solver-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['pocket-symbolic-solver'].pro.refreshNow(); for (let i = 0; i < 50 && !app.workspace.activeEditor.editor.getValue().split('\\n').includes('`F=m*a`'); i++) await new Promise((r) => setTimeout(r, 100)); var ed = app.workspace.activeEditor.editor; var line = ed.getValue().split('\\n').indexOf('`F=m*a`'); if (line < 0) throw new Error('line not found'); ed.setSelection({ line, ch: 0 }, { line, ch: 7 }); const m = app.plugins.plugins['pocket-symbolic-solver'].openSolver(ed); m.setInputs(m.equation, 'a'); await m.solve(); const ta = m.contentEl.querySelector('.pss-table'); ta.value = 'F, m\\n10, 2\\n9, 3\\n1, 0'; m.table = ta.value; return 'ok'; })()",
+		"wait": 900,
+		"after": "(async () => { app.plugins.plugins['pocket-symbolic-solver'].openModal?.close(); app.plugins.plugins['pocket-symbolic-solver'].pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "table-inserted",
+		"caption": "Pro: the Markdown table of results in the note, under the equation. A row with m = 0 gives undefined.",
+		"note": "Force table.md",
+		"eval": "(async () => { app.plugins.plugins['pocket-symbolic-solver'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('pocket-symbolic-solver-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['pocket-symbolic-solver'].pro.refreshNow(); for (let i = 0; i < 50 && !app.workspace.activeEditor.editor.getValue().split('\\n').includes('`F=m*a`'); i++) await new Promise((r) => setTimeout(r, 100)); var ed = app.workspace.activeEditor.editor; var line = ed.getValue().split('\\n').indexOf('`F=m*a`'); if (line < 0) throw new Error('line not found'); ed.setSelection({ line, ch: 0 }, { line, ch: 7 }); const m = app.plugins.plugins['pocket-symbolic-solver'].openSolver(ed); m.setInputs(m.equation, 'a'); await m.solve(); const ta = m.contentEl.querySelector('.pss-table'); ta.value = 'F, m\\n10, 2\\n9, 3\\n1, 0'; m.table = ta.value; await m.insertTable(); ed.setCursor({ line: 0, ch: 0 }); return 'ok'; })()",
+		"wait": 1200,
+		"after": "(async () => { app.plugins.plugins['pocket-symbolic-solver'].pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "history",
+		"caption": "Pro: search the history of solves. Pick one to open it in the solve modal again.",
+		"note": "Physics formulas.md",
+		"eval": "(async () => { app.plugins.plugins['pocket-symbolic-solver'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('pocket-symbolic-solver-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['pocket-symbolic-solver'].pro.refreshNow(); const ed = app.workspace.activeEditor.editor; const h = app.plugins.plugins['pocket-symbolic-solver'].openHistory(ed); h.inputEl.value = ''; h.inputEl.dispatchEvent(new Event('input')); return 'ok'; })()",
+		"wait": 900,
+		"after": "(async () => { document.querySelector('.prompt-input')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); app.plugins.plugins['pocket-symbolic-solver'].pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "settings",
+		"caption": "Settings after sign in: the Pro section with the GitHub account, the time limit and the solve history.",
+		"eval": "(async () => { app.plugins.plugins['pocket-symbolic-solver'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('pocket-symbolic-solver-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['pocket-symbolic-solver'].pro.refreshNow(); app.setting.open(); app.setting.openTabById('pocket-symbolic-solver'); await new Promise((r) => setTimeout(r, 500)); return 'ok'; })()",
+		"after": "app.setting.close(); app.plugins.plugins['pocket-symbolic-solver'].pro.signOut(); 'ok'"
+	},
+	{
+		"feature": "pocket-symbolic-solver",
+		"caption": "Select F=m*a, run the command, type a, tap Solve, then Insert.",
+		"frames": [
+			{
+				"note": "Newton.md",
+				"eval": "(async () => { app.plugins.plugins['pocket-symbolic-solver'].pro.signOut(); for (let i = 0; i < 50 && !app.workspace.activeEditor.editor.getValue().split('\\n').includes('`F=m*a`'); i++) await new Promise((r) => setTimeout(r, 100)); var ed = app.workspace.activeEditor.editor; var line = ed.getValue().split('\\n').indexOf('`F=m*a`'); if (line < 0) throw new Error('line not found'); ed.setSelection({ line, ch: 0 }, { line, ch: 7 }); return 'ok'; })()",
+				"hold": 1200
+			},
+			{
+				"eval": "(async () => { const ed = app.workspace.activeEditor.editor; const m = app.plugins.plugins['pocket-symbolic-solver'].openSolver(ed); return 'ok'; })()",
+				"hold": 1200
+			},
+			{
+				"eval": "(async () => { const m = app.plugins.plugins['pocket-symbolic-solver'].openModal; m.setInputs(m.equation, 'a'); m.contentEl.querySelector('.pss-symbol').value = 'a'; return 'ok'; })()",
+				"hold": 1000
+			},
+			{
+				"eval": "(async () => { const m = app.plugins.plugins['pocket-symbolic-solver'].openModal; await m.solve(); return 'ok'; })()",
+				"hold": 1800
+			},
+			{
+				"eval": "(async () => { const m = app.plugins.plugins['pocket-symbolic-solver'].openModal; m.contentEl.querySelector('.pss-insert').click(); app.workspace.activeEditor.editor.setCursor({ line: 0, ch: 0 }); return 'ok'; })()",
+				"hold": 2000
+			}
+		]
+	}
+]

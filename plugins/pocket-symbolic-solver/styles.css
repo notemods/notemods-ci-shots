@@ -1,0 +1,83 @@
+/* Styles for Pocket Symbolic Solver. Obsidian loads this file while the plugin is enabled. */
+.pss-modal .pss-equation,
+.pss-modal .pss-symbol {
+	width: 100%;
+	font-family: var(--font-monospace);
+}
+
+.pss-modal .pss-symbol {
+	max-width: 8em;
+}
+
+.pss-result {
+	min-height: 2em;
+	padding: var(--size-4-2) 0;
+}
+
+.pss-solution {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--size-4-2);
+	padding: var(--size-4-1) var(--size-4-2);
+	overflow-x: auto;
+	border-bottom: var(--border-width) solid var(--background-modifier-border);
+}
+
+.pss-solution .pss-index {
+	color: var(--text-muted);
+}
+
+.pss-solution .pss-text {
+	flex-basis: 100%;
+	color: var(--text-muted);
+	font-family: var(--font-monospace);
+	font-size: var(--font-ui-smaller);
+	overflow-wrap: anywhere;
+}
+
+.pss-error {
+	padding: var(--size-4-2);
+	color: var(--text-error);
+	border: var(--border-width) solid var(--text-error);
+	border-radius: var(--radius-s);
+}
+
+.pss-note {
+	padding-top: var(--size-4-2);
+}
+
+.pss-pro-heading {
+	margin-top: var(--size-4-4);
+}
+
+.pss-table {
+	width: 100%;
+	font-family: var(--font-monospace);
+}
+
+.pss-history-result {
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}

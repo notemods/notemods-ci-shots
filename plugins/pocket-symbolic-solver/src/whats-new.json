@@ -1,0 +1,27 @@
+{
+	"id": "pocket-symbolic-solver",
+	"name": "Pocket Symbolic Solver",
+	"version": "1.1.1",
+	"changes": [
+		"The Pro notice for history search now has a Sponsor on GitHub button."
+	],
+	"tip": "Without \"=\", the solver solves expression = 0, so x+1 gives x = -1.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Pocket Symbolic Solver is one of over 100 small plugins that I make. Thank you for doing your math in Obsidian with it.",
+	"related": [
+		{
+			"id": "steady-inline-math",
+			"name": "Steady Inline Math",
+			"blurb": "Keep inline math stable when you type spaces next to dollar signs in a paragraph."
+		},
+		{
+			"id": "shared-tex-preamble",
+			"name": "Shared TeX Preamble",
+			"blurb": "Load TeX commands from one vault file and use them in math notes on phones and tablets."
+		},
+		{
+			"id": "pandoc-crossref-preview",
+			"name": "Pandoc Crossref Preview",
+			"blurb": "Show figure and equation reference numbers from Pandoc labels while you read a note."
+		}
+	]
+}
