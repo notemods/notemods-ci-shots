@@ -1,0 +1,27 @@
+{
+	"id": "pocket-note-quiz",
+	"name": "Pocket Note Quiz",
+	"version": "1.1.1",
+	"changes": [
+		"The Pocket Note Quiz notice for a Pro feature now has a Sponsor on GitHub button."
+	],
+	"tip": "Run \"Start quiz on current note\" and choose \"Only wrong\" to review the questions you marked wrong.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Pocket Note Quiz is one of over 100 small plugins that I make. Thank you for studying with it.",
+	"related": [
+		{
+			"id": "card-question-sheet",
+			"name": "Card Question Sheet",
+			"blurb": "Export text study cards as a PDF question sheet with a separate answer key."
+		},
+		{
+			"id": "pocket-mochi-export",
+			"name": "Pocket Mochi Export",
+			"blurb": "Export card tagged notes and their local images to a .mochi archive for Mochi."
+		},
+		{
+			"id": "subtitle-sentence-miner",
+			"name": "Subtitle Sentence Miner",
+			"blurb": "Create sentence cards from local subtitle files and keep each source path and timestamp."
+		}
+	]
+}

@@ -1,0 +1,86 @@
+[
+	{
+		"feature": "start",
+		"caption": "Choose a quiz for three biology questions.",
+		"note": "Study/Biology.md",
+		"eval": "(async () => { const p = app.plugins.plugins['pocket-note-quiz']; p.quiz?.close(); p.settings.marker = '?'; await p.saveSettings(); p.pro.signOut(); await p.startCurrent(); return 'ok'; })()",
+		"wait": 700,
+		"after": "app.plugins.plugins['pocket-note-quiz'].quiz?.close(); app.plugins.plugins['pocket-note-quiz'].pro.signOut(); 'ok'"
+	},
+	{
+		"feature": "answer",
+		"caption": "Show a Markdown answer before you choose Correct or Wrong.",
+		"note": "Study/Biology.md",
+		"eval": "(async () => { const p = app.plugins.plugins['pocket-note-quiz']; p.quiz?.close(); p.settings.marker = '?'; await p.saveSettings(); p.pro.signOut(); await p.startCurrent(); await p.quiz.begin('all'); await p.quiz.showAnswer(); return 'ok'; })()",
+		"wait": 700,
+		"after": "app.plugins.plugins['pocket-note-quiz'].quiz?.close(); app.plugins.plugins['pocket-note-quiz'].pro.signOut(); 'ok'"
+	},
+	{
+		"feature": "filters",
+		"caption": "Review only the DNA question marked wrong.",
+		"note": "Study/Biology.md",
+		"eval": "(async () => { const p = app.plugins.plugins['pocket-note-quiz']; p.quiz?.close(); p.settings.marker = '?'; await p.saveSettings(); p.pro.signOut(); await p.startCurrent(); await p.quiz.begin('wrong'); await p.quiz.showAnswer(); return 'ok'; })()",
+		"wait": 700,
+		"after": "app.plugins.plugins['pocket-note-quiz'].quiz?.close(); app.plugins.plugins['pocket-note-quiz'].pro.signOut(); 'ok'"
+	},
+	{
+		"feature": "score",
+		"caption": "Finish a quiz with two correct answers and one wrong answer.",
+		"note": "Study/Biology.md",
+		"eval": "(async () => { const p = app.plugins.plugins['pocket-note-quiz']; p.quiz?.close(); p.settings.marker = '?'; await p.saveSettings(); p.pro.signOut(); await p.startCurrent();await p.quiz.begin('all'); while (p.quiz.index < p.quiz.cards.length) { await p.quiz.showAnswer(); await p.quiz.respond(p.quiz.index === 1 ? 'wrong' : 'correct'); } return 'ok'; })()",
+		"wait": 700,
+		"after": "app.plugins.plugins['pocket-note-quiz'].quiz?.close(); app.plugins.plugins['pocket-note-quiz'].pro.signOut(); 'ok'"
+	},
+	{
+		"feature": "folder",
+		"caption": "Pro loads five questions from the Study folder.",
+		"note": "Study/Biology.md",
+		"eval": "(async () => { const p = app.plugins.plugins['pocket-note-quiz']; p.quiz?.close(); p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('pocket-note-quiz-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); p.settings.marker = '?'; await p.startFolder('Pocket Note Quiz/Study'); return 'ok'; })()",
+		"wait": 700,
+		"after": "app.plugins.plugins['pocket-note-quiz'].quiz?.close(); app.plugins.plugins['pocket-note-quiz'].pro.signOut(); 'ok'"
+	},
+	{
+		"feature": "report",
+		"caption": "Pro saves a dated report with the score and source note.",
+		"note": "Study/Biology.md",
+		"eval": "(async () => { const p = app.plugins.plugins['pocket-note-quiz']; p.quiz?.close(); p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('pocket-note-quiz-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); p.settings.marker = '?'; await p.startCurrent();await p.quiz.begin('all'); while (p.quiz.index < p.quiz.cards.length) { await p.quiz.showAnswer(); await p.quiz.respond(p.quiz.index === 1 ? 'wrong' : 'correct'); } const report = await p.saveReport(p.quiz.responses); p.quiz.close(); await app.workspace.getLeaf('tab').openFile(app.vault.getFileByPath(report)); return 'ok'; })()",
+		"wait": 700,
+		"after": "app.plugins.plugins['pocket-note-quiz'].quiz?.close(); app.plugins.plugins['pocket-note-quiz'].pro.signOut(); 'ok'"
+	},
+	{
+		"feature": "presets",
+		"caption": "Pro keeps named question-marker presets.",
+		"note": "Study/Biology.md",
+		"eval": "(async () => { const p = app.plugins.plugins['pocket-note-quiz']; p.quiz?.close(); p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('pocket-note-quiz-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); p.settings.marker = 'Q:'; await p.addPreset('Lesson questions', 'Q:'); await p.addPreset('Exam review', '?'); app.setting.open(); app.setting.openTabById('pocket-note-quiz'); return 'ok'; })()",
+		"wait": 700,
+		"after": "app.setting.close(); app.plugins.plugins['pocket-note-quiz'].settings.marker = '?'; app.plugins.plugins['pocket-note-quiz'].pro.signOut(); 'ok'"
+	},
+	{
+		"feature": "pocket-note-quiz",
+		"caption": "Start a quiz, reveal an answer, and select results.",
+		"frames": [
+			{
+				"note": "Study/Biology.md",
+				"eval": "(async () => { const p = app.plugins.plugins['pocket-note-quiz']; p.quiz?.close(); p.settings.marker = '?'; await p.saveSettings(); p.pro.signOut(); await p.startCurrent(); return 'ok'; })()",
+				"hold": 1400
+			},
+			{
+				"eval": "(async () => { const p = app.plugins.plugins['pocket-note-quiz']; await p.quiz.begin('all'); return 'ok'; })()",
+				"hold": 1300
+			},
+			{
+				"eval": "(async () => { const p = app.plugins.plugins['pocket-note-quiz']; await p.quiz.showAnswer(); return 'ok'; })()",
+				"hold": 1600
+			},
+			{
+				"eval": "(async () => { const p = app.plugins.plugins['pocket-note-quiz']; await p.quiz.respond('correct'); await p.quiz.showAnswer(); return 'ok'; })()",
+				"hold": 1500
+			},
+			{
+				"eval": "(async () => { const p = app.plugins.plugins['pocket-note-quiz']; await p.quiz.respond('wrong'); await p.quiz.showAnswer(); await p.quiz.respond('correct'); return 'ok'; })()",
+				"hold": 1800
+			}
+		],
+		"after": "app.plugins.plugins['pocket-note-quiz'].quiz?.close(); app.plugins.plugins['pocket-note-quiz'].pro.signOut(); 'ok'"
+	}
+]
