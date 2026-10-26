@@ -1,0 +1,143 @@
+.table-rollup {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-2);
+	padding: var(--size-4-2) var(--size-4-4);
+	overflow: auto;
+	height: 100%;
+}
+
+.table-rollup-bar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--size-4-3);
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+}
+
+.table-rollup-limit {
+	color: var(--text-warning);
+}
+
+.table-rollup-find {
+	display: flex;
+	align-items: center;
+	gap: var(--size-2-2);
+	margin-left: auto;
+}
+
+.table-rollup-find-input {
+	width: 140px;
+	font-size: var(--font-ui-smaller);
+}
+
+.table-rollup-find-clear {
+	display: none;
+}
+
+.table-rollup-find.has-text .table-rollup-find-clear {
+	display: inline-flex;
+}
+
+.table-rollup-export {
+	font-size: var(--font-ui-smaller);
+}
+
+.table-rollup-empty {
+	color: var(--text-muted);
+	padding: var(--size-4-4) 0;
+}
+
+.table-rollup-scroll {
+	overflow-x: auto;
+}
+
+.table-rollup-table {
+	border-collapse: collapse;
+	width: 100%;
+	font-size: var(--font-ui-small);
+}
+
+.table-rollup-table th,
+.table-rollup-table td {
+	border: var(--border-width) solid var(--table-border-color, var(--background-modifier-border));
+	padding: var(--size-4-1) var(--size-4-2);
+	text-align: start;
+	vertical-align: top;
+}
+
+.table-rollup-table th {
+	background: var(--table-header-background, var(--background-secondary));
+	font-weight: var(--font-semibold);
+	cursor: pointer;
+	user-select: none;
+	white-space: nowrap;
+	position: sticky;
+	top: 0;
+}
+
+.table-rollup-table th:hover {
+	background: var(--background-modifier-hover);
+}
+
+.table-rollup-sort {
+	display: inline-flex;
+	vertical-align: middle;
+	margin-inline-start: var(--size-4-1);
+
+	--icon-size: var(--icon-xs);
+}
+
+.table-rollup-table .table-rollup-right {
+	text-align: end;
+}
+
+.table-rollup-table .table-rollup-center {
+	text-align: center;
+}
+
+.table-rollup-source {
+	white-space: nowrap;
+}
+
+.table-rollup-group td {
+	background: var(--background-secondary);
+	font-weight: var(--font-semibold);
+}
+
+.table-rollup-subtotal td,
+.table-rollup-total td {
+	font-weight: var(--font-semibold);
+	background: var(--background-primary-alt);
+}
+
+.table-rollup-total td {
+	border-top: calc(var(--border-width) * 2) solid var(--background-modifier-border-focus);
+}
+
+.bases-embed .table-rollup,
+.block-language-base .table-rollup {
+	height: auto;
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}

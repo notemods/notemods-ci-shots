@@ -1,0 +1,27 @@
+{
+	"id": "table-rollup",
+	"name": "Table Rollup",
+	"version": "1.2.1",
+	"changes": [
+		"The Pro notice for merged table export now has a Sponsor on GitHub button."
+	],
+	"tip": "Click a column header twice to sort the rows in the other direction.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Table Rollup is one of over 100 small plugins that I make. Thank you for trusting it with your tables.",
+	"related": [
+		{
+			"id": "flatten-table",
+			"name": "Flatten Table",
+			"blurb": "Show each item of a Bases list property as a separate row."
+		},
+		{
+			"id": "table-row-links",
+			"name": "Table Row Links",
+			"blurb": "Copy a link to a marked table row in your note."
+		},
+		{
+			"id": "csv-schema-linter",
+			"name": "CSV Rule Check",
+			"blurb": "Check CSV values, types and duplicates before you use an export."
+		}
+	]
+}
