@@ -1,0 +1,23 @@
+{
+	"id": "hr-fold-stop",
+	"name": "Fold Stop",
+	"version": "1.2.0",
+	"changes": [
+		"Add the line %% fold-stop %% under a section to end its heading fold without a divider line. The text after it stays visible.",
+		"Use %% fold-stop 4 %% to end only the folds of level 4 headings and deeper. Turn markers off in Settings."
+	],
+	"tip": "Run Restore normal folding in this note to unfold the active note and use normal folding again.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Fold Stop is one of over 100 small plugins that I make. Thank you for keeping it in your editor.",
+	"related": [
+		{
+			"id": "visual-line-numbers",
+			"name": "Visual Line Numbers",
+			"blurb": "Numbers every wrapped display line in the editor gutter, with relative, hybrid and absolute modes, so counted Vim motions land where the gutter says."
+		},
+		{
+			"id": "paragraph-spell-focus",
+			"name": "Paragraph Spell Focus",
+			"blurb": "Limit native spellcheck to the paragraph under the cursor."
+		}
+	]
+}
