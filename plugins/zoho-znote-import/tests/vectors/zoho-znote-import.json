@@ -1,0 +1,657 @@
+{
+ "slug": "zoho-znote-import",
+ "module": "products/zoho-znote-import/src/importer.ts",
+ "function": "planImport",
+ "cases": [
+  {
+   "name": "The 2022 sample has five cards and four resources",
+   "args": [
+    "Notebook_02Mar2022_0441_znote.zip",
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "cardCount": 5,
+    "resourceCount": 4,
+    "supportedCount": 4,
+    "warningIncludes": [
+     "Unsupported card type note/sketch."
+    ]
+   }
+  },
+  {
+   "name": "The 2024 sample has four cards in two notebooks",
+   "args": [
+    "Notebook_14Apr2024_0732_znote.zip",
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "cardCount": 4,
+    "resourceCount": 2,
+    "notebookCount": 2,
+    "supportedCount": 4
+   }
+  },
+  {
+   "name": "Keep the Mine title and four tag strings",
+   "args": [
+    [
+     {
+      "tags": [
+       "hel",
+       "hello",
+       "min",
+       "world"
+      ]
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "properties": [
+     {
+      "title": "Mine",
+      "tags": [
+       "hel",
+       "hello",
+       "min",
+       "world"
+      ]
+     }
+    ],
+    "paths": [
+     "Zoho import/Notebook/Mine.md"
+    ]
+   }
+  },
+  {
+   "name": "Task state and source order",
+   "args": [
+    [
+     {
+      "html": "<checkbox checked=\"false\">Pending</checkbox><checkbox checked=\"true\">Done</checkbox>"
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "bodyIncludes": [
+     "- [ ] Pending",
+     "- [x] Done"
+    ],
+    "ordered": [
+     "- [ ] Pending",
+     "- [x] Done"
+    ]
+   }
+  },
+  {
+   "name": "Copy an exact relative image resource",
+   "args": [
+    [
+     {
+      "html": "<znresource relative-path=\"photo.png\" type=\"image/png\"/>",
+      "extra": [
+       {
+        "name": "card1/photo.png",
+        "text": "PNG"
+       }
+      ]
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "assetPaths": [
+     "Zoho import/assets/card1/photo.png"
+    ],
+    "bodyIncludes": [
+     "![[Zoho import/assets/card1/photo.png]]"
+    ]
+   }
+  },
+  {
+   "name": "Keep an absent resource reference",
+   "args": [
+    [
+     {
+      "html": "<znresource relative-path=\"missing.png\" type=\"image/png\"/>"
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "assetCount": 0,
+    "bodyIncludes": [
+     "Source resource: missing.png"
+    ],
+    "warningIncludes": [
+     "resource absent or ambiguous missing.png."
+    ]
+   }
+  },
+  {
+   "name": "Keep a card link with no exact ID match",
+   "args": [
+    [
+     {
+      "html": "<a href=\"zohonotebook://notes/other\">Other</a>"
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "bodyIncludes": [
+     "[Other](zohonotebook://notes/other)"
+    ],
+    "warningIncludes": [
+     "no exact card ID match"
+    ]
+   }
+  },
+  {
+   "name": "Reject parent traversal",
+   "args": [
+    [
+     {
+      "extra": [
+       {
+        "name": "../outside.txt",
+        "type": "0",
+        "text": "outside"
+       }
+      ]
+     },
+     {
+      "id": "good",
+      "title": "Good"
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "supportedCount": 1,
+    "paths": [
+     "Zoho import/Notebook/Good.md"
+    ],
+    "assetCount": 0,
+    "warningIncludes": [
+     "Unsafe TAR path."
+    ]
+   }
+  },
+  {
+   "name": "Reject a symbolic link",
+   "args": [
+    [
+     {
+      "extra": [
+       {
+        "name": "card1/link",
+        "type": "2",
+        "text": "outside"
+       }
+      ]
+     },
+     {
+      "id": "good",
+      "title": "Good"
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "supportedCount": 1,
+    "paths": [
+     "Zoho import/Notebook/Good.md"
+    ],
+    "assetCount": 0,
+    "warningIncludes": [
+     "Unsupported TAR member type."
+    ]
+   }
+  },
+  {
+   "name": "Reject a hard link",
+   "args": [
+    [
+     {
+      "extra": [
+       {
+        "name": "card1/link",
+        "type": "1",
+        "text": "outside"
+       }
+      ]
+     },
+     {
+      "id": "good",
+      "title": "Good"
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "supportedCount": 1,
+    "paths": [
+     "Zoho import/Notebook/Good.md"
+    ],
+    "assetCount": 0,
+    "warningIncludes": [
+     "Unsupported TAR member type."
+    ]
+   }
+  },
+  {
+   "name": "Skip an encrypted card and keep a valid card",
+   "args": [
+    [
+     {
+      "protected": true
+     },
+     {
+      "id": "good",
+      "title": "Good"
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "supportedCount": 1,
+    "warningIncludes": [
+     "Password protected or encrypted card."
+    ]
+   }
+  },
+  {
+   "name": "Skip malformed XML and keep a valid card",
+   "args": [
+    [
+     {
+      "xml": "<ZNote><ZMeta><ZTitle>Broken</ZMeta><ZContent></ZContent></ZNote>"
+     },
+     {
+      "id": "good",
+      "title": "Good"
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "supportedCount": 1,
+    "warningIncludes": [
+     "Malformed card XML."
+    ]
+   }
+  },
+  {
+   "name": "Folder conflict stops the plan before writes",
+   "args": [
+    [
+     {}
+    ],
+    "Zoho import",
+    null,
+    true
+   ],
+   "expected": {
+    "error": "Output folder exists. Use a new folder."
+   }
+  },
+  {
+   "name": "Copy a file resource as a local link",
+   "args": [
+    [
+     {
+      "html": "<znresource relative-path=\"doc.pdf\" type=\"application/pdf\"/>",
+      "extra": [
+       {
+        "name": "card1/doc.pdf",
+        "text": "PDF"
+       }
+      ]
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "bodyIncludes": [
+     "[[Zoho import/assets/card1/doc.pdf]]"
+    ],
+    "assetCount": 1
+   }
+  },
+  {
+   "name": "Keep rich text inside a task",
+   "args": [
+    [
+     {
+      "html": "<checkbox checked=\"true\"><b>Bold</b> task</checkbox>"
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "bodyIncludes": [
+     "- [x] **Bold** task"
+    ]
+   }
+  },
+  {
+   "name": "Read source dates as vault write dates",
+   "args": [
+    [
+     {}
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "dates": [
+     {
+      "ctime": 1713025319000,
+      "mtime": 1713025724000
+     }
+    ]
+   }
+  },
+  {
+   "name": "Keep invalid source date text and report it",
+   "args": [
+    [
+     {
+      "created": "bad-date"
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "properties": [
+     {
+      "created": "bad-date"
+     }
+    ],
+    "warningIncludes": [
+     "invalid created date"
+    ]
+   }
+  },
+  {
+   "name": "Report audio cards",
+   "args": [
+    [
+     {
+      "type": "note/audio"
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "supportedCount": 0,
+    "warningIncludes": [
+     "Unsupported card type note/audio."
+    ]
+   }
+  },
+  {
+   "name": "Report unknown card types",
+   "args": [
+    [
+     {
+      "type": "note/file"
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "supportedCount": 0,
+    "warningIncludes": [
+     "Unsupported card type note/file."
+    ]
+   }
+  },
+  {
+   "name": "Give duplicate titles new note names",
+   "args": [
+    [
+     {},
+     {
+      "id": "other"
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "paths": [
+     "Zoho import/Notebook/Mine.md",
+     "Zoho import/Notebook/Mine (2).md"
+    ]
+   }
+  },
+  {
+   "name": "Reject an unsafe output folder",
+   "args": [
+    [
+     {}
+    ],
+    "../outside",
+    null,
+    false
+   ],
+   "expected": {
+    "error": "Use a new vault folder without reserved characters or dot segments."
+   }
+  },
+  {
+   "name": "Reject the vault config folder",
+   "args": [
+    [
+     {}
+    ],
+    ".obsidian",
+    null,
+    false
+   ],
+   "expected": {
+    "error": "Use a new vault folder without reserved characters or dot segments."
+   }
+  },
+  {
+   "name": "Convert a link only for an exact imported card ID",
+   "args": [
+    [
+     {
+      "html": "<a href=\"zohonotebook://notes/other\">Other card</a>"
+     },
+     {
+      "id": "other",
+      "title": "Second"
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "bodyIncludes": [
+     "[[Zoho import/Notebook/Second.md|Other card]]"
+    ]
+   }
+  },
+  {
+   "name": "Map notebook and field names with a profile",
+   "args": [
+    [
+     {}
+    ],
+    "Zoho import",
+    {
+     "name": "Work",
+     "notebookFolders": {
+      "Notebook": "Projects"
+     },
+     "fields": {
+      "color": "card_color"
+     }
+    },
+    false
+   ],
+   "expected": {
+    "paths": [
+     "Zoho import/Projects/Mine.md"
+    ],
+    "bodyIncludes": [
+     "card_color:"
+    ]
+   }
+  },
+  {
+   "name": "Strip remote images and active HTML",
+   "args": [
+    [
+     {
+      "html": "<p>Safe</p><script>bad()</script><img src=\"https://example.invalid/p.png\"><iframe src=\"https://example.invalid/\"/>"
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "bodyIncludes": [
+     "Safe"
+    ],
+    "bodyExcludes": [
+     "bad()",
+     "example.invalid",
+     "<img"
+    ]
+   }
+  },
+  {
+   "name": "Read double content wrappers",
+   "args": [
+    [
+     {
+      "html": "<content><content><div>Nested content</div></content></content>"
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "bodyIncludes": [
+     "Nested content"
+    ]
+   }
+  },
+  {
+   "name": "Reject a duplicate TAR member",
+   "args": [
+    [
+     {
+      "extra": [
+       {
+        "name": "card1/Note.znel",
+        "text": "duplicate"
+       }
+      ]
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "supportedCount": 0,
+    "warningIncludes": [
+     "Duplicate TAR member."
+    ]
+   }
+  },
+  {
+   "name": "Reject external XML declarations",
+   "args": [
+    [
+     {
+      "xml": "<!DOCTYPE ZNote SYSTEM \"https://example.invalid/x\"><ZNote><ZMeta/><ZContent/></ZNote>"
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "supportedCount": 0,
+    "warningIncludes": [
+     "XML declarations are not supported."
+    ]
+   }
+  },
+  {
+   "name": "Keep tags that resemble YAML booleans as strings",
+   "args": [
+    [
+     {
+      "tags": [
+       "true",
+       "false",
+       "001"
+      ]
+     }
+    ],
+    "Zoho import",
+    null,
+    false
+   ],
+   "expected": {
+    "properties": [
+     {
+      "tags": [
+       "true",
+       "false",
+       "001"
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}
