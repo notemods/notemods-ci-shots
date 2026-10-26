@@ -1,0 +1,711 @@
+{
+ "slug": "colornote-backup-import",
+ "module": "products/colornote-backup-import/src/backup.ts",
+ "function": "recordClass",
+ "cases": [
+  {
+   "name": "normal text",
+   "function": "recordClass",
+   "args": [
+    {
+     "_id": 1,
+     "uuid": "a",
+     "title": "Plan",
+     "note": "Text",
+     "type": 0,
+     "active_state": 0,
+     "space": 0,
+     "created_date": 0,
+     "modified_date": 1,
+     "color_index": 0
+    }
+   ],
+   "expected": "normal"
+  },
+  {
+   "name": "checklist type",
+   "function": "recordClass",
+   "args": [
+    {
+     "_id": 1,
+     "uuid": "a",
+     "title": "Plan",
+     "note": "Text",
+     "type": 16,
+     "active_state": 0,
+     "space": 0,
+     "created_date": 0,
+     "modified_date": 1,
+     "color_index": 0
+    }
+   ],
+   "expected": "normal"
+  },
+  {
+   "name": "locked boolean",
+   "function": "recordClass",
+   "args": [
+    {
+     "_id": 1,
+     "uuid": "a",
+     "title": "Plan",
+     "note": "Text",
+     "type": 0,
+     "active_state": 0,
+     "space": 0,
+     "created_date": 0,
+     "modified_date": 1,
+     "color_index": 0,
+     "encrypted": true
+    }
+   ],
+   "expected": "locked"
+  },
+  {
+   "name": "locked integer",
+   "function": "recordClass",
+   "args": [
+    {
+     "_id": 1,
+     "uuid": "a",
+     "title": "Plan",
+     "note": "Text",
+     "type": 0,
+     "active_state": 0,
+     "space": 0,
+     "created_date": 0,
+     "modified_date": 1,
+     "color_index": 0,
+     "encrypted": 1
+    }
+   ],
+   "expected": "locked"
+  },
+  {
+   "name": "sync settings",
+   "function": "recordClass",
+   "args": [
+    {
+     "_id": 1,
+     "uuid": "a",
+     "title": "syncable_settings",
+     "note": "Text",
+     "type": 0,
+     "active_state": 0,
+     "space": 0,
+     "created_date": 0,
+     "modified_date": 1,
+     "color_index": 0
+    }
+   ],
+   "expected": "system"
+  },
+  {
+   "name": "master password",
+   "function": "recordClass",
+   "args": [
+    {
+     "_id": 1,
+     "uuid": "a",
+     "title": "name_master_password",
+     "note": "Text",
+     "type": 0,
+     "active_state": 0,
+     "space": 0,
+     "created_date": 0,
+     "modified_date": 1,
+     "color_index": 0
+    }
+   ],
+   "expected": "system"
+  },
+  {
+   "name": "system type",
+   "function": "recordClass",
+   "args": [
+    {
+     "_id": 1,
+     "uuid": "a",
+     "title": "Plan",
+     "note": "Text",
+     "type": 256,
+     "active_state": 0,
+     "space": 0,
+     "created_date": 0,
+     "modified_date": 1,
+     "color_index": 0
+    }
+   ],
+   "expected": "system"
+  },
+  {
+   "name": "trash state",
+   "function": "recordClass",
+   "args": [
+    {
+     "_id": 1,
+     "uuid": "a",
+     "title": "Plan",
+     "note": "Text",
+     "type": 0,
+     "active_state": 16,
+     "space": 0,
+     "created_date": 0,
+     "modified_date": 1,
+     "color_index": 0
+    }
+   ],
+   "expected": "trash"
+  },
+  {
+   "name": "archive space",
+   "function": "recordClass",
+   "args": [
+    {
+     "_id": 1,
+     "uuid": "a",
+     "title": "Plan",
+     "note": "Text",
+     "type": 0,
+     "active_state": 0,
+     "space": 16,
+     "created_date": 0,
+     "modified_date": 1,
+     "color_index": 0
+    }
+   ],
+   "expected": "archive"
+  },
+  {
+   "name": "trash and archive",
+   "function": "recordClass",
+   "args": [
+    {
+     "_id": 1,
+     "uuid": "a",
+     "title": "Plan",
+     "note": "Text",
+     "type": 0,
+     "active_state": 16,
+     "space": 16,
+     "created_date": 0,
+     "modified_date": 1,
+     "color_index": 0
+    }
+   ],
+   "expected": "trash"
+  },
+  {
+   "name": "unsupported state",
+   "function": "recordClass",
+   "args": [
+    {
+     "_id": 1,
+     "uuid": "a",
+     "title": "Plan",
+     "note": "Text",
+     "type": 0,
+     "active_state": 32,
+     "space": 0,
+     "created_date": 0,
+     "modified_date": 1,
+     "color_index": 0
+    }
+   ],
+   "expected": "unsupported"
+  },
+  {
+   "name": "unsupported type",
+   "function": "recordClass",
+   "args": [
+    {
+     "_id": 1,
+     "uuid": "a",
+     "title": "Plan",
+     "note": "Text",
+     "type": 1,
+     "active_state": 0,
+     "space": 0,
+     "created_date": 0,
+     "modified_date": 1,
+     "color_index": 0
+    }
+   ],
+   "expected": "unsupported"
+  },
+  {
+   "name": "missing UUID",
+   "function": "recordClass",
+   "args": [
+    {
+     "_id": 1,
+     "uuid": "",
+     "title": "Plan",
+     "note": "Text",
+     "type": 0,
+     "active_state": 0,
+     "space": 0,
+     "created_date": 0,
+     "modified_date": 1,
+     "color_index": 0
+    }
+   ],
+   "expected": "unsupported"
+  },
+  {
+   "name": "bad date",
+   "function": "recordClass",
+   "args": [
+    {
+     "_id": 1,
+     "uuid": "a",
+     "title": "Plan",
+     "note": "Text",
+     "type": 0,
+     "active_state": 0,
+     "space": 0,
+     "created_date": -1,
+     "modified_date": 1,
+     "color_index": 0
+    }
+   ],
+   "expected": "unsupported"
+  },
+  {
+   "name": "bad color",
+   "function": "recordClass",
+   "args": [
+    {
+     "_id": 1,
+     "uuid": "a",
+     "title": "Plan",
+     "note": "Text",
+     "type": 0,
+     "active_state": 0,
+     "space": 0,
+     "created_date": 0,
+     "modified_date": 1,
+     "color_index": "red"
+    }
+   ],
+   "expected": "unsupported"
+  },
+  {
+   "name": "bad text",
+   "function": "recordClass",
+   "args": [
+    {
+     "_id": 1,
+     "uuid": "a",
+     "title": "Plan",
+     "note": null,
+     "type": 0,
+     "active_state": 0,
+     "space": 0,
+     "created_date": 0,
+     "modified_date": 1,
+     "color_index": 0
+    }
+   ],
+   "expected": "unsupported"
+  },
+  {
+   "name": "checklist 16",
+   "function": "checklist",
+   "args": [
+    "[ ] Item 1\n[V] Item 2"
+   ],
+   "expected": "- [ ] Item 1\n- [x] Item 2"
+  },
+  {
+   "name": "checklist 17",
+   "function": "checklist",
+   "args": [
+    "[V] A\n[V] B"
+   ],
+   "expected": "- [x] A\n- [x] B"
+  },
+  {
+   "name": "checklist 18",
+   "function": "checklist",
+   "args": [
+    "Text [V] inside"
+   ],
+   "expected": "Text [V] inside"
+  },
+  {
+   "name": "checklist 19",
+   "function": "checklist",
+   "args": [
+    "[ ]\n[V]"
+   ],
+   "expected": "- [ ]\n- [x]"
+  },
+  {
+   "name": "checklist 20",
+   "function": "checklist",
+   "args": [
+    "  [ ] Indent"
+   ],
+   "expected": "  [ ] Indent"
+  },
+  {
+   "name": "checklist 21",
+   "function": "checklist",
+   "args": [
+    "Привет\n[V] 世界"
+   ],
+   "expected": "Привет\n- [x] 世界"
+  },
+  {
+   "name": "name 22",
+   "function": "safeName",
+   "args": [
+    "Plan"
+   ],
+   "expected": "Plan"
+  },
+  {
+   "name": "name 23",
+   "function": "safeName",
+   "args": [
+    "a/b:c"
+   ],
+   "expected": "a b c"
+  },
+  {
+   "name": "name 24",
+   "function": "safeName",
+   "args": [
+    "..."
+   ],
+   "expected": "Untitled"
+  },
+  {
+   "name": "name 25",
+   "function": "safeName",
+   "args": [
+    ""
+   ],
+   "expected": "Untitled"
+  },
+  {
+   "name": "decode synthetic 9",
+   "function": "decodeCount",
+   "args": [
+    9,
+    7,
+    "1234"
+   ],
+   "expected": {
+    "records": 9,
+    "headerCount": 7
+   }
+  },
+  {
+   "name": "decode synthetic 20",
+   "function": "decodeCount",
+   "args": [
+    20,
+    15,
+    "0000"
+   ],
+   "expected": {
+    "records": 20,
+    "headerCount": 15
+   }
+  },
+  {
+   "name": "decode synthetic 49",
+   "function": "decodeCount",
+   "args": [
+    49,
+    37,
+    "0000"
+   ],
+   "expected": {
+    "records": 49,
+    "headerCount": 37
+   }
+  },
+  {
+   "name": "same text",
+   "function": "compareBackups",
+   "args": [
+    {
+     "headerCount": 1,
+     "records": [
+      {
+       "_id": 1,
+       "uuid": "a",
+       "title": "Plan",
+       "note": "Text",
+       "type": 0,
+       "active_state": 0,
+       "space": 0,
+       "created_date": 0,
+       "modified_date": 1,
+       "color_index": 0
+      }
+     ]
+    },
+    {
+     "headerCount": 1,
+     "records": [
+      {
+       "_id": 1,
+       "uuid": "a",
+       "title": "Plan",
+       "note": "Text",
+       "type": 0,
+       "active_state": 0,
+       "space": 0,
+       "created_date": 0,
+       "modified_date": 1,
+       "color_index": 0
+      }
+     ]
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "changed text",
+   "function": "compareBackups",
+   "args": [
+    {
+     "headerCount": 1,
+     "records": [
+      {
+       "_id": 1,
+       "uuid": "a",
+       "title": "Plan",
+       "note": "Text",
+       "type": 0,
+       "active_state": 0,
+       "space": 0,
+       "created_date": 0,
+       "modified_date": 1,
+       "color_index": 0
+      }
+     ]
+    },
+    {
+     "headerCount": 1,
+     "records": [
+      {
+       "_id": 1,
+       "uuid": "a",
+       "title": "Plan",
+       "note": "New",
+       "type": 0,
+       "active_state": 0,
+       "space": 0,
+       "created_date": 0,
+       "modified_date": 1,
+       "color_index": 0
+      }
+     ]
+    }
+   ],
+   "expected": [
+    {
+     "uuid": "a",
+     "kind": "changed",
+     "before": "Text",
+     "after": "New"
+    }
+   ]
+  },
+  {
+   "name": "wrong password",
+   "function": "reject",
+   "args": [
+    "wrong-password"
+   ],
+   "expected": "AES-CBC padding is invalid. Check the password."
+  },
+  {
+   "name": "bad version",
+   "function": "reject",
+   "args": [
+    "version"
+   ],
+   "expected": "Unsupported header version 8.0. Only 7.1 is supported."
+  },
+  {
+   "name": "bad chunk",
+   "function": "reject",
+   "args": [
+    "length"
+   ],
+   "expected": "Record 1: length 999999 exceeds the remaining 7 bytes or is zero."
+  },
+  {
+   "name": "duplicate Plan titles retain both bodies",
+   "function": "importSummary",
+   "args": [
+    [
+     {
+      "_id": 1,
+      "uuid": "a",
+      "title": "Plan",
+      "note": "First",
+      "type": 0,
+      "active_state": 0,
+      "space": 0,
+      "created_date": 0,
+      "modified_date": 1,
+      "color_index": 0
+     },
+     {
+      "_id": 2,
+      "uuid": "b",
+      "title": "Plan",
+      "note": "Second",
+      "type": 0,
+      "active_state": 0,
+      "space": 0,
+      "created_date": 0,
+      "modified_date": 1,
+      "color_index": 0
+     }
+    ]
+   ],
+   "expected": {
+    "filenames": [
+     "Plan a.md",
+     "Plan b.md",
+     "Import report.md"
+    ],
+    "bodies": [
+     "First",
+     "Second"
+    ],
+    "passwordSaved": false
+   }
+  },
+  {
+   "name": "offline browser import and modal password clear",
+   "function": "privacy",
+   "args": [],
+   "expected": {
+    "requests": 0,
+    "password": "",
+    "settings": {
+     "profiles": []
+    }
+   }
+  },
+  {
+   "name": "invalid spaced parent folder",
+   "function": "folderReject",
+   "args": [
+    "Notes/ .. /Other"
+   ],
+   "expected": "Use a relative folder path without empty, hidden or parent segments."
+  },
+  {
+   "name": "valid mapping profile",
+   "function": "colorMap",
+   "args": [
+    "{\"0\":\"Yellow\",\"1\":\"Green\"}"
+   ],
+   "expected": {
+    "0": "Yellow",
+    "1": "Green"
+   }
+  },
+  {
+   "name": "invalid color labels",
+   "function": "mapReject",
+   "args": [
+    "{\"0\":15}"
+   ],
+   "expected": "Color keys must be integers and labels must be text of 80 characters or less."
+  },
+  {
+   "name": "free profile guard",
+   "function": "profileGuard",
+   "args": [],
+   "expected": {
+    "saved": false,
+    "profiles": []
+   }
+  },
+  {
+   "name": "reserve the import report file name",
+   "function": "importSummary",
+   "args": [
+    [
+     {
+      "_id": 1,
+      "uuid": "report",
+      "title": "Import",
+      "note": "Keep this note.",
+      "type": 0,
+      "active_state": 0,
+      "space": 0,
+      "created_date": 0,
+      "modified_date": 1,
+      "color_index": 0
+     }
+    ]
+   ],
+   "expected": {
+    "filenames": [
+     "Import report 2.md",
+     "Import report.md"
+    ],
+    "bodies": [
+     "Keep this note."
+    ],
+    "passwordSaved": false
+   }
+  },
+  {
+   "name": "keep normalized Unicode path collisions separate",
+   "function": "importSummary",
+   "args": [
+    [
+     {
+      "_id": 1,
+      "uuid": "é",
+      "title": "Plan",
+      "note": "First",
+      "type": 0,
+      "active_state": 0,
+      "space": 0,
+      "created_date": 0,
+      "modified_date": 1,
+      "color_index": 0
+     },
+     {
+      "_id": 2,
+      "uuid": "é",
+      "title": "Plan",
+      "note": "Second",
+      "type": 0,
+      "active_state": 0,
+      "space": 0,
+      "created_date": 0,
+      "modified_date": 1,
+      "color_index": 0
+     }
+    ]
+   ],
+   "expected": {
+    "filenames": [
+     "Plan é.md",
+     "Plan é 2.md",
+     "Import report.md"
+    ],
+    "bodies": [
+     "First",
+     "Second"
+    ],
+    "passwordSaved": false
+   }
+  }
+ ]
+}
