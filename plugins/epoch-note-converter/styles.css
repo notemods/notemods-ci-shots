@@ -1,0 +1,57 @@
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
+
+.epoch-converter-modal {
+  width: min(860px, 94vw);
+}
+
+.epoch-converter-modal .epoch-source {
+  padding: var(--size-4-3);
+  background: var(--background-secondary);
+  border-radius: var(--radius-m);
+  font-family: var(--font-monospace);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.epoch-converter-modal .epoch-result .setting-item-description {
+  font-family: var(--font-monospace);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--text-normal);
+}
+
+.epoch-converter-modal .epoch-error .setting-item-description {
+  color: var(--text-error);
+}
+
+.epoch-converter-modal .epoch-chosen {
+  color: var(--text-accent);
+}
+
+.epoch-converter-modal .epoch-actions {
+  flex-wrap: wrap;
+  gap: var(--size-4-2);
+}
+
+.epoch-converter-modal .epoch-actions .setting-item-control {
+  flex-wrap: wrap;
+}

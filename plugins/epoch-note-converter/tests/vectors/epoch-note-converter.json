@@ -1,0 +1,462 @@
+{
+ "slug": "epoch-note-converter",
+ "module": "epoch-note-converter/src/converter",
+ "function": "convert",
+ "cases": [
+  {
+   "name": "01 zero seconds UTC",
+   "args": [
+    "0",
+    "seconds",
+    "utc"
+   ],
+   "expected": {
+    "ok": true,
+    "value": "1970-01-01T00:00:00.000Z"
+   }
+  },
+  {
+   "name": "02 negative second UTC",
+   "args": [
+    "-1",
+    "seconds",
+    "utc"
+   ],
+   "expected": {
+    "ok": true,
+    "value": "1969-12-31T23:59:59.000Z"
+   }
+  },
+  {
+   "name": "03a ambiguous integer seconds",
+   "args": [
+    "1000",
+    "seconds",
+    "utc"
+   ],
+   "expected": {
+    "ok": true,
+    "value": "1970-01-01T00:16:40.000Z"
+   }
+  },
+  {
+   "name": "03b ambiguous integer milliseconds",
+   "args": [
+    "1000",
+    "milliseconds",
+    "utc"
+   ],
+   "expected": {
+    "ok": true,
+    "value": "1970-01-01T00:00:01.000Z"
+   }
+  },
+  {
+   "name": "04 incident epoch seconds",
+   "args": [
+    "1704067200",
+    "seconds",
+    "utc"
+   ],
+   "expected": {
+    "ok": true,
+    "value": "2024-01-01T00:00:00.000Z"
+   }
+  },
+  {
+   "name": "05 incident epoch milliseconds",
+   "args": [
+    "1704067200000",
+    "milliseconds",
+    "utc"
+   ],
+   "expected": {
+    "ok": true,
+    "value": "2024-01-01T00:00:00.000Z"
+   }
+  },
+  {
+   "name": "06 plus seven offset",
+   "args": [
+    "1704067200",
+    "seconds",
+    "Asia/Bangkok"
+   ],
+   "expected": {
+    "ok": true,
+    "value": "2024-01-01T07:00:00.000+07:00"
+   }
+  },
+  {
+   "name": "07 invalid integer 1",
+   "args": [
+    "1.5",
+    "seconds"
+   ],
+   "expected": {
+    "ok": false,
+    "error": "Select one signed integer. Fractions, exponents and text are not supported."
+   }
+  },
+  {
+   "name": "07 invalid integer 2",
+   "args": [
+    "1e3",
+    "seconds"
+   ],
+   "expected": {
+    "ok": false,
+    "error": "Select one signed integer. Fractions, exponents and text are not supported."
+   }
+  },
+  {
+   "name": "07 invalid integer 3",
+   "args": [
+    "abc",
+    "seconds"
+   ],
+   "expected": {
+    "ok": false,
+    "error": "Select one signed integer. Fractions, exponents and text are not supported."
+   }
+  },
+  {
+   "name": "07 invalid integer 4",
+   "args": [
+    "0x10",
+    "seconds"
+   ],
+   "expected": {
+    "ok": false,
+    "error": "Select one signed integer. Fractions, exponents and text are not supported."
+   }
+  },
+  {
+   "name": "07 invalid integer 5",
+   "args": [
+    "1,000",
+    "seconds"
+   ],
+   "expected": {
+    "ok": false,
+    "error": "Select one signed integer. Fractions, exponents and text are not supported."
+   }
+  },
+  {
+   "name": "07 invalid integer 6",
+   "args": [
+    "",
+    "seconds"
+   ],
+   "expected": {
+    "ok": false,
+    "error": "Select one signed integer. Fractions, exponents and text are not supported."
+   }
+  },
+  {
+   "name": "07 invalid integer 7",
+   "args": [
+    "1\n2",
+    "seconds"
+   ],
+   "expected": {
+    "ok": false,
+    "error": "Select one signed integer. Fractions, exponents and text are not supported."
+   }
+  },
+  {
+   "name": "07 invalid integer 8",
+   "args": [
+    "--1",
+    "seconds"
+   ],
+   "expected": {
+    "ok": false,
+    "error": "Select one signed integer. Fractions, exponents and text are not supported."
+   }
+  },
+  {
+   "name": "08a seconds range error",
+   "args": [
+    "8640000000001",
+    "seconds"
+   ],
+   "expected": {
+    "ok": false,
+    "error": "Timestamp is outside the supported date range."
+   }
+  },
+  {
+   "name": "08b milliseconds range error",
+   "args": [
+    "8640000000000001",
+    "milliseconds"
+   ],
+   "expected": {
+    "ok": false,
+    "error": "Timestamp is outside the supported date range."
+   }
+  },
+  {
+   "name": "08c huge integer range error",
+   "args": [
+    "999999999999999999999999999999999999",
+    "seconds"
+   ],
+   "expected": {
+    "ok": false,
+    "error": "Timestamp is outside the supported date range."
+   }
+  },
+  {
+   "name": "08d largest milliseconds",
+   "args": [
+    "8640000000000000",
+    "milliseconds",
+    "utc"
+   ],
+   "expected": {
+    "ok": true,
+    "value": "+275760-09-13T00:00:00.000Z"
+   }
+  },
+  {
+   "name": "08e smallest seconds",
+   "args": [
+    "-8640000000000",
+    "seconds",
+    "utc"
+   ],
+   "expected": {
+    "ok": true,
+    "value": "-271821-04-20T00:00:00.000Z"
+   }
+  },
+  {
+   "name": "09 stale source refuses replacement",
+   "args": [
+    {
+     "text": "1000",
+     "document": "Before 1000 after",
+     "from": {
+      "line": 0,
+      "ch": 7
+     },
+     "to": {
+      "line": 0,
+      "ch": 11
+     }
+    },
+    {
+     "text": "2000",
+     "document": "Before 2000 after",
+     "from": {
+      "line": 0,
+      "ch": 7
+     },
+     "to": {
+      "line": 0,
+      "ch": 11
+     }
+    }
+   ],
+   "expected": false,
+   "function": "sameSnapshot"
+  },
+  {
+   "name": "09b fresh snapshot allows replacement",
+   "args": [
+    {
+     "text": "1000",
+     "document": "Before 1000 after",
+     "from": {
+      "line": 0,
+      "ch": 7
+     },
+     "to": {
+      "line": 0,
+      "ch": 11
+     }
+    },
+    {
+     "text": "1000",
+     "document": "Before 1000 after",
+     "from": {
+      "line": 0,
+      "ch": 7
+     },
+     "to": {
+      "line": 0,
+      "ch": 11
+     }
+    }
+   ],
+   "expected": true,
+   "function": "sameSnapshot"
+  },
+  {
+   "name": "10 replacement preserves exact original as undo source",
+   "args": [
+    "1000",
+    "1970-01-01T00:00:01.000Z",
+    "replace"
+   ],
+   "expected": "1970-01-01T00:00:01.000Z",
+   "function": "editText"
+  },
+  {
+   "name": "10b insert retains original",
+   "args": [
+    "1000",
+    "1970-01-01T00:00:01.000Z",
+    "insert"
+   ],
+   "expected": "1000 → 1970-01-01T00:00:01.000Z",
+   "function": "editText"
+  },
+  {
+   "name": "11 signed positive input",
+   "args": [
+    "+1000",
+    "milliseconds",
+    "utc"
+   ],
+   "expected": {
+    "ok": true,
+    "value": "1970-01-01T00:00:01.000Z"
+   }
+  },
+  {
+   "name": "12 leading zeros",
+   "args": [
+    "0001",
+    "seconds",
+    "utc"
+   ],
+   "expected": {
+    "ok": true,
+    "value": "1970-01-01T00:00:01.000Z"
+   }
+  },
+  {
+   "name": "13 negative millisecond",
+   "args": [
+    "-1",
+    "milliseconds",
+    "utc"
+   ],
+   "expected": {
+    "ok": true,
+    "value": "1969-12-31T23:59:59.999Z"
+   }
+  },
+  {
+   "name": "14 daylight saving winter",
+   "args": [
+    "1704067200",
+    "seconds",
+    "America/New_York"
+   ],
+   "expected": {
+    "ok": true,
+    "value": "2023-12-31T19:00:00.000-05:00"
+   }
+  },
+  {
+   "name": "15 daylight saving summer",
+   "args": [
+    "1719792000",
+    "seconds",
+    "America/New_York"
+   ],
+   "expected": {
+    "ok": true,
+    "value": "2024-06-30T20:00:00.000-04:00"
+   }
+  },
+  {
+   "name": "16 half hour offset",
+   "args": [
+    "1704067200",
+    "seconds",
+    "Asia/Kolkata"
+   ],
+   "expected": {
+    "ok": true,
+    "value": "2024-01-01T05:30:00.000+05:30"
+   }
+  },
+  {
+   "name": "17 quarter hour offset",
+   "args": [
+    "1704067200",
+    "seconds",
+    "Asia/Kathmandu"
+   ],
+   "expected": {
+    "ok": true,
+    "value": "2024-01-01T05:45:00.000+05:45"
+   }
+  },
+  {
+   "name": "18 saved technical format",
+   "args": [
+    "1704067200",
+    "seconds",
+    "utc",
+    "{date} {time} {offset}"
+   ],
+   "expected": {
+    "ok": true,
+    "value": "2024-01-01 00:00:00.000 Z"
+   }
+  },
+  {
+   "name": "19 invalid saved zone",
+   "args": [
+    "0",
+    "seconds",
+    "Wrong/Zone"
+   ],
+   "expected": {
+    "ok": false,
+    "error": "Time zone is not supported on this device."
+   }
+  },
+  {
+   "name": "20 column conversion",
+   "args": [
+    "0\n-1",
+    "seconds",
+    "utc"
+   ],
+   "expected": {
+    "ok": true,
+    "value": "1970-01-01T00:00:00.000Z\n1969-12-31T23:59:59.000Z"
+   },
+   "function": "column"
+  },
+  {
+   "name": "21 invalid column row",
+   "args": [
+    "0\nabc",
+    "seconds"
+   ],
+   "expected": {
+    "ok": false,
+    "error": "Row 2: Select one signed integer. Fractions, exponents and text are not supported."
+   },
+   "function": "column"
+  },
+  {
+   "name": "22 column insertion preserves rows",
+   "args": [
+    "0\n-1",
+    "a\nb",
+    "insert"
+   ],
+   "expected": "0 → a\n-1 → b",
+   "function": "editText"
+  }
+ ]
+}

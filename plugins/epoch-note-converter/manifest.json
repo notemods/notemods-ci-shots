@@ -1,0 +1,11 @@
+{
+	"id": "epoch-note-converter",
+	"name": "Epoch Note Converter",
+	"version": "1.1.1",
+	"minAppVersion": "1.13.4",
+	"description": "Convert a selected Unix timestamp into an explicit UTC or local date and time.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}

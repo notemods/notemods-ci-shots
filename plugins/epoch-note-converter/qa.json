@@ -1,0 +1,76 @@
+[
+  {
+    "feature": "interpretations",
+    "caption": "Seconds and milliseconds are separate choices.",
+    "note": "Incident log.md",
+    "eval": "(async () => { const p = app.plugins.plugins['epoch-note-converter']; for (const m of [...p.previews]) m.close();p.pro.signOut();const v = app.workspace.getMostRecentLeaf().view; await v.setState({ mode: 'source', source: true }, { history: false }); const e = v.editor; const value = e.getValue(); const start = value.indexOf(\"1000\"); if (start < 0) throw new Error('Sample source missing'); e.setSelection(e.offsetToPos(start), e.offsetToPos(start + 4)); e.focus(); p.openConverter(e, false); return 'ok'; })()",
+    "after": "const p = app.plugins.plugins['epoch-note-converter']; for (const m of [...p.previews]) m.close(); p.pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "utc-local",
+    "caption": "UTC and device-local values have explicit offsets.",
+    "note": "Incident log.md",
+    "eval": "(async () => { const p = app.plugins.plugins['epoch-note-converter']; for (const m of [...p.previews]) m.close();p.pro.signOut();const v = app.workspace.getMostRecentLeaf().view; await v.setState({ mode: 'source', source: true }, { history: false }); const e = v.editor; const value = e.getValue(); const start = value.indexOf(\"1704067200\"); if (start < 0) throw new Error('Sample source missing'); e.setSelection(e.offsetToPos(start), e.offsetToPos(start + 10)); e.focus(); p.openConverter(e, false); return 'ok'; })()",
+    "after": "const p = app.plugins.plugins['epoch-note-converter']; for (const m of [...p.previews]) m.close(); p.pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "insert-result",
+    "caption": "The inserted result stays beside the source integer.",
+    "note": "Incident log.md",
+    "eval": "(async () => { const p = app.plugins.plugins['epoch-note-converter']; for (const m of [...p.previews]) m.close();p.pro.signOut();const v = app.workspace.getMostRecentLeaf().view; await v.setState({ mode: 'source', source: true }, { history: false }); const e = v.editor; const value = e.getValue(); const start = value.indexOf(\"1704067200\"); if (start < 0) throw new Error('Sample source missing'); e.setSelection(e.offsetToPos(start), e.offsetToPos(start + 10)); e.focus(); p.openConverter(e, false); document.querySelector('.epoch-converter-modal [data-unit=\"seconds\"][data-zone=\"utc\"] button').click();[...document.querySelectorAll('.epoch-actions button')].find((b) => b.textContent === 'Insert beside original').click();return 'ok'; })()",
+    "after": "const p = app.plugins.plugins['epoch-note-converter']; for (const m of [...p.previews]) m.close(); p.pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "range-check",
+    "caption": "An out-of-range interpretation has no enabled choice.",
+    "note": "Range check.md",
+    "eval": "(async () => { const p = app.plugins.plugins['epoch-note-converter']; for (const m of [...p.previews]) m.close();p.pro.signOut();const v = app.workspace.getMostRecentLeaf().view; await v.setState({ mode: 'source', source: true }, { history: false }); const e = v.editor; const value = e.getValue(); const start = value.indexOf(\"8640000000001\"); if (start < 0) throw new Error('Sample source missing'); e.setSelection(e.offsetToPos(start), e.offsetToPos(start + 13)); e.focus(); p.openConverter(e, false); return 'ok'; })()",
+    "after": "const p = app.plugins.plugins['epoch-note-converter']; for (const m of [...p.previews]) m.close(); p.pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "column",
+    "caption": "Pro converts one selected column of log times.",
+    "note": "Column log.md",
+    "eval": "(async () => { const p = app.plugins.plugins['epoch-note-converter']; for (const m of [...p.previews]) m.close();p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('epoch-note-converter-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow();p.settings = {\"zones\": \"\", \"format\": \"{date}T{time}{offset}\"};const v = app.workspace.getMostRecentLeaf().view; await v.setState({ mode: 'source', source: true }, { history: false }); const e = v.editor; const value = e.getValue(); const start = value.indexOf(\"1704067200\\n1704067260\\n1704067320\"); if (start < 0) throw new Error('Sample source missing'); e.setSelection(e.offsetToPos(start), e.offsetToPos(start + 32)); e.focus(); p.openConverter(e, true); return 'ok'; })()",
+    "after": "const p = app.plugins.plugins['epoch-note-converter']; for (const m of [...p.previews]) m.close(); p.pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "saved-zones",
+    "caption": "Pro compares one time in saved zones.",
+    "note": "Incident log.md",
+    "zoom": 0.85,
+    "eval": "(async () => { const p = app.plugins.plugins['epoch-note-converter']; for (const m of [...p.previews]) m.close();p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('epoch-note-converter-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow();p.settings = {\"zones\": \"Asia/Bangkok\", \"format\": \"{date}T{time}{offset}\"};const v = app.workspace.getMostRecentLeaf().view; await v.setState({ mode: 'source', source: true }, { history: false }); const e = v.editor; const value = e.getValue(); const start = value.indexOf(\"1704067200\"); if (start < 0) throw new Error('Sample source missing'); e.setSelection(e.offsetToPos(start), e.offsetToPos(start + 10)); e.focus(); p.openConverter(e, false); return 'ok'; })()",
+    "after": "const p = app.plugins.plugins['epoch-note-converter']; for (const m of [...p.previews]) m.close(); p.pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "saved-format",
+    "caption": "Pro uses a saved technical output format.",
+    "note": "Incident log.md",
+    "zoom": 0.85,
+    "eval": "(async () => { const p = app.plugins.plugins['epoch-note-converter']; for (const m of [...p.previews]) m.close();p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('epoch-note-converter-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow();p.settings = {\"zones\": \"\", \"format\": \"{date} {time} {offset}\"};const v = app.workspace.getMostRecentLeaf().view; await v.setState({ mode: 'source', source: true }, { history: false }); const e = v.editor; const value = e.getValue(); const start = value.indexOf(\"1704067200\"); if (start < 0) throw new Error('Sample source missing'); e.setSelection(e.offsetToPos(start), e.offsetToPos(start + 10)); e.focus(); p.openConverter(e, false); const s = document.querySelector('.epoch-converter-modal select'); s.value = 'saved'; s.dispatchEvent(new Event('change'));return 'ok'; })()",
+    "after": "const p = app.plugins.plugins['epoch-note-converter']; for (const m of [...p.previews]) m.close(); p.pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "conversion",
+    "caption": "Select a unit, insert the result, and use Undo.",
+    "frames": [
+      {
+        "note": "Incident log.md",
+        "eval": "(async () => { const p = app.plugins.plugins['epoch-note-converter']; for (const m of [...p.previews]) m.close();p.pro.signOut();const v = app.workspace.getMostRecentLeaf().view; await v.setState({ mode: 'source', source: true }, { history: false }); const e = v.editor; const value = e.getValue(); const start = value.indexOf(\"1704067200\"); if (start < 0) throw new Error('Sample source missing'); e.setSelection(e.offsetToPos(start), e.offsetToPos(start + 10)); e.focus(); p.openConverter(e, false); return 'ok'; })()",
+        "hold": 1600
+      },
+      {
+        "eval": "document.querySelector('.epoch-converter-modal [data-unit=\"seconds\"][data-zone=\"utc\"] button').click(); 'ok'",
+        "hold": 1200
+      },
+      {
+        "eval": "[...document.querySelectorAll('.epoch-actions button')].find((b) => b.textContent === 'Insert beside original').click(); 'ok'",
+        "hold": 1600
+      },
+      {
+        "eval": "app.workspace.getMostRecentLeaf().view.editor.undo(); 'ok'",
+        "hold": 1200
+      }
+    ]
+  }
+]
