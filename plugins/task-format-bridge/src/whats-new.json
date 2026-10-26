@@ -1,0 +1,27 @@
+{
+	"id": "task-format-bridge",
+	"name": "Task Format Bridge",
+	"version": "1.2.1",
+	"changes": [
+		"The Pro notice for folder migration reports now has a Sponsor on GitHub button."
+	],
+	"tip": "Apply makes one editor change, so one undo in the note restores the previous task text.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Task Format Bridge is one of over 100 small plugins that I make. Thank you for using it to keep your tasks in order.",
+	"related": [
+		{
+			"id": "task-field-labels",
+			"name": "Task Field Labels",
+			"blurb": "Show text labels for dates, priority, and recurrence in rendered tasks."
+		},
+		{
+			"id": "task-date-links",
+			"name": "Task Date Links",
+			"blurb": "Add a daily note link to a task when you complete it."
+		},
+		{
+			"id": "bases-task-rows",
+			"name": "Bases Task Rows",
+			"blurb": "Show each checklist task in the notes of a base as its own row, with due dates and tags."
+		}
+	]
+}

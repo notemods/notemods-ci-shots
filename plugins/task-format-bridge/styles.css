@@ -1,0 +1,52 @@
+.task-format-bridge-modal {
+ width: min(920px, 94vw);
+}
+
+.task-format-bridge-change {
+ padding: var(--size-4-3);
+ margin-bottom: var(--size-4-3);
+ border: 1px solid var(--background-modifier-border);
+ border-radius: var(--radius-m);
+ background-color: var(--background-secondary);
+}
+
+.task-format-bridge-change pre {
+ white-space: pre-wrap;
+ overflow-wrap: anywhere;
+ padding: var(--size-4-2);
+ font-size: var(--font-smaller);
+}
+
+.task-format-bridge-before {
+ color: var(--text-muted);
+}
+
+.task-format-bridge-after {
+ color: var(--text-normal);
+ border-left: 3px solid var(--interactive-accent);
+}
+
+.task-format-bridge-warning {
+ color: var(--text-warning);
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
