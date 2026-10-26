@@ -1,0 +1,27 @@
+{
+	"id": "cherrytree-import",
+	"name": "CherryTree Import",
+	"version": "1.1.2",
+	"changes": [
+		"Tags and creation dates, Parent index notes and Selected subtree now show how to get Pro, with a Sponsor on GitHub button, when you select them. The option stays off until Pro is on."
+	],
+	"tip": "Export a CherryTree .ctb document as XML first, because the importer needs a .ctd file.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. CherryTree Import is one of over 100 small plugins that I make. Thank you for moving your notes into Obsidian with it.",
+	"related": [
+		{
+			"id": "zim-notebook-import",
+			"name": "Zim Notebook Import",
+			"blurb": "Convert basic Zim pages into linked Markdown notes."
+		},
+		{
+			"id": "standard-notes-import",
+			"name": "Standard Notes Import",
+			"blurb": "Import supported text, tags, UUIDs and dates from a decrypted JSON backup."
+		},
+		{
+			"id": "notestation-nsx-import",
+			"name": "Note Station NSX Import",
+			"blurb": "Import Note Station backups as notes with notebooks, dates, tags, and local attachments."
+		}
+	]
+}
