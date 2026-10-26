@@ -1,0 +1,27 @@
+{
+	"id": "bases-descendant-filter",
+	"name": "Bases Descendant Filter",
+	"version": "1.3.1",
+	"changes": [
+		"The Pro notice for route explanations now has a Sponsor on GitHub button."
+	],
+	"tip": "Intermediate notes can stay outside the Bases query. The view still reads their parent links to connect the root to your notes.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Bases Descendant Filter is one of over 100 small plugins that I make. Thank you for using it with Bases. Bases is still new, and your setups teach me a lot.",
+	"related": [
+		{
+			"id": "bases-filter-switches",
+			"name": "Bases Filter Switches",
+			"blurb": "Turn saved Bases filters on or off with switches."
+		},
+		{
+			"id": "bases-link-graph",
+			"name": "Bases Link Graph",
+			"blurb": "See the notes and links from a filtered base as a graph."
+		},
+		{
+			"id": "bases-freeze-panes",
+			"name": "Bases Freeze Panes",
+			"blurb": "Keep column and note names visible as you scroll a base."
+		}
+	]
+}
