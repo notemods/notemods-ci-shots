@@ -1,0 +1,558 @@
+{
+ "slug": "shared-tex-preamble",
+ "module": "shared-tex-preamble/src/preamble",
+ "function": "parsePreamble",
+ "note": "Each case calls the export of src/preamble named in \"function\" with args and compares the result. \"acceptance\" names the BRIEF.md acceptance case (A1 to A8) or \"core\". For expand and sampleCall, the last argument is the library source: the test parses it with parsePreamble and passes its defs. expand expected is {text, error}, or {error} alone when the expansion stops.",
+ "cases": [
+  {
+   "name": "case 1: one newcommand with one argument",
+   "acceptance": "A1",
+   "function": "parsePreamble",
+   "args": [
+    "\\newcommand{\\Vcheck}[1]{#1+7}"
+   ],
+   "expected": {
+    "defs": [
+     {
+      "name": "Vcheck",
+      "kind": "newcommand",
+      "args": 1,
+      "optional": null,
+      "body": "#1+7",
+      "source": "\\newcommand{\\Vcheck}[1]{#1+7}",
+      "line": 1
+     }
+    ],
+    "errors": [],
+    "blocked": []
+   }
+  },
+  {
+   "name": "case 1: the sample call expands to 2+7",
+   "acceptance": "A1",
+   "function": "expand",
+   "args": [
+    "\\Vcheck{2}",
+    "\\newcommand{\\Vcheck}[1]{#1+7}"
+   ],
+   "expected": {
+    "text": "2+7",
+    "error": null
+   }
+  },
+  {
+   "name": "case 2: a Markdown macro file keeps the definition in a $$ block",
+   "acceptance": "A2",
+   "function": "extractTex",
+   "args": [
+    "---\ntags: tex\n---\n# Macros\n\n$$\n\\newcommand{\\Vcheck}[1]{#1+7}\n$$\n\nText that is not TeX.",
+    "md"
+   ],
+   "expected": "\n\n\n\n\n\n\\newcommand{\\Vcheck}[1]{#1+7}\n\n\n"
+  },
+  {
+   "name": "case 2: the TeX part of a Markdown file parses with its file line number",
+   "acceptance": "A2",
+   "function": "parsePreamble",
+   "args": [
+    "\n\n\n\n\n\n\\newcommand{\\Vcheck}[1]{#1+7}\n\n\n"
+   ],
+   "expected": {
+    "defs": [
+     {
+      "name": "Vcheck",
+      "kind": "newcommand",
+      "args": 1,
+      "optional": null,
+      "body": "#1+7",
+      "source": "\\newcommand{\\Vcheck}[1]{#1+7}",
+      "line": 7
+     }
+    ],
+    "errors": [],
+    "blocked": []
+   }
+  },
+  {
+   "name": "case 3: renewcommand replaces the body",
+   "acceptance": "A3",
+   "function": "parsePreamble",
+   "args": [
+    "\\renewcommand{\\Vcheck}[1]{#1+8}"
+   ],
+   "expected": {
+    "defs": [
+     {
+      "name": "Vcheck",
+      "kind": "renewcommand",
+      "args": 1,
+      "optional": null,
+      "body": "#1+8",
+      "source": "\\renewcommand{\\Vcheck}[1]{#1+8}",
+      "line": 1
+     }
+    ],
+    "errors": [],
+    "blocked": []
+   }
+  },
+  {
+   "name": "case 3: after the change, the sample expands to 2+8",
+   "acceptance": "A3",
+   "function": "expand",
+   "args": [
+    "\\Vcheck{2}",
+    "\\newcommand{\\Vcheck}[1]{#1+7}\n\\renewcommand{\\Vcheck}[1]{#1+8}"
+   ],
+   "expected": {
+    "text": "2+8",
+    "error": null
+   }
+  },
+  {
+   "name": "case 4: a .tex path is a macro file type",
+   "acceptance": "A4",
+   "function": "isPreambleExtension",
+   "args": [
+    "tex"
+   ],
+   "expected": true
+  },
+  {
+   "name": "case 4: a .pdf path is not a macro file type",
+   "acceptance": "A4",
+   "function": "isPreambleExtension",
+   "args": [
+    "pdf"
+   ],
+   "expected": false
+  },
+  {
+   "name": "case 5: an empty file has no definitions and no errors",
+   "acceptance": "A5",
+   "function": "parsePreamble",
+   "args": [
+    ""
+   ],
+   "expected": {
+    "defs": [],
+    "errors": [],
+    "blocked": []
+   }
+  },
+  {
+   "name": "case 5: a file with only comments and blank lines is empty",
+   "acceptance": "A5",
+   "function": "parsePreamble",
+   "args": [
+    "% my macros\n\n   \n% none yet\n"
+   ],
+   "expected": {
+    "defs": [],
+    "errors": [],
+    "blocked": []
+   }
+  },
+  {
+   "name": "case 6: newcommand with no replacement text is a parse error",
+   "acceptance": "A6",
+   "function": "parsePreamble",
+   "args": [
+    "\\newcommand{\\Broken}[1]"
+   ],
+   "expected": {
+    "defs": [],
+    "errors": [
+     {
+      "line": 1,
+      "message": "\\newcommand{\\Broken} has no replacement text"
+     }
+    ],
+    "blocked": []
+   }
+  },
+  {
+   "name": "case 6: a broken line does not stop the next definition",
+   "acceptance": "A6",
+   "function": "parsePreamble",
+   "args": [
+    "\\newcommand{\\Broken}[1]\n\\newcommand{\\Vcheck}[1]{#1+7}"
+   ],
+   "expected": {
+    "defs": [
+     {
+      "name": "Vcheck",
+      "kind": "newcommand",
+      "args": 1,
+      "optional": null,
+      "body": "#1+7",
+      "source": "\\newcommand{\\Vcheck}[1]{#1+7}",
+      "line": 2
+     }
+    ],
+    "errors": [
+     {
+      "line": 1,
+      "message": "\\newcommand{\\Broken} has no replacement text"
+     }
+    ],
+    "blocked": []
+   }
+  },
+  {
+   "name": "case 6: a body with no closing brace is a parse error",
+   "acceptance": "A6",
+   "function": "parsePreamble",
+   "args": [
+    "\\newcommand{\\Open}{\\frac{a}{b}"
+   ],
+   "expected": {
+    "defs": [],
+    "errors": [
+     {
+      "line": 1,
+      "message": "\\newcommand{\\Open} has a replacement text with no closing }"
+     }
+    ],
+    "blocked": []
+   }
+  },
+  {
+   "name": "case 6: #2 in a one argument macro is a parse error",
+   "acceptance": "A6",
+   "function": "parsePreamble",
+   "args": [
+    "\\newcommand{\\Two}[1]{#1+#2}"
+   ],
+   "expected": {
+    "defs": [],
+    "errors": [
+     {
+      "line": 1,
+      "message": "\\newcommand{\\Two} uses #2 but has 1 argument"
+     }
+    ],
+    "blocked": []
+   }
+  },
+  {
+   "name": "case 7: require is blocked",
+   "acceptance": "A7",
+   "function": "parsePreamble",
+   "args": [
+    "\\require{some-package}"
+   ],
+   "expected": {
+    "defs": [],
+    "errors": [
+     {
+      "line": 1,
+      "message": "\"\\require{some-package}\" is not a macro definition"
+     }
+    ],
+    "blocked": [
+     {
+      "line": 1,
+      "message": "\\require loads a package or a file. The plugin does not load packages."
+     }
+    ]
+   }
+  },
+  {
+   "name": "case 7: usepackage is blocked even after a good definition",
+   "acceptance": "A7",
+   "function": "parsePreamble",
+   "args": [
+    "\\newcommand{\\R}{\\mathbb{R}}\n\\usepackage{some-package}"
+   ],
+   "expected": {
+    "defs": [
+     {
+      "name": "R",
+      "kind": "newcommand",
+      "args": 0,
+      "optional": null,
+      "body": "\\mathbb{R}",
+      "source": "\\newcommand{\\R}{\\mathbb{R}}",
+      "line": 1
+     }
+    ],
+    "errors": [
+     {
+      "line": 2,
+      "message": "\"\\usepackage{some-package}\" is not a macro definition"
+     }
+    ],
+    "blocked": [
+     {
+      "line": 2,
+      "message": "\\usepackage loads a package or a file. The plugin does not load packages."
+     }
+    ]
+   }
+  },
+  {
+   "name": "case 7: require inside a macro body is blocked",
+   "acceptance": "A7",
+   "function": "findBlocked",
+   "args": [
+    "\\newcommand{\\c}[1]{\\require{cancel}\\cancel{#1}}"
+   ],
+   "expected": [
+    {
+     "line": 1,
+     "message": "\\require loads a package or a file. The plugin does not load packages."
+    }
+   ]
+  },
+  {
+   "name": "case 7: requirement is a different command and is not blocked",
+   "acceptance": "A7",
+   "function": "findBlocked",
+   "args": [
+    "\\newcommand{\\requirement}{x}"
+   ],
+   "expected": []
+  },
+  {
+   "name": "case 8: the parser runs in plain JavaScript, a def with two parameters",
+   "acceptance": "A8",
+   "function": "parsePreamble",
+   "args": [
+    "\\def\\pair#1#2{(#1,#2)}"
+   ],
+   "expected": {
+    "defs": [
+     {
+      "name": "pair",
+      "kind": "def",
+      "args": 2,
+      "optional": null,
+      "body": "(#1,#2)",
+      "source": "\\def\\pair#1#2{(#1,#2)}",
+      "line": 1
+     }
+    ],
+    "errors": [],
+    "blocked": []
+   }
+  },
+  {
+   "name": "optional argument with a default value",
+   "acceptance": "core",
+   "function": "parsePreamble",
+   "args": [
+    "\\newcommand{\\norm}[2][2]{\\lVert #2 \\rVert_{#1}}"
+   ],
+   "expected": {
+    "defs": [
+     {
+      "name": "norm",
+      "kind": "newcommand",
+      "args": 2,
+      "optional": "2",
+      "body": "\\lVert #2 \\rVert_{#1}",
+      "source": "\\newcommand{\\norm}[2][2]{\\lVert #2 \\rVert_{#1}}",
+      "line": 1
+     }
+    ],
+    "errors": [],
+    "blocked": []
+   }
+  },
+  {
+   "name": "optional argument default in the sample",
+   "acceptance": "core",
+   "function": "expand",
+   "args": [
+    "\\norm{x}",
+    "\\newcommand{\\norm}[2][2]{\\lVert #2 \\rVert_{#1}}"
+   ],
+   "expected": {
+    "text": "\\lVert x \\rVert_{2}",
+    "error": null
+   }
+  },
+  {
+   "name": "optional argument given in brackets",
+   "acceptance": "core",
+   "function": "expand",
+   "args": [
+    "\\norm[\\infty]{x}",
+    "\\newcommand{\\norm}[2][2]{\\lVert #2 \\rVert_{#1}}"
+   ],
+   "expected": {
+    "text": "\\lVert x \\rVert_{\\infty}",
+    "error": null
+   }
+  },
+  {
+   "name": "DeclareMathOperator becomes operatorname",
+   "acceptance": "core",
+   "function": "expand",
+   "args": [
+    "\\tr A",
+    "\\DeclareMathOperator{\\tr}{tr}"
+   ],
+   "expected": {
+    "text": "\\operatorname{tr} A",
+    "error": null
+   }
+  },
+  {
+   "name": "name without braces and star form",
+   "acceptance": "core",
+   "function": "parsePreamble",
+   "args": [
+    "\\newcommand*\\R{\\mathbb{R}} \\providecommand{\\N}{\\mathbb{N}}"
+   ],
+   "expected": {
+    "defs": [
+     {
+      "name": "R",
+      "kind": "newcommand",
+      "args": 0,
+      "optional": null,
+      "body": "\\mathbb{R}",
+      "source": "\\newcommand*\\R{\\mathbb{R}}",
+      "line": 1
+     },
+     {
+      "name": "N",
+      "kind": "providecommand",
+      "args": 0,
+      "optional": null,
+      "body": "\\mathbb{N}",
+      "source": "\\providecommand{\\N}{\\mathbb{N}}",
+      "line": 1
+     }
+    ],
+    "errors": [],
+    "blocked": []
+   }
+  },
+  {
+   "name": "escaped percent stays, comment goes",
+   "acceptance": "core",
+   "function": "stripComments",
+   "args": [
+    "\\newcommand{\\pct}{50\\%} % percent sign"
+   ],
+   "expected": "\\newcommand{\\pct}{50\\%} "
+  },
+  {
+   "name": "text that is not a definition is an error with its line",
+   "acceptance": "core",
+   "function": "parsePreamble",
+   "args": [
+    "\\newcommand{\\R}{\\mathbb{R}}\nhello world\n\\frac{a}{b}"
+   ],
+   "expected": {
+    "defs": [
+     {
+      "name": "R",
+      "kind": "newcommand",
+      "args": 0,
+      "optional": null,
+      "body": "\\mathbb{R}",
+      "source": "\\newcommand{\\R}{\\mathbb{R}}",
+      "line": 1
+     }
+    ],
+    "errors": [
+     {
+      "line": 2,
+      "message": "\"hello world\" is not a macro definition"
+     },
+     {
+      "line": 3,
+      "message": "\"\\frac{a}{b}\" is not a macro definition"
+     }
+    ],
+    "blocked": []
+   }
+  },
+  {
+   "name": "a macro that calls itself stops at the step limit",
+   "acceptance": "core",
+   "function": "expand",
+   "args": [
+    "\\loop",
+    "\\newcommand{\\loop}{x\\loop}"
+   ],
+   "expected": {
+    "error": "The expansion of \\loop does not stop after 500 steps"
+   }
+  },
+  {
+   "name": "nested library macros expand",
+   "acceptance": "core",
+   "function": "expand",
+   "args": [
+    "\\half{\\R}",
+    "\\newcommand{\\R}{\\mathbb{R}}\n\\newcommand{\\half}[1]{\\frac{#1}{2}}"
+   ],
+   "expected": {
+    "text": "\\frac{\\mathbb{R}}{2}",
+    "error": null
+   }
+  },
+  {
+   "name": "argument count must be a number",
+   "acceptance": "core",
+   "function": "parsePreamble",
+   "args": [
+    "\\newcommand{\\x}[a]{#1}"
+   ],
+   "expected": {
+    "defs": [],
+    "errors": [
+     {
+      "line": 1,
+      "message": "\\newcommand{\\x} has [a] as its argument count. Use a number from 0 to 9."
+     }
+    ],
+    "blocked": []
+   }
+  },
+  {
+   "name": "a tex code block in Markdown is TeX, a js block is not",
+   "acceptance": "core",
+   "function": "extractTex",
+   "args": [
+    "```tex\n\\newcommand{\\A}{a}\n```\n```js\nconst x = 1;\n```",
+    "md"
+   ],
+   "expected": "\n\\newcommand{\\A}{a}\n\n\n\n"
+  },
+  {
+   "name": "a Markdown file with no math block is TeX after front matter",
+   "acceptance": "core",
+   "function": "extractTex",
+   "args": [
+    "---\na: 1\n---\n\\newcommand{\\A}{a}",
+    "md"
+   ],
+   "expected": "\n\n\n\\newcommand{\\A}{a}"
+  },
+  {
+   "name": "one line $$ block",
+   "acceptance": "core",
+   "function": "extractTex",
+   "args": [
+    "Intro $$\\newcommand{\\A}{a}$$ end",
+    "md"
+   ],
+   "expected": "        \\newcommand{\\A}{a}"
+  },
+  {
+   "name": "sample call for two required arguments",
+   "acceptance": "core",
+   "function": "sampleCall",
+   "args": [
+    "\\newcommand{\\pair}[2]{(#1,#2)}"
+   ],
+   "expected": "\\pair{a}{b}"
+  }
+ ]
+}

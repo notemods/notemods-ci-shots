@@ -1,0 +1,95 @@
+[
+	{
+		"feature": "reading-view",
+		"caption": "A linear algebra note that uses \\R, \\vect, \\inner, \\norm, \\abs and \\tr from the shared macro file.",
+		"note": "Linear algebra.md",
+		"eval": "(async () => { const P = app.plugins.plugins['shared-tex-preamble']; P.settings.path = 'Shared TeX Preamble/Macros.md'; P.settings.libraries = [{ name: 'Physics', path: 'Shared TeX Preamble/Physics macros.tex' }, { name: 'Draft', path: 'Shared TeX Preamble/Draft macros.tex' }]; P.settings.active = ''; await P.saveSettings(); window.__stpModal?.close(); window.__stpModal = null; app.workspace.getLeavesOfType('markdown').slice(1).forEach((l) => l.detach()); await P.reload('startup'); const leaf = app.workspace.getMostRecentLeaf(); const vs = leaf.getViewState(); await leaf.setViewState({ ...vs, state: { ...vs.state, mode: 'preview' } }); await new Promise((r) => setTimeout(r, 800)); return 'ok'; })()",
+		"wait": 800
+	},
+	{
+		"feature": "two-notes",
+		"caption": "Two notes side by side use the same definitions from one file.",
+		"note": "Probability.md",
+		"eval": "(async () => { const P = app.plugins.plugins['shared-tex-preamble']; P.settings.path = 'Shared TeX Preamble/Macros.md'; P.settings.libraries = [{ name: 'Physics', path: 'Shared TeX Preamble/Physics macros.tex' }, { name: 'Draft', path: 'Shared TeX Preamble/Draft macros.tex' }]; P.settings.active = ''; await P.saveSettings(); await P.reload('startup'); const leaf = app.workspace.getMostRecentLeaf(); const vs = leaf.getViewState(); await leaf.setViewState({ ...vs, state: { ...vs.state, mode: 'preview' } }); const f = app.vault.getFileByPath('Shared TeX Preamble/Linear algebra.md'); await app.workspace.getLeaf('split').openFile(f, { state: { mode: 'preview' } }); await new Promise((r) => setTimeout(r, 800)); return 'ok'; })()",
+		"wait": 800,
+		"after": "(async () => { window.__stpModal?.close(); window.__stpModal = null; app.workspace.getLeavesOfType('markdown').slice(1).forEach((l) => l.detach()); return 'ok'; })()"
+	},
+	{
+		"feature": "reload-notice",
+		"caption": "Reload the macro file: the notice gives the count and the Reading views draw again.",
+		"note": "Probability.md",
+		"eval": "(async () => { const P = app.plugins.plugins['shared-tex-preamble']; P.settings.path = 'Shared TeX Preamble/Macros.md'; P.settings.libraries = [{ name: 'Physics', path: 'Shared TeX Preamble/Physics macros.tex' }, { name: 'Draft', path: 'Shared TeX Preamble/Draft macros.tex' }]; P.settings.active = ''; await P.saveSettings(); const leaf = app.workspace.getMostRecentLeaf(); const vs = leaf.getViewState(); await leaf.setViewState({ ...vs, state: { ...vs.state, mode: 'preview' } }); await new Promise((r) => setTimeout(r, 400)); return 'ok'; })()",
+		"commands": [
+			"shared-tex-preamble:reload"
+		],
+		"wait": 900
+	},
+	{
+		"feature": "error-notice",
+		"caption": "A definition with no replacement text: the notice gives the line, and the other definitions still load.",
+		"note": "Linear algebra.md",
+		"eval": "(async () => { const P = app.plugins.plugins['shared-tex-preamble']; P.settings.path = 'Shared TeX Preamble/Macros.md'; P.settings.libraries = [{ name: 'Physics', path: 'Shared TeX Preamble/Physics macros.tex' }, { name: 'Draft', path: 'Shared TeX Preamble/Draft macros.tex' }]; P.settings.active = ''; await P.saveSettings(); P.settings.path = 'Shared TeX Preamble/Draft macros.tex'; await P.saveSettings(); const leaf = app.workspace.getMostRecentLeaf(); const vs = leaf.getViewState(); await leaf.setViewState({ ...vs, state: { ...vs.state, mode: 'preview' } }); await new Promise((r) => setTimeout(r, 300)); return 'ok'; })()",
+		"commands": [
+			"shared-tex-preamble:reload"
+		],
+		"wait": 900,
+		"after": "(async () => { const P = app.plugins.plugins['shared-tex-preamble']; P.settings.path = 'Shared TeX Preamble/Macros.md'; await P.saveSettings(); await P.reload('startup'); return 'ok'; })()"
+	},
+	{
+		"feature": "settings",
+		"caption": "Settings: the macro file, Reload, the note about removed definitions, and the Pro libraries.",
+		"eval": "(async () => { const P = app.plugins.plugins['shared-tex-preamble']; P.settings.path = 'Shared TeX Preamble/Macros.md'; P.settings.libraries = [{ name: 'Physics', path: 'Shared TeX Preamble/Physics macros.tex' }, { name: 'Draft', path: 'Shared TeX Preamble/Draft macros.tex' }]; P.settings.active = ''; await P.saveSettings(); P.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('shared-tex-preamble-github-token', 'gho_' + '0'.repeat(36)); await P.pro.refreshNow(); await P.reload('startup'); app.setting.open(); app.setting.openTabById('shared-tex-preamble'); await new Promise((r) => setTimeout(r, 600)); return 'ok'; })()",
+		"wait": 700,
+		"after": "app.setting.close(); (async () => { const P = app.plugins.plugins['shared-tex-preamble']; window.__stpModal?.close(); window.__stpModal = null; app.workspace.getLeavesOfType('markdown').slice(1).forEach((l) => l.detach()); P.settings.active = ''; await P.saveSettings(); P.pro.signOut(); await P.reload('startup'); return 'ok'; })()",
+		"zoom": 0.8
+	},
+	{
+		"feature": "library-preview",
+		"caption": "Pro: the preview of the Draft library lists each definition with a sample and shows two errors.",
+		"note": "Linear algebra.md",
+		"eval": "(async () => { const P = app.plugins.plugins['shared-tex-preamble']; P.settings.path = 'Shared TeX Preamble/Macros.md'; P.settings.libraries = [{ name: 'Physics', path: 'Shared TeX Preamble/Physics macros.tex' }, { name: 'Draft', path: 'Shared TeX Preamble/Draft macros.tex' }]; P.settings.active = ''; await P.saveSettings(); P.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('shared-tex-preamble-github-token', 'gho_' + '0'.repeat(36)); await P.pro.refreshNow(); window.__stpModal = await P.preview({ name: 'Draft', label: 'Draft', path: 'Shared TeX Preamble/Draft macros.tex' }); for (let i = 0; i < 60 && document.querySelector('.stp-preview')?.dataset.state !== 'done'; i++) await new Promise((r) => setTimeout(r, 50)); return 'ok'; })()",
+		"wait": 700,
+		"after": "(async () => { const P = app.plugins.plugins['shared-tex-preamble']; window.__stpModal?.close(); window.__stpModal = null; app.workspace.getLeavesOfType('markdown').slice(1).forEach((l) => l.detach()); P.settings.active = ''; await P.saveSettings(); P.pro.signOut(); await P.reload('startup'); return 'ok'; })()"
+	},
+	{
+		"feature": "library-switch",
+		"caption": "Pro: select the Physics library, and the quantum note shows its kets and brackets.",
+		"note": "Quantum.md",
+		"eval": "(async () => { const P = app.plugins.plugins['shared-tex-preamble']; P.settings.path = 'Shared TeX Preamble/Macros.md'; P.settings.libraries = [{ name: 'Physics', path: 'Shared TeX Preamble/Physics macros.tex' }, { name: 'Draft', path: 'Shared TeX Preamble/Draft macros.tex' }]; P.settings.active = ''; await P.saveSettings(); P.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('shared-tex-preamble-github-token', 'gho_' + '0'.repeat(36)); await P.pro.refreshNow(); const leaf = app.workspace.getMostRecentLeaf(); const vs = leaf.getViewState(); await leaf.setViewState({ ...vs, state: { ...vs.state, mode: 'preview' } }); await P.selectLibrary('Physics'); await new Promise((r) => setTimeout(r, 600)); return 'ok'; })()",
+		"wait": 900,
+		"after": "(async () => { const P = app.plugins.plugins['shared-tex-preamble']; window.__stpModal?.close(); window.__stpModal = null; app.workspace.getLeavesOfType('markdown').slice(1).forEach((l) => l.detach()); P.settings.active = ''; await P.saveSettings(); P.pro.signOut(); await P.reload('startup'); return 'ok'; })()"
+	},
+	{
+		"feature": "shared-tex-preamble",
+		"caption": "Reload the shared macros, read two notes, switch to the Physics library and preview the Draft library.",
+		"frames": [
+			{
+				"note": "Linear algebra.md",
+				"eval": "(async () => { const P = app.plugins.plugins['shared-tex-preamble']; P.settings.path = 'Shared TeX Preamble/Macros.md'; P.settings.libraries = [{ name: 'Physics', path: 'Shared TeX Preamble/Physics macros.tex' }, { name: 'Draft', path: 'Shared TeX Preamble/Draft macros.tex' }]; P.settings.active = ''; await P.saveSettings(); window.__stpModal?.close(); window.__stpModal = null; app.workspace.getLeavesOfType('markdown').slice(1).forEach((l) => l.detach()); await P.reload('startup'); const leaf = app.workspace.getMostRecentLeaf(); const vs = leaf.getViewState(); await leaf.setViewState({ ...vs, state: { ...vs.state, mode: 'preview' } }); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 1800
+			},
+			{
+				"note": "Probability.md",
+				"eval": "(async () => { const leaf = app.workspace.getMostRecentLeaf(); const vs = leaf.getViewState(); await leaf.setViewState({ ...vs, state: { ...vs.state, mode: 'preview' } }); await new Promise((r) => setTimeout(r, 300)); return 'ok'; })()",
+				"commands": [
+					"shared-tex-preamble:reload"
+				],
+				"hold": 1800
+			},
+			{
+				"note": "Quantum.md",
+				"eval": "(async () => { const P = app.plugins.plugins['shared-tex-preamble']; P.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('shared-tex-preamble-github-token', 'gho_' + '0'.repeat(36)); await P.pro.refreshNow(); const leaf = app.workspace.getMostRecentLeaf(); const vs = leaf.getViewState(); await leaf.setViewState({ ...vs, state: { ...vs.state, mode: 'preview' } }); await P.selectLibrary('Physics'); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 1800
+			},
+			{
+				"eval": "(async () => { const P = app.plugins.plugins['shared-tex-preamble']; window.__stpModal = await P.preview({ name: 'Draft', label: 'Draft', path: 'Shared TeX Preamble/Draft macros.tex' }); for (let i = 0; i < 60 && document.querySelector('.stp-preview')?.dataset.state !== 'done'; i++) await new Promise((r) => setTimeout(r, 50)); return 'ok'; })()",
+				"hold": 2200
+			},
+			{
+				"note": "Linear algebra.md",
+				"eval": "(async () => { const P = app.plugins.plugins['shared-tex-preamble']; window.__stpModal?.close(); window.__stpModal = null; app.workspace.getLeavesOfType('markdown').slice(1).forEach((l) => l.detach()); P.settings.active = ''; await P.saveSettings(); P.pro.signOut(); await P.reload('startup'); const leaf = app.workspace.getMostRecentLeaf(); const vs = leaf.getViewState(); await leaf.setViewState({ ...vs, state: { ...vs.state, mode: 'preview' } }); await new Promise((r) => setTimeout(r, 500)); return 'ok'; })()",
+				"hold": 600
+			}
+		]
+	}
+]

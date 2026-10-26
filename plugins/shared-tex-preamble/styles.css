@@ -1,0 +1,47 @@
+/* Styles for Shared TeX Preamble. Obsidian loads this file while the plugin is enabled. */
+
+.stp-muted {
+	color: var(--text-muted);
+}
+
+.stp-error {
+	color: var(--text-error);
+}
+
+.stp-hidden {
+	display: none;
+}
+
+.stp-preview .stp-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.stp-preview .stp-table th,
+.stp-preview .stp-table td {
+	padding: var(--size-4-1) var(--size-4-2);
+	border-bottom: 1px solid var(--background-modifier-border);
+	text-align: start;
+	vertical-align: middle;
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
