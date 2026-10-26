@@ -1,0 +1,11 @@
+= Configure a project
+
+Each project has a `tidewater.toml` file at its root.
+The first lines set the release channel and the build target:
+
+[source,toml]
+----
+include::../snippets/config.toml[lines=1..4]
+----
+
+See xref:Reference.adoc#config-keys[all configuration keys].

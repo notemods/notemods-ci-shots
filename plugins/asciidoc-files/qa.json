@@ -1,0 +1,86 @@
+[
+	{
+		"feature": "preview",
+		"caption": "The rendered preview of a handbook: table of contents, a note, the release checklist table and a tip.",
+		"note": "Handbook.adoc",
+		"eval": "(async () => { const sleep = (ms) => new Promise((r) => setTimeout(r, ms)); app.plugins.plugins['asciidoc-files'].pro.signOut(); await sleep(600); const v = app.workspace.getMostRecentLeaf().view; v.setMode('preview'); v.previewEl.scrollTop = 0; await sleep(300); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "source",
+		"caption": "Source and preview side by side: highlighted titles, attributes, blocks and macros on the left.",
+		"note": "Handbook.adoc",
+		"eval": "(async () => { const sleep = (ms) => new Promise((r) => setTimeout(r, ms)); const v = app.workspace.getMostRecentLeaf().view; v.setMode('split'); await sleep(500); v.previewEl.scrollTop = 0; return 'ok'; })()",
+		"after": "app.workspace.getMostRecentLeaf().view.setMode('preview'); 'ok'",
+		"wait": 1200
+	},
+	{
+		"feature": "mermaid",
+		"caption": "The free preview shows a Mermaid flowchart and a sequence diagram.",
+		"note": "Diagrams.adoc",
+		"eval": "(async () => { app.workspace.rightSplit.collapse(); const p = app.plugins.plugins['asciidoc-files']; p.pro.signOut(); await new Promise((r) => setTimeout(r, 700)); const v = app.workspace.getMostRecentLeaf().view; v.setMode('preview'); await v.render(); v.previewEl.querySelectorAll('.adoc-mermaid button').forEach((b) => { if (b.textContent === 'Allow') b.click(); }); for (let i = 0; i < 100 && v.previewEl.querySelectorAll('.adoc-mermaid svg[aria-roledescription]').length !== 2; i++) await new Promise((r) => setTimeout(r, 100)); if (v.previewEl.querySelectorAll('.adoc-mermaid svg[aria-roledescription]').length !== 2) throw new Error('Expected two Mermaid diagrams'); v.previewEl.scrollTop = 0; return 'ok'; })()",
+		"wait": 1200,
+		"zoom": 0.8
+	},
+	{
+		"feature": "xref",
+		"caption": "A click on the exit codes cross reference opens the command reference at that section.",
+		"note": "Handbook.adoc",
+		"eval": "(async () => { const sleep = (ms) => new Promise((r) => setTimeout(r, ms)); const v = app.workspace.getMostRecentLeaf().view; v.setMode('preview'); await sleep(300); v.previewEl.querySelector('a[href=\"Reference.adoc#exit-codes\"]').click(); await sleep(900); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "includes",
+		"caption": "Pro: the install and configure chapters and the tagged part of the deploy script come in through include directives.",
+		"note": "Handbook.adoc",
+		"eval": "(async () => { const sleep = (ms) => new Promise((r) => setTimeout(r, ms)); const p = app.plugins.plugins['asciidoc-files']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('asciidoc-files-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); await sleep(900); await sleep(300); const v = app.workspace.getMostRecentLeaf().view; v.setMode('preview'); await v.render(); await sleep(500); const h = [...v.previewEl.querySelectorAll('h2')].find((x) => x.textContent === 'Configure a project'); if (h) v.previewEl.scrollTop = h.offsetTop - 20; return 'ok'; })()",
+		"after": "app.plugins.plugins['asciidoc-files'].pro.signOut(); app.workspace.getLeavesOfType('asciidoc-files-links').forEach((l) => l.detach()); 'ok'",
+		"wait": 1200
+	},
+	{
+		"feature": "links-panel",
+		"caption": "Pro: the outline and links panel lists sections, includes, cross references (one missing) and the files that link here.",
+		"note": "Handbook.adoc",
+		"eval": "(async () => { const sleep = (ms) => new Promise((r) => setTimeout(r, ms)); const p = app.plugins.plugins['asciidoc-files']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('asciidoc-files-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); await sleep(900); await app.plugins.plugins['asciidoc-files'].openLinksPanel(); await sleep(1200); return 'ok'; })()",
+		"after": "app.plugins.plugins['asciidoc-files'].pro.signOut(); app.workspace.getLeavesOfType('asciidoc-files-links').forEach((l) => l.detach()); 'ok'",
+		"wait": 1200
+	},
+	{
+		"feature": "export",
+		"caption": "Pro: Export the current file to HTML writes Handbook.html next to the source.",
+		"note": "Handbook.adoc",
+		"eval": "(async () => { const sleep = (ms) => new Promise((r) => setTimeout(r, ms)); const p = app.plugins.plugins['asciidoc-files']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('asciidoc-files-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); await sleep(900); const v = app.workspace.getMostRecentLeaf().view; app.vault.setConfig('showUnsupportedFiles', true); const path = await app.plugins.plugins['asciidoc-files'].exportHtml(v); await sleep(400); const fe = app.workspace.getLeavesOfType('file-explorer')[0]; const f = app.vault.getFileByPath(path); if (fe && f) await app.workspace.revealLeaf(fe); await sleep(600); return 'ok'; })()",
+		"after": "(async () => { const f = app.vault.getFileByPath('AsciiDoc Files/Handbook.html'); if (f) await app.vault.delete(f); app.plugins.plugins['asciidoc-files'].pro.signOut(); return 'ok'; })()",
+		"wait": 1000
+	},
+	{
+		"feature": "settings",
+		"caption": "Settings: the Pro section before sign in, the open mode, the preview delay and the Pro options for includes and exports.",
+		"eval": "(async () => { const sleep = (ms) => new Promise((r) => setTimeout(r, ms)); app.plugins.plugins['asciidoc-files'].pro.signOut(); app.setting.open(); app.setting.openTabById('asciidoc-files'); return 'ok'; })()",
+		"after": "app.setting.close(); 'ok'",
+		"wait": 900
+	},
+	{
+		"feature": "asciidoc-files",
+		"caption": "Open a handbook, show source and preview side by side, then follow a cross reference to the command reference.",
+		"frames": [
+			{
+				"note": "Handbook.adoc",
+				"eval": "(async () => { const sleep = (ms) => new Promise((r) => setTimeout(r, ms)); const v = app.workspace.getMostRecentLeaf().view; v.setMode('preview'); v.previewEl.scrollTop = 0; return 'ok'; })()",
+				"hold": 1600
+			},
+			{
+				"eval": "(async () => { const sleep = (ms) => new Promise((r) => setTimeout(r, ms)); const v = app.workspace.getMostRecentLeaf().view; v.previewEl.scrollTop = 520; return 'ok'; })()",
+				"hold": 1400
+			},
+			{
+				"eval": "(async () => { const sleep = (ms) => new Promise((r) => setTimeout(r, ms)); const v = app.workspace.getMostRecentLeaf().view; v.setMode('split'); v.previewEl.scrollTop = 0; return 'ok'; })()",
+				"hold": 1800
+			},
+			{
+				"eval": "(async () => { const sleep = (ms) => new Promise((r) => setTimeout(r, ms)); const v = app.workspace.getMostRecentLeaf().view; v.setMode('preview'); await sleep(200); v.previewEl.querySelector('a[href=\"Reference.adoc#exit-codes\"]').click(); await sleep(700); return 'ok'; })()",
+				"hold": 2000
+			}
+		]
+	}
+]

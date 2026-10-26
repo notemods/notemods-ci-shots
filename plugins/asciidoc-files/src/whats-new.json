@@ -1,0 +1,27 @@
+{
+	"id": "asciidoc-files",
+	"name": "AsciiDoc Files",
+	"version": "1.2.1",
+	"changes": [
+		"The AsciiDoc Files notice for a Pro feature now has a Sponsor on GitHub button."
+	],
+	"tip": "Hold Ctrl or Cmd as you click a cross reference to open its target in a new tab.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. AsciiDoc Files is one of over 100 small plugins that I make. Thank you for keeping your AsciiDoc files in Obsidian.",
+	"related": [
+		{
+			"id": "pandoc-crossref-preview",
+			"name": "Pandoc Crossref Preview",
+			"blurb": "Show figure and equation reference numbers from Pandoc labels while you read a note."
+		},
+		{
+			"id": "openapi-spec-viewer",
+			"name": "Local API Reference",
+			"blurb": "Read local OpenAPI files as endpoint lists with parameter and response details."
+		},
+		{
+			"id": "fence-file-export",
+			"name": "Fence File Export",
+			"blurb": "Write named code blocks from the current note to new files in a chosen vault folder."
+		}
+	]
+}

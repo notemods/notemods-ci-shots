@@ -1,0 +1,11 @@
+{
+	"id": "asciidoc-files",
+	"name": "AsciiDoc Files",
+	"version": "1.2.1",
+	"minAppVersion": "1.13.4",
+	"description": "Opens and edits AsciiDoc files in the vault with a highlighted source editor and a safe rendered preview.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}

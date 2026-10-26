@@ -1,0 +1,384 @@
+/* AsciiDoc Files. Every rule is scoped to the plugin's own view classes (.adoc-view, .adoc-links),
+   so notes and other views keep the theme's styles. Colors come from theme variables only. */
+
+/* Layout: source, preview, or both side by side. */
+.adoc-view {
+	display: flex;
+	padding: 0;
+	overflow: hidden;
+}
+
+.adoc-view > .adoc-source,
+.adoc-view > .adoc-preview {
+	flex: 1 1 0;
+	min-width: 0;
+	height: 100%;
+	overflow: auto;
+}
+
+.adoc-view .adoc-preview {
+	padding: var(--file-margins);
+	user-select: text;
+}
+
+.adoc-view.is-preview > .adoc-source,
+.adoc-view.is-source > .adoc-preview {
+	display: none;
+}
+
+.adoc-view.is-split > .adoc-source {
+	border-inline-end: 1px solid var(--background-modifier-border);
+}
+
+/* Source editor (CodeMirror 6). */
+.adoc-view .adoc-source .cm-editor {
+	height: 100%;
+	background-color: var(--background-primary);
+	color: var(--text-normal);
+	font-family: var(--font-monospace);
+	font-size: var(--code-size);
+}
+
+.adoc-view .adoc-source .cm-editor.cm-focused {
+	outline: none;
+}
+
+.adoc-view .adoc-source .cm-scroller {
+	padding: var(--file-margins);
+	line-height: var(--line-height-normal);
+}
+
+.adoc-view .adoc-source .cm-content {
+	caret-color: var(--caret-color);
+}
+
+.adoc-view .adoc-source .cm-cursor {
+	border-inline-start-color: var(--caret-color);
+}
+
+/* Source tokens (src/adoc/highlight.ts). */
+.adoc-tok-heading {
+	color: var(--text-title-h1, var(--text-normal));
+	font-weight: var(--font-bold);
+}
+
+.adoc-tok-heading-1 {
+	color: var(--h1-color);
+}
+
+.adoc-tok-heading-2 {
+	color: var(--h2-color);
+}
+
+.adoc-tok-heading-3 {
+	color: var(--h3-color);
+}
+
+.adoc-tok-heading-4,
+.adoc-tok-heading-5,
+.adoc-tok-heading-6 {
+	color: var(--h4-color);
+}
+
+.adoc-tok-comment {
+	color: var(--text-faint);
+	font-style: italic;
+}
+
+.adoc-tok-attr-name,
+.adoc-tok-directive,
+.adoc-tok-meta {
+	color: var(--color-purple);
+}
+
+.adoc-tok-attr-value,
+.adoc-tok-attr-ref {
+	color: var(--color-orange);
+}
+
+.adoc-tok-delim,
+.adoc-tok-list,
+.adoc-tok-term {
+	color: var(--text-accent);
+	font-weight: var(--font-semibold);
+}
+
+.adoc-tok-code,
+.adoc-tok-mono {
+	color: var(--code-normal);
+	background-color: var(--code-background);
+}
+
+.adoc-tok-block-title {
+	color: var(--text-muted);
+	font-style: italic;
+}
+
+.adoc-tok-admonition {
+	color: var(--color-yellow);
+	font-weight: var(--font-bold);
+}
+
+.adoc-tok-macro,
+.adoc-tok-url,
+.adoc-tok-xref,
+.adoc-tok-anchor {
+	color: var(--link-color);
+}
+
+.adoc-tok-strong {
+	font-weight: var(--font-bold);
+}
+
+.adoc-tok-em {
+	font-style: italic;
+}
+
+.adoc-tok-mark {
+	background-color: var(--text-highlight-bg);
+}
+
+/* Rendered preview: Asciidoctor HTML inside .markdown-rendered, so headings, lists, tables
+   and code take the theme's look. The rules below cover AsciiDoc blocks Markdown does not have. */
+.adoc-preview .title {
+	color: var(--text-muted);
+	font-style: italic;
+	margin-block: var(--size-4-2) var(--size-4-1);
+}
+
+.adoc-preview .sidebarblock > .content > .title {
+	font-style: normal;
+	font-weight: var(--font-bold);
+	color: var(--text-normal);
+}
+
+.adoc-preview .colist td,
+.adoc-preview .colist table {
+	border: none;
+}
+
+.adoc-preview .admonitionblock {
+	--adoc-callout: var(--color-blue);
+
+	margin-block: var(--size-4-4);
+	border-inline-start: 4px solid var(--adoc-callout);
+	border-radius: var(--callout-radius);
+	background-color: color-mix(in srgb, var(--adoc-callout) 10%, transparent);
+}
+
+.adoc-preview .admonitionblock.tip {
+	--adoc-callout: var(--color-cyan);
+}
+
+.adoc-preview .admonitionblock.important {
+	--adoc-callout: var(--color-purple);
+}
+
+.adoc-preview .admonitionblock.warning {
+	--adoc-callout: var(--color-orange);
+}
+
+.adoc-preview .admonitionblock.caution {
+	--adoc-callout: var(--color-red);
+}
+
+.adoc-preview .admonitionblock > table,
+.adoc-preview .admonitionblock > table td {
+	border: none;
+	background: none;
+	margin: 0;
+	width: 100%;
+}
+
+.adoc-preview .admonitionblock td.icon {
+	width: 7em;
+	vertical-align: top;
+	color: var(--adoc-callout);
+	font-weight: var(--font-bold);
+}
+
+.adoc-preview .admonitionblock td.icon .title {
+	color: inherit;
+	font-style: normal;
+	margin: 0;
+}
+
+.adoc-preview .admonitionblock td.content > :first-child {
+	margin-block-start: 0;
+}
+
+.adoc-preview .sidebarblock,
+.adoc-preview .exampleblock > .content {
+	padding: var(--size-4-3) var(--size-4-4);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	background-color: var(--background-secondary);
+	margin-block: var(--size-4-3);
+}
+
+.adoc-preview .quoteblock blockquote {
+	border-inline-start: var(--blockquote-border-thickness) solid var(--blockquote-border-color);
+	padding-inline-start: var(--size-4-4);
+	margin-inline-start: 0;
+}
+
+.adoc-preview .quoteblock .attribution {
+	color: var(--text-muted);
+	font-size: var(--font-smaller);
+}
+
+.adoc-preview table.tableblock {
+	width: auto;
+}
+
+.adoc-preview table.tableblock.stretch {
+	width: 100%;
+}
+
+.adoc-preview table.tableblock p.tableblock {
+	margin: 0;
+}
+
+.adoc-preview .conum {
+	display: inline-block;
+	min-width: 1.4em;
+	border-radius: 50%;
+	background-color: var(--text-muted);
+	color: var(--background-primary);
+	font-size: var(--font-smallest);
+	font-style: normal;
+	font-weight: var(--font-bold);
+	text-align: center;
+}
+
+.adoc-preview #toc,
+.adoc-preview .toc {
+	padding: var(--size-4-2) var(--size-4-4);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	margin-block-end: var(--size-4-4);
+}
+
+.adoc-preview .footnote,
+.adoc-preview #footnotes {
+	font-size: var(--font-smaller);
+	color: var(--text-muted);
+}
+
+.adoc-preview kbd {
+	padding: 0 var(--size-2-2);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-s);
+	font-family: var(--font-monospace);
+	font-size: var(--font-smaller);
+}
+
+.adoc-preview .adoc-include-note {
+	border-style: dashed;
+	color: var(--text-muted);
+	font-size: var(--font-smaller);
+}
+
+.adoc-preview .adoc-include-missing,
+.adoc-preview .adoc-include-cycle,
+.adoc-preview .adoc-include-depth,
+.adoc-preview .adoc-include-url {
+	border-color: var(--text-error);
+}
+
+.adoc-preview .adoc-missing-image {
+	outline: 1px dashed var(--text-error);
+}
+
+.adoc-preview .adoc-error {
+	color: var(--text-error);
+}
+
+.adoc-preview .adoc-mermaid {
+	overflow: auto;
+	margin-block: var(--size-4-4);
+}
+
+.adoc-preview .adoc-warnings {
+	margin-block-start: var(--size-4-8);
+	color: var(--text-muted);
+	font-size: var(--font-smaller);
+}
+
+/* Pro side panel: outline and links. */
+.adoc-links {
+	padding: var(--size-4-2) var(--size-4-3);
+	font-size: var(--font-ui-small);
+}
+
+.adoc-links .adoc-links-file {
+	color: var(--text-muted);
+	word-break: break-all;
+	margin-block-end: var(--size-4-2);
+}
+
+.adoc-links .adoc-links-heading {
+	margin: var(--size-4-3) 0 var(--size-4-1);
+	font-size: var(--font-ui-small);
+	color: var(--text-muted);
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+.adoc-links .adoc-links-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.adoc-links .adoc-links-item {
+	padding: var(--size-2-1) 0;
+}
+
+.adoc-links .adoc-links-item.is-broken > a {
+	color: var(--text-error);
+}
+
+.adoc-links .adoc-links-sub {
+	margin-inline-start: var(--size-4-2);
+	color: var(--text-faint);
+}
+
+.adoc-links .adoc-level-2 {
+	padding-inline-start: var(--size-4-3);
+}
+
+.adoc-links .adoc-level-3 {
+	padding-inline-start: var(--size-4-6);
+}
+
+.adoc-links .adoc-level-4,
+.adoc-links .adoc-level-5 {
+	padding-inline-start: var(--size-4-9);
+}
+
+.adoc-links .adoc-links-locked,
+.adoc-links .adoc-links-empty {
+	color: var(--text-muted);
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}

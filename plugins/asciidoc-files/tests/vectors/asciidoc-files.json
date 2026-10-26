@@ -1,0 +1,501 @@
+{
+ "slug": "asciidoc-files",
+ "module": "asciidoc-files/src/adoc/includes",
+ "function": "expandIncludes",
+ "note": "expandIncludes args = [source text, vault path of the source, files (vault path -> text, null = known missing), options {resolve, maxDepth, rootFallback}]; expected = {text, includes:[{from,line,target,path,status,depth}], wanted:[paths to read before the next run]}. Pure: the vault reads happen in expandWithReader.",
+ "cases": [
+  {
+   "name": "relative include is read from the folder of the including file",
+   "args": [
+    "= Book\n\ninclude::chapters/one.adoc[]\n",
+    "docs/book.adoc",
+    {
+     "docs/chapters/one.adoc": "== One\nText.\n"
+    },
+    {}
+   ],
+   "expected": {
+    "text": "= Book\n\n== One\nText.\n",
+    "includes": [
+     {
+      "from": "docs/book.adoc",
+      "line": 3,
+      "target": "chapters/one.adoc",
+      "path": "docs/chapters/one.adoc",
+      "status": "ok",
+      "depth": 1
+     }
+    ],
+    "wanted": []
+   }
+  },
+  {
+   "name": "a file not read yet is wanted next to the source and at the vault root, and shows a note",
+   "args": [
+    "include::gone.adoc[]",
+    "docs/book.adoc",
+    {},
+    {}
+   ],
+   "expected": {
+    "text": "\n[.adoc-include-note.adoc-include-missing]\n****\nUnresolved include in `+docs/book.adoc+`: `+gone.adoc+` (file not found).\n****\n",
+    "includes": [
+     {
+      "from": "docs/book.adoc",
+      "line": 1,
+      "target": "gone.adoc",
+      "path": null,
+      "status": "missing",
+      "depth": 1
+     }
+    ],
+    "wanted": [
+     "docs/gone.adoc",
+     "gone.adoc"
+    ]
+   }
+  },
+  {
+   "name": "opts=optional drops a known missing include without a note",
+   "args": [
+    "A\ninclude::gone.adoc[opts=optional]\nB",
+    "docs/book.adoc",
+    {
+     "docs/gone.adoc": null,
+     "gone.adoc": null
+    },
+    {}
+   ],
+   "expected": {
+    "text": "A\nB",
+    "includes": [
+     {
+      "from": "docs/book.adoc",
+      "line": 2,
+      "target": "gone.adoc",
+      "path": null,
+      "status": "missing",
+      "depth": 1
+     }
+    ],
+    "wanted": []
+   }
+  },
+  {
+   "name": "the vault root fallback finds a shared partial",
+   "args": [
+    "include::shared/legal.adoc[]",
+    "docs/book.adoc",
+    {
+     "docs/shared/legal.adoc": null,
+     "shared/legal.adoc": "Legal text."
+    },
+    {}
+   ],
+   "expected": {
+    "text": "Legal text.",
+    "includes": [
+     {
+      "from": "docs/book.adoc",
+      "line": 1,
+      "target": "shared/legal.adoc",
+      "path": "shared/legal.adoc",
+      "status": "ok",
+      "depth": 1
+     }
+    ],
+    "wanted": []
+   }
+  },
+  {
+   "name": "an include cycle stops with a note",
+   "args": [
+    "include::b.adoc[]",
+    "a.adoc",
+    {
+     "b.adoc": "B start\ninclude::a.adoc[]"
+    },
+    {}
+   ],
+   "expected": {
+    "text": "B start\n\n[.adoc-include-note.adoc-include-cycle]\n****\nUnresolved include in `+b.adoc+`: `+a.adoc+` (the file includes itself).\n****\n",
+    "includes": [
+     {
+      "from": "a.adoc",
+      "line": 1,
+      "target": "b.adoc",
+      "path": "b.adoc",
+      "status": "ok",
+      "depth": 1
+     },
+     {
+      "from": "b.adoc",
+      "line": 2,
+      "target": "a.adoc",
+      "path": "a.adoc",
+      "status": "cycle",
+      "depth": 2
+     }
+    ],
+    "wanted": []
+   }
+  },
+  {
+   "name": "the depth limit stops a deep chain",
+   "args": [
+    "include::b.adoc[]",
+    "a.adoc",
+    {
+     "b.adoc": "B\ninclude::c.adoc[]",
+     "c.adoc": "C\ninclude::d.adoc[]",
+     "d.adoc": "D"
+    },
+    {
+     "maxDepth": 2
+    }
+   ],
+   "expected": {
+    "text": "B\nC\n\n[.adoc-include-note.adoc-include-depth]\n****\nUnresolved include in `+c.adoc+`: `+d.adoc+` (more than 2 levels of includes).\n****\n",
+    "includes": [
+     {
+      "from": "a.adoc",
+      "line": 1,
+      "target": "b.adoc",
+      "path": "b.adoc",
+      "status": "ok",
+      "depth": 1
+     },
+     {
+      "from": "b.adoc",
+      "line": 2,
+      "target": "c.adoc",
+      "path": "c.adoc",
+      "status": "ok",
+      "depth": 2
+     },
+     {
+      "from": "c.adoc",
+      "line": 2,
+      "target": "d.adoc",
+      "path": null,
+      "status": "depth",
+      "depth": 3
+     }
+    ],
+    "wanted": []
+   }
+  },
+  {
+   "name": "tag= keeps one tagged region and drops the tag lines",
+   "args": [
+    "----\ninclude::code.rb[tag=main]\n----",
+    "docs/book.adoc",
+    {
+     "docs/code.rb": "require \"x\"\n# tag::main[]\nputs 1\n# end::main[]\nputs 2\n"
+    },
+    {}
+   ],
+   "expected": {
+    "text": "----\nputs 1\n----",
+    "includes": [
+     {
+      "from": "docs/book.adoc",
+      "line": 2,
+      "target": "code.rb",
+      "path": "docs/code.rb",
+      "status": "ok",
+      "depth": 1
+     }
+    ],
+    "wanted": []
+   }
+  },
+  {
+   "name": "lines= keeps the listed ranges",
+   "args": [
+    "include::list.txt[lines=\"2..3;5\"]",
+    "docs/book.adoc",
+    {
+     "docs/list.txt": "one\ntwo\nthree\nfour\nfive\nsix"
+    },
+    {}
+   ],
+   "expected": {
+    "text": "two\nthree\nfive",
+    "includes": [
+     {
+      "from": "docs/book.adoc",
+      "line": 1,
+      "target": "list.txt",
+      "path": "docs/list.txt",
+      "status": "ok",
+      "depth": 1
+     }
+    ],
+    "wanted": []
+   }
+  },
+  {
+   "name": "leveloffset=+1 shifts the included sections and restores after",
+   "args": [
+    "include::part.adoc[leveloffset=+1]",
+    "docs/book.adoc",
+    {
+     "docs/part.adoc": "= Part"
+    },
+    {}
+   ],
+   "expected": {
+    "text": "\n:leveloffset: +1\n= Part\n\n:leveloffset: -1",
+    "includes": [
+     {
+      "from": "docs/book.adoc",
+      "line": 1,
+      "target": "part.adoc",
+      "path": "docs/part.adoc",
+      "status": "ok",
+      "depth": 1
+     }
+    ],
+    "wanted": []
+   }
+  },
+  {
+   "name": "free mode shows a note for each include and reads nothing",
+   "args": [
+    "include::chapters/one.adoc[]",
+    "docs/book.adoc",
+    {},
+    {
+     "resolve": false
+    }
+   ],
+   "expected": {
+    "text": "\n[.adoc-include-note.adoc-include-off]\n****\nInclude `+chapters/one.adoc+`: includes are resolved with Pro.\n****\n",
+    "includes": [
+     {
+      "from": "docs/book.adoc",
+      "line": 1,
+      "target": "chapters/one.adoc",
+      "path": null,
+      "status": "off",
+      "depth": 1
+     }
+    ],
+    "wanted": []
+   }
+  },
+  {
+   "name": "an escaped directive stays as text without the backslash",
+   "args": [
+    "\\include::one.adoc[]",
+    "docs/book.adoc",
+    {},
+    {}
+   ],
+   "expected": {
+    "text": "include::one.adoc[]",
+    "includes": [],
+    "wanted": []
+   }
+  },
+  {
+   "name": "a directive inside a comment block is skipped",
+   "args": [
+    "////\ninclude::one.adoc[]\n////",
+    "docs/book.adoc",
+    {},
+    {}
+   ],
+   "expected": {
+    "text": "////\ninclude::one.adoc[]\n////",
+    "includes": [],
+    "wanted": []
+   }
+  },
+  {
+   "name": "an attribute reference in the target uses the document attribute",
+   "args": [
+    ":partials: parts\n\ninclude::{partials}/intro.adoc[]",
+    "docs/book.adoc",
+    {
+     "docs/parts/intro.adoc": "Intro."
+    },
+    {}
+   ],
+   "expected": {
+    "text": ":partials: parts\n\nIntro.",
+    "includes": [
+     {
+      "from": "docs/book.adoc",
+      "line": 3,
+      "target": "parts/intro.adoc",
+      "path": "docs/parts/intro.adoc",
+      "status": "ok",
+      "depth": 1
+     }
+    ],
+    "wanted": []
+   }
+  },
+  {
+   "name": "a URL include is never fetched",
+   "args": [
+    "include::https://example.com/a.adoc[]",
+    "docs/book.adoc",
+    {},
+    {}
+   ],
+   "expected": {
+    "text": "\n[.adoc-include-note.adoc-include-url]\n****\nUnresolved include in `+docs/book.adoc+`: `+https://example.com/a.adoc+` (URL includes are off, the plugin makes no network request for a document).\n****\n",
+    "includes": [
+     {
+      "from": "docs/book.adoc",
+      "line": 1,
+      "target": "https://example.com/a.adoc",
+      "path": null,
+      "status": "url",
+      "depth": 1
+     }
+    ],
+    "wanted": []
+   }
+  },
+  {
+   "name": "a missing include inside a listing block shows a one-line note",
+   "args": [
+    "----\ninclude::gone.sh[]\n----",
+    "docs/book.adoc",
+    {
+     "docs/gone.sh": null,
+     "gone.sh": null
+    },
+    {}
+   ],
+   "expected": {
+    "text": "----\n[include::gone.sh[]: file not found]\n----",
+    "includes": [
+     {
+      "from": "docs/book.adoc",
+      "line": 2,
+      "target": "gone.sh",
+      "path": null,
+      "status": "missing",
+      "depth": 1
+     }
+    ],
+    "wanted": []
+   }
+  }
+ ],
+ "mermaid": {
+  "module": "asciidoc-files/src/adoc/mermaid",
+  "function": "prepareMermaid",
+  "cases": [
+   {
+    "name": "a diagram block gets a source language",
+    "args": [
+     "[mermaid]\n----\nflowchart LR\nA --> B\n----"
+    ],
+    "expected": "[source,mermaid]\n----\nflowchart LR\nA --> B\n----"
+   },
+   {
+    "name": "a source diagram keeps its attributes",
+    "args": [
+     "[source,mermaid,linenums]\n----\nA --> B\n----"
+    ],
+    "expected": "[source,mermaid,linenums]\n----\nA --> B\n----"
+   },
+   {
+    "name": "a diagram example inside a listing stays literal",
+    "args": [
+     "----\n[mermaid]\n-----\nx\n-----\n----"
+    ],
+    "expected": "----\n[mermaid]\n-----\nx\n-----\n----"
+   },
+   {
+    "name": "a diagram in a comment is not changed",
+    "args": [
+     "////\n[mermaid]\n----\nx\n----\n////"
+    ],
+    "expected": "////\n[mermaid]\n----\nx\n----\n////"
+   },
+   {
+    "name": "a diagram in a passthrough is not changed",
+    "args": [
+     "++++\n[mermaid]\n----\nx\n----\n++++"
+    ],
+    "expected": "++++\n[mermaid]\n----\nx\n----\n++++"
+   },
+   {
+    "name": "a style without a listing stays unchanged",
+    "args": [
+     "[mermaid]\nText."
+    ],
+    "expected": "[mermaid]\nText."
+   },
+   {
+    "name": "CRLF is kept",
+    "args": [
+     "[mermaid]\r\n----\r\nA --> B\r\n----"
+    ],
+    "expected": "[source,mermaid]\r\n----\r\nA --> B\r\n----"
+   },
+   {
+    "name": "a diagram after a listing still gets a language",
+    "args": [
+     "----\nx\n----\n\n[mermaid]\n----\nA --> B\n----"
+    ],
+    "expected": "----\nx\n----\n\n[source,mermaid]\n----\nA --> B\n----"
+   },
+   {
+    "name": "a diagram block with target and format attributes gets a source language",
+    "args": [
+     "[mermaid,release-flow,svg]\n----\nA --> B\n----"
+    ],
+    "expected": "[source,mermaid]\n----\nA --> B\n----"
+   },
+   {
+    "name": "a diagram in a literal block gets a source language",
+    "args": [
+     "[mermaid]\n....\nA --> B\n...."
+    ],
+    "expected": "[source,mermaid]\n....\nA --> B\n...."
+   },
+   {
+    "name": "a title between the style and the listing is kept",
+    "args": [
+     "[mermaid]\n.Release flow\n----\nA --> B\n----"
+    ],
+    "expected": "[source,mermaid]\n.Release flow\n----\nA --> B\n----"
+   },
+   {
+    "name": "a similar style name stays unchanged",
+    "args": [
+     "[mermaidjs]\n----\nA --> B\n----"
+    ],
+    "expected": "[mermaidjs]\n----\nA --> B\n----"
+   }
+  ]
+ },
+ "mermaidMarkdown": {
+  "module": "asciidoc-files/src/adoc/mermaid",
+  "function": "mermaidMarkdown",
+  "cases": [
+   {
+    "name": "normal source is in one code fence",
+    "args": [
+     "flowchart LR\nA --> B"
+    ],
+    "expected": "```mermaid\nflowchart LR\nA --> B\n```"
+   },
+   {
+    "name": "embedded fences cannot insert Markdown",
+    "args": [
+     "A\n```\n<script>x()</script>\n````"
+    ],
+    "expected": "`````mermaid\nA\n```\n<script>x()</script>\n````\n`````"
+   }
+  ]
+ }
+}
