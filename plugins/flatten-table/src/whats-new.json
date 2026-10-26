@@ -1,0 +1,27 @@
+{
+	"id": "flatten-table",
+	"name": "Flatten Table",
+	"version": "1.2.1",
+	"changes": [
+		"The Pro notice for flat table export now has a Sponsor on GitHub button."
+	],
+	"tip": "Hold Shift and click column headers to sort by several columns at once.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Flatten Table is one of over 100 small plugins that I make. Thank you for trusting it with your tables.",
+	"related": [
+		{
+			"id": "table-rollup",
+			"name": "Table Rollup",
+			"blurb": "Combine note tables in one table with links to the source notes."
+		},
+		{
+			"id": "bases-transpose-table",
+			"name": "Bases Transpose Table",
+			"blurb": "Compare notes in columns and edit simple properties in rows."
+		},
+		{
+			"id": "bases-freeze-panes",
+			"name": "Bases Freeze Panes",
+			"blurb": "Keep column and note names visible as you scroll a base."
+		}
+	]
+}
