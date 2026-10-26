@@ -1,0 +1,27 @@
+{
+	"id": "bases-manual-order",
+	"name": "Bases Manual Order",
+	"version": "1.2.1",
+	"changes": [
+		"Custom rank properties now show the move controls when Pro is off. A move shows how to get Pro, with a Sponsor on GitHub button, and writes no rank."
+	],
+	"tip": "To show the same order in a core Bases table, sort that table ascending by manual_order.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Bases Manual Order is one of over 100 small plugins that I make. Thank you for putting your notes in order with it.",
+	"related": [
+		{
+			"id": "bases-filter-switches",
+			"name": "Bases Filter Switches",
+			"blurb": "Turn saved Bases filters on or off with switches."
+		},
+		{
+			"id": "bases-multi-edit",
+			"name": "Bases Multi-Row Edit",
+			"blurb": "Set, append or remove a property on selected rows with preview and undo."
+		},
+		{
+			"id": "bases-freeze-panes",
+			"name": "Bases Freeze Panes",
+			"blurb": "Keep column and note names visible as you scroll a base."
+		}
+	]
+}

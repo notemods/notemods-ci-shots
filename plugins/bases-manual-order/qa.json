@@ -1,0 +1,41 @@
+[
+  {
+    "feature": "table",
+    "caption": "A writing queue with real numeric ranks, grouped by status.",
+    "note": "Writing queue.base",
+    "eval": "(async () => { const ranks = {'Choose opening scene':1024,'Check historical sources':2048,'Write the first chapter':3072,'Review character names':1024,'Read the draft aloud':2048}; for (const [name,rank] of Object.entries(ranks)) { const f=app.vault.getFileByPath('Bases Manual Order/'+name+'.md'); await app.fileManager.processFrontMatter(f,fm=>{fm.manual_order=rank;}); } await new Promise(r=>setTimeout(r,900)); const root=document.querySelector('.workspace-leaf.mod-active .bmo-view'); if (!root || root.querySelectorAll('tbody tr').length !== 5) throw new Error('Expected five real note rows'); return '5 rows PASS'; })()",
+    "wait": 1000
+  },
+  {
+    "feature": "list",
+    "caption": "A reading list with its own source notes and accessible move buttons.",
+    "note": "Reading list.base",
+    "eval": "(async () => { await new Promise(r=>setTimeout(r,800)); const root = document.querySelector('.workspace-leaf.mod-active .bmo-view'); if (!root || root.querySelectorAll('tbody tr').length !== 3) throw new Error('Expected three reading notes'); return '3 reading rows PASS'; })()",
+    "wait": 1000
+  },
+  {
+    "feature": "settings",
+    "caption": "The optional Pro offer and GitHub sign in, before an account is connected.",
+    "eval": "app.setting.open(); app.setting.openTabById('bases-manual-order'); 'ok'",
+    "after": "app.setting.close(); 'ok'"
+  },
+  {
+    "feature": "ordering",
+    "caption": "Move a chapter above the research note and persist rank 1536.",
+    "frames": [
+      {
+        "note": "Writing queue.base",
+        "eval": "(async () => { const ranks = {'Choose opening scene':1024,'Check historical sources':2048,'Write the first chapter':3072,'Review character names':1024,'Read the draft aloud':2048}; for (const [name,rank] of Object.entries(ranks)) { const f=app.vault.getFileByPath('Bases Manual Order/'+name+'.md'); await app.fileManager.processFrontMatter(f,fm=>{fm.manual_order=rank;}); } await new Promise(r=>setTimeout(r,900)); const root=document.querySelector('.workspace-leaf.mod-active .bmo-view'); if (!root || root.querySelectorAll('tbody tr').length !== 5) throw new Error('Expected five real note rows'); return '5 rows PASS'; })()",
+        "hold": 1300
+      },
+      {
+        "eval": "(() => { const root=document.querySelector('.workspace-leaf.mod-active .bmo-view'); const source=[...root.querySelectorAll('tbody tr')].find(r=>r.dataset.path.endsWith('Write the first chapter.md')); const handle=source.querySelector('[draggable]'); const transfer=new DataTransfer(); handle.dispatchEvent(new DragEvent('dragstart',{dataTransfer:transfer,bubbles:true})); handle.focus(); const target=[...root.querySelectorAll('tbody tr')].find(r=>r.dataset.path.endsWith('Check historical sources.md')); target.dispatchEvent(new DragEvent('dragover',{dataTransfer:transfer,bubbles:true,cancelable:true})); return 'chapter drag started PASS'; })()",
+        "hold": 1100
+      },
+      {
+        "eval": "(async () => { const root=document.querySelector('.workspace-leaf.mod-active .bmo-view'); const rows=[...root.querySelectorAll('tbody tr')]; const source=rows.find(r=>r.dataset.path.endsWith('Write the first chapter.md')); const target=rows.find(r=>r.dataset.path.endsWith('Check historical sources.md')); const transfer=new DataTransfer(); source.querySelector('[draggable]').dispatchEvent(new DragEvent('dragstart',{dataTransfer:transfer,bubbles:true})); target.dispatchEvent(new DragEvent('dragover',{dataTransfer:transfer,bubbles:true,cancelable:true})); target.dispatchEvent(new DragEvent('drop',{dataTransfer:transfer,bubbles:true,cancelable:true})); await new Promise(r=>setTimeout(r,1100)); const f=app.vault.getFileByPath('Bases Manual Order/Write the first chapter.md'); const rank=app.metadataCache.getFileCache(f).frontmatter.manual_order; if (rank !== 1536) throw new Error('Drag did not persist rank 1536: '+rank); return 'drag persisted 1536 PASS'; })()",
+        "hold": 1700
+      }
+    ]
+  }
+]
