@@ -1,0 +1,27 @@
+{
+	"id": "task-date-links",
+	"name": "Task Date Links",
+	"version": "1.2.1",
+	"changes": [
+		"The Pro notice for the vault back-fill now has a Sponsor on GitHub button."
+	],
+	"tip": "Add the property task-date-links: false to a note to keep date links out of it.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Task Date Links is one of over 100 small plugins that I make. Thank you for using it to keep your tasks in order.",
+	"related": [
+		{
+			"id": "kanban-embed",
+			"name": "Kanban Embed",
+			"blurb": "Use a Kanban board inside a project or daily note."
+		},
+		{
+			"id": "bases-task-rows",
+			"name": "Bases Task Rows",
+			"blurb": "Shows each checklist task in the notes a base selects as its own row, with due dates, tags and the source note, and ticks tasks from the view."
+		},
+		{
+			"id": "task-field-labels",
+			"name": "Task Field Labels",
+			"blurb": "Show text labels for dates, priority, and recurrence in rendered tasks."
+		}
+	]
+}
