@@ -1,0 +1,61 @@
+[
+	{
+		"feature": "preview",
+		"caption": "Check the post and page counts before import.",
+		"note": "Guide.md",
+		"eval": "(async()=>{const p=app.plugins.plugins['wordpress-wxr-import']; const file=app.vault.getFileByPath('WordPress WXR Import/demo.xml'); if(!file)throw new Error('Missing sample XML'); const xml=await app.vault.read(file);p.pro.signOut();window.__wxrModal=p.openImport();const input=window.__wxrModal.contentEl.querySelector('input[type=text]');input.value='Preview import';input.dispatchEvent(new Event('input',{bubbles:true}));const transfer=new DataTransfer();transfer.items.add(new File([xml],'Field journal.xml'));window.__wxrModal.contentEl.querySelector('input[type=file]').files=transfer.files;await window.__wxrModal.selectFile(transfer.files[0]); return 'ok';})()",
+		"after": "window.__wxrModal?.close(); app.plugins.plugins['wordpress-wxr-import'].pro.signOut(); 'ok'"
+	},
+	{
+		"feature": "properties",
+		"caption": "Keep source IDs, dates, author, categories, and tags.",
+		"note": "Guide.md",
+		"eval": "(async()=>{const p=app.plugins.plugins['wordpress-wxr-import']; const file=app.vault.getFileByPath('WordPress WXR Import/demo.xml'); if(!file)throw new Error('Missing sample XML'); const xml=await app.vault.read(file);p.pro.signOut();if(!app.vault.getAbstractFileByPath('Demo import'))await p.importXml(xml,'Demo import');await app.workspace.openLinkText('Demo import/Field journal-11.md','',false); const view=app.workspace.getMostRecentLeaf()?.view; if(view?.leaf)await view.leaf.setViewState({type:'markdown',state:{file:view.file.path,mode:'preview'}});return 'ok';})()"
+	},
+	{
+		"feature": "comments",
+		"caption": "Read the converted body and its approved comment.",
+		"note": "Guide.md",
+		"eval": "(async()=>{const p=app.plugins.plugins['wordpress-wxr-import']; const file=app.vault.getFileByPath('WordPress WXR Import/demo.xml'); if(!file)throw new Error('Missing sample XML'); const xml=await app.vault.read(file);p.pro.signOut();if(!app.vault.getAbstractFileByPath('Demo import'))await p.importXml(xml,'Demo import');await app.workspace.openLinkText('Demo import/Field journal-11.md','',false); const view=app.workspace.getMostRecentLeaf()?.view; if(view?.leaf)await view.leaf.setViewState({type:'markdown',state:{file:view.file.path,mode:'preview'}});await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));const active=app.workspace.getMostRecentLeaf()?.view;const heading=[...active.containerEl.querySelectorAll('h2')].find(h=>h.textContent==='Approved comments');if(!heading)throw new Error('Missing approved comment heading');heading.scrollIntoView({block:'center'});return 'ok';})()"
+	},
+	{
+		"feature": "report",
+		"caption": "Read the skipped record report.",
+		"note": "Guide.md",
+		"eval": "(async()=>{const p=app.plugins.plugins['wordpress-wxr-import']; const file=app.vault.getFileByPath('WordPress WXR Import/demo.xml'); if(!file)throw new Error('Missing sample XML'); const xml=await app.vault.read(file);p.pro.signOut();if(!app.vault.getAbstractFileByPath('Demo import'))await p.importXml(xml,'Demo import');await app.workspace.openLinkText('Demo import/_report.md','',false); const view=app.workspace.getMostRecentLeaf()?.view; if(view?.leaf)await view.leaf.setViewState({type:'markdown',state:{file:view.file.path,mode:'preview'}});return 'ok';})()"
+	},
+	{
+		"feature": "profiles",
+		"caption": "Save a folder and field mapping profile with Pro.",
+		"note": "Guide.md",
+		"eval": "(async()=>{const p=app.plugins.plugins['wordpress-wxr-import']; const file=app.vault.getFileByPath('WordPress WXR Import/demo.xml'); if(!file)throw new Error('Missing sample XML'); const xml=await app.vault.read(file);p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('wordpress-wxr-import-github-token','gho_'+'0'.repeat(36));await p.pro.refreshNow();await p.saveProfile({name:'Blog archive',folder:'Next archive',mapping:{author:'writer'}});window.__wxrModal=p.openImport();let dropdown=window.__wxrModal.contentEl.querySelector('select');dropdown.value='0';dropdown.dispatchEvent(new Event('change',{bubbles:true}));window.__wxrModal.contentEl.querySelector('details').open=true;window.__wxrModal.contentEl.querySelector('select').value='0';return 'ok';})()",
+		"after": "window.__wxrModal?.close(); app.plugins.plugins['wordpress-wxr-import'].pro.signOut(); 'ok'",
+		"zoom": 0.85
+	},
+	{
+		"feature": "comparison",
+		"caption": "Review changed and removed source IDs with Pro.",
+		"note": "Guide.md",
+		"eval": "(async()=>{const p=app.plugins.plugins['wordpress-wxr-import']; const file=app.vault.getFileByPath('WordPress WXR Import/demo.xml'); if(!file)throw new Error('Missing sample XML'); const xml=await app.vault.read(file);p.pro.signOut();if(!app.vault.getAbstractFileByPath('Demo import'))await p.importXml(xml,'Demo import');p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('wordpress-wxr-import-github-token','gho_'+'0'.repeat(36));await p.pro.refreshNow();window.__wxrModal=p.openImport(true);const inputs=window.__wxrModal.contentEl.querySelectorAll('input[type=text]');inputs[0].value='Next review';inputs[0].dispatchEvent(new Event('input',{bubbles:true}));inputs[1].value='Demo import';inputs[1].dispatchEvent(new Event('input',{bubbles:true}));const later=xml.replace('Our first field visit.','Our second field visit.').replace(/<item><title>Contact[\\s\\S]*?<\\/item>/,'');const transfer=new DataTransfer();transfer.items.add(new File([later],'Later export.xml'));window.__wxrModal.contentEl.querySelector('input[type=file]').files=transfer.files;await window.__wxrModal.selectFile(transfer.files[0]); return 'ok';})()",
+		"after": "window.__wxrModal?.close(); app.plugins.plugins['wordpress-wxr-import'].pro.signOut(); 'ok'"
+	},
+	{
+		"feature": "import-flow",
+		"caption": "Preview the local export, then read the imported notes and report.",
+		"frames": [
+			{
+				"note": "Guide.md",
+				"eval": "(async()=>{const p=app.plugins.plugins['wordpress-wxr-import']; const file=app.vault.getFileByPath('WordPress WXR Import/demo.xml'); if(!file)throw new Error('Missing sample XML'); const xml=await app.vault.read(file);p.pro.signOut();window.__wxrModal=p.openImport();const input=window.__wxrModal.contentEl.querySelector('input[type=text]');input.value='Preview import';input.dispatchEvent(new Event('input',{bubbles:true}));const transfer=new DataTransfer();transfer.items.add(new File([xml],'Field journal.xml'));window.__wxrModal.contentEl.querySelector('input[type=file]').files=transfer.files;await window.__wxrModal.selectFile(transfer.files[0]); return 'ok';})()",
+				"hold": 1200
+			},
+			{
+				"eval": "(async()=>{const p=app.plugins.plugins['wordpress-wxr-import']; const file=app.vault.getFileByPath('WordPress WXR Import/demo.xml'); if(!file)throw new Error('Missing sample XML'); const xml=await app.vault.read(file);window.__wxrModal?.close();p.pro.signOut();if(!app.vault.getAbstractFileByPath('Demo import'))await p.importXml(xml,'Demo import');await app.workspace.openLinkText('Demo import/Field journal-11.md','',false);const v=app.workspace.getMostRecentLeaf()?.view;if(v?.leaf)await v.leaf.setViewState({type:'markdown',state:{file:v.file.path,mode:'preview'}});return 'ok';})()",
+				"hold": 1600
+			},
+			{
+				"eval": "(async()=>{const p=app.plugins.plugins['wordpress-wxr-import']; const file=app.vault.getFileByPath('WordPress WXR Import/demo.xml'); if(!file)throw new Error('Missing sample XML'); const xml=await app.vault.read(file);p.pro.signOut();if(!app.vault.getAbstractFileByPath('Demo import'))await p.importXml(xml,'Demo import');await app.workspace.openLinkText('Demo import/_report.md','',false); const view=app.workspace.getMostRecentLeaf()?.view; if(view?.leaf)await view.leaf.setViewState({type:'markdown',state:{file:view.file.path,mode:'preview'}});return 'ok';})()",
+				"hold": 1200
+			}
+		]
+	}
+]
