@@ -1,0 +1,1145 @@
+{
+ "slug": "bases-task-rows",
+ "module": "bases-task-rows/src/task",
+ "function": "editAndParse",
+ "note": "editAndParse(line, edit) applies one edit (none | done | open | date | today) to one Markdown task line and parses the result. expected = {line, task}: line is the new line (byte-identical outside the changed token; null when the input is not a task), task = {status, done, text, dates, priority 0..5 with 2 = none, tags, recurrence}. Cases with fn noteProgress: noteProgress(noteText, today) counts the tasks of one note for the Task progress view (open, done, cancelled, total, whole percent, next due date of an open task, overdue open tasks, progress cell text). Cases with fn noteTagProgress: noteTagProgress(noteText, today, tagText) counts only the tasks whose task line has a matching tag (\"#\" optional, case ignored, a parent tag matches its nested tags), gives nextTask = the text of the first open matching task in file order or null, and any = the total of every task of the note.",
+ "cases": [
+  {
+   "name": "round trip keeps a Tasks line with priority, recurrence and block id byte for byte",
+   "args": [
+    "  - [ ] Water plants 🔼 🔁 every week ⏳ 2026-10-11 📅 2026-10-12 #home/garden ^water-1",
+    {
+     "type": "none"
+    }
+   ],
+   "expected": {
+    "line": "  - [ ] Water plants 🔼 🔁 every week ⏳ 2026-10-11 📅 2026-10-12 #home/garden ^water-1",
+    "task": {
+     "status": " ",
+     "done": false,
+     "text": "Water plants",
+     "dates": {
+      "due": "2026-10-12",
+      "scheduled": "2026-10-11"
+     },
+     "priority": 3,
+     "tags": [
+      "home/garden"
+     ],
+     "recurrence": "every week"
+    }
+   },
+   "fn": "editAndParse"
+  },
+  {
+   "name": "tick adds a done date to a line that has a due date (auto)",
+   "args": [
+    "- [ ] Pay rent 📅 2026-10-12 #home",
+    {
+     "type": "done",
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "line": "- [x] Pay rent 📅 2026-10-12 #home ✅ 2026-10-10",
+    "task": {
+     "status": "x",
+     "done": true,
+     "text": "Pay rent",
+     "dates": {
+      "due": "2026-10-12",
+      "done": "2026-10-10"
+     },
+     "priority": 2,
+     "tags": [
+      "home"
+     ],
+     "recurrence": null
+    }
+   },
+   "fn": "editAndParse"
+  },
+  {
+   "name": "tick with done date never only flips the status character",
+   "args": [
+    "- [ ] Pay rent 📅 2026-10-12 #home",
+    {
+     "type": "done",
+     "today": "2026-10-10",
+     "doneDate": "never"
+    }
+   ],
+   "expected": {
+    "line": "- [x] Pay rent 📅 2026-10-12 #home",
+    "task": {
+     "status": "x",
+     "done": true,
+     "text": "Pay rent",
+     "dates": {
+      "due": "2026-10-12"
+     },
+     "priority": 2,
+     "tags": [
+      "home"
+     ],
+     "recurrence": null
+    }
+   },
+   "fn": "editAndParse"
+  },
+  {
+   "name": "tick a plain task in auto mode adds nothing",
+   "args": [
+    "* [ ] Buy milk",
+    {
+     "type": "done",
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "line": "* [x] Buy milk",
+    "task": {
+     "status": "x",
+     "done": true,
+     "text": "Buy milk",
+     "dates": {},
+     "priority": 2,
+     "tags": [],
+     "recurrence": null
+    }
+   },
+   "fn": "editAndParse"
+  },
+  {
+   "name": "untick removes the done date",
+   "args": [
+    "- [x] Ship v2 ⏫ ✅ 2026-10-01 #work ^ship",
+    {
+     "type": "open"
+    }
+   ],
+   "expected": {
+    "line": "- [ ] Ship v2 ⏫ #work ^ship",
+    "task": {
+     "status": " ",
+     "done": false,
+     "text": "Ship v2",
+     "dates": {},
+     "priority": 4,
+     "tags": [
+      "work"
+     ],
+     "recurrence": null
+    }
+   },
+   "fn": "editAndParse"
+  },
+  {
+   "name": "Dataview due field changes only the date",
+   "args": [
+    "- [ ] Call Ana [due:: 2026-10-09] [priority:: high] #people",
+    {
+     "type": "date",
+     "field": "due",
+     "value": "2026-10-20"
+    }
+   ],
+   "expected": {
+    "line": "- [ ] Call Ana [due:: 2026-10-20] [priority:: high] #people",
+    "task": {
+     "status": " ",
+     "done": false,
+     "text": "Call Ana",
+     "dates": {
+      "due": "2026-10-20"
+     },
+     "priority": 4,
+     "tags": [
+      "people"
+     ],
+     "recurrence": null
+    }
+   },
+   "fn": "editAndParse"
+  },
+  {
+   "name": "Dataview line gets a Dataview completion field on tick",
+   "args": [
+    "- [ ] Call Ana [due:: 2026-10-09] #people",
+    {
+     "type": "done",
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "line": "- [x] Call Ana [due:: 2026-10-09] #people [completion:: 2026-10-10]",
+    "task": {
+     "status": "x",
+     "done": true,
+     "text": "Call Ana",
+     "dates": {
+      "due": "2026-10-09",
+      "done": "2026-10-10"
+     },
+     "priority": 2,
+     "tags": [
+      "people"
+     ],
+     "recurrence": null
+    }
+   },
+   "fn": "editAndParse"
+  },
+  {
+   "name": "round parentheses Dataview field is read and removed",
+   "args": [
+    "- [ ] (due:: 2026-11-01) Renew passport",
+    {
+     "type": "date",
+     "field": "due",
+     "value": null
+    }
+   ],
+   "expected": {
+    "line": "- [ ] Renew passport",
+    "task": {
+     "status": " ",
+     "done": false,
+     "text": "Renew passport",
+     "dates": {},
+     "priority": 2,
+     "tags": [],
+     "recurrence": null
+    }
+   },
+   "fn": "editAndParse"
+  },
+  {
+   "name": "CRLF line keeps its carriage return after a new due date",
+   "args": [
+    "- [ ] Plain task\r",
+    {
+     "type": "date",
+     "field": "due",
+     "value": "2026-12-01"
+    }
+   ],
+   "expected": {
+    "line": "- [ ] Plain task 📅 2026-12-01\r",
+    "task": {
+     "status": " ",
+     "done": false,
+     "text": "Plain task",
+     "dates": {
+      "due": "2026-12-01"
+     },
+     "priority": 2,
+     "tags": [],
+     "recurrence": null
+    }
+   },
+   "fn": "editAndParse"
+  },
+  {
+   "name": "new due date goes before the block id",
+   "args": [
+    "- [ ] Send invoice #money ^inv-7",
+    {
+     "type": "date",
+     "field": "due",
+     "value": "2026-10-15",
+     "style": "emoji"
+    }
+   ],
+   "expected": {
+    "line": "- [ ] Send invoice #money 📅 2026-10-15 ^inv-7",
+    "task": {
+     "status": " ",
+     "done": false,
+     "text": "Send invoice",
+     "dates": {
+      "due": "2026-10-15"
+     },
+     "priority": 2,
+     "tags": [
+      "money"
+     ],
+     "recurrence": null
+    }
+   },
+   "fn": "editAndParse"
+  },
+  {
+   "name": "new due date on a plain line uses the Dataview style when asked",
+   "args": [
+    "- [ ] Send invoice",
+    {
+     "type": "date",
+     "field": "due",
+     "value": "2026-10-15",
+     "style": "dataview"
+    }
+   ],
+   "expected": {
+    "line": "- [ ] Send invoice [due:: 2026-10-15]",
+    "task": {
+     "status": " ",
+     "done": false,
+     "text": "Send invoice",
+     "dates": {
+      "due": "2026-10-15"
+     },
+     "priority": 2,
+     "tags": [],
+     "recurrence": null
+    }
+   },
+   "fn": "editAndParse"
+  },
+  {
+   "name": "move to today changes the scheduled date when there is no due date",
+   "args": [
+    "> - [ ] Quoted task ⏳ 2026-10-03",
+    {
+     "type": "today",
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "line": "> - [ ] Quoted task ⏳ 2026-10-10",
+    "task": {
+     "status": " ",
+     "done": false,
+     "text": "Quoted task",
+     "dates": {
+      "scheduled": "2026-10-10"
+     },
+     "priority": 2,
+     "tags": [],
+     "recurrence": null
+    }
+   },
+   "fn": "editAndParse"
+  },
+  {
+   "name": "move to today adds a due date to an undated task",
+   "args": [
+    "1. [ ] Numbered task #errand",
+    {
+     "type": "today",
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "line": "1. [ ] Numbered task #errand 📅 2026-10-10",
+    "task": {
+     "status": " ",
+     "done": false,
+     "text": "Numbered task",
+     "dates": {
+      "due": "2026-10-10"
+     },
+     "priority": 2,
+     "tags": [
+      "errand"
+     ],
+     "recurrence": null
+    }
+   },
+   "fn": "editAndParse"
+  },
+  {
+   "name": "tags skip pure numbers and code spans",
+   "args": [
+    "- [ ] Fix bug #123 in `#notatag` for #work/backend",
+    {
+     "type": "none"
+    }
+   ],
+   "expected": {
+    "line": "- [ ] Fix bug #123 in `#notatag` for #work/backend",
+    "task": {
+     "status": " ",
+     "done": false,
+     "text": "Fix bug #123 in `#notatag` for",
+     "dates": {},
+     "priority": 2,
+     "tags": [
+      "work/backend"
+     ],
+     "recurrence": null
+    }
+   },
+   "fn": "editAndParse"
+  },
+  {
+   "name": "cancelled status counts as closed",
+   "args": [
+    "- [-] Old idea ❌ 2026-10-02",
+    {
+     "type": "none"
+    }
+   ],
+   "expected": {
+    "line": "- [-] Old idea ❌ 2026-10-02",
+    "task": {
+     "status": "-",
+     "done": true,
+     "text": "Old idea",
+     "dates": {
+      "cancelled": "2026-10-02"
+     },
+     "priority": 2,
+     "tags": [],
+     "recurrence": null
+    }
+   },
+   "fn": "editAndParse"
+  },
+  {
+   "name": "a list item without a checkbox is not a task",
+   "args": [
+    "- just a note",
+    {
+     "type": "done",
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "line": null,
+    "task": null
+   },
+   "fn": "editAndParse"
+  },
+  {
+   "name": "an empty checkbox pair is not a task",
+   "args": [
+    "- [] not a task",
+    {
+     "type": "none"
+    }
+   ],
+   "expected": {
+    "line": null,
+    "task": null
+   },
+   "fn": "editAndParse"
+  },
+  {
+   "name": "alternate due emoji 📆 is read and kept",
+   "args": [
+    "- [ ] Alt emoji 📆 2026-10-30",
+    {
+     "type": "date",
+     "field": "due",
+     "value": "2026-10-31"
+    }
+   ],
+   "expected": {
+    "line": "- [ ] Alt emoji 📆 2026-10-31",
+    "task": {
+     "status": " ",
+     "done": false,
+     "text": "Alt emoji",
+     "dates": {
+      "due": "2026-10-31"
+     },
+     "priority": 2,
+     "tags": [],
+     "recurrence": null
+    }
+   },
+   "fn": "editAndParse"
+  },
+  {
+   "name": "next date for every 7 days adds seven days to the due date",
+   "args": [
+    "every 7 days",
+    "2026-10-12"
+   ],
+   "expected": "2026-10-19",
+   "fn": "nextRecurrenceDate"
+  },
+  {
+   "name": "next date for every 2 weeks adds fourteen days",
+   "args": [
+    "every 2 weeks",
+    "2026-10-12"
+   ],
+   "expected": "2026-10-26",
+   "fn": "nextRecurrenceDate"
+  },
+  {
+   "name": "next date for every month keeps the day and clamps to the last day",
+   "args": [
+    "every month",
+    "2026-01-31"
+   ],
+   "expected": "2026-02-28",
+   "fn": "nextRecurrenceDate"
+  },
+  {
+   "name": "next date for every 3 months adds three months",
+   "args": [
+    "every 3 months",
+    "2026-10-12"
+   ],
+   "expected": "2027-01-12",
+   "fn": "nextRecurrenceDate"
+  },
+  {
+   "name": "next date for every year adds one year",
+   "args": [
+    "every year",
+    "2024-02-29"
+   ],
+   "expected": "2025-02-28",
+   "fn": "nextRecurrenceDate"
+  },
+  {
+   "name": "next date for a weekday name moves to the next monday",
+   "args": [
+    "every monday",
+    "2026-10-12"
+   ],
+   "expected": "2026-10-19",
+   "fn": "nextRecurrenceDate"
+  },
+  {
+   "name": "next date for every 3 days adds three days",
+   "args": [
+    "every 3",
+    "2026-10-12"
+   ],
+   "expected": "2026-10-15",
+   "fn": "nextRecurrenceDate"
+  },
+  {
+   "name": "next date for a rule the plugin cannot count returns null",
+   "args": [
+    "every other friday",
+    "2026-10-12"
+   ],
+   "expected": null,
+   "fn": "nextRecurrenceDate"
+  },
+  {
+   "name": "next date with no base date returns null",
+   "args": [
+    "every day",
+    null
+   ],
+   "expected": null,
+   "fn": "nextRecurrenceDate"
+  },
+  {
+   "name": "next occurrence line writes an open task with the next due date and no ids",
+   "args": [
+    "- [x] Water plants 🔁 every week ⏳ 2026-10-11 📅 2026-10-12 ✅ 2026-10-12 #home ^water-1",
+    "2026-10-12",
+    "emoji"
+   ],
+   "expected": "- [ ] Water plants 🔁 every week ⏳ 2026-10-18 📅 2026-10-19 #home",
+   "fn": "nextOccurrenceLine"
+  },
+  {
+   "name": "next occurrence line uses the scheduled date when there is no due date",
+   "args": [
+    "  - [ ] Pay rent 🔁 every month [scheduled:: 2026-10-01]",
+    "2026-10-12",
+    "emoji"
+   ],
+   "expected": "  - [ ] Pay rent 🔁 every month [scheduled:: 2026-11-01]",
+   "fn": "nextOccurrenceLine"
+  },
+  {
+   "name": "next occurrence line keeps the dataview style of the source line",
+   "args": [
+    "- [ ] Submit report 🔁 every 2 weeks [due:: 2026-10-12]",
+    "2026-10-12",
+    "dataview"
+   ],
+   "expected": "- [ ] Submit report 🔁 every 2 weeks [due:: 2026-10-26]",
+   "fn": "nextOccurrenceLine"
+  },
+  {
+   "name": "next occurrence line is null for a task without a rule",
+   "args": [
+    "- [ ] Plain task 📅 2026-10-12",
+    "2026-10-12",
+    "emoji"
+   ],
+   "expected": null,
+   "fn": "nextOccurrenceLine"
+  },
+  {
+   "name": "next occurrence line rolls a task with a future date when it is ticked early",
+   "args": [
+    "- [ ] Water plants 🔁 every week 📅 2026-10-20",
+    "2026-10-12",
+    "emoji"
+   ],
+   "expected": "- [ ] Water plants 🔁 every week 📅 2026-10-27",
+   "fn": "nextOccurrenceLine"
+  },
+  {
+   "name": "edit linked due date keeps the link and CRLF",
+   "fn": "editAndParse",
+   "args": [
+    "- [ ] Review 📅 [[2026-10-18]] #work\r",
+    {
+     "type": "date",
+     "field": "due",
+     "value": "2026-10-19"
+    }
+   ],
+   "expected": {
+    "line": "- [ ] Review 📅 [[2026-10-19]] #work\r",
+    "task": {
+     "status": " ",
+     "done": false,
+     "text": "Review",
+     "dates": {
+      "due": "2026-10-19"
+     },
+     "priority": 2,
+     "tags": [
+      "work"
+     ],
+     "recurrence": null
+    }
+   }
+  },
+  {
+   "name": "progress 1: x and X are done, a note with 1 open and 2 done tasks is 67%",
+   "args": [
+    "- [ ] a\n- [x] b\n- [X] c\n",
+    "2026-10-10"
+   ],
+   "expected": {
+    "open": 1,
+    "done": 2,
+    "cancelled": 0,
+    "total": 3,
+    "percent": 67,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": "67%"
+   },
+   "fn": "noteProgress"
+  },
+  {
+   "name": "progress 2: a cancelled task is not open, done or total",
+   "args": [
+    "- [-] a\n- [ ] b\n",
+    "2026-10-10"
+   ],
+   "expected": {
+    "open": 1,
+    "done": 0,
+    "cancelled": 1,
+    "total": 1,
+    "percent": 0,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": "0%"
+   },
+   "fn": "noteProgress"
+  },
+  {
+   "name": "progress 3: a task inside a fenced code block does not count, so the progress cell is empty",
+   "args": [
+    "# Notes\n\n```md\n- [ ] in code\n- [x] also code\n```\n",
+    "2026-10-10"
+   ],
+   "expected": {
+    "open": 0,
+    "done": 0,
+    "cancelled": 0,
+    "total": 0,
+    "percent": null,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": ""
+   },
+   "fn": "noteProgress"
+  },
+  {
+   "name": "progress 4: next due is the earliest due date of an open task, not of a done or cancelled task",
+   "args": [
+    "- [x] Done early 📅 2026-10-01\n- [ ] Later 📅 2026-10-20\n- [ ] Sooner [due:: 2026-10-15]\n- [ ] No date\n- [-] Dropped 📅 2026-10-02\n",
+    "2026-10-10"
+   ],
+   "expected": {
+    "open": 3,
+    "done": 1,
+    "cancelled": 1,
+    "total": 4,
+    "percent": 25,
+    "nextDue": "2026-10-15",
+    "overdue": 0,
+    "progress": "25%"
+   },
+   "fn": "noteProgress"
+  },
+  {
+   "name": "progress 5: overdue counts open tasks due before today, not a task due today",
+   "args": [
+    "- [ ] Late 📅 2026-10-09\n- [ ] Due today 📅 2026-10-10\n- [ ] Also late [due:: [[2026-10-01]]]\n- [x] Done late 📅 2026-10-01\n",
+    "2026-10-10"
+   ],
+   "expected": {
+    "open": 3,
+    "done": 1,
+    "cancelled": 0,
+    "total": 4,
+    "percent": 25,
+    "nextDue": "2026-10-01",
+    "overdue": 2,
+    "progress": "25%"
+   },
+   "fn": "noteProgress"
+  },
+  {
+   "name": "tag 1: note A, one open task with #next-action gives Open 1 and Next task call",
+   "args": [
+    "- [ ] call #next-action\n- [ ] buy paint\n",
+    "2026-10-26",
+    "#next-action"
+   ],
+   "expected": {
+    "open": 1,
+    "done": 0,
+    "cancelled": 0,
+    "total": 1,
+    "percent": 0,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": "0%",
+    "nextTask": "call",
+    "any": 2
+   },
+   "fn": "noteTagProgress"
+  },
+  {
+   "name": "tag 2: note B, tasks without the tag give 0 and an empty Next task cell",
+   "args": [
+    "- [ ] buy paint\n- [x] plan\n",
+    "2026-10-26",
+    "next-action"
+   ],
+   "expected": {
+    "open": 0,
+    "done": 0,
+    "cancelled": 0,
+    "total": 0,
+    "percent": null,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": "",
+    "nextTask": null,
+    "any": 2
+   },
+   "fn": "noteTagProgress"
+  },
+  {
+   "name": "tag 3: a tag in the frontmatter or in a paragraph is not a task tag",
+   "args": [
+    "---\ntags: [next-action]\n---\nSee #next-action here.\n- [ ] write intro\n",
+    "2026-10-26",
+    "next-action"
+   ],
+   "expected": {
+    "open": 0,
+    "done": 0,
+    "cancelled": 0,
+    "total": 0,
+    "percent": null,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": "",
+    "nextTask": null,
+    "any": 1
+   },
+   "fn": "noteTagProgress"
+  },
+  {
+   "name": "tag 4: a done tagged task counts as done and is never the next task",
+   "args": [
+    "- [x] call #next-action\n- [ ] email #next-action\n",
+    "2026-10-26",
+    "next-action"
+   ],
+   "expected": {
+    "open": 1,
+    "done": 1,
+    "cancelled": 0,
+    "total": 2,
+    "percent": 50,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": "50%",
+    "nextTask": "email",
+    "any": 2
+   },
+   "fn": "noteTagProgress"
+  },
+  {
+   "name": "tag 5: a cancelled tagged task is not open, done or total, and is not the next task",
+   "args": [
+    "- [-] call #next-action\n- [x] mail #next-action\n",
+    "2026-10-26",
+    "next-action"
+   ],
+   "expected": {
+    "open": 0,
+    "done": 1,
+    "cancelled": 1,
+    "total": 1,
+    "percent": 100,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": "100%",
+    "nextTask": null,
+    "any": 1
+   },
+   "fn": "noteTagProgress"
+  },
+  {
+   "name": "tag 6: the filter next matches the nested tag #next/action; case and # are ignored",
+   "args": [
+    "- [ ] call 📅 2026-10-20 #Next/Action\n",
+    "2026-10-26",
+    "#NEXT"
+   ],
+   "expected": {
+    "open": 1,
+    "done": 0,
+    "cancelled": 0,
+    "total": 1,
+    "percent": 0,
+    "nextDue": "2026-10-20",
+    "overdue": 1,
+    "progress": "0%",
+    "nextTask": "call",
+    "any": 1
+   },
+   "fn": "noteTagProgress"
+  },
+  {
+   "name": "tag 7: the filter next/action does not match the parent tag #next or the tag #next-action",
+   "args": [
+    "- [ ] a #next\n- [ ] b #next-action\n",
+    "2026-10-26",
+    "next/action"
+   ],
+   "expected": {
+    "open": 0,
+    "done": 0,
+    "cancelled": 0,
+    "total": 0,
+    "percent": null,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": "",
+    "nextTask": null,
+    "any": 2
+   },
+   "fn": "noteTagProgress"
+  },
+  {
+   "name": "tag 8: the next task is the first open matching task in file order, not the earliest due",
+   "args": [
+    "- [ ] second 📅 2026-11-01 #na\n- [ ] first 📅 2026-10-27 #na\n",
+    "2026-10-26",
+    "na"
+   ],
+   "expected": {
+    "open": 2,
+    "done": 0,
+    "cancelled": 0,
+    "total": 2,
+    "percent": 0,
+    "nextDue": "2026-10-27",
+    "overdue": 0,
+    "progress": "0%",
+    "nextTask": "second",
+    "any": 2
+   },
+   "fn": "noteTagProgress"
+  },
+  {
+   "name": "tag 9: a matching task with no other text shows its tags",
+   "args": [
+    "- [ ] #next-action\n",
+    "2026-10-26",
+    "next-action"
+   ],
+   "expected": {
+    "open": 1,
+    "done": 0,
+    "cancelled": 0,
+    "total": 1,
+    "percent": 0,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": "0%",
+    "nextTask": "#next-action",
+    "any": 1
+   },
+   "fn": "noteTagProgress"
+  },
+  {
+   "name": "tag 10: an empty or # only filter counts every task and has no Next task",
+   "args": [
+    "- [ ] a\n- [x] b #x\n",
+    "2026-10-26",
+    " # "
+   ],
+   "expected": {
+    "open": 1,
+    "done": 1,
+    "cancelled": 0,
+    "total": 2,
+    "percent": 50,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": "50%",
+    "nextTask": null,
+    "any": 2
+   },
+   "fn": "noteTagProgress"
+  },
+  {
+   "name": "tag 11: several tags match any of them",
+   "args": [
+    "- [ ] a #waiting\n- [ ] b #next\n- [ ] c #other\n",
+    "2026-10-26",
+    "next, waiting"
+   ],
+   "expected": {
+    "open": 2,
+    "done": 0,
+    "cancelled": 0,
+    "total": 2,
+    "percent": 0,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": "0%",
+    "nextTask": "a",
+    "any": 3
+   },
+   "fn": "noteTagProgress"
+  },
+  {
+   "name": "tag 12: a tag inside a code span of the task line does not count",
+   "args": [
+    "- [ ] run `#next-action` script\n",
+    "2026-10-26",
+    "next-action"
+   ],
+   "expected": {
+    "open": 0,
+    "done": 0,
+    "cancelled": 0,
+    "total": 0,
+    "percent": null,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": "",
+    "nextTask": null,
+    "any": 1
+   },
+   "fn": "noteTagProgress"
+  },
+  {
+   "name": "tag 13: a tag at the end of bold text counts, and the Next task keeps the bold marks",
+   "args": [
+    "- [ ] **call Bob #next-action**\n",
+    "2026-10-26",
+    "next-action"
+   ],
+   "expected": {
+    "open": 1,
+    "done": 0,
+    "cancelled": 0,
+    "total": 1,
+    "percent": 0,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": "0%",
+    "nextTask": "**call Bob**",
+    "any": 1
+   },
+   "fn": "noteTagProgress"
+  },
+  {
+   "name": "tag 14: a tag inside bold marks counts",
+   "args": [
+    "- [ ] call Bob **#next-action**\n",
+    "2026-10-26",
+    "next-action"
+   ],
+   "expected": {
+    "open": 1,
+    "done": 0,
+    "cancelled": 0,
+    "total": 1,
+    "percent": 0,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": "0%",
+    "nextTask": "call Bob",
+    "any": 1
+   },
+   "fn": "noteTagProgress"
+  },
+  {
+   "name": "tag 15: a tag at the end of struck text counts",
+   "args": [
+    "- [ ] ~~call Bob #next-action~~\n",
+    "2026-10-26",
+    "next-action"
+   ],
+   "expected": {
+    "open": 1,
+    "done": 0,
+    "cancelled": 0,
+    "total": 1,
+    "percent": 0,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": "0%",
+    "nextTask": "~~call Bob~~",
+    "any": 1
+   },
+   "fn": "noteTagProgress"
+  },
+  {
+   "name": "tag 16: an em dash ends the tag",
+   "args": [
+    "- [ ] call Bob #next-action—today\n",
+    "2026-10-26",
+    "next-action"
+   ],
+   "expected": {
+    "open": 1,
+    "done": 0,
+    "cancelled": 0,
+    "total": 1,
+    "percent": 0,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": "0%",
+    "nextTask": "call Bob —today",
+    "any": 1
+   },
+   "fn": "noteTagProgress"
+  },
+  {
+   "name": "tag 17: a curly apostrophe ends the tag",
+   "args": [
+    "- [ ] call “Bob” #next-action’s\n",
+    "2026-10-26",
+    "next-action"
+   ],
+   "expected": {
+    "open": 1,
+    "done": 0,
+    "cancelled": 0,
+    "total": 1,
+    "percent": 0,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": "0%",
+    "nextTask": "call “Bob” ’s",
+    "any": 1
+   },
+   "fn": "noteTagProgress"
+  },
+  {
+   "name": "tag 18: a tag in the alias of a wikilink does not count, and the link text stays whole",
+   "args": [
+    "- [ ] see [[Proj|ring #next-action]]\n",
+    "2026-10-26",
+    "next-action"
+   ],
+   "expected": {
+    "open": 0,
+    "done": 0,
+    "cancelled": 0,
+    "total": 0,
+    "percent": null,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": "",
+    "nextTask": null,
+    "any": 1
+   },
+   "fn": "noteTagProgress"
+  },
+  {
+   "name": "tag 19: a tag in the text of a Markdown link does not count",
+   "args": [
+    "- [ ] see [ring #next-action](https://a.b)\n",
+    "2026-10-26",
+    "next-action"
+   ],
+   "expected": {
+    "open": 0,
+    "done": 0,
+    "cancelled": 0,
+    "total": 0,
+    "percent": null,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": "",
+    "nextTask": null,
+    "any": 1
+   },
+   "fn": "noteTagProgress"
+  },
+  {
+   "name": "tag 20: a heading link and a URL fragment are not tags",
+   "args": [
+    "- [ ] see [[Proj#next-action]] and https://a.b/#next-action\n",
+    "2026-10-26",
+    "next-action"
+   ],
+   "expected": {
+    "open": 0,
+    "done": 0,
+    "cancelled": 0,
+    "total": 0,
+    "percent": null,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": "",
+    "nextTask": null,
+    "any": 1
+   },
+   "fn": "noteTagProgress"
+  },
+  {
+   "name": "tag 21: a tag in highlight marks counts",
+   "args": [
+    "- [ ] ==call #next-action==\n",
+    "2026-10-26",
+    "next-action"
+   ],
+   "expected": {
+    "open": 1,
+    "done": 0,
+    "cancelled": 0,
+    "total": 1,
+    "percent": 0,
+    "nextDue": null,
+    "overdue": 0,
+    "progress": "0%",
+    "nextTask": "==call==",
+    "any": 1
+   },
+   "fn": "noteTagProgress"
+  }
+ ]
+}
