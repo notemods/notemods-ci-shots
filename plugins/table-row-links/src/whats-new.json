@@ -1,0 +1,27 @@
+{
+	"id": "table-row-links",
+	"name": "Table Row Links",
+	"version": "1.1.1",
+	"changes": [
+		"The Table Row Links notice for a Pro feature now has a Sponsor on GitHub button."
+	],
+	"tip": "Run Jump to table row... and type part of a label to move the cursor to a marked row in this note.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Table Row Links is one of over 100 small plugins that I make. Thank you for trusting it with your tables.",
+	"related": [
+		{
+			"id": "table-rollup",
+			"name": "Table Rollup",
+			"blurb": "Combine note tables in one table with links to the source notes."
+		},
+		{
+			"id": "flatten-table",
+			"name": "Flatten Table",
+			"blurb": "Show each item of a Bases list property as a separate row."
+		},
+		{
+			"id": "table-csv-encoding",
+			"name": "Table CSV Encoding",
+			"blurb": "Export Markdown tables to UTF-8 CSV files with a preview."
+		}
+	]
+}

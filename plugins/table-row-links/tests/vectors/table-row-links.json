@@ -1,0 +1,624 @@
+{
+ "slug": "table-row-links",
+ "module": "table-row-links/src/rows",
+ "function": "rowAnchor",
+ "note": "Pure row vectors use function and args. Cleanup takes text and an array of referenced ids. App cases below run in the real-app test.",
+ "cases": [
+  {
+   "name": "copy command on a data row adds a marker and builds the link",
+   "args": [
+    [
+     "# Fruit",
+     "| Fruit | Count |",
+     "|---|---|",
+     "| Apples | 3 |"
+    ],
+    3,
+    "My Vault",
+    "Notes/Fruit.md"
+   ],
+   "expected": {
+    "available": true,
+    "changed": true,
+    "line": "| Apples %%row:abc123%% | 3 |",
+    "id": "abc123",
+    "label": "Apples",
+    "link": "[Apples](obsidian://table-row?vault=My%20Vault&file=Notes%2FFruit.md&row=abc123)",
+    "rowIndex": 1
+   },
+   "deterministic_id": "abc123"
+  },
+  {
+   "name": "second run on the same row adds no marker again",
+   "args": [
+    [
+     "# Fruit",
+     "| Fruit | Count |",
+     "|---|---|",
+     "| Apples %%row:abc123%% | 3 |"
+    ],
+    3,
+    "V",
+    "Fruit.md"
+   ],
+   "expected": {
+    "available": true,
+    "changed": false,
+    "line": "| Apples %%row:abc123%% | 3 |",
+    "id": "abc123",
+    "label": "Apples",
+    "link": "[Apples](obsidian://table-row?vault=V&file=Fruit.md&row=abc123)",
+    "rowIndex": 1
+   }
+  },
+  {
+   "name": "header row is not available",
+   "args": [
+    [
+     "| Fruit | Count |",
+     "|---|---|",
+     "| Apples | 3 |"
+    ],
+    0,
+    "V",
+    "Fruit.md"
+   ],
+   "expected": {
+    "available": false,
+    "changed": false,
+    "line": "| Fruit | Count |",
+    "id": "",
+    "label": "",
+    "link": "",
+    "rowIndex": 0
+   }
+  },
+  {
+   "name": "divider row is not available",
+   "args": [
+    [
+     "| Fruit | Count |",
+     "|---|---|",
+     "| Apples | 3 |"
+    ],
+    1,
+    "V",
+    "Fruit.md"
+   ],
+   "expected": {
+    "available": false,
+    "changed": false,
+    "line": "|---|---|",
+    "id": "",
+    "label": "",
+    "link": "",
+    "rowIndex": 0
+   }
+  },
+  {
+   "name": "paragraph line is not available",
+   "args": [
+    [
+     "Some text about fruit.",
+     "| A |",
+     "|---|",
+     "| B |"
+    ],
+    0,
+    "V",
+    "F.md"
+   ],
+   "expected": {
+    "available": false,
+    "changed": false,
+    "line": "Some text about fruit.",
+    "id": "",
+    "label": "",
+    "link": "",
+    "rowIndex": 0
+   }
+  },
+  {
+   "name": "empty first cell gets the label Row 1",
+   "args": [
+    [
+     "| | Count |",
+     "|---|---|",
+     "|  | 3 |"
+    ],
+    2,
+    "V",
+    "F.md"
+   ],
+   "expected": {
+    "available": true,
+    "changed": true,
+    "line": "| %%row:abc123%% | 3 |",
+    "id": "abc123",
+    "label": "Row 1",
+    "link": "[Row 1](obsidian://table-row?vault=V&file=F.md&row=abc123)",
+    "rowIndex": 1
+   },
+   "deterministic_id": "abc123"
+  },
+  {
+   "name": "file path with spaces and hash is percent-encoded in the link",
+   "function": "rowLink",
+   "args": [
+    "Apples",
+    "My Vault",
+    "Notes/My #1 Fruit.md",
+    "abc123"
+   ],
+   "expected": "[Apples](obsidian://table-row?vault=My%20Vault&file=Notes%2FMy%20%231%20Fruit.md&row=abc123)"
+  },
+  {
+   "name": "code block table line is not available",
+   "args": [
+    [
+     "```",
+     "| X | Y |",
+     "|---|---|",
+     "| a | b |",
+     "```"
+    ],
+    3,
+    "V",
+    "F.md"
+   ],
+   "expected": {
+    "available": false,
+    "changed": false,
+    "line": "| a | b |",
+    "id": "",
+    "label": "",
+    "link": "",
+    "rowIndex": 0
+   }
+  },
+  {
+   "name": "first cell longer than 40 characters is trimmed in the label",
+   "function": "rowLabel",
+   "args": [
+    "| Antidisestablishmentarianismextrasuperlongwordhere | 1 |",
+    2
+   ],
+   "expected": "Antidisestablishmentarianismextrasuperlo"
+  },
+  {
+   "name": "rowLabel of a plain first cell returns the cell text",
+   "function": "rowLabel",
+   "args": [
+    "| Apples | 3 |",
+    1
+   ],
+   "expected": "Apples"
+  },
+  {
+   "name": "dataRows skips the header and divider and stops at a paragraph",
+   "function": "dataRows",
+   "args": [
+    [
+     "| A | B |",
+     "|---|---|",
+     "| a | b |",
+     "",
+     "| C |",
+     "|---|",
+     "| c |"
+    ]
+   ],
+   "expected": [
+    2,
+    6
+   ]
+  },
+  {
+   "name": "dataRows excludes code fence lines",
+   "function": "dataRows",
+   "args": [
+    [
+     "```",
+     "| A |",
+     "|---|",
+     "| a |",
+     "```",
+     "| B |",
+     "|---|",
+     "| b |"
+    ]
+   ],
+   "expected": [
+    7
+   ]
+  },
+  {
+   "name": "markerId reads a 6 character id",
+   "function": "markerId",
+   "args": [
+    "| Apples %%row:abc123%% | 3 |"
+   ],
+   "expected": "abc123"
+  },
+  {
+   "name": "markerId ignores an id that is not 6 characters of a-z0-9",
+   "function": "markerId",
+   "args": [
+    "| Apples %%row:ABC-12%% | 3 |"
+   ],
+   "expected": ""
+  },
+  {
+   "name": "findMarkedLine finds the marked line",
+   "function": "findMarkedLine",
+   "args": [
+    "# Fruit\n| A |\n|---|\n| a %%row:abc123%% |\n| b |",
+    "abc123"
+   ],
+   "expected": 3
+  },
+  {
+   "name": "findMarkedLine rejects an id with a wrong shape",
+   "function": "findMarkedLine",
+   "args": [
+    "| a %%row:abc123%% |",
+    "ABC123"
+   ],
+   "expected": -1
+  },
+  {
+   "name": "findMarkedLine returns -1 for an unknown id",
+   "function": "findMarkedLine",
+   "args": [
+    "| a |",
+    "zzzzzz"
+   ],
+   "expected": -1
+  },
+  {
+   "name": "markedRows lists each marked row with label and line",
+   "function": "markedRows",
+   "args": [
+    "| Fruit |",
+    "|---|",
+    "| Apples %%row:abc123%% |",
+    "| %%row:def456%% | 2 |",
+    "| Pears | 5 |"
+   ],
+   "expected": [
+    {
+     "id": "abc123",
+     "line": 2,
+     "label": "Apples"
+    },
+    {
+     "id": "def456",
+     "line": 3,
+     "label": "Row 2"
+    }
+   ]
+  },
+  {
+   "name": "markedRows lists rows of the second table with their own index",
+   "function": "markedRows",
+   "args": [
+    "| A |",
+    "|---|",
+    "| x %%row:abc123%% |",
+    "text",
+    "| B |",
+    "|---|",
+    "| %%row:def456%% |",
+    "| z |"
+   ],
+   "expected": [
+    {
+     "id": "abc123",
+     "line": 2,
+     "label": "x"
+    },
+    {
+     "id": "def456",
+     "line": 6,
+     "label": "Row 1"
+    }
+   ]
+  },
+  {
+   "name": "removeUnusedAnchors removes markers that no line references",
+   "function": "removeUnusedAnchors",
+   "args": [
+    "| A |\n|---|\n| x %%row:abc123%% |\n| y %%row:def456%% | see [y](obsidian://table-row?vault=V&file=F.md&row=def456) |",
+    [
+     "def456"
+    ]
+   ],
+   "expected": {
+    "text": "| A |\n|---|\n| x |\n| y %%row:def456%% | see [y](obsidian://table-row?vault=V&file=F.md&row=def456) |",
+    "removed": 1
+   }
+  },
+  {
+   "name": "removeUnusedAnchors keeps referenced markers",
+   "function": "removeUnusedAnchors",
+   "args": [
+    "| A |\n|---|\n| x %%row:abc123%% |\nRead [x](obsidian://table-row?vault=V&file=F.md&row=abc123) later.",
+    [
+     "abc123"
+    ]
+   ],
+   "expected": {
+    "text": "| A |\n|---|\n| x %%row:abc123%% |\nRead [x](obsidian://table-row?vault=V&file=F.md&row=abc123) later.",
+    "removed": 0
+   }
+  },
+  {
+   "name": "single cell row is available",
+   "args": [
+    [
+     "| Solo |",
+     "|---|",
+     "| one |"
+    ],
+    2,
+    "V",
+    "F.md"
+   ],
+   "expected": {
+    "available": true,
+    "changed": true,
+    "line": "| one %%row:abc123%% |",
+    "id": "abc123",
+    "label": "one",
+    "link": "[one](obsidian://table-row?vault=V&file=F.md&row=abc123)",
+    "rowIndex": 1
+   },
+   "deterministic_id": "abc123"
+  },
+  {
+   "name": "rowLabel of a marked first cell keeps the cell value",
+   "function": "rowLabel",
+   "args": [
+    "| Apples %%row:abc123%% | 3 |",
+    1
+   ],
+   "expected": "Apples"
+  },
+  {
+   "name": "index beyond the text is not available",
+   "args": [
+    [
+     "| A |",
+     "|---|",
+     "| a |"
+    ],
+    9,
+    "V",
+    "F.md"
+   ],
+   "expected": {
+    "available": false,
+    "changed": false,
+    "line": "",
+    "id": "",
+    "label": "",
+    "link": "",
+    "rowIndex": 0
+   }
+  },
+  {
+   "name": "rowLabel of an empty cell with no index text falls back to Row 0",
+   "function": "rowLabel",
+   "args": [
+    "|   | 3 |",
+    0
+   ],
+   "expected": "Row 0"
+  },
+  {
+   "name": "duplicate marker opens the first data row",
+   "function": "findMarkedLine",
+   "args": [
+    "| A |\n|---|\n| a %%row:abc123%% |\n| b %%row:abc123%% |",
+    "abc123"
+   ],
+   "expected": 2
+  },
+  {
+   "name": "fenced marker does not resolve",
+   "function": "findMarkedLine",
+   "args": [
+    "```\n| A |\n|---|\n| a %%row:abc123%% |\n```",
+    "abc123"
+   ],
+   "expected": -1
+  },
+  {
+   "name": "escaped pipe stays inside the first cell",
+   "function": "rowLabel",
+   "args": [
+    "| Apples \\| Pears %%row:abc123%% | 3 |",
+    1
+   ],
+   "expected": "Apples \\| Pears"
+  },
+  {
+   "name": "divider without a header has no data row",
+   "function": "dataRows",
+   "args": [
+    [
+     "|---|",
+     "| a |"
+    ]
+   ],
+   "expected": []
+  },
+  {
+   "name": "shorter fence does not end a code block",
+   "function": "dataRows",
+   "args": [
+    [
+     "````",
+     "```",
+     "| A |",
+     "|---|",
+     "| a |",
+     "````"
+    ]
+   ],
+   "expected": []
+  },
+  {
+   "name": "a paragraph marker does not resolve",
+   "function": "findMarkedLine",
+   "args": [
+    "text %%row:abc123%%",
+    "abc123"
+   ],
+   "expected": -1
+  },
+  {
+   "name": "bracket in label is escaped",
+   "function": "rowLink",
+   "args": [
+    "[Apples]",
+    "V",
+    "F.md",
+    "abc123"
+   ],
+   "expected": "[\\[Apples\\]](obsidian://table-row?vault=V&file=F.md&row=abc123)"
+  },
+  {
+   "name": "header-like table after a paragraph is detected",
+   "function": "dataRows",
+   "args": [
+    [
+     "text",
+     "| A |",
+     "|---|",
+     "| a |"
+    ]
+   ],
+   "expected": [
+    3
+   ]
+  },
+  {
+   "name": "unknown marker has no target line",
+   "function": "findMarkedLine",
+   "args": [
+    "| A |\n|---|\n| a %%row:abc123%% |",
+    "def456"
+   ],
+   "expected": -1
+  },
+  {
+   "name": "second table copy starts at row one",
+   "args": [
+    [
+     "| A |",
+     "|---|",
+     "| a |",
+     "",
+     "| B |",
+     "|---|",
+     "| |"
+    ],
+    6,
+    "V",
+    "F.md"
+   ],
+   "deterministic_id": "abc123",
+   "expected": {
+    "available": true,
+    "changed": true,
+    "line": "| %%row:abc123%% |",
+    "id": "abc123",
+    "label": "Row 1",
+    "link": "[Row 1](obsidian://table-row?vault=V&file=F.md&row=abc123)",
+    "rowIndex": 1
+   }
+  },
+  {
+   "name": "parentheses in paths do not close the Markdown link",
+   "function": "rowLink",
+   "args": [
+    "Apples",
+    "My (work) vault",
+    "Notes/Fruit (1).md",
+    "abc123"
+   ],
+   "expected": "[Apples](obsidian://table-row?vault=My%20%28work%29%20vault&file=Notes%2FFruit%20%281%29.md&row=abc123)"
+  }
+ ],
+ "app_cases": [
+  {
+   "name": "protocol opens a marked row",
+   "file": "Notes/My #1 Fruit.md",
+   "row": "abc123",
+   "expected_line": 3
+  },
+  {
+   "name": "unknown row opens at top with a notice",
+   "file": "Notes/My #1 Fruit.md",
+   "row": "zzzzzz",
+   "expected_line": 0,
+   "notice": "Row anchor zzzzzz not found in Notes/My #1 Fruit.md"
+  },
+  {
+   "name": "missing file has a notice",
+   "file": "Missing.md",
+   "row": "abc123",
+   "notice": "File not found: Missing.md"
+  },
+  {
+   "name": "reading view hides row markers",
+   "file": "Notes/My #1 Fruit.md",
+   "hidden": "%%row:",
+   "visible": "Apples"
+  },
+  {
+   "name": "free Pro actions are gated",
+   "pro": false,
+   "expected_notice": "Sponsor",
+   "expected_mutation": false
+  },
+  {
+   "name": "vault search includes another note",
+   "pro": true,
+   "file": "Other.md",
+   "row_label": "Ship",
+   "expected_line": 2
+  },
+  {
+   "name": "reading row link opens the target",
+   "pro": true,
+   "link": "[[Fruit#^abc123|Open Apples]]",
+   "file": "Fruit.md",
+   "expected_line": 3
+  },
+  {
+   "name": "cleanup retains references from other notes",
+   "pro": true,
+   "referenced_ids": [
+    "abc123",
+    "def456"
+   ],
+   "expected_removed": 0
+  },
+  {
+   "name": "cleanup removes a marker without a reference",
+   "pro": true,
+   "referenced_ids": [
+    "def456"
+   ],
+   "expected_removed": 1
+  },
+  {
+   "name": "sign out disables Pro and leaves core available",
+   "pro": false,
+   "core_copy": true,
+   "local_jump": true
+  }
+ ]
+}
