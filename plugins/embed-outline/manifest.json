@@ -1,0 +1,11 @@
+{
+	"id": "embed-outline",
+	"name": "Embed Outline",
+	"version": "1.4.1",
+	"minAppVersion": "1.13.4",
+	"description": "Shows the headings of embedded notes and callout titles in one outline, nested where each note is embedded.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}
