@@ -1,0 +1,27 @@
+{
+	"id": "word-count-property",
+	"name": "Word Count Property",
+	"version": "1.2.1",
+	"changes": [
+		"The Word Count Property notice for a Pro feature now has a Sponsor on GitHub button."
+	],
+	"tip": "In a Bases table, add wordCount and readingTimeMinutes as columns to sort and sum your chapters.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Word Count Property is one of over 100 small plugins that I make. Thank you for using it with your writing.",
+	"related": [
+		{
+			"id": "bases-manual-order",
+			"name": "Bases Manual Order",
+			"blurb": "Drag rows of a base into an order stored in a note property."
+		},
+		{
+			"id": "chapter-batch-export",
+			"name": "Chapter Batch Export",
+			"blurb": "Save each manuscript chapter as its own Markdown file."
+		},
+		{
+			"id": "revision-session-marks",
+			"name": "Revision Session Marks",
+			"blurb": "Save a prose baseline and a marked review of edits."
+		}
+	]
+}
