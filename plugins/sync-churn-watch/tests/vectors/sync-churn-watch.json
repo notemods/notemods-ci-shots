@@ -1,0 +1,807 @@
+{
+ "slug": "sync-churn-watch",
+ "module": "sync-churn-watch/src/watch",
+ "function": "Watch",
+ "note": "The test runner replays adapter observations and checks the selected result fields. Plugin tests check one save on stop, timer cleanup, and Pro access.",
+ "cases": [
+  {
+   "name": "01 No session and no count before start",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "write",
+       "path": ".obsidian/plugins/test/data.json",
+       "mtime": 1,
+       "size": 100
+      },
+      {
+       "op": "poll"
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "label": "No session",
+    "rows": [],
+    "statCalls": 0
+   }
+  },
+  {
+   "name": "02 Three settings writes at fifteen second steps",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      },
+      {
+       "op": "write",
+       "path": ".obsidian/plugins/test/data.json",
+       "mtime": 1,
+       "size": 100,
+       "time": 15000
+      },
+      {
+       "op": "poll"
+      },
+      {
+       "op": "write",
+       "path": ".obsidian/plugins/test/data.json",
+       "mtime": 2,
+       "size": 100,
+       "time": 30000
+      },
+      {
+       "op": "poll"
+      },
+      {
+       "op": "write",
+       "path": ".obsidian/plugins/test/data.json",
+       "mtime": 3,
+       "size": 100,
+       "time": 45000
+      },
+      {
+       "op": "poll"
+      }
+     ],
+     "files": {
+      ".obsidian/plugins/test/data.json": [
+       0,
+       100
+      ]
+     },
+     "manifests": {
+      ".obsidian/plugins/test/manifest.json": "{\"name\":\"test\"}"
+     }
+    }
+   ],
+   "expected": {
+    "rows": [
+     {
+      "path": ".obsidian/plugins/test/data.json",
+      "name": "test",
+      "group": "settings",
+      "writes": 3,
+      "bytes": 300
+     }
+    ]
+   }
+  },
+  {
+   "name": "03 Two writes within one polling window count once",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      },
+      {
+       "op": "write",
+       "path": ".obsidian/plugins/test/data.json",
+       "mtime": 1,
+       "size": 100
+      },
+      {
+       "op": "write",
+       "path": ".obsidian/plugins/test/data.json",
+       "mtime": 2,
+       "size": 100
+      },
+      {
+       "op": "poll"
+      }
+     ],
+     "files": {
+      ".obsidian/plugins/test/data.json": [
+       0,
+       100
+      ]
+     }
+    }
+   ],
+   "expected": {
+    "rows": [
+     {
+      "path": ".obsidian/plugins/test/data.json",
+      "name": "test",
+      "group": "settings",
+      "writes": 1,
+      "bytes": 100
+     }
+    ]
+   }
+  },
+  {
+   "name": "04 Four 2000 byte note events",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      },
+      {
+       "op": "note",
+       "path": "A.md",
+       "size": 2000
+      },
+      {
+       "op": "note",
+       "path": "A.md",
+       "size": 2000
+      },
+      {
+       "op": "note",
+       "path": "A.md",
+       "size": 2000
+      },
+      {
+       "op": "note",
+       "path": "A.md",
+       "size": 2000
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "rows": [
+     {
+      "path": "A.md",
+      "name": "A.md",
+      "group": "vault",
+      "writes": 4,
+      "bytes": 8000
+     }
+    ]
+   }
+  },
+  {
+   "name": "05 Missing manifest uses folder name",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      }
+     ],
+     "files": {
+      ".obsidian/plugins/test/data.json": [
+       0,
+       100
+      ]
+     }
+    }
+   ],
+   "expected": {
+    "rows": [
+     {
+      "path": ".obsidian/plugins/test/data.json",
+      "name": "test",
+      "group": "settings",
+      "writes": 0,
+      "bytes": 0
+     }
+    ]
+   }
+  },
+  {
+   "name": "06 Stop prevents reads and retains counts",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      },
+      {
+       "op": "note",
+       "path": "A.md",
+       "size": 2000
+      },
+      {
+       "op": "stop",
+       "time": 3600000
+      },
+      {
+       "op": "poll"
+      },
+      {
+       "op": "note",
+       "path": "A.md",
+       "size": 2000
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "active": false,
+    "rows": [
+     {
+      "path": "A.md",
+      "name": "A.md",
+      "group": "vault",
+      "writes": 1,
+      "bytes": 2000
+     }
+    ],
+    "statCalls": 4
+   }
+  },
+  {
+   "name": "07 Sorted Markdown table with four columns",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      },
+      {
+       "op": "note",
+       "path": "B.md",
+       "size": 100
+      },
+      {
+       "op": "note",
+       "path": "A.md",
+       "size": 2000
+      },
+      {
+       "op": "note",
+       "path": "A.md",
+       "size": 2000
+      },
+      {
+       "op": "stop",
+       "time": 3600000
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "markdown": "Counts for settings files are at least the observed writes. Bytes are estimates.\n\n| File | Writes | Writes/h | Est. bytes |\n| --- | ---: | ---: | ---: |\n| A.md | 2 | 2 | 4000 |\n| B.md | 1 | 1 | 100 |"
+   }
+  },
+  {
+   "name": "08 Own data excluded from polling and events",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      },
+      {
+       "op": "note",
+       "path": ".obsidian/plugins/sync-churn-watch/data.json",
+       "size": 500
+      },
+      {
+       "op": "poll"
+      }
+     ],
+     "files": {
+      ".obsidian/plugins/sync-churn-watch/data.json": [
+       0,
+       100
+      ]
+     }
+    }
+   ],
+   "expected": {
+    "rows": [],
+    "statCalls": 8
+   }
+  },
+  {
+   "name": "09 Zero plugins with core config file",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      }
+     ],
+     "files": {
+      ".obsidian/app.json": [
+       1,
+       50
+      ]
+     }
+    }
+   ],
+   "expected": {
+    "rows": [
+     {
+      "path": ".obsidian/app.json",
+      "name": "app.json",
+      "group": "settings",
+      "writes": 0,
+      "bytes": 0
+     }
+    ]
+   }
+  },
+  {
+   "name": "10 Unload stops observations",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      },
+      {
+       "op": "unload"
+      },
+      {
+       "op": "poll"
+      },
+      {
+       "op": "note",
+       "path": "A.md",
+       "size": 2000
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "active": false,
+    "rows": [],
+    "statCalls": 4
+   }
+  },
+  {
+   "name": "11 Unchanged mtime is not a write",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      },
+      {
+       "op": "poll"
+      },
+      {
+       "op": "poll"
+      }
+     ],
+     "files": {
+      ".obsidian/plugins/test/data.json": [
+       0,
+       100
+      ]
+     }
+    }
+   ],
+   "expected": {
+    "rows": [
+     {
+      "path": ".obsidian/plugins/test/data.json",
+      "name": "test",
+      "group": "settings",
+      "writes": 0,
+      "bytes": 0
+     }
+    ]
+   }
+  },
+  {
+   "name": "12 Manifest name maps correctly",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      }
+     ],
+     "files": {
+      ".obsidian/plugins/test/data.json": [
+       0,
+       100
+      ]
+     },
+     "manifests": {
+      ".obsidian/plugins/test/manifest.json": "{\"name\":\"Example tool\"}"
+     }
+    }
+   ],
+   "expected": {
+    "rows": [
+     {
+      "path": ".obsidian/plugins/test/data.json",
+      "name": "Example tool",
+      "group": "settings",
+      "writes": 0,
+      "bytes": 0
+     }
+    ]
+   }
+  },
+  {
+   "name": "13 Invalid manifest uses folder name",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      }
+     ],
+     "files": {
+      ".obsidian/plugins/test/data.json": [
+       0,
+       100
+      ]
+     },
+     "manifests": {
+      ".obsidian/plugins/test/manifest.json": "broken"
+     }
+    }
+   ],
+   "expected": {
+    "rows": [
+     {
+      "path": ".obsidian/plugins/test/data.json",
+      "name": "test",
+      "group": "settings",
+      "writes": 0,
+      "bytes": 0
+     }
+    ]
+   }
+  },
+  {
+   "name": "14 Writes per hour use stopped duration",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      },
+      {
+       "op": "note",
+       "path": "A.md",
+       "size": 2000
+      },
+      {
+       "op": "note",
+       "path": "A.md",
+       "size": 2000
+      },
+      {
+       "op": "stop",
+       "time": 3600000
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "rates": [
+     2
+    ]
+   }
+  },
+  {
+   "name": "15 Each write uses its own size",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      },
+      {
+       "op": "note",
+       "path": "A.md",
+       "size": 1000
+      },
+      {
+       "op": "note",
+       "path": "A.md",
+       "size": 3000
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "rows": [
+     {
+      "path": "A.md",
+      "name": "A.md",
+      "group": "vault",
+      "writes": 2,
+      "bytes": 4000
+     }
+    ]
+   }
+  },
+  {
+   "name": "16 Attachment modify events are counted",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      },
+      {
+       "op": "note",
+       "path": "assets/image.png",
+       "size": 40000
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "rows": [
+     {
+      "path": "assets/image.png",
+      "name": "assets/image.png",
+      "group": "vault",
+      "writes": 1,
+      "bytes": 40000
+     }
+    ]
+   }
+  },
+  {
+   "name": "17 A new session clears previous rows",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      },
+      {
+       "op": "note",
+       "path": "A.md",
+       "size": 2000
+      },
+      {
+       "op": "stop",
+       "time": 3600000
+      },
+      {
+       "op": "start"
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "active": true,
+    "rows": []
+   }
+  },
+  {
+   "name": "18 A repeated start does not clear live counts",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      },
+      {
+       "op": "note",
+       "path": "A.md",
+       "size": 2000
+      },
+      {
+       "op": "start"
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "rows": [
+     {
+      "path": "A.md",
+      "name": "A.md",
+      "group": "vault",
+      "writes": 1,
+      "bytes": 2000
+     }
+    ]
+   }
+  },
+  {
+   "name": "19 Folder suggestions omit root notes",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      },
+      {
+       "op": "note",
+       "path": "A.md",
+       "size": 2000
+      },
+      {
+       "op": "note",
+       "path": "Notes/B.md",
+       "size": 2000
+      },
+      {
+       "op": "note",
+       "path": "Notes/C.md",
+       "size": 2000
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "folders": [
+     "Notes"
+    ]
+   }
+  },
+  {
+   "name": "20 An mtime decrease counts as a rewrite",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      },
+      {
+       "op": "write",
+       "path": ".obsidian/plugins/test/data.json",
+       "mtime": 1,
+       "size": 100
+      },
+      {
+       "op": "poll"
+      }
+     ],
+     "files": {
+      ".obsidian/plugins/test/data.json": [
+       5,
+       100
+      ]
+     }
+    }
+   ],
+   "expected": {
+    "rows": [
+     {
+      "path": ".obsidian/plugins/test/data.json",
+      "name": "test",
+      "group": "settings",
+      "writes": 1,
+      "bytes": 100
+     }
+    ]
+   }
+  },
+  {
+   "name": "21 A custom config folder is used",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      }
+     ],
+     "files": {
+      "config/app.json": [
+       1,
+       100
+      ]
+     },
+     "config": "config"
+    }
+   ],
+   "expected": {
+    "rows": [
+     {
+      "path": "config/app.json",
+      "name": "app.json",
+      "group": "settings",
+      "writes": 0,
+      "bytes": 0
+     }
+    ]
+   }
+  },
+  {
+   "name": "22 A core config created after baseline counts once",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      },
+      {
+       "op": "write",
+       "path": ".obsidian/app.json",
+       "mtime": 1,
+       "size": 25
+      },
+      {
+       "op": "poll"
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "rows": [
+     {
+      "path": ".obsidian/app.json",
+      "name": "app.json",
+      "group": "settings",
+      "writes": 1,
+      "bytes": 25
+     }
+    ]
+   }
+  },
+  {
+   "name": "23 No note events after stop",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      },
+      {
+       "op": "stop",
+       "time": 3600000
+      },
+      {
+       "op": "note",
+       "path": "A.md",
+       "size": 2000
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "rows": [],
+    "label": "Session stopped"
+   }
+  },
+  {
+   "name": "24 Negative byte sizes do not reduce the estimate",
+   "args": [
+    {
+     "steps": [
+      {
+       "op": "start"
+      },
+      {
+       "op": "note",
+       "path": "A.md",
+       "size": -5
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "rows": [
+     {
+      "path": "A.md",
+      "name": "A.md",
+      "group": "vault",
+      "writes": 1,
+      "bytes": 0
+     }
+    ]
+   }
+  }
+ ]
+}
