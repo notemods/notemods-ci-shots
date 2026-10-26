@@ -1,0 +1,27 @@
+{
+	"id": "live-template-results",
+	"name": "Live Template Results",
+	"version": "1.1.1",
+	"changes": [
+		"The Pro notice for the results panel now has a Sponsor on GitHub button."
+	],
+	"tip": "Click a result, or move the cursor into it, to see and edit its Templater command.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Live Template Results is one of over 100 small plugins that I make. Thank you for keeping it in your editor.",
+	"related": [
+		{
+			"id": "dot-diagrams",
+			"name": "DOT Diagrams",
+			"blurb": "Show Graphviz DOT code as a diagram in your theme colors."
+		},
+		{
+			"id": "shortcuts-bridge",
+			"name": "Shortcuts Bridge",
+			"blurb": "Runs an Apple Shortcut from a note or a command and passes text to it. Works on iPhone, iPad and Mac."
+		},
+		{
+			"id": "jsonpath-vault-query",
+			"name": "Local JSON Queries",
+			"blurb": "Run local JSON queries on vault files and show the results as tables or text."
+		}
+	]
+}

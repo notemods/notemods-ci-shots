@@ -1,0 +1,11 @@
+{
+	"id": "live-template-results",
+	"name": "Live Template Results",
+	"version": "1.1.1",
+	"minAppVersion": "1.13.4",
+	"description": "Show dynamic template results while you edit notes in Live Preview.",
+	"author": "theluckystrike",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}
