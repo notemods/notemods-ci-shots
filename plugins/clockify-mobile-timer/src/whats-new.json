@@ -1,0 +1,27 @@
+{
+	"id": "clockify-mobile-timer",
+	"name": "Mobile Timer for Clockify",
+	"version": "1.2.1",
+	"changes": [
+		"The Pro notice for the offline queue now has a Sponsor on GitHub button."
+	],
+	"tip": "Put the cursor on a task line and run 'Start timer for this task' to time it.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Mobile Timer for Clockify is one of over 100 small plugins that I make. Thank you for using it to track your time.",
+	"related": [
+		{
+			"id": "toggl-mobile-timer",
+			"name": "Mobile Timer for Toggl Track",
+			"blurb": "Control your Toggl Track timer and see the daily total from a note."
+		},
+		{
+			"id": "task-date-links",
+			"name": "Task Date Links",
+			"blurb": "Link completed tasks to their daily notes for backlinks."
+		},
+		{
+			"id": "task-field-labels",
+			"name": "Task Field Labels",
+			"blurb": "Show text labels for dates, priority, and recurrence in rendered tasks."
+		}
+	]
+}
