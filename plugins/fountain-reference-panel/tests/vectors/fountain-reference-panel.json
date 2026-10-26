@@ -1,0 +1,935 @@
+{
+ "slug": "fountain-reference-panel",
+ "module": "fountain-reference-panel/src/scan",
+ "function": "findIncoming",
+ "note": "findIncoming cases: args = [scripts as [{path, text} or {path, error}], links as {scriptPath: {linkpath: targetPath}} in place of MetadataCache.getFirstLinkpathDest(linkpath, scriptPath), activePath or null, optional Pro project folders]; expected = {rows: [{source, line, scene, display, context, before}], status, unresolved, scripts, failed}. Cases with a \"function\" field call that export of the same module (parseFolders, inFolders, sceneHeading, cleanLine) with args and compare the whole result.",
+ "cases": [
+  {
+   "name": "one reference from Script.fountain to People/Ada",
+   "args": [
+    [
+     {
+      "path": "Script.fountain",
+      "text": "INT. LAB - NIGHT\n\nAda sees [[>People/Ada]]."
+     }
+    ],
+    {
+     "Script.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [
+     {
+      "source": "Script.fountain",
+      "line": 3,
+      "scene": "INT. LAB - NIGHT",
+      "display": "People/Ada",
+      "context": "Ada sees People/Ada.",
+      "before": ""
+     }
+    ],
+    "status": "1 reference from 1 script. 1 script scanned, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "display text after the pipe",
+   "args": [
+    [
+     {
+      "path": "Script.fountain",
+      "text": "EXT. PIER - DAY\n\nThe [[>People/Ada|Doctor]] waits."
+     }
+    ],
+    {
+     "Script.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [
+     {
+      "source": "Script.fountain",
+      "line": 3,
+      "scene": "EXT. PIER - DAY",
+      "display": "Doctor",
+      "context": "The Doctor waits.",
+      "before": ""
+     }
+    ],
+    "status": "1 reference from 1 script. 1 script scanned, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "ordinary Fountain notes are not references",
+   "args": [
+    [
+     {
+      "path": "Script.fountain",
+      "text": "EXT. PIER - DAY\n\nAda waits. [[ordinary Fountain note]] [[todo:fix this]]"
+     }
+    ],
+    {
+     "Script.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [],
+    "status": "No references to this note. 1 script scanned, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "a reference in a one-line boneyard is inactive",
+   "args": [
+    [
+     {
+      "path": "Script.fountain",
+      "text": "INT. LAB - NIGHT\n\n/* Ada sees [[>People/Ada]]. */\nThe lab is empty."
+     }
+    ],
+    {
+     "Script.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [],
+    "status": "No references to this note. 1 script scanned, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "a reference in a boneyard block over several lines is inactive",
+   "args": [
+    [
+     {
+      "path": "Script.fountain",
+      "text": "INT. LAB - NIGHT\n\n/*\nOld draft.\nAda sees [[>People/Ada]].\n*/\nThe lab is empty."
+     }
+    ],
+    {
+     "Script.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [],
+    "status": "No references to this note. 1 script scanned, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "text after the end of a boneyard on the same line is active",
+   "args": [
+    [
+     {
+      "path": "Script.fountain",
+      "text": "INT. LAB - NIGHT\n\n/* cut */ Ada waves at [[>People/Ada|herself]]."
+     }
+    ],
+    {
+     "Script.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [
+     {
+      "source": "Script.fountain",
+      "line": 3,
+      "scene": "INT. LAB - NIGHT",
+      "display": "herself",
+      "context": "Ada waves at herself.",
+      "before": ""
+     }
+    ],
+    "status": "1 reference from 1 script. 1 script scanned, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "a boneyard start in the middle of a line hides the rest of the line",
+   "args": [
+    [
+     {
+      "path": "Script.fountain",
+      "text": "INT. LAB - NIGHT\n\nAda nods. /* [[>People/Ada]]\nstill cut */ The end."
+     }
+    ],
+    {
+     "Script.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [],
+    "status": "No references to this note. 1 script scanned, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "two Ada notes resolve from each script path",
+   "args": [
+    [
+     {
+      "path": "Film A/Script.fountain",
+      "text": "INT. HOUSE - DAY\n\n[[>Ada]] enters."
+     },
+     {
+      "path": "Film B/Script.fountain",
+      "text": "INT. SHIP - DAY\n\n[[>Ada]] leaves."
+     }
+    ],
+    {
+     "Film A/Script.fountain": {
+      "Ada": "Film A/Ada.md"
+     },
+     "Film B/Script.fountain": {
+      "Ada": "Film B/Ada.md"
+     }
+    },
+    "Film A/Ada.md"
+   ],
+   "expected": {
+    "rows": [
+     {
+      "source": "Film A/Script.fountain",
+      "line": 3,
+      "scene": "INT. HOUSE - DAY",
+      "display": "Ada",
+      "context": "Ada enters.",
+      "before": ""
+     }
+    ],
+    "status": "1 reference from 1 script. 2 scripts scanned, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 2,
+    "failed": []
+   }
+  },
+  {
+   "name": "an unresolved target is counted and not assigned to the active note",
+   "args": [
+    [
+     {
+      "path": "Script.fountain",
+      "text": "INT. LAB - NIGHT\n\nAda calls [[>Missing]]."
+     }
+    ],
+    {
+     "Script.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "Missing.md"
+   ],
+   "expected": {
+    "rows": [],
+    "status": "No references to this note. 1 script scanned, 1 unresolved target.",
+    "unresolved": 1,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "two references in different scenes give two rows",
+   "args": [
+    [
+     {
+      "path": "Script.fountain",
+      "text": "INT. LAB - NIGHT\n\nThe door opens.\nAda sees [[>People/Ada]].\n\nEXT. ROOF - DAWN\n\nWind.\n[[>People/Ada]] looks down."
+     }
+    ],
+    {
+     "Script.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [
+     {
+      "source": "Script.fountain",
+      "line": 4,
+      "scene": "INT. LAB - NIGHT",
+      "display": "People/Ada",
+      "context": "Ada sees People/Ada.",
+      "before": "The door opens."
+     },
+     {
+      "source": "Script.fountain",
+      "line": 9,
+      "scene": "EXT. ROOF - DAWN",
+      "display": "People/Ada",
+      "context": "People/Ada looks down.",
+      "before": "Wind."
+     }
+    ],
+    "status": "2 references from 1 script. 1 script scanned, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "after a rename the scan shows only the new path",
+   "args": [
+    [
+     {
+      "path": "Drafts/Script v2.fountain",
+      "text": "INT. LAB - NIGHT\n\nAda sees [[>People/Ada]]."
+     }
+    ],
+    {
+     "Drafts/Script v2.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [
+     {
+      "source": "Drafts/Script v2.fountain",
+      "line": 3,
+      "scene": "INT. LAB - NIGHT",
+      "display": "People/Ada",
+      "context": "Ada sees People/Ada.",
+      "before": ""
+     }
+    ],
+    "status": "1 reference from 1 script. 1 script scanned, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "after a delete the scan has no row and says so",
+   "args": [
+    [
+     {
+      "path": "Other.fountain",
+      "text": "INT. LAB - NIGHT\n\nNobody here."
+     }
+    ],
+    {},
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [],
+    "status": "No references to this note. 1 script scanned, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "after an edit removes the reference the row goes away",
+   "args": [
+    [
+     {
+      "path": "Script.fountain",
+      "text": "INT. LAB - NIGHT\n\nAda sees the door."
+     }
+    ],
+    {
+     "Script.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [],
+    "status": "No references to this note. 1 script scanned, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "no active note gives a status and no list",
+   "args": [
+    [
+     {
+      "path": "Script.fountain",
+      "text": "Ada sees [[>People/Ada]]."
+     }
+    ],
+    {
+     "Script.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    null
+   ],
+   "expected": {
+    "rows": [],
+    "status": "Open a Markdown note to see the Fountain references to it.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "an active file that is not Markdown gives a status and no list",
+   "args": [
+    [
+     {
+      "path": "Script.fountain",
+      "text": "Ada sees [[>People/Ada]]."
+     }
+    ],
+    {
+     "Script.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "Board.canvas"
+   ],
+   "expected": {
+    "rows": [],
+    "status": "Open a Markdown note to see the Fountain references to it.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "a read failure makes the status say the list can be incomplete",
+   "args": [
+    [
+     {
+      "path": "Broken.fountain",
+      "error": "File is locked"
+     }
+    ],
+    {},
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [],
+    "status": "No script could be read, so references can be missing. 1 script scanned, 0 unresolved targets. 1 script could not be read.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": [
+     "Broken.fountain"
+    ]
+   }
+  },
+  {
+   "name": "a read failure is shown next to the rows that were found",
+   "args": [
+    [
+     {
+      "path": "Broken.fountain",
+      "error": "File is locked"
+     },
+     {
+      "path": "Script.fountain",
+      "text": "Ada sees [[>People/Ada]]."
+     }
+    ],
+    {
+     "Script.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [
+     {
+      "source": "Script.fountain",
+      "line": 1,
+      "scene": "",
+      "display": "People/Ada",
+      "context": "Ada sees People/Ada.",
+      "before": ""
+     }
+    ],
+    "status": "1 reference from 1 script. 2 scripts scanned, 0 unresolved targets. 1 script could not be read.",
+    "unresolved": 0,
+    "scripts": 2,
+    "failed": [
+     "Broken.fountain"
+    ]
+   }
+  },
+  {
+   "name": "no saved fountain files",
+   "args": [
+    [],
+    {},
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [],
+    "status": "No saved .fountain files were found. Nothing was scanned.",
+    "unresolved": 0,
+    "scripts": 0,
+    "failed": []
+   }
+  },
+  {
+   "name": "a heading part in the target is removed before the lookup",
+   "args": [
+    [
+     {
+      "path": "Script.fountain",
+      "text": "INT. LAB - NIGHT\n\nAda reads [[>People/Ada#Childhood|her past]]."
+     }
+    ],
+    {
+     "Script.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [
+     {
+      "source": "Script.fountain",
+      "line": 3,
+      "scene": "INT. LAB - NIGHT",
+      "display": "her past",
+      "context": "Ada reads her past.",
+      "before": ""
+     }
+    ],
+    "status": "1 reference from 1 script. 1 script scanned, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "forced scene heading and scene number",
+   "args": [
+    [
+     {
+      "path": "Script.fountain",
+      "text": ".FLASHBACK\n\nYoung [[>People/Ada]] runs.\n\nINT. HOUSE - DAY #12#\n\n[[>People/Ada]] sleeps."
+     }
+    ],
+    {
+     "Script.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [
+     {
+      "source": "Script.fountain",
+      "line": 3,
+      "scene": "FLASHBACK",
+      "display": "People/Ada",
+      "context": "Young People/Ada runs.",
+      "before": ""
+     },
+     {
+      "source": "Script.fountain",
+      "line": 7,
+      "scene": "INT. HOUSE - DAY",
+      "display": "People/Ada",
+      "context": "People/Ada sleeps.",
+      "before": ""
+     }
+    ],
+    "status": "2 references from 1 script. 1 script scanned, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "a scene heading needs a blank line before it",
+   "args": [
+    [
+     {
+      "path": "Script.fountain",
+      "text": "EXT. PARK - DAY\n\nAda runs.\nINT. HOUSE is a sign.\n[[>People/Ada]] stops."
+     }
+    ],
+    {
+     "Script.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [
+     {
+      "source": "Script.fountain",
+      "line": 5,
+      "scene": "EXT. PARK - DAY",
+      "display": "People/Ada",
+      "context": "People/Ada stops.",
+      "before": "INT. HOUSE is a sign."
+     }
+    ],
+    "status": "1 reference from 1 script. 1 script scanned, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "a reference before the first scene heading has no scene",
+   "args": [
+    [
+     {
+      "path": "Script.fountain",
+      "text": "Title: Night Lab\n\n[[>People/Ada]] is the lead."
+     }
+    ],
+    {
+     "Script.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [
+     {
+      "source": "Script.fountain",
+      "line": 3,
+      "scene": "",
+      "display": "People/Ada",
+      "context": "People/Ada is the lead.",
+      "before": "Title: Night Lab"
+     }
+    ],
+    "status": "1 reference from 1 script. 1 script scanned, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "empty targets are ignored",
+   "args": [
+    [
+     {
+      "path": "Script.fountain",
+      "text": "INT. LAB - NIGHT\n\nAda [[>]] and [[> |x]] and [[>#Top]]."
+     }
+    ],
+    {
+     "Script.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [],
+    "status": "No references to this note. 1 script scanned, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "two references on one line give two rows with clean text",
+   "args": [
+    [
+     {
+      "path": "Script.fountain",
+      "text": "INT. LAB - NIGHT\n\n[[>People/Ada|Ada]] hands [[>People/Ada|the doctor]] a key. [[note]]"
+     }
+    ],
+    {
+     "Script.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [
+     {
+      "source": "Script.fountain",
+      "line": 3,
+      "scene": "INT. LAB - NIGHT",
+      "display": "Ada",
+      "context": "Ada hands the doctor a key.",
+      "before": ""
+     },
+     {
+      "source": "Script.fountain",
+      "line": 3,
+      "scene": "INT. LAB - NIGHT",
+      "display": "the doctor",
+      "context": "Ada hands the doctor a key.",
+      "before": ""
+     }
+    ],
+    "status": "2 references from 1 script. 1 script scanned, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "Windows line endings",
+   "args": [
+    [
+     {
+      "path": "Script.fountain",
+      "text": "INT. LAB - NIGHT\r\n\r\nAda sees [[>People/Ada]].\r\n"
+     }
+    ],
+    {
+     "Script.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [
+     {
+      "source": "Script.fountain",
+      "line": 3,
+      "scene": "INT. LAB - NIGHT",
+      "display": "People/Ada",
+      "context": "Ada sees People/Ada.",
+      "before": ""
+     }
+    ],
+    "status": "1 reference from 1 script. 1 script scanned, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "a row keeps its source path when no viewer can open the script",
+   "args": [
+    [
+     {
+      "path": "Scripts/Pilot.fountain",
+      "text": "INT. LAB - NIGHT\n\nAda sees [[>People/Ada]]."
+     }
+    ],
+    {
+     "Scripts/Pilot.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "People/Ada.md"
+   ],
+   "expected": {
+    "rows": [
+     {
+      "source": "Scripts/Pilot.fountain",
+      "line": 3,
+      "scene": "INT. LAB - NIGHT",
+      "display": "People/Ada",
+      "context": "Ada sees People/Ada.",
+      "before": ""
+     }
+    ],
+    "status": "1 reference from 1 script. 1 script scanned, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "Pro project folders limit the scan",
+   "args": [
+    [
+     {
+      "path": "Feature/Act 1.fountain",
+      "text": "[[>People/Ada]] wakes."
+     },
+     {
+      "path": "Shorts/Test.fountain",
+      "text": "[[>People/Ada]] sleeps."
+     }
+    ],
+    {
+     "Feature/Act 1.fountain": {
+      "People/Ada": "People/Ada.md"
+     },
+     "Shorts/Test.fountain": {
+      "People/Ada": "People/Ada.md"
+     }
+    },
+    "People/Ada.md",
+    [
+     "Feature"
+    ]
+   ],
+   "expected": {
+    "rows": [
+     {
+      "source": "Feature/Act 1.fountain",
+      "line": 1,
+      "scene": "",
+      "display": "People/Ada",
+      "context": "People/Ada wakes.",
+      "before": ""
+     }
+    ],
+    "status": "1 reference from 1 script. 1 script scanned in the project folders, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 1,
+    "failed": []
+   }
+  },
+  {
+   "name": "rows sort by script path and line",
+   "args": [
+    [
+     {
+      "path": "b.fountain",
+      "text": "x [[>A]]\ny [[>A]]"
+     },
+     {
+      "path": "a.fountain",
+      "text": "z [[>A]]"
+     }
+    ],
+    {
+     "a.fountain": {
+      "A": "A.md"
+     },
+     "b.fountain": {
+      "A": "A.md"
+     }
+    },
+    "A.md"
+   ],
+   "expected": {
+    "rows": [
+     {
+      "source": "a.fountain",
+      "line": 1,
+      "scene": "",
+      "display": "A",
+      "context": "z A",
+      "before": ""
+     },
+     {
+      "source": "b.fountain",
+      "line": 1,
+      "scene": "",
+      "display": "A",
+      "context": "x A",
+      "before": ""
+     },
+     {
+      "source": "b.fountain",
+      "line": 2,
+      "scene": "",
+      "display": "A",
+      "context": "y A",
+      "before": "x A"
+     }
+    ],
+    "status": "3 references from 2 scripts. 2 scripts scanned, 0 unresolved targets.",
+    "unresolved": 0,
+    "scripts": 2,
+    "failed": []
+   }
+  },
+  {
+   "name": "parseFolders trims slashes and drops duplicates",
+   "function": "parseFolders",
+   "args": [
+    "/Scripts/ ,Feature\n\nScripts\n  Shorts/Test "
+   ],
+   "expected": [
+    "Scripts",
+    "Feature",
+    "Shorts/Test"
+   ]
+  },
+  {
+   "name": "inFolders matches subfolders only",
+   "function": "inFolders",
+   "args": [
+    "Scripts Old/a.fountain",
+    [
+     "Scripts"
+    ]
+   ],
+   "expected": false
+  },
+  {
+   "name": "inFolders with no folders matches each path",
+   "function": "inFolders",
+   "args": [
+    "a.fountain",
+    []
+   ],
+   "expected": true
+  },
+  {
+   "name": "sceneHeading accepts INT./EXT. and I/E",
+   "function": "sceneHeading",
+   "args": [
+    "I/E. CAR - MOVING"
+   ],
+   "expected": "I/E. CAR - MOVING"
+  },
+  {
+   "name": "sceneHeading rejects a line with two leading dots",
+   "function": "sceneHeading",
+   "args": [
+    "...and then"
+   ],
+   "expected": null
+  },
+  {
+   "name": "cleanLine replaces references and removes notes",
+   "function": "cleanLine",
+   "args": [
+    "  [[>People/Ada|Ada]]   waves [[a note]] at [[>Ben]] "
+   ],
+   "expected": "Ada waves at Ben"
+  }
+ ]
+}

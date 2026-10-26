@@ -1,0 +1,73 @@
+[
+	{
+		"feature": "panel",
+		"caption": "The panel lists four references to Ada from three saved scripts, each with its scene heading and nearby text.",
+		"note": "Characters/Ada.md",
+		"eval": "(async () => { const leaf = app.workspace.getMostRecentLeaf(); const state = leaf.getViewState(); await leaf.setViewState({ ...state, state: { ...state.state, mode: 'preview' } }); const p = app.plugins.plugins['fountain-reference-panel']; p.pro.signOut(); p.settings.folders = ''; await p.openPanel(); await p.refresh(); if (p.views()[0].rows.length !== 4) throw new Error('Wrong reference count'); return 'ok'; })()",
+		"wait": 800
+	},
+	{
+		"feature": "display-text",
+		"caption": "A reference with display text: [[>Lighthouse|tower]] shows as tower in the nearby text.",
+		"note": "Locations/Lighthouse.md",
+		"eval": "(async () => { const leaf = app.workspace.getMostRecentLeaf(); const state = leaf.getViewState(); await leaf.setViewState({ ...state, state: { ...state.state, mode: 'preview' } }); const p = app.plugins.plugins['fountain-reference-panel']; p.pro.signOut(); p.settings.folders = ''; await p.openPanel(); await p.refresh(); if (p.views()[0].rows.length !== 1) throw new Error('Wrong reference count'); return 'ok'; })()",
+		"wait": 800
+	},
+	{
+		"feature": "viewer-needed",
+		"caption": "With no view for .fountain files, a notice explains it and the row stays in the panel.",
+		"note": "Characters/Ada.md",
+		"eval": "(async () => { const leaf = app.workspace.getMostRecentLeaf(); const state = leaf.getViewState(); await leaf.setViewState({ ...state, state: { ...state.state, mode: 'preview' } }); const p = app.plugins.plugins['fountain-reference-panel']; p.pro.signOut(); p.settings.folders = ''; await p.openPanel(); await p.refresh(); await p.openSource(p.views()[0].rows[0]); if (p.views()[0].rows.length !== 4) throw new Error('Expected four rows after the viewer notice'); return 'ok'; })()",
+		"wait": 500
+	},
+	{
+		"feature": "folder-filter",
+		"caption": "Pro: the project folder filter limits the scan to the Scripts folder, so the test scene in Shorts is not listed.",
+		"note": "Characters/Ada.md",
+		"eval": "(async () => { const leaf = app.workspace.getMostRecentLeaf(); const state = leaf.getViewState(); await leaf.setViewState({ ...state, state: { ...state.state, mode: 'preview' } }); app.plugins.plugins['fountain-reference-panel'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('fountain-reference-panel-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['fountain-reference-panel'].pro.refreshNow(); const p = app.plugins.plugins['fountain-reference-panel']; p.settings.folders = 'Fountain Reference Panel/Scripts'; await p.openPanel(); await p.refresh(); if (p.views()[0].rows.length !== 3) throw new Error('Wrong reference count'); return 'ok'; })()",
+		"wait": 800,
+		"after": "(async () => { const p = app.plugins.plugins['fountain-reference-panel']; p.settings.folders = ''; p.pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "report",
+		"caption": "Pro: a Markdown report of the references to Ada and Ben, opened in a new tab.",
+		"note": "Characters/Ada.md",
+		"eval": "(async () => { const leaf = app.workspace.getMostRecentLeaf(); const state = leaf.getViewState(); await leaf.setViewState({ ...state, state: { ...state.state, mode: 'preview' } }); app.plugins.plugins['fountain-reference-panel'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('fountain-reference-panel-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['fountain-reference-panel'].pro.refreshNow(); const p = app.plugins.plugins['fountain-reference-panel']; p.settings.folders = ''; await p.refresh(); const f = await p.exportReport(['Fountain Reference Panel/Characters/Ada.md', 'Fountain Reference Panel/Characters/Ben.md']); window.__frpReport = f.path; const reportLeaf = app.workspace.getLeaf('tab'); await reportLeaf.openFile(f); const reportState = reportLeaf.getViewState(); await reportLeaf.setViewState({ ...reportState, state: { ...reportState.state, mode: 'preview' } }); app.workspace.rightSplit.collapse(); document.querySelectorAll('.notice-container .notice').forEach((n) => n.remove()); return 'ok'; })()",
+		"wait": 800,
+		"after": "(async () => { const f = app.vault.getFileByPath(window.__frpReport); app.workspace.getMostRecentLeaf()?.detach(); if (f) await app.vault.delete(f); const p = app.plugins.plugins['fountain-reference-panel']; p.pro.signOut(); await p.openPanel(); return 'ok'; })()",
+		"zoom": 0.85
+	},
+	{
+		"feature": "settings",
+		"caption": "Settings: the Pro section with the GitHub account, and the project folder filters.",
+		"eval": "(async () => { app.plugins.plugins['fountain-reference-panel'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('fountain-reference-panel-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['fountain-reference-panel'].pro.refreshNow(); app.plugins.plugins['fountain-reference-panel'].settings.folders = 'Fountain Reference Panel/Scripts'; app.setting.open(); app.setting.openTabById('fountain-reference-panel'); return 'ok'; })()",
+		"after": "app.setting.close(); app.plugins.plugins['fountain-reference-panel'].settings.folders = ''; app.plugins.plugins['fountain-reference-panel'].pro.signOut(); 'ok'",
+		"note": "Characters/Ada.md"
+	},
+	{
+		"feature": "fountain-reference-panel",
+		"caption": "Open Ada, then Ben, then the lighthouse note: the panel follows the active note. Then select Refresh.",
+		"frames": [
+			{
+				"note": "Characters/Ada.md",
+				"eval": "(async () => { const p = app.plugins.plugins['fountain-reference-panel']; p.pro.signOut(); p.settings.folders = ''; await p.openPanel(); await p.refresh(); return 'ok'; })()",
+				"hold": 1800
+			},
+			{
+				"note": "Characters/Ben.md",
+				"eval": "(async () => { const p = app.plugins.plugins['fountain-reference-panel']; p.views()[0].render(); if (p.views()[0].rows.length === 0) throw new Error('Missing sample references'); return 'ok'; })()",
+				"hold": 1600
+			},
+			{
+				"note": "Locations/Lighthouse.md",
+				"eval": "(async () => { const p = app.plugins.plugins['fountain-reference-panel']; p.views()[0].render(); if (p.views()[0].rows.length === 0) throw new Error('Missing sample references'); return 'ok'; })()",
+				"hold": 1600
+			},
+			{
+				"note": "Characters/Ada.md",
+				"eval": "(async () => { await app.plugins.plugins['fountain-reference-panel'].refresh(); return 'ok'; })()",
+				"hold": 1800
+			}
+		]
+	}
+]
