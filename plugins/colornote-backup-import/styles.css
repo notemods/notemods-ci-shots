@@ -1,0 +1,36 @@
+.colornote-import input[type="file"] {
+	max-width: 240px;
+}
+
+.colornote-status {
+	padding: 12px;
+	border-radius: 8px;
+	background: var(--background-secondary);
+}
+
+.colornote-diff pre {
+	white-space: pre-wrap;
+	padding: 12px;
+	background: var(--background-secondary);
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
