@@ -1,0 +1,759 @@
+{
+ "slug": "note-ris-export",
+ "module": "products/note-ris-export/src/ris.ts",
+ "function": "buildRis",
+ "cases": [
+  {
+   "name": "Journal article gives TY TI two AU PY T2 DO and ER with two spaces before the hyphen",
+   "function": "buildRis",
+   "args": [
+    [
+     {
+      "path": "Refs/Lee 2026.md",
+      "props": {
+       "type": "JOUR",
+       "title": "Test",
+       "authors": [
+        "Lee",
+        "Kim"
+       ],
+       "year": 2026,
+       "journal": "Example",
+       "doi": "10.1/test"
+      }
+     }
+    ],
+    {
+     "type": "type",
+     "title": "title",
+     "authors": "authors",
+     "year": "year",
+     "journal": "journal",
+     "doi": "doi",
+     "url": "url",
+     "abstract": "abstract"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "count": 1,
+    "text": "TY  - JOUR\r\nTI  - Test\r\nAU  - Lee\r\nAU  - Kim\r\nPY  - 2026\r\nT2  - Example\r\nDO  - 10.1/test\r\nER  - \r\n"
+   }
+  },
+  {
+   "name": "paper_title mapped to title gives TI with no title key",
+   "function": "buildRis",
+   "args": [
+    [
+     {
+      "path": "Refs/a.md",
+      "props": {
+       "type": "JOUR",
+       "paper_title": "A study"
+      }
+     }
+    ],
+    {
+     "type": "type",
+     "title": "paper_title",
+     "authors": "authors",
+     "year": "year",
+     "journal": "journal",
+     "doi": "doi",
+     "url": "url",
+     "abstract": "abstract"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "count": 1,
+    "text": "TY  - JOUR\r\nTI  - A study\r\nER  - \r\n"
+   }
+  },
+  {
+   "name": "BOOK and CONF give two records in source path order",
+   "function": "buildRis",
+   "args": [
+    [
+     {
+      "path": "Refs/b.md",
+      "props": {
+       "type": "CONF",
+       "title": "Proceedings paper"
+      }
+     },
+     {
+      "path": "Refs/a.md",
+      "props": {
+       "type": "BOOK",
+       "title": "A book"
+      }
+     }
+    ],
+    {
+     "type": "type",
+     "title": "title",
+     "authors": "authors",
+     "year": "year",
+     "journal": "journal",
+     "doi": "doi",
+     "url": "url",
+     "abstract": "abstract"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "count": 2,
+    "text": "TY  - BOOK\r\nTI  - A book\r\nER  - \r\n\r\nTY  - CONF\r\nTI  - Proceedings paper\r\nER  - \r\n"
+   }
+  },
+  {
+   "name": "UTF-8 title and authors keep their characters and order",
+   "function": "buildRis",
+   "args": [
+    [
+     {
+      "path": "Refs/u.md",
+      "props": {
+       "type": "JOUR",
+       "title": "Étude α",
+       "authors": [
+        "García",
+        "李"
+       ]
+      }
+     }
+    ],
+    {
+     "type": "type",
+     "title": "title",
+     "authors": "authors",
+     "year": "year",
+     "journal": "journal",
+     "doi": "doi",
+     "url": "url",
+     "abstract": "abstract"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "count": 1,
+    "text": "TY  - JOUR\r\nTI  - Étude α\r\nAU  - García\r\nAU  - 李\r\nER  - \r\n"
+   }
+  },
+  {
+   "name": "Abstract line breaks become spaces and no ER line is injected",
+   "function": "buildRis",
+   "args": [
+    [
+     {
+      "path": "Refs/x.md",
+      "props": {
+       "type": "JOUR",
+       "title": "T",
+       "abstract": "First line\r\nsecond line\nER  - fake\rend"
+      }
+     }
+    ],
+    {
+     "type": "type",
+     "title": "title",
+     "authors": "authors",
+     "year": "year",
+     "journal": "journal",
+     "doi": "doi",
+     "url": "url",
+     "abstract": "abstract"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "count": 1,
+    "text": "TY  - JOUR\r\nTI  - T\r\nAB  - First line second line ER  - fake end\r\nER  - \r\n"
+   }
+  },
+  {
+   "name": "Missing title and bad year stop the export and list both paths",
+   "function": "buildRis",
+   "args": [
+    [
+     {
+      "path": "Refs/n1.md",
+      "props": {
+       "type": "JOUR"
+      }
+     },
+     {
+      "path": "Refs/n2.md",
+      "props": {
+       "type": "JOUR",
+       "title": "Ok",
+       "year": "soon"
+      }
+     }
+    ],
+    {
+     "type": "type",
+     "title": "title",
+     "authors": "authors",
+     "year": "year",
+     "journal": "journal",
+     "doi": "doi",
+     "url": "url",
+     "abstract": "abstract"
+    }
+   ],
+   "expected": {
+    "ok": false,
+    "problems": [
+     {
+      "path": "Refs/n1.md",
+      "errors": [
+       "missing title (property \"title\")"
+      ]
+     },
+     {
+      "path": "Refs/n2.md",
+      "errors": [
+       "year \"soon\" is not a 4-digit year (property \"year\")"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "Preview lists missing title and bad year in path order",
+   "function": "checkSources",
+   "args": [
+    [
+     {
+      "path": "Refs/n2.md",
+      "props": {
+       "type": "JOUR",
+       "title": "Ok",
+       "year": "soon"
+      }
+     },
+     {
+      "path": "Refs/n1.md",
+      "props": {
+       "type": "JOUR"
+      }
+     }
+    ],
+    {
+     "type": "type",
+     "title": "title",
+     "authors": "authors",
+     "year": "year",
+     "journal": "journal",
+     "doi": "doi",
+     "url": "url",
+     "abstract": "abstract"
+    }
+   ],
+   "expected": [
+    {
+     "path": "Refs/n1.md",
+     "errors": [
+      "missing title (property \"title\")"
+     ]
+    },
+    {
+     "path": "Refs/n2.md",
+     "errors": [
+      "year \"soon\" is not a 4-digit year (property \"year\")"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Scalar authors is reported and gives no output",
+   "function": "buildRis",
+   "args": [
+    [
+     {
+      "path": "Refs/s.md",
+      "props": {
+       "type": "JOUR",
+       "title": "T",
+       "authors": "Lee"
+      }
+     }
+    ],
+    {
+     "type": "type",
+     "title": "title",
+     "authors": "authors",
+     "year": "year",
+     "journal": "journal",
+     "doi": "doi",
+     "url": "url",
+     "abstract": "abstract"
+    }
+   ],
+   "expected": {
+    "ok": false,
+    "problems": [
+     {
+      "path": "Refs/s.md",
+      "errors": [
+       "unsupported authors \"Lee\"; write a list (property \"authors\")"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "Type WEB is reported and gives no output",
+   "function": "buildRis",
+   "args": [
+    [
+     {
+      "path": "Refs/w.md",
+      "props": {
+       "type": "WEB",
+       "title": "T"
+      }
+     }
+    ],
+    {
+     "type": "type",
+     "title": "title",
+     "authors": "authors",
+     "year": "year",
+     "journal": "journal",
+     "doi": "doi",
+     "url": "url",
+     "abstract": "abstract"
+    }
+   ],
+   "expected": {
+    "ok": false,
+    "problems": [
+     {
+      "path": "Refs/w.md",
+      "errors": [
+       "unsupported type \"WEB\"; use JOUR, BOOK or CONF"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "Lowercase type jour is not converted",
+   "function": "buildRis",
+   "args": [
+    [
+     {
+      "path": "Refs/l.md",
+      "props": {
+       "type": "jour",
+       "title": "T"
+      }
+     }
+    ],
+    {
+     "type": "type",
+     "title": "title",
+     "authors": "authors",
+     "year": "year",
+     "journal": "journal",
+     "doi": "doi",
+     "url": "url",
+     "abstract": "abstract"
+    }
+   ],
+   "expected": {
+    "ok": false,
+    "problems": [
+     {
+      "path": "Refs/l.md",
+      "errors": [
+       "unsupported type \"jour\"; use JOUR, BOOK or CONF"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "Empty folder gives no RIS text",
+   "function": "buildRis",
+   "args": [
+    [],
+    {
+     "type": "type",
+     "title": "title",
+     "authors": "authors",
+     "year": "year",
+     "journal": "journal",
+     "doi": "doi",
+     "url": "url",
+     "abstract": "abstract"
+    }
+   ],
+   "expected": {
+    "ok": false,
+    "problems": [
+     {
+      "path": "",
+      "errors": [
+       "no reference notes"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "Note without properties reports missing type and title",
+   "function": "checkSources",
+   "args": [
+    [
+     {
+      "path": "Refs/plain.md",
+      "props": null
+     }
+    ],
+    {
+     "type": "type",
+     "title": "title",
+     "authors": "authors",
+     "year": "year",
+     "journal": "journal",
+     "doi": "doi",
+     "url": "url",
+     "abstract": "abstract"
+    }
+   ],
+   "expected": [
+    {
+     "path": "Refs/plain.md",
+     "errors": [
+      "missing type (property \"type\")",
+      "missing title (property \"title\")"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "References.ris exists so the next name is References (2).ris",
+   "function": "freePathIn",
+   "args": [
+    "References.ris",
+    [
+     "References.ris"
+    ]
+   ],
+   "expected": "References (2).ris"
+  },
+  {
+   "name": "References.ris and References (2).ris exist so the next name is References (3).ris",
+   "function": "freePathIn",
+   "args": [
+    "References",
+    [
+     "References.ris",
+     "References (2).ris"
+    ]
+   ],
+   "expected": "References (3).ris"
+  },
+  {
+   "name": "A free name stays as it is",
+   "function": "freePathIn",
+   "args": [
+    "Out/Thesis.ris",
+    []
+   ],
+   "expected": "Out/Thesis.ris"
+  },
+  {
+   "name": "Full record with URL and abstract",
+   "function": "recordText",
+   "args": [
+    {
+     "path": "a.md",
+     "type": "JOUR",
+     "title": "T",
+     "authors": [
+      "A"
+     ],
+     "year": "2020",
+     "journal": "J",
+     "doi": "10.5/x",
+     "url": "https://example.org/p",
+     "abstract": "Short."
+    }
+   ],
+   "expected": "TY  - JOUR\r\nTI  - T\r\nAU  - A\r\nPY  - 2020\r\nT2  - J\r\nDO  - 10.5/x\r\nUR  - https://example.org/p\r\nAB  - Short.\r\nER  - \r\n"
+  },
+  {
+   "name": "Bad DOI and URL are reported",
+   "function": "readReference",
+   "args": [
+    {
+     "path": "Refs/d.md",
+     "props": {
+      "type": "JOUR",
+      "title": "T",
+      "doi": "doi:10.1/x",
+      "url": "example.org"
+     }
+    },
+    {
+     "type": "type",
+     "title": "title",
+     "authors": "authors",
+     "year": "year",
+     "journal": "journal",
+     "doi": "doi",
+     "url": "url",
+     "abstract": "abstract"
+    }
+   ],
+   "expected": {
+    "ref": null,
+    "errors": [
+     "doi \"doi:10.1/x\" is not a DOI that starts with 10. (property \"doi\")",
+     "url \"example.org\" is not an http or https URL (property \"url\")"
+    ]
+   }
+  },
+  {
+   "name": "Linked author names lose the brackets",
+   "function": "readReference",
+   "args": [
+    {
+     "path": "Refs/k.md",
+     "props": {
+      "type": "BOOK",
+      "title": "T",
+      "authors": [
+       "[[Lee]]",
+       "[[People/Kim|Kim]]"
+      ]
+     }
+    },
+    {
+     "type": "type",
+     "title": "title",
+     "authors": "authors",
+     "year": "year",
+     "journal": "journal",
+     "doi": "doi",
+     "url": "url",
+     "abstract": "abstract"
+    }
+   ],
+   "expected": {
+    "ref": {
+     "path": "Refs/k.md",
+     "type": "BOOK",
+     "title": "T",
+     "authors": [
+      "Lee",
+      "Kim"
+     ],
+     "year": "",
+     "journal": "",
+     "doi": "",
+     "url": "",
+     "abstract": ""
+    },
+    "errors": []
+   }
+  },
+  {
+   "name": "Empty author in the list is reported",
+   "function": "readReference",
+   "args": [
+    {
+     "path": "Refs/e.md",
+     "props": {
+      "type": "BOOK",
+      "title": "T",
+      "authors": [
+       "Lee",
+       ""
+      ]
+     }
+    },
+    {
+     "type": "type",
+     "title": "title",
+     "authors": "authors",
+     "year": "year",
+     "journal": "journal",
+     "doi": "doi",
+     "url": "url",
+     "abstract": "abstract"
+    }
+   ],
+   "expected": {
+    "ref": null,
+    "errors": [
+     "an author is empty or not text (property \"authors\")"
+    ]
+   }
+  },
+  {
+   "name": "Year as a 4-digit string is accepted",
+   "function": "readReference",
+   "args": [
+    {
+     "path": "Refs/y.md",
+     "props": {
+      "type": "CONF",
+      "title": "T",
+      "year": "1999"
+     }
+    },
+    {
+     "type": "type",
+     "title": "title",
+     "authors": "authors",
+     "year": "year",
+     "journal": "journal",
+     "doi": "doi",
+     "url": "url",
+     "abstract": "abstract"
+    }
+   ],
+   "expected": {
+    "ref": {
+     "path": "Refs/y.md",
+     "type": "CONF",
+     "title": "T",
+     "authors": [],
+     "year": "1999",
+     "journal": "",
+     "doi": "",
+     "url": "",
+     "abstract": ""
+    },
+    "errors": []
+   }
+  },
+  {
+   "name": "Title as a list is reported",
+   "function": "readReference",
+   "args": [
+    {
+     "path": "Refs/t.md",
+     "props": {
+      "type": "JOUR",
+      "title": [
+       "A",
+       "B"
+      ]
+     }
+    },
+    {
+     "type": "type",
+     "title": "title",
+     "authors": "authors",
+     "year": "year",
+     "journal": "journal",
+     "doi": "doi",
+     "url": "url",
+     "abstract": "abstract"
+    }
+   ],
+   "expected": {
+    "ref": null,
+    "errors": [
+     "title is not text (property \"title\")"
+    ]
+   }
+  },
+  {
+   "name": "Empty map keys fall back to the default keys",
+   "function": "normalizeMap",
+   "args": [
+    {
+     "title": "paper_title",
+     "year": "  ",
+     "doi": 5
+    }
+   ],
+   "expected": {
+    "type": "type",
+    "title": "paper_title",
+    "authors": "authors",
+    "year": "year",
+    "journal": "journal",
+    "doi": "doi",
+    "url": "url",
+    "abstract": "abstract"
+   }
+  },
+  {
+   "name": "Filter text key = value is parsed",
+   "function": "parseFilter",
+   "args": [
+    "collection = thesis"
+   ],
+   "expected": {
+    "key": "collection",
+    "value": "thesis"
+   }
+  },
+  {
+   "name": "Filter text without equals sign is rejected",
+   "function": "parseFilter",
+   "args": [
+    "thesis"
+   ],
+   "expected": null
+  },
+  {
+   "name": "Filter matches a value in a list property",
+   "function": "matchesFilter",
+   "args": [
+    {
+     "collection": [
+      "thesis",
+      "review"
+     ]
+    },
+    {
+     "key": "collection",
+     "value": "thesis"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "Filter does not match another value",
+   "function": "matchesFilter",
+   "args": [
+    {
+     "collection": "review"
+    },
+    {
+     "key": "collection",
+     "value": "thesis"
+    }
+   ],
+   "expected": false
+  },
+  {
+   "name": "Path in a subfolder is in the folder",
+   "function": "inFolder",
+   "args": [
+    "Refs/2026/a.md",
+    "Refs"
+   ],
+   "expected": true
+  },
+  {
+   "name": "Path in a folder with the same prefix is not in the folder",
+   "function": "inFolder",
+   "args": [
+    "Refs-old/a.md",
+    "Refs"
+   ],
+   "expected": false
+  }
+ ]
+}

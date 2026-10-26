@@ -1,0 +1,83 @@
+[
+	{
+		"feature": "preview",
+		"caption": "The export window counts three reference notes in the Refs folder and finds no errors.",
+		"note": "Refs/Lee 2026 Test.md",
+		"eval": "(async () => { const p = app.plugins.plugins['note-ris-export']; p.modal?.close(); p.settings.map = { type: 'type', title: 'title', authors: 'authors', year: 'year', journal: 'journal', doi: 'doi', url: 'url', abstract: 'abstract' }; p.settings.maps = []; p.settings.activeMap = ''; p.settings.filter = ''; p.settings.output = 'References.ris'; p.settings.last = null; p.settings.repeat = false; for (const f of app.vault.getFiles().filter((f) => /^References.*\\.ris$/.test(f.path))) await app.vault.delete(f); p.pro.signOut(); p.settings.folder = 'Note RIS Export/Refs'; p.openModal(); return 'ok'; })()",
+		"wait": 700,
+		"after": "(async () => { const p = app.plugins.plugins['note-ris-export']; p.modal?.close(); p.settings.map = { type: 'type', title: 'title', authors: 'authors', year: 'year', journal: 'journal', doi: 'doi', url: 'url', abstract: 'abstract' }; p.settings.maps = []; p.settings.activeMap = ''; p.settings.filter = ''; p.settings.output = 'References.ris'; p.settings.last = null; p.settings.repeat = false; for (const f of app.vault.getFiles().filter((f) => /^References.*\\.ris$/.test(f.path))) await app.vault.delete(f); app.setting?.close(); app.plugins.plugins['note-ris-export'].pro.signOut(); await app.plugins.plugins['note-ris-export'].saveSettings(); return 'ok'; })()"
+	},
+	{
+		"feature": "errors",
+		"caption": "The preview lists each draft note with its missing or invalid fields, and Export stays off.",
+		"note": "Refs/Lee 2026 Test.md",
+		"eval": "(async () => { const p = app.plugins.plugins['note-ris-export']; p.modal?.close(); p.settings.map = { type: 'type', title: 'title', authors: 'authors', year: 'year', journal: 'journal', doi: 'doi', url: 'url', abstract: 'abstract' }; p.settings.maps = []; p.settings.activeMap = ''; p.settings.filter = ''; p.settings.output = 'References.ris'; p.settings.last = null; p.settings.repeat = false; for (const f of app.vault.getFiles().filter((f) => /^References.*\\.ris$/.test(f.path))) await app.vault.delete(f); p.pro.signOut(); p.settings.folder = 'Note RIS Export/Drafts'; p.openModal(); return 'ok'; })()",
+		"wait": 700,
+		"after": "(async () => { const p = app.plugins.plugins['note-ris-export']; p.modal?.close(); p.settings.map = { type: 'type', title: 'title', authors: 'authors', year: 'year', journal: 'journal', doi: 'doi', url: 'url', abstract: 'abstract' }; p.settings.maps = []; p.settings.activeMap = ''; p.settings.filter = ''; p.settings.output = 'References.ris'; p.settings.last = null; p.settings.repeat = false; for (const f of app.vault.getFiles().filter((f) => /^References.*\\.ris$/.test(f.path))) await app.vault.delete(f); app.setting?.close(); app.plugins.plugins['note-ris-export'].pro.signOut(); await app.plugins.plugins['note-ris-export'].saveSettings(); return 'ok'; })()"
+	},
+	{
+		"feature": "export",
+		"caption": "Export saves References.ris with three records and shows its path.",
+		"note": "Refs/Lee 2026 Test.md",
+		"eval": "(async () => { const p = app.plugins.plugins['note-ris-export']; p.modal?.close(); p.settings.map = { type: 'type', title: 'title', authors: 'authors', year: 'year', journal: 'journal', doi: 'doi', url: 'url', abstract: 'abstract' }; p.settings.maps = []; p.settings.activeMap = ''; p.settings.filter = ''; p.settings.output = 'References.ris'; p.settings.last = null; p.settings.repeat = false; for (const f of app.vault.getFiles().filter((f) => /^References.*\\.ris$/.test(f.path))) await app.vault.delete(f); p.pro.signOut(); p.settings.folder = 'Note RIS Export/Refs'; p.openModal(); await p.modal.runExport(); return 'ok'; })()",
+		"wait": 900,
+		"after": "(async () => { const p = app.plugins.plugins['note-ris-export']; p.modal?.close(); p.settings.map = { type: 'type', title: 'title', authors: 'authors', year: 'year', journal: 'journal', doi: 'doi', url: 'url', abstract: 'abstract' }; p.settings.maps = []; p.settings.activeMap = ''; p.settings.filter = ''; p.settings.output = 'References.ris'; p.settings.last = null; p.settings.repeat = false; for (const f of app.vault.getFiles().filter((f) => /^References.*\\.ris$/.test(f.path))) await app.vault.delete(f); app.setting?.close(); app.plugins.plugins['note-ris-export'].pro.signOut(); await app.plugins.plugins['note-ris-export'].saveSettings(); return 'ok'; })()"
+	},
+	{
+		"feature": "settings",
+		"caption": "Settings with the reference folder, the output file and the eight property keys of the field map.",
+		"eval": "(async () => { const p = app.plugins.plugins['note-ris-export']; p.modal?.close(); p.settings.map = { type: 'type', title: 'title', authors: 'authors', year: 'year', journal: 'journal', doi: 'doi', url: 'url', abstract: 'abstract' }; p.settings.maps = []; p.settings.activeMap = ''; p.settings.filter = ''; p.settings.output = 'References.ris'; p.settings.last = null; p.settings.repeat = false; for (const f of app.vault.getFiles().filter((f) => /^References.*\\.ris$/.test(f.path))) await app.vault.delete(f); p.pro.signOut(); p.settings.folder = 'Note RIS Export/Refs'; await p.saveSettings(); app.setting.open(); app.setting.openTabById('note-ris-export'); await new Promise((r) => setTimeout(r, 500)); return 'ok'; })()",
+		"wait": 700,
+		"after": "(async () => { const p = app.plugins.plugins['note-ris-export']; p.modal?.close(); p.settings.map = { type: 'type', title: 'title', authors: 'authors', year: 'year', journal: 'journal', doi: 'doi', url: 'url', abstract: 'abstract' }; p.settings.maps = []; p.settings.activeMap = ''; p.settings.filter = ''; p.settings.output = 'References.ris'; p.settings.last = null; p.settings.repeat = false; for (const f of app.vault.getFiles().filter((f) => /^References.*\\.ris$/.test(f.path))) await app.vault.delete(f); app.setting?.close(); app.plugins.plugins['note-ris-export'].pro.signOut(); await app.plugins.plugins['note-ris-export'].saveSettings(); return 'ok'; })()",
+		"note": "Refs/Lee 2026 Test.md",
+		"zoom": 0.7
+	},
+	{
+		"feature": "filter",
+		"caption": "Pro: the filter collection = thesis selects two of the three notes in Refs.",
+		"note": "Refs/Lee 2026 Test.md",
+		"eval": "(async () => { const p = app.plugins.plugins['note-ris-export']; p.modal?.close(); p.settings.map = { type: 'type', title: 'title', authors: 'authors', year: 'year', journal: 'journal', doi: 'doi', url: 'url', abstract: 'abstract' }; p.settings.maps = []; p.settings.activeMap = ''; p.settings.filter = ''; p.settings.output = 'References.ris'; p.settings.last = null; p.settings.repeat = false; for (const f of app.vault.getFiles().filter((f) => /^References.*\\.ris$/.test(f.path))) await app.vault.delete(f); app.plugins.plugins['note-ris-export'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('note-ris-export-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['note-ris-export'].pro.refreshNow(); p.settings.folder = 'Note RIS Export/Refs'; p.settings.filter = 'collection = thesis'; p.openModal(); return 'ok'; })()",
+		"wait": 700,
+		"after": "(async () => { const p = app.plugins.plugins['note-ris-export']; p.modal?.close(); p.settings.map = { type: 'type', title: 'title', authors: 'authors', year: 'year', journal: 'journal', doi: 'doi', url: 'url', abstract: 'abstract' }; p.settings.maps = []; p.settings.activeMap = ''; p.settings.filter = ''; p.settings.output = 'References.ris'; p.settings.last = null; p.settings.repeat = false; for (const f of app.vault.getFiles().filter((f) => /^References.*\\.ris$/.test(f.path))) await app.vault.delete(f); app.setting?.close(); app.plugins.plugins['note-ris-export'].pro.signOut(); await app.plugins.plugins['note-ris-export'].saveSettings(); return 'ok'; })()"
+	},
+	{
+		"feature": "named-map",
+		"caption": "Pro: the named map Imported titles reads the title from paper_title.",
+		"note": "Imported/Silva 2023 Field maps.md",
+		"eval": "(async () => { const p = app.plugins.plugins['note-ris-export']; p.modal?.close(); p.settings.map = { type: 'type', title: 'title', authors: 'authors', year: 'year', journal: 'journal', doi: 'doi', url: 'url', abstract: 'abstract' }; p.settings.maps = []; p.settings.activeMap = ''; p.settings.filter = ''; p.settings.output = 'References.ris'; p.settings.last = null; p.settings.repeat = false; for (const f of app.vault.getFiles().filter((f) => /^References.*\\.ris$/.test(f.path))) await app.vault.delete(f); app.plugins.plugins['note-ris-export'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('note-ris-export-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['note-ris-export'].pro.refreshNow(); p.settings.map.title = 'paper_title'; await p.saveMap('Imported titles'); p.settings.map.title = 'title'; await p.useMap('Imported titles'); p.settings.folder = 'Note RIS Export/Imported'; p.openModal(); return 'ok'; })()",
+		"wait": 700,
+		"after": "(async () => { const p = app.plugins.plugins['note-ris-export']; p.modal?.close(); p.settings.map = { type: 'type', title: 'title', authors: 'authors', year: 'year', journal: 'journal', doi: 'doi', url: 'url', abstract: 'abstract' }; p.settings.maps = []; p.settings.activeMap = ''; p.settings.filter = ''; p.settings.output = 'References.ris'; p.settings.last = null; p.settings.repeat = false; for (const f of app.vault.getFiles().filter((f) => /^References.*\\.ris$/.test(f.path))) await app.vault.delete(f); app.setting?.close(); app.plugins.plugins['note-ris-export'].pro.signOut(); await app.plugins.plugins['note-ris-export'].saveSettings(); return 'ok'; })()"
+	},
+	{
+		"feature": "repeat",
+		"caption": "Pro: the settings with the repeat export setting on after one export of the Refs folder.",
+		"eval": "(async () => { const p = app.plugins.plugins['note-ris-export']; p.modal?.close(); p.settings.map = { type: 'type', title: 'title', authors: 'authors', year: 'year', journal: 'journal', doi: 'doi', url: 'url', abstract: 'abstract' }; p.settings.maps = []; p.settings.activeMap = ''; p.settings.filter = ''; p.settings.output = 'References.ris'; p.settings.last = null; p.settings.repeat = false; for (const f of app.vault.getFiles().filter((f) => /^References.*\\.ris$/.test(f.path))) await app.vault.delete(f); app.plugins.plugins['note-ris-export'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('note-ris-export-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['note-ris-export'].pro.refreshNow(); p.settings.folder = 'Note RIS Export/Refs'; await p.exportRis('Note RIS Export/Refs'); await p.setRepeat(true); app.setting.open(); app.setting.openTabById('note-ris-export'); await new Promise((r) => setTimeout(r, 500)); const c = document.querySelector('.vertical-tab-content'); if (c) c.scrollTop = c.scrollHeight; return 'ok'; })()",
+		"wait": 700,
+		"after": "(async () => { const p = app.plugins.plugins['note-ris-export']; p.modal?.close(); p.settings.map = { type: 'type', title: 'title', authors: 'authors', year: 'year', journal: 'journal', doi: 'doi', url: 'url', abstract: 'abstract' }; p.settings.maps = []; p.settings.activeMap = ''; p.settings.filter = ''; p.settings.output = 'References.ris'; p.settings.last = null; p.settings.repeat = false; for (const f of app.vault.getFiles().filter((f) => /^References.*\\.ris$/.test(f.path))) await app.vault.delete(f); app.setting?.close(); app.plugins.plugins['note-ris-export'].pro.signOut(); await app.plugins.plugins['note-ris-export'].saveSettings(); return 'ok'; })()",
+		"note": "Refs/Lee 2026 Test.md"
+	},
+	{
+		"feature": "note-ris-export",
+		"caption": "Preview the drafts with errors, switch to the Refs folder, preview again and export a RIS file.",
+		"frames": [
+			{
+				"note": "Refs/Lee 2026 Test.md",
+				"eval": "(async () => { const p = app.plugins.plugins['note-ris-export']; p.modal?.close(); p.settings.map = { type: 'type', title: 'title', authors: 'authors', year: 'year', journal: 'journal', doi: 'doi', url: 'url', abstract: 'abstract' }; p.settings.maps = []; p.settings.activeMap = ''; p.settings.filter = ''; p.settings.output = 'References.ris'; p.settings.last = null; p.settings.repeat = false; for (const f of app.vault.getFiles().filter((f) => /^References.*\\.ris$/.test(f.path))) await app.vault.delete(f); p.pro.signOut(); p.settings.folder = 'Note RIS Export/Drafts'; p.openModal(); return 'ok'; })()",
+				"hold": 1800
+			},
+			{
+				"eval": "(async () => { const m = app.plugins.plugins['note-ris-export'].modal; m.folder = 'Note RIS Export/Refs'; const i = m.contentEl.querySelector('input'); if (i) i.value = m.folder; return 'ok'; })()",
+				"hold": 1200
+			},
+			{
+				"eval": "(async () => { app.plugins.plugins['note-ris-export'].modal.runPreview(); return 'ok'; })()",
+				"hold": 1600
+			},
+			{
+				"eval": "(async () => { await app.plugins.plugins['note-ris-export'].modal.runExport(); return 'ok'; })()",
+				"hold": 2000
+			}
+		],
+		"after": "(async () => { const p = app.plugins.plugins['note-ris-export']; p.modal?.close(); p.settings.map = { type: 'type', title: 'title', authors: 'authors', year: 'year', journal: 'journal', doi: 'doi', url: 'url', abstract: 'abstract' }; p.settings.maps = []; p.settings.activeMap = ''; p.settings.filter = ''; p.settings.output = 'References.ris'; p.settings.last = null; p.settings.repeat = false; for (const f of app.vault.getFiles().filter((f) => /^References.*\\.ris$/.test(f.path))) await app.vault.delete(f); app.setting?.close(); app.plugins.plugins['note-ris-export'].pro.signOut(); await app.plugins.plugins['note-ris-export'].saveSettings(); return 'ok'; })()"
+	}
+]

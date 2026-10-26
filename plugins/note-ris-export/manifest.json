@@ -1,0 +1,11 @@
+{
+	"id": "note-ris-export",
+	"name": "Note RIS Export",
+	"version": "1.1.1",
+	"minAppVersion": "1.13.4",
+	"description": "Map reference note properties to fields in a local RIS file.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}
