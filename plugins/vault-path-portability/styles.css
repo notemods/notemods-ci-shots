@@ -1,0 +1,56 @@
+.vpp-report {
+	padding: var(--size-4-4);
+}
+
+.vpp-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--size-4-2);
+	margin-bottom: var(--size-4-4);
+}
+
+.vpp-finding {
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-s);
+	padding: var(--size-4-3);
+	margin-bottom: var(--size-4-2);
+}
+
+.vpp-path {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--size-4-2);
+	padding: var(--size-4-1);
+}
+
+.vpp-path code {
+	overflow-wrap: anywhere;
+	white-space: pre-wrap;
+}
+
+.vpp-hint {
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}

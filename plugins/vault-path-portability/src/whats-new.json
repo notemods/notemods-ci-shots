@@ -1,0 +1,22 @@
+{
+	"id": "vault-path-portability",
+	"name": "Vault Path Portability",
+	"version": "1.2.1",
+	"changes": [
+		"The Vault Path Portability notice for a Pro feature now has a Sponsor on GitHub button."
+	],
+	"tip": "Select Copy Markdown to put the whole report on the clipboard. Paste it into a note to use as a checklist for your move.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Vault Path Portability is one of over 100 small plugins that I make. Thank you for using it to keep your vault portable.",
+	"related": [
+		{
+			"id": "vault-loss-alarm",
+			"name": "Vault Loss Alarm",
+			"blurb": "Warn you when notes or attachments vanish from your vault, with the last known size of each path."
+		},
+		{
+			"id": "sync-churn-watch",
+			"name": "Sync Churn Watch",
+			"blurb": "Find the files and settings that your vault rewrites most often."
+		}
+	]
+}
