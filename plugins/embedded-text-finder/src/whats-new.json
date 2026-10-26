@@ -1,0 +1,27 @@
+{
+	"id": "embedded-text-finder",
+	"name": "Embedded Text Finder",
+	"version": "1.2.1",
+	"changes": [
+		"The Pro notice for saved presets now has a Sponsor on GitHub button."
+	],
+	"tip": "Open a note with many embeds and run Find text in the active note and its embeds to search only that note and what it embeds.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Embedded Text Finder is one of over 100 small plugins that I make. Thank you for using it to find things in your vault.",
+	"related": [
+		{
+			"id": "search-operators",
+			"name": "Search Operators",
+			"blurb": "Find notes by date and links, with a preview for each result."
+		},
+		{
+			"id": "context-trees",
+			"name": "Context Trees",
+			"blurb": "Show parent headings and lists in search results."
+		},
+		{
+			"id": "embed-outline",
+			"name": "Embed Outline",
+			"blurb": "Shows the headings of embedded notes and callout titles in one outline, nested where each note is embedded."
+		}
+	]
+}

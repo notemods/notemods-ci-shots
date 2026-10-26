@@ -1,0 +1,79 @@
+[
+  {
+    "feature": "containing-notes",
+    "caption": "Find the daily review from the text in its source notes.",
+    "note": "Review/Daily review.md",
+    "eval": "(async()=>{const p=app.plugins.plugins['embedded-text-finder']; for(const m of [...p.modals]) m.close(); p.pro.signOut(); const m=p.openSearch(); m.folder.value=\"Embedded Text Finder/Review\"; m.query.value=\"blue bird\"; await m.run(); return 'ok';})()",
+    "wait": 300
+  },
+  {
+    "feature": "active-note",
+    "caption": "Search only the open note and read which embedded note holds the text.",
+    "note": "Review/Daily review.md",
+    "eval": "(async()=>{const p=app.plugins.plugins['embedded-text-finder']; for(const m of [...p.modals]) m.close(); p.pro.signOut(); const m=p.openSearch(true); m.query.value=\"blue bird\"; await m.run(); return 'ok';})()",
+    "wait": 300
+  },
+  {
+    "feature": "heading-source",
+    "caption": "Find the review from the Scope heading and its source excerpt.",
+    "note": "Review/Daily review.md",
+    "eval": "(async()=>{const p=app.plugins.plugins['embedded-text-finder']; for(const m of [...p.modals]) m.close(); p.pro.signOut(); const m=p.openSearch(); m.folder.value=\"Embedded Text Finder/Review\"; m.query.value=\"Follow the blue bird\"; await m.run(); return 'ok';})()",
+    "wait": 300
+  },
+  {
+    "feature": "block-source",
+    "caption": "Find a review from a witness block.",
+    "note": "Review/Daily review.md",
+    "eval": "(async()=>{const p=app.plugins.plugins['embedded-text-finder']; for(const m of [...p.modals]) m.close(); p.pro.signOut(); const m=p.openSearch(); m.folder.value=\"Embedded Text Finder/Review\"; m.query.value=\"witness saw\"; await m.run(); return 'ok';})()",
+    "wait": 300
+  },
+  {
+    "feature": "depth-two",
+    "caption": "Find a nested source at embed depth two.",
+    "note": "Review/Daily review.md",
+    "eval": "(async()=>{const p=app.plugins.plugins['embedded-text-finder']; for(const m of [...p.modals]) m.close(); p.pro.signOut(); const m=p.openSearch(); m.folder.value=\"Embedded Text Finder/Review\"; m.query.value=\"final review\"; await m.run(); return 'ok';})()",
+    "wait": 300
+  },
+  {
+    "feature": "source-reports",
+    "caption": "Report missing sources, skipped media, cycles and the depth limit.",
+    "note": "Review/Daily review.md",
+    "eval": "(async()=>{const p=app.plugins.plugins['embedded-text-finder']; for(const m of [...p.modals]) m.close(); p.pro.signOut(); const m=p.openSearch(); m.folder.value=\"Embedded Text Finder/Review\"; m.query.value=\"blue bird\"; await m.run(); m.contentEl.querySelector('.etf-reports').open=true; m.results.scrollTop=m.results.scrollHeight; return 'ok';})()",
+    "wait": 300
+  },
+  {
+    "feature": "presets-index",
+    "caption": "Pro presets and the incremental local index with sample results.",
+    "note": "Review/Daily review.md",
+    "eval": "(async()=>{const p=app.plugins.plugins['embedded-text-finder']; for(const m of [...p.modals]) m.close(); p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('embedded-text-finder-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow(); const m=p.openSearch(); m.folder.value=\"Embedded Text Finder/Review\"; m.query.value=\"blue bird\"; await m.run(); await p.savePreset('Weekly bird review',m.folder.value,m.query.value); await p.setIndex(true); m.updatePro(); m.presets.value='Weekly bird review'; m.presets.dispatchEvent(new Event('change')); m.contentEl.querySelector('.etf-pro').open=true; return 'ok';})()",
+    "after": "app.plugins.plugins['embedded-text-finder'].pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "result-export",
+    "caption": "Pro export writes links to the containing note and source.",
+    "note": "Review/Daily review.md",
+    "eval": "(async()=>{const p=app.plugins.plugins['embedded-text-finder']; for(const m of [...p.modals]) m.close(); p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('embedded-text-finder-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow(); const m=p.openSearch(); m.folder.value=\"Embedded Text Finder/Review\"; m.query.value=\"blue bird\"; await m.run(); const r=await m.run(); const f=await p.export(r,m.query.value); window.__etfExport=f.path; m.close(); await app.workspace.openLinkText(f.path,'',false); return 'ok';})()",
+    "after": "(async()=>{const f=app.vault.getAbstractFileByPath(window.__etfExport); if(f) await app.vault.delete(f); app.plugins.plugins['embedded-text-finder'].pro.signOut(); return 'ok';})()"
+  },
+  {
+    "feature": "embedded-text-finder",
+    "caption": "Search containers, inspect a heading and inspect source reports.",
+    "frames": [
+      {
+        "note": "Review/Daily review.md",
+        "eval": "(async()=>{const p=app.plugins.plugins['embedded-text-finder']; for(const m of [...p.modals]) m.close(); p.pro.signOut(); const m=p.openSearch(); m.folder.value=\"Embedded Text Finder/Review\"; m.query.value=\"blue bird\"; await m.run(); return 'ok';})()",
+        "hold": 1600
+      },
+      {
+        "note": "Review/Daily review.md",
+        "eval": "(async()=>{const p=app.plugins.plugins['embedded-text-finder']; for(const m of [...p.modals]) m.close(); p.pro.signOut(); const m=p.openSearch(); m.folder.value=\"Embedded Text Finder/Review\"; m.query.value=\"Follow the blue bird\"; await m.run(); return 'ok';})()",
+        "hold": 1600
+      },
+      {
+        "note": "Review/Daily review.md",
+        "eval": "(async()=>{const p=app.plugins.plugins['embedded-text-finder']; for(const m of [...p.modals]) m.close(); p.pro.signOut(); const m=p.openSearch(); m.folder.value=\"Embedded Text Finder/Review\"; m.query.value=\"blue bird\"; await m.run(); m.contentEl.querySelector('.etf-reports').open=true; m.results.scrollTop=m.results.scrollHeight; return 'ok';})()",
+        "hold": 1600
+      }
+    ]
+  }
+]

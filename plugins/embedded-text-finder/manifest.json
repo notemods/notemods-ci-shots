@@ -1,0 +1,11 @@
+{
+	"id": "embedded-text-finder",
+	"name": "Embedded Text Finder",
+	"version": "1.2.1",
+	"minAppVersion": "1.13.4",
+	"description": "Find containing notes by text in their Markdown embeds.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}
