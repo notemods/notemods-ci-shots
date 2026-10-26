@@ -1,0 +1,514 @@
+{
+ "slug": "steady-inline-math",
+ "module": "products/steady-inline-math/tests/scenario.ts",
+ "function": "runScenario",
+ "cases": [
+  {
+   "name": "Space at opening boundary",
+   "args": [
+    "A $x$ end",
+    3,
+    [
+     "space",
+     "leave"
+    ]
+   ],
+   "expected": {
+    "text": "A $ x$ end",
+    "owned": 0,
+    "undoDepth": 1
+   }
+  },
+  {
+   "name": "Space at closing boundary",
+   "args": [
+    "A $x$ end",
+    4,
+    [
+     "space",
+     "leave"
+    ]
+   ],
+   "expected": {
+    "text": "A $x $ end",
+    "owned": 0,
+    "undoDepth": 1
+   }
+  },
+  {
+   "name": "Cursor leaves the equation",
+   "args": [
+    "A $x+y$ end",
+    4,
+    [
+     "leave"
+    ]
+   ],
+   "expected": {
+    "text": "A $x+y$ end",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "User braces remain",
+   "args": [
+    "A $x{}+y$ end",
+    3,
+    [
+     "leave"
+    ]
+   ],
+   "expected": {
+    "text": "A $x{}+y$ end",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Undo removes space without extra guard step",
+   "args": [
+    "A $x$ end",
+    3,
+    [
+     "space",
+     "undo"
+    ]
+   ],
+   "expected": {
+    "text": "A ${}x{}$ end",
+    "owned": 4,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Redo restores space",
+   "args": [
+    "A $x$ end",
+    3,
+    [
+     "space",
+     "undo",
+     "redo",
+     "leave"
+    ]
+   ],
+   "expected": {
+    "text": "A $ x$ end",
+    "owned": 0,
+    "undoDepth": 1
+   }
+  },
+  {
+   "name": "Escaped dollar",
+   "args": [
+    "Cost \\$5",
+    7,
+    []
+   ],
+   "expected": {
+    "text": "Cost \\$5",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Inline code",
+   "args": [
+    "A `$x$` end",
+    4,
+    []
+   ],
+   "expected": {
+    "text": "A `$x$` end",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Display math same line",
+   "args": [
+    "A $$x$$ end",
+    4,
+    []
+   ],
+   "expected": {
+    "text": "A $$x$$ end",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Table cell",
+   "args": [
+    "| $x$ |",
+    3,
+    []
+   ],
+   "expected": {
+    "text": "| $x$ |",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Two selections",
+   "args": [
+    "A $x$ end",
+    3,
+    [
+     "multi"
+    ]
+   ],
+   "expected": {
+    "text": "A $x$ end",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Composition starts before entry",
+   "args": [
+    "A $x$ end",
+    3,
+    [
+     "compose",
+     "space"
+    ]
+   ],
+   "expected": {
+    "text": "A $ x$ end",
+    "owned": 0,
+    "undoDepth": 1
+   }
+  },
+  {
+   "name": "Composition resumes after end",
+   "args": [
+    "A $x$ end",
+    3,
+    [
+     "compose",
+     "space",
+     "end-compose",
+     "leave"
+    ]
+   ],
+   "expected": {
+    "text": "A $ x$ end",
+    "owned": 0,
+    "undoDepth": 1
+   }
+  },
+  {
+   "name": "Disable cleans owned braces",
+   "args": [
+    "A $x{}+y$ end",
+    3,
+    [
+     "off"
+    ]
+   ],
+   "expected": {
+    "text": "A $x{}+y$ end",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Unload cleans owned braces",
+   "args": [
+    "A $x{}+y$ end",
+    3,
+    [
+     "unload"
+    ]
+   ],
+   "expected": {
+    "text": "A $x{}+y$ end",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Guard is present while typing",
+   "args": [
+    "A $x$ end",
+    3,
+    [
+     "space"
+    ]
+   ],
+   "expected": {
+    "text": "A ${} x{}$ end",
+    "owned": 4,
+    "undoDepth": 1
+   }
+  },
+  {
+   "name": "Trailing boundary is protected while typing",
+   "args": [
+    "A $x$ end",
+    4,
+    [
+     "space"
+    ]
+   ],
+   "expected": {
+    "text": "A ${}x {}$ end",
+    "owned": 4,
+    "undoDepth": 1
+   }
+  },
+  {
+   "name": "Undo after cleanup",
+   "args": [
+    "A $x$ end",
+    3,
+    [
+     "space",
+     "leave",
+     "undo",
+     "leave"
+    ]
+   ],
+   "expected": {
+    "text": "A $x$ end",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Redo after cleanup",
+   "args": [
+    "A $x$ end",
+    3,
+    [
+     "space",
+     "leave",
+     "undo",
+     "redo",
+     "leave"
+    ]
+   ],
+   "expected": {
+    "text": "A $ x$ end",
+    "owned": 0,
+    "undoDepth": 1
+   }
+  },
+  {
+   "name": "Unclosed dollar",
+   "args": [
+    "A $x end",
+    3,
+    []
+   ],
+   "expected": {
+    "text": "A $x end",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Odd dollar count",
+   "args": [
+    "A $x$ and $y",
+    3,
+    []
+   ],
+   "expected": {
+    "text": "A $x$ and $y",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Blank equation",
+   "args": [
+    "A $ $ end",
+    1,
+    []
+   ],
+   "expected": {
+    "text": "A $ $ end",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Heading",
+   "args": [
+    "# $x$",
+    3,
+    []
+   ],
+   "expected": {
+    "text": "# $x$",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Callout",
+   "args": [
+    "> $x$",
+    3,
+    []
+   ],
+   "expected": {
+    "text": "> $x$",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "List",
+   "args": [
+    "- $x$",
+    3,
+    []
+   ],
+   "expected": {
+    "text": "- $x$",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Indented code",
+   "args": [
+    "    $x$",
+    5,
+    []
+   ],
+   "expected": {
+    "text": "    $x$",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Fenced code",
+   "args": [
+    "```\n$x$\n```",
+    5,
+    []
+   ],
+   "expected": {
+    "text": "```\n$x$\n```",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Tilde fenced code",
+   "args": [
+    "~~~\n$x$\n~~~",
+    5,
+    []
+   ],
+   "expected": {
+    "text": "~~~\n$x$\n~~~",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Frontmatter",
+   "args": [
+    "---\nformula: $x$\n---",
+    14,
+    []
+   ],
+   "expected": {
+    "text": "---\nformula: $x$\n---",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Multiline display",
+   "args": [
+    "$$\nx $y$\n$$",
+    3,
+    []
+   ],
+   "expected": {
+    "text": "$$\nx $y$\n$$",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "HTML markup",
+   "args": [
+    "<span>$x$</span>",
+    7,
+    []
+   ],
+   "expected": {
+    "text": "<span>$x$</span>",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Link markup",
+   "args": [
+    "[$x$](target)",
+    2,
+    []
+   ],
+   "expected": {
+    "text": "[$x$](target)",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Setext heading",
+   "args": [
+    "$x$\n---",
+    1,
+    []
+   ],
+   "expected": {
+    "text": "$x$\n---",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Second equation only",
+   "args": [
+    "A $x$ and $y$ end",
+    11,
+    [
+     "leave"
+    ]
+   ],
+   "expected": {
+    "text": "A $x$ and $y$ end",
+    "owned": 0,
+    "undoDepth": 0
+   }
+  },
+  {
+   "name": "Unicode source",
+   "args": [
+    "A $α+β$ end",
+    3,
+    [
+     "space",
+     "leave"
+    ]
+   ],
+   "expected": {
+    "text": "A $ α+β$ end",
+    "owned": 0,
+    "undoDepth": 1
+   }
+  }
+ ]
+}
