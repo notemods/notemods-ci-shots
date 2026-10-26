@@ -1,0 +1,88 @@
+[
+	{
+		"feature": "task-rows",
+		"caption": "A base over 30 notes with 150 tasks: one row per task with dates, priority, tags, note and heading.",
+		"note": "All tasks.base",
+		"eval": "(async () => { const kept = app.workspace.getMostRecentLeaf(); for (const leaf of [...app.workspace.getLeavesOfType('markdown'), ...app.workspace.getLeavesOfType('bases')]) if (leaf !== kept) leaf.detach(); app.workspace.setActiveLeaf(kept, { focus: true });  await new Promise((r) => setTimeout(r, 800)); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "task-progress",
+		"caption": "The Task progress view: one row per project note with open, done and total tasks, a progress bar, the next due date and the overdue count.",
+		"note": "Project progress.base",
+		"eval": "(async () => { const kept = app.workspace.getMostRecentLeaf(); for (const leaf of [...app.workspace.getLeavesOfType('markdown'), ...app.workspace.getLeavesOfType('bases')]) if (leaf !== kept) leaf.detach(); app.workspace.setActiveLeaf(kept, { focus: true }); await new Promise((r) => setTimeout(r, 900)); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "next-task",
+		"caption": "Count only tasks with tag set to waiting: each project note counts only its waiting tasks, and the Next task column shows the first open one.",
+		"note": "Project progress.base",
+		"eval": "(async () => { const kept = app.workspace.getMostRecentLeaf(); for (const leaf of [...app.workspace.getLeavesOfType('markdown'), ...app.workspace.getLeavesOfType('bases')]) if (leaf !== kept) leaf.detach(); await kept.setViewState({ type: 'bases', state: { file: 'Bases Task Rows/Project progress.base', viewName: 'Waiting' }, active: true }); app.workspace.setActiveLeaf(kept, { focus: true }); await new Promise((r) => setTimeout(r, 1200)); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "filter",
+		"caption": "The filter box with the word budget leaves only the matching tasks.",
+		"note": "All tasks.base",
+		"eval": "(async () => { await new Promise((r) => setTimeout(r, 600)); const v = [...app.plugins.plugins['bases-task-rows'].views].find((x) => x.rootEl.isConnected && document.querySelector('.workspace-leaf.mod-active')?.contains(x.rootEl)); const s = v.rootEl.querySelector('.btr-search'); s.value = 'budget'; s.dispatchEvent(new Event('input')); await new Promise((r) => setTimeout(r, 300)); return 'ok'; })()",
+		"after": "(async () => { const v = [...app.plugins.plugins['bases-task-rows'].views].find((x) => x.rootEl.isConnected && document.querySelector('.workspace-leaf.mod-active')?.contains(x.rootEl)); const s = v.rootEl.querySelector('.btr-search'); s.value = ''; s.dispatchEvent(new Event('input')); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "dataview-dates",
+		"caption": "A Dataview date link in the source note gives the due date in the task row.",
+		"note": "Meetings/Meeting 2026-09-29.md",
+		"eval": "(async () => { const leaf = app.workspace.getLeaf('split', 'vertical'); await leaf.openFile(app.vault.getAbstractFileByPath('Bases Task Rows/All tasks.base')); app.workspace.setActiveLeaf(leaf, { focus: true }); await new Promise((r) => setTimeout(r, 1000)); const v = [...app.plugins.plugins['bases-task-rows'].views].find((x) => x.rootEl.isConnected && document.querySelector('.workspace-leaf.mod-active')?.contains(x.rootEl)); const s = v.rootEl.querySelector('.btr-search'); s.value = '2026-09-29'; s.dispatchEvent(new Event('input')); await new Promise((r) => setTimeout(r, 300)); return 'ok'; })()",
+		"after": "(async () => { const leaf = app.workspace.getLeavesOfType('bases').find((l) => l.view.containerEl.isShown()); if (leaf) leaf.detach(); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "date-groups",
+		"caption": "Pro: open tasks grouped under Overdue, Today, Next 7 days, Later and No date.",
+		"note": "This week.base",
+		"eval": "(async () => { const p = app.plugins.plugins['bases-task-rows']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-task-rows-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); await new Promise((r) => setTimeout(r, 800)); return 'ok'; })()",
+		"after": "app.plugins.plugins['bases-task-rows'].pro.signOut(); 'ok'",
+		"wait": 1000
+	},
+	{
+		"feature": "bulk-actions",
+		"caption": "Pro: three selected rows with Complete selected and Move selected to today, and a date picker open in a due cell.",
+		"note": "All tasks.base",
+		"eval": "(async () => { const p = app.plugins.plugins['bases-task-rows']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-task-rows-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); await new Promise((r) => setTimeout(r, 800)); const v = [...app.plugins.plugins['bases-task-rows'].views].find((x) => x.rootEl.isConnected && document.querySelector('.workspace-leaf.mod-active')?.contains(x.rootEl)); const ids = v.shownIds(); for (const id of ids.slice(1, 4)) { [...v.rootEl.querySelectorAll('tr.btr-row')].find((tr) => tr.dataset.id === id).querySelector('td.btr-col-select input').click(); await new Promise((r) => setTimeout(r, 100)); } [...v.rootEl.querySelectorAll('tr.btr-row')].find((tr) => tr.dataset.id === ids[5]).querySelector('td.btr-col-due').click(); await new Promise((r) => setTimeout(r, 300)); return 'ok'; })()",
+		"after": "(async () => { const v = [...app.plugins.plugins['bases-task-rows'].views].find((x) => x.rootEl.isConnected && document.querySelector('.workspace-leaf.mod-active')?.contains(x.rootEl)); v.selected.clear(); v.render(); app.plugins.plugins['bases-task-rows'].pro.signOut(); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "settings",
+		"caption": "Settings: the Pro section before sign in, the done date choice and the format of new dates.",
+		"eval": "(async () => { app.plugins.plugins['bases-task-rows'].pro.signOut(); app.setting.open(); app.setting.openTabById('bases-task-rows'); return 'ok'; })()",
+		"after": "app.setting.close(); 'ok'",
+		"wait": 900
+	},
+	{
+		"feature": "pro-settings",
+		"caption": "The Pro section after sign in with a sponsoring account: login, tier, Refresh and Sign out.",
+		"eval": "(async () => { const p = app.plugins.plugins['bases-task-rows']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('bases-task-rows-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); app.setting.open(); app.setting.openTabById('bases-task-rows'); return 'ok'; })()",
+		"after": "app.setting.close(); app.plugins.plugins['bases-task-rows'].pro.signOut(); 'ok'",
+		"wait": 900
+	},
+	{
+		"feature": "bases-task-rows",
+		"caption": "Ticking two tasks in the view: the note on the left gets the x and the done date.",
+		"frames": [
+			{
+				"note": "Projects/Website relaunch.md",
+				"eval": "(async () => { const leaf = app.workspace.getLeaf('split', 'vertical'); await leaf.openFile(app.vault.getAbstractFileByPath('Bases Task Rows/Project tasks.base')); app.workspace.setActiveLeaf(leaf, { focus: true }); await new Promise((r) => setTimeout(r, 1200)); const v = [...app.plugins.plugins['bases-task-rows'].views].find((x) => x.rootEl.isConnected && document.querySelector('.workspace-leaf.mod-active')?.contains(x.rootEl)); v.config.set('showScheduled', false); v.config.set('showHeading', false); v.config.set('showPriority', false); const s = v.rootEl.querySelector('.btr-search'); s.value = 'relaunch'; s.dispatchEvent(new Event('input')); s.blur(); await new Promise((r) => setTimeout(r, 400)); return 'ok'; })()",
+				"hold": 1800
+			},
+			{
+				"eval": "(async () => { const v = [...app.plugins.plugins['bases-task-rows'].views].find((x) => x.rootEl.isConnected && document.querySelector('.workspace-leaf.mod-active')?.contains(x.rootEl)); [...v.rootEl.querySelectorAll('tr.btr-row')].find((tr) => tr.dataset.id === 'Bases Task Rows/Projects/Website relaunch.md#11').querySelector('input.task-list-item-checkbox').click(); await new Promise((r) => setTimeout(r, 900)); return 'ok'; })()",
+				"hold": 1500
+			},
+			{
+				"eval": "(async () => { const v = [...app.plugins.plugins['bases-task-rows'].views].find((x) => x.rootEl.isConnected && document.querySelector('.workspace-leaf.mod-active')?.contains(x.rootEl)); [...v.rootEl.querySelectorAll('tr.btr-row')].find((tr) => tr.dataset.id === 'Bases Task Rows/Projects/Website relaunch.md#18').querySelector('input.task-list-item-checkbox').click(); await new Promise((r) => setTimeout(r, 900)); return 'ok'; })()",
+				"hold": 2200
+			}
+		]
+	}
+]

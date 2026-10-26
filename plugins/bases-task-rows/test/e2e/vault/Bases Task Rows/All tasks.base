@@ -1,0 +1,8 @@
+filters:
+  and:
+    - file.inFolder("Bases Task Rows")
+views:
+  - type: task-rows
+    name: All tasks
+    status: all
+    sort: due
