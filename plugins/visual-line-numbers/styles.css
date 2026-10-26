@@ -1,0 +1,112 @@
+/* Styles for Visual Line Numbers. Obsidian loads this file while the plugin is enabled. */
+.vln-rows {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	box-sizing: border-box;
+	padding: 0 var(--size-4-1) 0 var(--size-4-2);
+	font-family: var(--font-monospace);
+	font-size: var(--font-smaller);
+}
+
+.vln-row {
+	flex: 1 1 0;
+	min-height: 0;
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+	color: var(--text-faint);
+}
+
+.vln-row.vln-abs {
+	color: var(--vln-color-absolute, var(--text-faint));
+}
+
+.vln-row.vln-rel {
+	color: var(--vln-color-relative, var(--text-faint));
+}
+
+.vln-row.vln-hyb {
+	color: var(--vln-color-hybrid, var(--text-normal));
+}
+
+.vln-row.vln-cur {
+	color: var(--vln-color-hybrid, var(--text-normal));
+}
+
+.vln-row.vln-current {
+	font-weight: var(--font-bold);
+	color: var(--vln-color-hybrid, var(--text-accent));
+	background-color: var(--background-modifier-hover);
+}
+
+.vln-row.vln-dual {
+	display: grid;
+	grid-template-columns: minmax(3ch, 1fr) auto minmax(3ch, 1fr);
+}
+
+.vln-dual-absolute {
+	color: var(--vln-color-absolute, var(--text-faint));
+}
+
+.vln-dual-separator {
+	padding: 0 var(--size-2-1);
+	color: var(--text-faint);
+	white-space: pre;
+}
+
+.vln-dual-relative {
+	color: var(--vln-color-relative, var(--text-faint));
+}
+
+.vln-cur .vln-dual-relative {
+	color: var(--vln-color-hybrid, var(--text-normal));
+}
+
+.vln-current .vln-dual-relative {
+	color: var(--vln-color-hybrid, var(--text-accent));
+}
+
+/* The editor theme clips each gutter. The hint below must reach into the text area. */
+.cm-editor .cm-gutters .cm-gutter.vln-gutter {
+	overflow: visible;
+}
+
+/* Motion hint (Pro): the Vim motion that reaches the row, shown beside the number on hover. */
+.vln-row[data-hint] {
+	position: relative;
+}
+
+.vln-row[data-hint]:hover::after,
+.vln-row[data-hint].vln-force-hint::after {
+	content: attr(data-hint);
+	position: absolute;
+	left: calc(100% + var(--size-4-2));
+	top: 0;
+	z-index: var(--layer-tooltip);
+	padding: 0 var(--size-4-2);
+	border-radius: var(--radius-s);
+	background-color: var(--background-modifier-message);
+	color: var(--text-on-accent);
+	white-space: nowrap;
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
