@@ -1,0 +1,15 @@
+filters:
+  and:
+    - file.inFolder("Bases Task Rows/Projects")
+views:
+  - type: task-progress
+    name: Task progress
+    sort: progress
+  - type: task-rows
+    name: Tasks
+    status: all
+    sort: file
+  - type: task-progress
+    name: Waiting
+    sort: note
+    tag: waiting
