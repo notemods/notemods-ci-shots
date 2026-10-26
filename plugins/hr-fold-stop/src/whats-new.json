@@ -1,0 +1,22 @@
+{
+	"id": "hr-fold-stop",
+	"name": "Fold Stop",
+	"version": "1.2.1",
+	"changes": [
+		"Add folder and the override property field now show how to get Pro, with a Sponsor on GitHub button, when you select Add folder or type in the field. They change no setting until you have Pro."
+	],
+	"tip": "Run Restore normal folding in this note to unfold the active note and use normal folding again.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Fold Stop is one of over 100 small plugins that I make. Thank you for keeping it in your editor.",
+	"related": [
+		{
+			"id": "visual-line-numbers",
+			"name": "Visual Line Numbers",
+			"blurb": "Numbers every wrapped display line in the editor gutter, with relative, hybrid and absolute modes, so counted Vim motions land where the gutter says."
+		},
+		{
+			"id": "paragraph-spell-focus",
+			"name": "Paragraph Spell Focus",
+			"blurb": "Limit native spellcheck to the paragraph under the cursor."
+		}
+	]
+}
