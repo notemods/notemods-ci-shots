@@ -1,0 +1,48 @@
+.substack-import-modal {
+	width: min(850px, 95vw);
+}
+
+.substack-import-modal pre {
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	max-height: 300px;
+	overflow-y: auto;
+	padding: var(--size-4-3);
+	background: var(--background-secondary);
+	border-radius: var(--radius-s);
+}
+
+.substack-import-error {
+	color: var(--text-error);
+}
+
+.substack-import-counts {
+	font-weight: var(--font-semibold);
+}
+
+.substack-import-diff {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: var(--size-4-3);
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}

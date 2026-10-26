@@ -1,0 +1,523 @@
+{
+ "slug": "substack-export-import",
+ "module": "substack-export-import/src/importer",
+ "function": "prepareImport",
+ "cases": [
+  {
+   "name": "Example archive keeps one matched note and reports the second file",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n123.first-post,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n",
+     "posts/123.first-post.html": "<h1>First post</h1><p>A local archive of a writer export.</p>",
+     "posts/456.second-post.html": "<p>Orphan body.</p>"
+    }
+   ],
+   "expected": {
+    "rowCount": 1,
+    "posts": [
+     {
+      "id": "123.first-post",
+      "properties": {
+       "title": "First post"
+      }
+     }
+    ],
+    "missing": [],
+    "unmatched": [
+     "posts/456.second-post.html"
+    ]
+   }
+  },
+  {
+   "name": "Podcast URL and type are properties",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n789,A podcast episode,Field notes,2024-02-03T12:00:00Z,true,everyone,podcast,https://audio.example.test/episode.mp3\r\n",
+     "posts/789.html": "<p>Body.</p>"
+    }
+   ],
+   "expected": {
+    "posts": [
+     {
+      "properties": {
+       "type": "podcast",
+       "podcast_url": "https://audio.example.test/episode.mp3"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "Quoted comma stays in the title",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n123.first-post,\"A title, with a comma\",A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n",
+     "posts/123.first-post.html": "<p>Body.</p>"
+    }
+   ],
+   "expected": {
+    "posts": [
+     {
+      "properties": {
+       "title": "A title, with a comma",
+       "subtitle": "A small archive"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "CSV escaped quotes stay in the title",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n123.first-post,\"A \"\"quoted\"\" title\",A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n",
+     "posts/123.first-post.html": "<p>Body.</p>"
+    }
+   ],
+   "expected": {
+    "posts": [
+     {
+      "properties": {
+       "title": "A \"quoted\" title"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "CSV quoted newlines stay in the title",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n123.first-post,\"First line\nSecond line\",A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n",
+     "posts/123.first-post.html": "<p>Body.</p>"
+    }
+   ],
+   "expected": {
+    "posts": [
+     {
+      "properties": {
+       "title": "First line\nSecond line"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "Unpublished paid post keeps its state",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n123.first-post,First post,A small archive,2024-01-02T10:00:00Z,false,only_paid,newsletter,\r\n",
+     "posts/123.first-post.html": "<p>Body.</p>"
+    }
+   ],
+   "expected": {
+    "posts": [
+     {
+      "properties": {
+       "published": false,
+       "audience": "only_paid"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "Missing HTML produces no body note",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n123.first-post,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n"
+    }
+   ],
+   "expected": {
+    "posts": [],
+    "missing": [
+     {
+      "id": "123.first-post",
+      "path": "posts/123.first-post.html"
+     }
+    ],
+    "unmatched": []
+   }
+  },
+  {
+   "name": "Duplicate IDs stop the preview",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n123.first-post,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n123.first-post,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n"
+    }
+   ],
+   "expected": {
+    "error": "Duplicate post ID: 123.first-post"
+   }
+  },
+  {
+   "name": "Subscriber and delivery data are ignored",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n123.first-post,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n",
+     "posts/123.first-post.html": "<p>Body.</p>",
+     "subscribers.csv": "subscriber,SECRET_SUBSCRIBER",
+     "delivery/stats.csv": "SECRET_DELIVERY"
+    }
+   ],
+   "expected": {
+    "posts": [
+     {
+      "body": "Body."
+     }
+    ],
+    "unmatched": []
+   }
+  },
+  {
+   "name": "Remote image URL stays in Markdown",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n123.first-post,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n",
+     "posts/123.first-post.html": "<p>Body.</p><img src=\"https://images.example.test/p.jpg\" alt=\"Field image\">"
+    }
+   ],
+   "expected": {
+    "posts": [
+     {
+      "bodyContains": "https://images.example.test/p.jpg"
+     }
+    ]
+   }
+  },
+  {
+   "name": "Parent member stops the preview",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n123.first-post,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n",
+     "posts/123.first-post.html": "<p>Body.</p>",
+     "../escape.html": "unsafe"
+    }
+   ],
+   "expected": {
+    "error": "Unsafe ZIP member path"
+   }
+  },
+  {
+   "name": "Absolute member stops the preview",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n123.first-post,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n",
+     "posts/123.first-post.html": "<p>Body.</p>",
+     "/escape": "unsafe"
+    }
+   ],
+   "expected": {
+    "error": "Unsafe ZIP member path"
+   }
+  },
+  {
+   "name": "Windows member stops the preview",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n123.first-post,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n",
+     "posts/123.first-post.html": "<p>Body.</p>",
+     "C:\\escape": "unsafe"
+    }
+   ],
+   "expected": {
+    "error": "Unsafe ZIP member path"
+   }
+  },
+  {
+   "name": "Backslash member stops the preview",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n123.first-post,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n",
+     "posts/123.first-post.html": "<p>Body.</p>",
+     "posts\\123.html": "unsafe"
+    }
+   ],
+   "expected": {
+    "error": "Unsafe ZIP member path"
+   }
+  },
+  {
+   "name": "CSV is required",
+   "args": [
+    {
+     "posts/123.html": "<p>Body</p>"
+    }
+   ],
+   "expected": {
+    "error": "posts.csv"
+   }
+  },
+  {
+   "name": "Post ID header is required",
+   "args": [
+    {
+     "posts.csv": "id,title\n123,Hi\n"
+    }
+   ],
+   "expected": {
+    "error": "post_id column"
+   }
+  },
+  {
+   "name": "Duplicate column names stop the preview",
+   "args": [
+    {
+     "posts.csv": "post_id,title,title\n123,a,b\n"
+    }
+   ],
+   "expected": {
+    "error": "duplicate column names"
+   }
+  },
+  {
+   "name": "Short CSV row stops the preview",
+   "args": [
+    {
+     "posts.csv": "post_id,title\n123\n"
+    }
+   ],
+   "expected": {
+    "error": "wrong field count"
+   }
+  },
+  {
+   "name": "Extra CSV field stops the preview",
+   "args": [
+    {
+     "posts.csv": "post_id,title\n123,a,b\n"
+    }
+   ],
+   "expected": {
+    "error": "wrong field count"
+   }
+  },
+  {
+   "name": "Unclosed CSV quote stops the preview",
+   "args": [
+    {
+     "posts.csv": "post_id,title\n123,\"a\n"
+    }
+   ],
+   "expected": {
+    "error": "CSV error"
+   }
+  },
+  {
+   "name": "Empty post ID stops the preview",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n",
+     "posts/.html": "<p>Body.</p>"
+    }
+   ],
+   "expected": {
+    "error": "Unsafe or empty post ID"
+   }
+  },
+  {
+   "name": "Unsafe post ID stops the preview",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n../123,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n"
+    }
+   ],
+   "expected": {
+    "error": "Unsafe or empty post ID"
+   }
+  },
+  {
+   "name": "Reserved post filename stops the preview",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\nCON,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n",
+     "posts/CON.html": "<p>Body.</p>"
+    }
+   ],
+   "expected": {
+    "error": "Unsafe or empty post ID"
+   }
+  },
+  {
+   "name": "UTF-8 BOM is accepted",
+   "args": [
+    {
+     "posts.csv": "﻿post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n123.first-post,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n",
+     "posts/123.first-post.html": "<p>Body.</p>"
+    }
+   ],
+   "expected": {
+    "posts": [
+     {
+      "id": "123.first-post"
+     }
+    ]
+   }
+  },
+  {
+   "name": "Empty CSV with a header creates a report only",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n"
+    }
+   ],
+   "expected": {
+    "rowCount": 0,
+    "posts": [],
+    "missing": [],
+    "unmatched": []
+   }
+  },
+  {
+   "name": "Invalid date is kept as text",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n123.first-post,First post,A small archive,not a date,true,everyone,newsletter,\r\n",
+     "posts/123.first-post.html": "<p>Body.</p>"
+    }
+   ],
+   "expected": {
+    "posts": [
+     {
+      "properties": {
+       "post_date": "not a date"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "Valid date gives millisecond timestamps",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n123.first-post,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n",
+     "posts/123.first-post.html": "<p>Body.</p>"
+    }
+   ],
+   "expected": {
+    "posts": [
+     {
+      "timestamp": 1704189600000
+     }
+    ]
+   }
+  },
+  {
+   "name": "Exact IDs do not match a slug with the same numeric prefix",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n123.first-post,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n",
+     "posts/123.html": "<p>Other</p>"
+    }
+   ],
+   "expected": {
+    "posts": [],
+    "missing": [
+     {
+      "id": "123.first-post",
+      "path": "posts/123.first-post.html"
+     }
+    ],
+    "unmatched": [
+     "posts/123.html"
+    ]
+   }
+  },
+  {
+   "name": "Filename case conflict stops the preview",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\nABC,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\nabc,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n"
+    }
+   ],
+   "expected": {
+    "error": "filename case conflict"
+   }
+  },
+  {
+   "name": "Dangerous HTML does not become active content",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n123.first-post,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n",
+     "posts/123.first-post.html": "<script>window.bad=true</script><p onclick=\"bad()\">Body.</p>"
+    }
+   ],
+   "expected": {
+    "posts": [
+     {
+      "body": "Body."
+     }
+    ]
+   }
+  },
+  {
+   "name": "Custom property mapping preserves the fields",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n123.first-post,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n",
+     "posts/123.first-post.html": "<p>Body.</p>"
+    },
+    {
+     "title": "headline",
+     "subtitle": "deck",
+     "post_date": "date",
+     "published": "published",
+     "audience": "audience",
+     "type": "kind",
+     "podcast_url": "audio"
+    }
+   ],
+   "expected": {
+    "posts": [
+     {
+      "properties": {
+       "headline": "First post",
+       "deck": "A small archive",
+       "kind": "newsletter"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "Mapping cannot replace the source ID",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n123.first-post,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n",
+     "posts/123.first-post.html": "<p>Body.</p>"
+    },
+    {
+     "title": "post_id",
+     "subtitle": "deck",
+     "post_date": "date",
+     "published": "published",
+     "audience": "audience",
+     "type": "kind",
+     "podcast_url": "audio",
+     "headline": "x"
+    }
+   ],
+   "expected": {
+    "error": "different property names"
+   }
+  },
+  {
+   "name": "Existing output folder stops before writes",
+   "function": "writeImport",
+   "args": [
+    {
+     "posts.csv": "post_id,title,subtitle,post_date,is_published,audience,type,podcast_url\r\n123.first-post,First post,A small archive,2024-01-02T10:00:00Z,true,everyone,newsletter,\r\n",
+     "posts/123.first-post.html": "<h1>First post</h1><p>A local archive of a writer export.</p>",
+     "posts/456.second-post.html": "<p>Orphan body.</p>"
+    },
+    "Existing",
+    {
+     "Existing/keep.md": "Original"
+    }
+   ],
+   "expected": {
+    "error": "output folder exists"
+   }
+  }
+ ]
+}
