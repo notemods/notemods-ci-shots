@@ -1,0 +1,15 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2020-05-03T09:00:00+00:00
+
+====== Planting checklist ======
+
+* Prepare containers
+* Add soil
+* Plant seeds
+
+[ ] Water the new seedlings
+
+{{./garden.png}} Keep the original picture reference.
+
+[[Missing page]] needs review before the move.

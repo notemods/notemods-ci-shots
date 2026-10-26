@@ -1,0 +1,27 @@
+{
+	"id": "zim-notebook-import",
+	"name": "Zim Notebook Import",
+	"version": "1.2.1",
+	"changes": [
+		"The Pro notice for saved rules and the later import preview now has a Sponsor on GitHub button."
+	],
+	"tip": "A Zim [x] checkbox marks a dismissed item, so it becomes a - [c] task, not a finished one.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Zim Notebook Import is one of over 100 small plugins that I make. Thank you for moving your notes into Obsidian with it.",
+	"related": [
+		{
+			"id": "cherrytree-import",
+			"name": "CherryTree Import",
+			"blurb": "Import unencrypted CherryTree XML, links and PNGs."
+		},
+		{
+			"id": "vimwiki-import",
+			"name": "Vimwiki Import",
+			"blurb": "Convert default Vimwiki pages into Markdown notes with working local links."
+		},
+		{
+			"id": "zettelkasten-archive-import",
+			"name": "Zettelkasten Archive Import",
+			"blurb": "Convert version 3.8 Zettelkasten archives into notes with keywords, links, and note sequences."
+		}
+	]
+}
