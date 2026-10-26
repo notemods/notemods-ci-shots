@@ -1,0 +1,71 @@
+.ssm-modal {
+	width: min(850px, 94vw);
+}
+
+.ssm-cues {
+	max-height: 42vh;
+	overflow-y: auto;
+}
+
+.ssm-cue {
+	padding: var(--size-4-3);
+	margin-bottom: var(--size-4-2);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	background: var(--background-secondary);
+}
+
+.ssm-source {
+	color: var(--text-muted);
+	font-size: var(--font-smallest);
+	overflow-wrap: anywhere;
+}
+
+.ssm-text,
+.ssm-markdown {
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+
+.ssm-markdown {
+	max-height: 48vh;
+	overflow-y: auto;
+	padding: var(--size-4-3);
+	border: 1px solid var(--background-modifier-border);
+	background: var(--background-secondary);
+}
+
+.ssm-span-text,
+.ssm-preview input {
+	width: 100%;
+}
+
+.ssm-summary,
+.ssm-warnings {
+	color: var(--text-muted);
+}
+
+.ssm-export-status {
+	color: var(--text-accent);
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}

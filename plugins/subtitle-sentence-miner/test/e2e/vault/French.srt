@@ -1,0 +1,23 @@
+1
+00:00:01,000 --> 00:00:03,500
+Bonjour. Comment allez-vous ?
+
+2
+00:00:04,000 --> 00:00:06,250
+Hello world. Welcome to our lesson.
+
+3
+00:00:07,500 --> 00:00:10,000
+Je voudrais un café, s'il vous plaît.
+
+4
+00:00:11,000 --> 00:00:13,750
+Au revoir. À demain.
+
+5
+00:00:15,000 --> 00:00:18,500
+Le train part à huit heures.
+
+6
+00:00:19,000 --> 00:00:22,000
+Nous apprenons une phrase à la fois.
