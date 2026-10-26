@@ -1,0 +1,11 @@
+{
+	"id": "note-word-comments",
+	"name": "Word Comment Export",
+	"version": "1.1.1",
+	"minAppVersion": "1.13.4",
+	"description": "Export inline note comments as native Word comments in a new DOCX file.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}
