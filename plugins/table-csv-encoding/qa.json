@@ -1,0 +1,66 @@
+[
+  {
+    "feature": "unicode",
+    "caption": "Choose a table and preview Unicode CSV with a BOM.",
+    "note": "Report.md",
+    "eval": "(async () => { const p = app.plugins.plugins['table-csv-encoding']; p.modal?.close(); p.pro.signOut(); p.settings.delimiter = ','; p.settings.bom = true; await app.workspace.getMostRecentLeaf().setViewState({type:'markdown',state:{file:'Table CSV Encoding/Report.md',mode:'source'}}); app.workspace.activeEditor.editor.setCursor(4, 0); return 'free'; })()",
+    "commands": [
+      "table-csv-encoding:export-table-csv"
+    ],
+    "wait": 500
+  },
+  {
+    "feature": "delimiter",
+    "caption": "Semicolon output quotes a cell that contains a semicolon.",
+    "note": "Regional.md",
+    "eval": "(async () => { const p = app.plugins.plugins['table-csv-encoding']; p.modal?.close(); p.pro.signOut(); p.settings.delimiter = ';'; p.settings.bom = false; await app.workspace.getMostRecentLeaf().setViewState({type:'markdown',state:{file:'Table CSV Encoding/Regional.md',mode:'source'}}); app.workspace.activeEditor.editor.setCursor(4, 0); return 'semicolon'; })()",
+    "commands": [
+      "table-csv-encoding:export-table-csv"
+    ],
+    "wait": 500
+  },
+  {
+    "feature": "row-check",
+    "caption": "A short row blocks export.",
+    "note": "Ragged.md",
+    "eval": "app.plugins.plugins['table-csv-encoding'].modal?.close(); 'closed'",
+    "commands": [
+      "table-csv-encoding:export-table-csv"
+    ],
+    "wait": 500
+  },
+  {
+    "feature": "batch",
+    "caption": "Pro prepares three output files from two source notes. The local fixture also writes and checks a batch.",
+    "note": "Report.md",
+    "eval": "(async () => { const p = app.plugins.plugins['table-csv-encoding']; p.modal?.close(); p.settings.delimiter = ','; p.settings.bom = true; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'local-test-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('table-csv-encoding-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); try { const options = {delimiter:',',bom:true,headers:true}; const check = await p.prepareBatch('Table CSV Encoding', options); const folder = await p.writeBatch(check); const files = app.vault.getFiles().filter(f => f.path.startsWith(folder + '/')); if (files.length !== 3) throw new Error('Expected 3 batch CSV files'); for (const file of files) { const bytes = new Uint8Array(await app.vault.readBinary(file)); if (bytes[0] !== 239 || bytes[1] !== 187 || bytes[2] !== 191) throw new Error('Missing UTF-8 BOM'); } const m = p.openBatch(); const input = m.contentEl.querySelector('input[type=text]'); input.value = 'Table CSV Encoding'; input.dispatchEvent(new Event('input', {bubbles:true})); const button = [...m.contentEl.querySelectorAll('button')].find(b => b.textContent === 'Prepare batch'); button.click(); for (let i = 0; i < 80 && !m.plan; i++) await new Promise(r => setTimeout(r, 50)); if (!m.plan) throw new Error('Batch preview did not finish'); return JSON.stringify({folder,files:files.length,prefix:'EF BB BF',sources:m.plan.sources.length}); } finally { p.pro.signOut(); } })()",
+    "wait": 500
+  },
+  {
+    "feature": "walkthrough",
+    "caption": "Preview Unicode output, regional delimiters, and a folder batch.",
+    "frames": [
+      {
+        "note": "Report.md",
+        "eval": "(async () => { const p = app.plugins.plugins['table-csv-encoding']; p.modal?.close(); p.pro.signOut(); p.settings.delimiter = ','; p.settings.bom = true; await app.workspace.getMostRecentLeaf().setViewState({type:'markdown',state:{file:'Table CSV Encoding/Report.md',mode:'source'}}); app.workspace.activeEditor.editor.setCursor(4, 0); return 'free'; })()",
+        "commands": [
+          "table-csv-encoding:export-table-csv"
+        ],
+        "hold": 1700
+      },
+      {
+        "note": "Regional.md",
+        "eval": "(async () => { const p = app.plugins.plugins['table-csv-encoding']; p.modal?.close(); p.pro.signOut(); p.settings.delimiter = ';'; p.settings.bom = false; await app.workspace.getMostRecentLeaf().setViewState({type:'markdown',state:{file:'Table CSV Encoding/Regional.md',mode:'source'}}); app.workspace.activeEditor.editor.setCursor(4, 0); return 'semicolon'; })()",
+        "commands": [
+          "table-csv-encoding:export-table-csv"
+        ],
+        "hold": 1700
+      },
+      {
+        "note": "Report.md",
+        "eval": "(async () => { const p = app.plugins.plugins['table-csv-encoding']; p.modal?.close(); p.settings.delimiter = ','; p.settings.bom = true; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'local-test-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('table-csv-encoding-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); try { const options = {delimiter:',',bom:true,headers:true}; const check = await p.prepareBatch('Table CSV Encoding', options); const folder = await p.writeBatch(check); const files = app.vault.getFiles().filter(f => f.path.startsWith(folder + '/')); if (files.length !== 3) throw new Error('Expected 3 batch CSV files'); for (const file of files) { const bytes = new Uint8Array(await app.vault.readBinary(file)); if (bytes[0] !== 239 || bytes[1] !== 187 || bytes[2] !== 191) throw new Error('Missing UTF-8 BOM'); } const m = p.openBatch(); const input = m.contentEl.querySelector('input[type=text]'); input.value = 'Table CSV Encoding'; input.dispatchEvent(new Event('input', {bubbles:true})); const button = [...m.contentEl.querySelectorAll('button')].find(b => b.textContent === 'Prepare batch'); button.click(); for (let i = 0; i < 80 && !m.plan; i++) await new Promise(r => setTimeout(r, 50)); if (!m.plan) throw new Error('Batch preview did not finish'); return JSON.stringify({folder,files:files.length,prefix:'EF BB BF',sources:m.plan.sources.length}); } finally { p.pro.signOut(); } })()",
+        "hold": 1700
+      }
+    ]
+  }
+]

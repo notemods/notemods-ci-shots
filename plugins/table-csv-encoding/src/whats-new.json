@@ -1,0 +1,27 @@
+{
+	"id": "table-csv-encoding",
+	"name": "Table CSV Encoding",
+	"version": "1.1.1",
+	"changes": [
+		"The Pro notice for folder table export now has a Sponsor on GitHub button."
+	],
+	"tip": "Turn on the BOM option when a spreadsheet app needs a clear UTF-8 signal. The CSV file then starts with the bytes EF BB BF.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Table CSV Encoding is one of over 100 small plugins that I make. Thank you for trusting it with your tables.",
+	"related": [
+		{
+			"id": "table-rollup",
+			"name": "Table Rollup",
+			"blurb": "Combine note tables in one table with links to the source notes."
+		},
+		{
+			"id": "table-row-links",
+			"name": "Table Row Links",
+			"blurb": "Copy a link to a marked table row in your note."
+		},
+		{
+			"id": "csv-schema-linter",
+			"name": "CSV Rule Check",
+			"blurb": "Check CSV values, types and duplicates before you use an export."
+		}
+	]
+}
