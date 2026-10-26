@@ -1,0 +1,66 @@
+[
+  {
+    "feature": "selection",
+    "caption": "Selected YAML with a JSON preview.",
+    "note": "Configuration lab.md",
+    "eval": "(()=>{const p=app.plugins.plugins['yaml-json-toml-converter']; for(const m of p.modals) m.close(); const e=app.workspace.activeEditor.editor; const text=e.getValue(); const start=text.indexOf('\\n',text.indexOf('```'))+1; const end=text.indexOf('```',start)-1; e.setSelection(e.offsetToPos(start),e.offsetToPos(end)); p.openConversion(e); const m=[...p.modals][0]; m.source='yaml'; m.target='json'; m.contentEl.querySelector('[aria-label=\"Source format\"]').value=m.source; m.contentEl.querySelector('[aria-label=\"Target format\"]').value=m.target; m.renderPreview(); return 'ok';})()",
+    "after": "const p=app.plugins.plugins['yaml-json-toml-converter']; for(const m of p.modals) m.close(); p.pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "parse-error",
+    "caption": "The parser reports a duplicate YAML key.",
+    "note": "Parse check.md",
+    "eval": "(()=>{const p=app.plugins.plugins['yaml-json-toml-converter']; for(const m of p.modals) m.close(); const e=app.workspace.activeEditor.editor; const text=e.getValue(); const start=text.indexOf('\\n',text.indexOf('```'))+1; const end=text.indexOf('```',start)-1; e.setSelection(e.offsetToPos(start),e.offsetToPos(end)); p.openConversion(e); const m=[...p.modals][0]; m.source='yaml'; m.target='json'; m.contentEl.querySelector('[aria-label=\"Source format\"]').value=m.source; m.contentEl.querySelector('[aria-label=\"Target format\"]').value=m.target; m.renderPreview(); return 'ok';})()",
+    "after": "const p=app.plugins.plugins['yaml-json-toml-converter']; for(const m of p.modals) m.close(); p.pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "loss-check",
+    "caption": "A null value is rejected before TOML conversion.",
+    "note": "Loss check.md",
+    "eval": "(()=>{const p=app.plugins.plugins['yaml-json-toml-converter']; for(const m of p.modals) m.close(); const e=app.workspace.activeEditor.editor; const text=e.getValue(); const start=text.indexOf('\\n',text.indexOf('```'))+1; const end=text.indexOf('```',start)-1; e.setSelection(e.offsetToPos(start),e.offsetToPos(end)); p.openConversion(e); const m=[...p.modals][0]; m.source='json'; m.target='toml'; m.contentEl.querySelector('[aria-label=\"Source format\"]').value=m.source; m.contentEl.querySelector('[aria-label=\"Target format\"]').value=m.target; m.renderPreview(); return 'ok';})()",
+    "after": "const p=app.plugins.plugins['yaml-json-toml-converter']; for(const m of p.modals) m.close(); p.pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "source-changed",
+    "caption": "An editor change blocks replacement.",
+    "note": "Configuration lab.md",
+    "eval": "(()=>{const p=app.plugins.plugins['yaml-json-toml-converter']; for(const m of p.modals) m.close(); const e=app.workspace.activeEditor.editor; const text=e.getValue(); const start=text.indexOf('\\n',text.indexOf('```'))+1; const end=text.indexOf('```',start)-1; e.setSelection(e.offsetToPos(start),e.offsetToPos(end)); p.openConversion(e); const m=[...p.modals][0]; m.source='yaml'; m.target='json'; m.contentEl.querySelector('[aria-label=\"Source format\"]').value=m.source; m.contentEl.querySelector('[aria-label=\"Target format\"]').value=m.target; m.renderPreview(); e.replaceRange('Bea',e.offsetToPos(start+6),e.offsetToPos(start+9)); m.replace(); return 'ok';})()",
+    "after": "const p=app.plugins.plugins['yaml-json-toml-converter']; for(const m of p.modals) m.close(); p.pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "schema",
+    "caption": "JSON is checked against a local schema.",
+    "note": "Schema check.md",
+    "eval": "(async()=>{const p=app.plugins.plugins['yaml-json-toml-converter']; for(const m of p.modals) m.close(); const e=app.workspace.activeEditor.editor; p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('yaml-json-toml-converter-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow(); const text=e.getValue(); const start=text.indexOf('\\n',text.indexOf('```'))+1; const end=text.indexOf('```',start)-1; e.setSelection(e.offsetToPos(start),e.offsetToPos(end)); app.commands.executeCommandById('yaml-json-toml-converter:validate-schema'); const m=[...p.modals][0]; m.path='Data Format Converter/person.schema.json'; m.contentEl.querySelector('input').value=m.path; await m.validate(); return 'ok';})()",
+    "after": "const p=app.plugins.plugins['yaml-json-toml-converter']; for(const m of p.modals) m.close(); p.pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "batch",
+    "caption": "Two chosen code blocks with a batch preview.",
+    "note": "Batch lab.md",
+    "eval": "(async()=>{const p=app.plugins.plugins['yaml-json-toml-converter']; for(const m of p.modals) m.close(); const e=app.workspace.activeEditor.editor; p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('yaml-json-toml-converter-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow(); app.commands.executeCommandById('yaml-json-toml-converter:batch-convert'); const m=[...p.modals][0]; m.chosen.add(1); m.chosen.add(2); m.contentEl.querySelectorAll('.checkbox-container').forEach(t=>{t.addClass('is-enabled');t.setAttribute('aria-checked','true');}); m.previewBatch(); return 'ok';})()",
+    "after": "const p=app.plugins.plugins['yaml-json-toml-converter']; for(const m of p.modals) m.close(); p.pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "converter",
+    "caption": "A YAML selection previewed as JSON and TOML.",
+    "frames": [
+      {
+        "note": "Configuration lab.md",
+        "eval": "(()=>{const p=app.plugins.plugins['yaml-json-toml-converter']; for(const m of p.modals) m.close(); const e=app.workspace.activeEditor.editor; const text=e.getValue(); const start=text.indexOf('\\n',text.indexOf('```'))+1; const end=text.indexOf('```',start)-1; e.setSelection(e.offsetToPos(start),e.offsetToPos(end)); p.openConversion(e); const m=[...p.modals][0]; m.source='yaml'; m.target='json'; m.contentEl.querySelector('[aria-label=\"Source format\"]').value=m.source; m.contentEl.querySelector('[aria-label=\"Target format\"]').value=m.target; m.renderPreview(); return 'ok';})()",
+        "hold": 1500
+      },
+      {
+        "note": "Configuration lab.md",
+        "eval": "(()=>{const p=app.plugins.plugins['yaml-json-toml-converter']; for(const m of p.modals) m.close(); const e=app.workspace.activeEditor.editor; const text=e.getValue(); const start=text.indexOf('\\n',text.indexOf('```'))+1; const end=text.indexOf('```',start)-1; e.setSelection(e.offsetToPos(start),e.offsetToPos(end)); p.openConversion(e); const m=[...p.modals][0]; m.source='yaml'; m.target='toml'; m.contentEl.querySelector('[aria-label=\"Source format\"]').value=m.source; m.contentEl.querySelector('[aria-label=\"Target format\"]').value=m.target; m.renderPreview(); return 'ok';})()",
+        "hold": 1500
+      },
+      {
+        "note": "Configuration lab.md",
+        "eval": "(()=>{const p=app.plugins.plugins['yaml-json-toml-converter']; for(const m of p.modals) m.close(); const e=app.workspace.activeEditor.editor; const text=e.getValue(); const start=text.indexOf('\\n',text.indexOf('```'))+1; const end=text.indexOf('```',start)-1; e.setSelection(e.offsetToPos(start),e.offsetToPos(end)); p.openConversion(e); const m=[...p.modals][0]; m.source='yaml'; m.target='yaml'; m.contentEl.querySelector('[aria-label=\"Source format\"]').value=m.source; m.contentEl.querySelector('[aria-label=\"Target format\"]').value=m.target; m.renderPreview(); return 'ok';})()",
+        "hold": 1000
+      }
+    ],
+    "after": "const p=app.plugins.plugins['yaml-json-toml-converter']; for(const m of p.modals) m.close(); p.pro.signOut(); 'ok'"
+  }
+]
