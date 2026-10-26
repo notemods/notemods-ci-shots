@@ -1,0 +1,85 @@
+[
+  {
+    "feature": "checklist",
+    "caption": "Select secret IDs without a value display.",
+    "note": "Device transfer.md",
+    "eval": "(async () => { const p = app.plugins.plugins['secret-parcel']; p.closeDialogs(); app.setting.close(); p.pro.opts.tokens = { get: () => null, set: () => {}, clear: () => {} }; p.pro.signOut(); const values = { 'openai-key': 'sk-sample-only', 'github-token': 'ghp_sample-only', 'todoist-token': 'sample-only' }; Object.defineProperty(p, 'storage', { configurable: true, value: { listSecrets: () => Object.keys(values), getSecret: id => values[id] ?? null, setSecret: (id, v) => { values[id] = v; } } });p.openExport(); const rows = [...document.querySelectorAll('.modal-content .secret-parcel-list .setting-item')]; rows.slice(0, 2).forEach(r => r.querySelector('.checkbox-container').click()); return 'ok'; })()",
+    "wait": 800,
+    "after": "app.plugins.plugins['secret-parcel'].closeDialogs(); app.setting.close(); 'ok'"
+  },
+  {
+    "feature": "encrypted-export",
+    "caption": "The exported parcel has a path and a safe next step.",
+    "note": "Device transfer.md",
+    "eval": "(async () => { const p = app.plugins.plugins['secret-parcel']; p.closeDialogs(); app.setting.close(); p.pro.opts.tokens = { get: () => null, set: () => {}, clear: () => {} }; p.pro.signOut(); const values = { 'openai-key': 'sk-sample-only', 'github-token': 'ghp_sample-only', 'todoist-token': 'sample-only' }; Object.defineProperty(p, 'storage', { configurable: true, value: { listSecrets: () => Object.keys(values), getSecret: id => values[id] ?? null, setSecret: (id, v) => { values[id] = v; } } });p.openExport(); document.querySelectorAll('.modal-content .secret-parcel-list .checkbox-container').forEach((e,i) => { if (i < 2) e.click(); }); const t = document.querySelector('.modal-content input[type=password]'); t.value = 'correct horse'; t.dispatchEvent(new Event('input', { bubbles: true })); document.querySelector('.modal-content button.mod-cta').click(); await new Promise(r => setTimeout(r, 1400)); return 'ok'; })()",
+    "wait": 800,
+    "after": "app.plugins.plugins['secret-parcel'].closeDialogs(); app.setting.close(); 'ok'"
+  },
+  {
+    "feature": "import-preview",
+    "caption": "Check the new IDs and keep a conflict unticked.",
+    "note": "Device transfer.md",
+    "eval": "(async () => { const p = app.plugins.plugins['secret-parcel']; p.closeDialogs(); app.setting.close(); p.pro.opts.tokens = { get: () => null, set: () => {}, clear: () => {} }; p.pro.signOut(); const values = { 'openai-key': 'sk-sample-only', 'github-token': 'ghp_sample-only', 'todoist-token': 'sample-only' }; Object.defineProperty(p, 'storage', { configurable: true, value: { listSecrets: () => Object.keys(values), getSecret: id => values[id] ?? null, setSecret: (id, v) => { values[id] = v; } } });delete values['openai-key']; values['github-token'] = 'old-sample'; p.openPreview({ entries: [{ id: 'openai-key', value: 'sk-sample-only' }, { id: 'github-token', value: 'ghp_sample-only' }] }); return 'ok'; })()",
+    "wait": 800,
+    "after": "app.plugins.plugins['secret-parcel'].closeDialogs(); app.setting.close(); 'ok'"
+  },
+  {
+    "feature": "result-report",
+    "caption": "The report shows verified writes and skipped IDs.",
+    "note": "Device transfer.md",
+    "eval": "(async () => { const p = app.plugins.plugins['secret-parcel']; p.closeDialogs(); app.setting.close(); p.pro.opts.tokens = { get: () => null, set: () => {}, clear: () => {} }; p.pro.signOut(); const values = { 'openai-key': 'sk-sample-only', 'github-token': 'ghp_sample-only', 'todoist-token': 'sample-only' }; Object.defineProperty(p, 'storage', { configurable: true, value: { listSecrets: () => Object.keys(values), getSecret: id => values[id] ?? null, setSecret: (id, v) => { values[id] = v; } } });delete values['openai-key']; values['github-token'] = 'old-sample'; p.openPreview({ entries: [{ id: 'openai-key', value: 'sk-sample-only' }, { id: 'github-token', value: 'ghp_sample-only' }] }); document.querySelector('.modal-content button.mod-cta').click(); return 'ok'; })()",
+    "wait": 800,
+    "after": "app.plugins.plugins['secret-parcel'].closeDialogs(); app.setting.close(); 'ok'"
+  },
+  {
+    "feature": "profiles",
+    "caption": "Save an ID prefix and a vault folder for reuse.",
+    "note": "Device transfer.md",
+    "eval": "(async () => { const p = app.plugins.plugins['secret-parcel']; p.closeDialogs(); app.setting.close(); p.pro.opts.tokens = { get: () => null, set: () => {}, clear: () => {} }; p.pro.signOut(); const values = { 'openai-key': 'sk-sample-only', 'github-token': 'ghp_sample-only', 'todoist-token': 'sample-only' }; Object.defineProperty(p, 'storage', { configurable: true, value: { listSecrets: () => Object.keys(values), getSecret: id => values[id] ?? null, setSecret: (id, v) => { values[id] = v; } } });p.pro.opts.tokens = { get: () => 'gho_' + '0'.repeat(36), set: () => {}, clear: () => {} }; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'sample-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); await p.pro.refreshNow();p.prefs.profiles = [{ name: 'Work accounts', prefix: 'work-', folder: 'Secret Parcels/Work' }, { name: 'AI tools', prefix: 'openai-', folder: 'Secret Parcels/AI' }]; p.openProfiles(); return 'ok'; })()",
+    "wait": 800,
+    "after": "app.plugins.plugins['secret-parcel'].closeDialogs(); app.setting.close(); 'ok'"
+  },
+  {
+    "feature": "backups",
+    "caption": "Create an encrypted backup with a retention limit.",
+    "note": "Device transfer.md",
+    "eval": "(async () => { const p = app.plugins.plugins['secret-parcel']; p.closeDialogs(); app.setting.close(); p.pro.opts.tokens = { get: () => null, set: () => {}, clear: () => {} }; p.pro.signOut(); const values = { 'openai-key': 'sk-sample-only', 'github-token': 'ghp_sample-only', 'todoist-token': 'sample-only' }; Object.defineProperty(p, 'storage', { configurable: true, value: { listSecrets: () => Object.keys(values), getSecret: id => values[id] ?? null, setSecret: (id, v) => { values[id] = v; } } });p.pro.opts.tokens = { get: () => 'gho_' + '0'.repeat(36), set: () => {}, clear: () => {} }; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'sample-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); await p.pro.refreshNow();p.prefs.keep = 5; p.openExport(true); document.querySelector('.modal-content .secret-parcel-list .checkbox-container').click(); return 'ok'; })()",
+    "wait": 800,
+    "after": "app.plugins.plugins['secret-parcel'].closeDialogs(); app.setting.close(); 'ok'"
+  },
+  {
+    "feature": "comparison",
+    "caption": "Compare IDs through hashes without showing values.",
+    "note": "Device transfer.md",
+    "eval": "(async () => { const p = app.plugins.plugins['secret-parcel']; p.closeDialogs(); app.setting.close(); p.pro.opts.tokens = { get: () => null, set: () => {}, clear: () => {} }; p.pro.signOut(); const values = { 'openai-key': 'sk-sample-only', 'github-token': 'ghp_sample-only', 'todoist-token': 'sample-only' }; Object.defineProperty(p, 'storage', { configurable: true, value: { listSecrets: () => Object.keys(values), getSecret: id => values[id] ?? null, setSecret: (id, v) => { values[id] = v; } } });p.pro.opts.tokens = { get: () => 'gho_' + '0'.repeat(36), set: () => {}, clear: () => {} }; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'sample-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); await p.pro.refreshNow();values['github-token'] = 'old-sample'; delete values['openai-key']; await p.compareCurrent({ entries: [{ id: 'openai-key', value: 'sk-sample-only' }, { id: 'github-token', value: 'ghp_sample-only' }] }); return 'ok'; })()",
+    "wait": 800,
+    "after": "app.plugins.plugins['secret-parcel'].closeDialogs(); app.setting.close(); 'ok'"
+  },
+  {
+    "feature": "settings",
+    "caption": "Choose the folder and backup retention in settings.",
+    "note": "Device transfer.md",
+    "eval": "(async () => { const p = app.plugins.plugins['secret-parcel']; p.closeDialogs(); app.setting.close(); p.pro.opts.tokens = { get: () => null, set: () => {}, clear: () => {} }; p.pro.signOut(); const values = { 'openai-key': 'sk-sample-only', 'github-token': 'ghp_sample-only', 'todoist-token': 'sample-only' }; Object.defineProperty(p, 'storage', { configurable: true, value: { listSecrets: () => Object.keys(values), getSecret: id => values[id] ?? null, setSecret: (id, v) => { values[id] = v; } } });app.setting.open(); app.setting.openTabById('secret-parcel'); return 'ok'; })()",
+    "wait": 800,
+    "after": "app.plugins.plugins['secret-parcel'].closeDialogs(); app.setting.close(); 'ok'"
+  },
+  {
+    "feature": "secret-parcel",
+    "caption": "Select IDs, check conflicts, then read the result.",
+    "frames": [
+      {
+        "note": "Device transfer.md",
+        "eval": "(async () => { const p = app.plugins.plugins['secret-parcel']; p.closeDialogs(); app.setting.close(); p.pro.opts.tokens = { get: () => null, set: () => {}, clear: () => {} }; p.pro.signOut(); const values = { 'openai-key': 'sk-sample-only', 'github-token': 'ghp_sample-only', 'todoist-token': 'sample-only' }; Object.defineProperty(p, 'storage', { configurable: true, value: { listSecrets: () => Object.keys(values), getSecret: id => values[id] ?? null, setSecret: (id, v) => { values[id] = v; } } });p.openExport(); const rows = [...document.querySelectorAll('.modal-content .secret-parcel-list .setting-item')]; rows.slice(0, 2).forEach(r => r.querySelector('.checkbox-container').click()); return 'ok'; })()",
+        "hold": 1700
+      },
+      {
+        "eval": "(async () => { const p = app.plugins.plugins['secret-parcel']; p.closeDialogs(); app.setting.close(); p.pro.opts.tokens = { get: () => null, set: () => {}, clear: () => {} }; p.pro.signOut(); const values = { 'openai-key': 'sk-sample-only', 'github-token': 'ghp_sample-only', 'todoist-token': 'sample-only' }; Object.defineProperty(p, 'storage', { configurable: true, value: { listSecrets: () => Object.keys(values), getSecret: id => values[id] ?? null, setSecret: (id, v) => { values[id] = v; } } });delete values['openai-key']; values['github-token'] = 'old-sample'; p.openPreview({ entries: [{ id: 'openai-key', value: 'sk-sample-only' }, { id: 'github-token', value: 'ghp_sample-only' }] }); return 'ok'; })()",
+        "hold": 1700
+      },
+      {
+        "eval": "(async () => { const p = app.plugins.plugins['secret-parcel']; p.closeDialogs(); app.setting.close(); p.pro.opts.tokens = { get: () => null, set: () => {}, clear: () => {} }; p.pro.signOut(); const values = { 'openai-key': 'sk-sample-only', 'github-token': 'ghp_sample-only', 'todoist-token': 'sample-only' }; Object.defineProperty(p, 'storage', { configurable: true, value: { listSecrets: () => Object.keys(values), getSecret: id => values[id] ?? null, setSecret: (id, v) => { values[id] = v; } } });delete values['openai-key']; values['github-token'] = 'old-sample'; p.openPreview({ entries: [{ id: 'openai-key', value: 'sk-sample-only' }, { id: 'github-token', value: 'ghp_sample-only' }] }); document.querySelector('.modal-content button.mod-cta').click(); return 'ok'; })()",
+        "hold": 1700
+      }
+    ]
+  }
+]

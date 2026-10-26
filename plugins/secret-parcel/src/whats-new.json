@@ -1,0 +1,27 @@
+{
+	"id": "secret-parcel",
+	"name": "Secret Parcel",
+	"version": "1.1.1",
+	"changes": [
+		"The Secret Parcel notice for a Pro feature now has a Sponsor on GitHub button."
+	],
+	"tip": "In the import preview, leave a conflict unticked to keep the value that is already in this vault.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Secret Parcel is one of over 100 small plugins that I make. Thank you for using it with your files.",
+	"related": [
+		{
+			"id": "vault-loss-alarm",
+			"name": "Vault Loss Alarm",
+			"blurb": "Check missing files against a saved vault record."
+		},
+		{
+			"id": "sync-churn-watch",
+			"name": "Sync Churn Watch",
+			"blurb": "Compare observed file and settings writes."
+		},
+		{
+			"id": "vault-path-portability",
+			"name": "Vault Path Portability",
+			"blurb": "Find vault paths that can fail when moved between devices."
+		}
+	]
+}
