@@ -1,0 +1,27 @@
+{
+	"id": "bases-freeze-panes",
+	"name": "Bases Freeze Panes",
+	"version": "1.5.1",
+	"changes": [
+		"The Pro notice for frozen columns in one file now has a Sponsor on GitHub button."
+	],
+	"tip": "Turn on 'Freeze Markdown and Dataview tables' to pin headers in ordinary note tables.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Bases Freeze Panes is one of over 100 small plugins that I make. Thank you for using it with Bases. Bases is still new, and your setups teach me a lot.",
+	"related": [
+		{
+			"id": "bases-filter-switches",
+			"name": "Bases Filter Switches",
+			"blurb": "Turn saved Bases filters on or off with switches."
+		},
+		{
+			"id": "bases-link-graph",
+			"name": "Bases Link Graph",
+			"blurb": "See the notes and links from a filtered base as a graph."
+		},
+		{
+			"id": "pdf-cover-cards",
+			"name": "PDF Cover Cards",
+			"blurb": "Show the first PDF page as a cover in your base."
+		}
+	]
+}
