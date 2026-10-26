@@ -1,0 +1,614 @@
+{
+ "slug": "note-word-comments",
+ "module": "products/note-word-comments/src/parse.ts",
+ "function": "summarizeNote",
+ "cases": [
+  {
+   "name": "Case 1: comment on the previous word with author Lee",
+   "args": [
+    "We need evidence %% add a source %%.",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [
+     "We need evidence."
+    ],
+    "comments": [
+     {
+      "id": 0,
+      "author": "Lee",
+      "text": "add a source",
+      "anchor": "evidence"
+     }
+    ],
+    "problems": []
+   }
+  },
+  {
+   "name": "Case 2: one heading and one paragraph, no comments",
+   "args": [
+    "# Draft\n\nPlain text.",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [
+     "# Draft",
+     "Plain text."
+    ],
+    "comments": [],
+    "problems": []
+   }
+  },
+  {
+   "name": "Case 3: Greek anchor and XML characters in the comment",
+   "args": [
+    "αβ %% Check < & > %%.",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [
+     "αβ."
+    ],
+    "comments": [
+     {
+      "id": 0,
+      "author": "Lee",
+      "text": "Check < & >",
+      "anchor": "αβ"
+     }
+    ],
+    "problems": []
+   }
+  },
+  {
+   "name": "Case 4: two comments on one word",
+   "args": [
+    "Word %% first %% %% second %%.",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [
+     "Word."
+    ],
+    "comments": [
+     {
+      "id": 0,
+      "author": "Lee",
+      "text": "first",
+      "anchor": "Word"
+     },
+     {
+      "id": 1,
+      "author": "Lee",
+      "text": "second",
+      "anchor": "Word"
+     }
+    ],
+    "problems": []
+   }
+  },
+  {
+   "name": "Case 5: comment at the start of a paragraph is an error",
+   "args": [
+    "%% first %% Word.",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [
+     " Word."
+    ],
+    "comments": [],
+    "problems": [
+     "line 1: no previous word in this paragraph"
+    ]
+   }
+  },
+  {
+   "name": "Case 6: comment that crosses a paragraph is an error",
+   "args": [
+    "Word %% first\n\nsecond %%.",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [
+     "Word."
+    ],
+    "comments": [
+     {
+      "id": 0,
+      "author": "Lee",
+      "text": "first second",
+      "anchor": "Word"
+     }
+    ],
+    "problems": [
+     "line 1: comment crosses a paragraph"
+    ]
+   }
+  },
+  {
+   "name": "Case 7: empty comment is an error",
+   "args": [
+    "Word %% %%.",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [
+     "Word."
+    ],
+    "comments": [],
+    "problems": [
+     "line 1: empty comment"
+    ]
+   }
+  },
+  {
+   "name": "Case 8a: fenced code block is unsupported",
+   "args": [
+    "Text %% c %%.\n\n```js\nlet a = 1;\n```",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [
+     "Text."
+    ],
+    "comments": [
+     {
+      "id": 0,
+      "author": "Lee",
+      "text": "c",
+      "anchor": "Text"
+     }
+    ],
+    "problems": [
+     "line 3: fenced code block"
+    ]
+   }
+  },
+  {
+   "name": "Case 8b: Markdown table is Pro",
+   "args": [
+    "| a | b |\n| --- | --- |\n| 1 | 2 |",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [],
+    "comments": [],
+    "problems": [
+     "line 1: Markdown table (Pro)"
+    ]
+   }
+  },
+  {
+   "name": "Case 8c: image is Pro",
+   "args": [
+    "Intro.\n\n![[chart.png]]",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [
+     "Intro."
+    ],
+    "comments": [],
+    "problems": [
+     "line 3: image (Pro)"
+    ]
+   }
+  },
+  {
+   "name": "Case 8d: bold and italic text are unsupported",
+   "args": [
+    "Some **bold** and *italic* words.",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [
+     "Some **bold** and *italic* words."
+    ],
+    "comments": [],
+    "problems": [
+     "line 1: bold text",
+     "line 1: italic text"
+    ]
+   }
+  },
+  {
+   "name": "Case 8e: inline code and links are unsupported",
+   "args": [
+    "Use `code` and [[Other note]] and [site](https://example.com).",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [
+     "Use `code` and [[Other note]] and [site](https://example.com)."
+    ],
+    "comments": [],
+    "problems": [
+     "line 1: internal link",
+     "line 1: Markdown link",
+     "line 1: inline code"
+    ]
+   }
+  },
+  {
+   "name": "Comment without a closing marker is an error",
+   "args": [
+    "Word %% open comment.",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [
+     "Word  open comment."
+    ],
+    "comments": [],
+    "problems": [
+     "line 1: comment has no closing %%"
+    ]
+   }
+  },
+  {
+   "name": "Comment after punctuation marks the word without the comma",
+   "args": [
+    "First, %% why %% then more.",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [
+     "First, then more."
+    ],
+    "comments": [
+     {
+      "id": 0,
+      "author": "Lee",
+      "text": "why",
+      "anchor": "First"
+     }
+    ],
+    "problems": []
+   }
+  },
+  {
+   "name": "Comment on the second line of a paragraph",
+   "args": [
+    "Line one\nline two %% note %%",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [
+     "Line one\nline two"
+    ],
+    "comments": [
+     {
+      "id": 0,
+      "author": "Lee",
+      "text": "note",
+      "anchor": "two"
+     }
+    ],
+    "problems": []
+   }
+  },
+  {
+   "name": "Comment in a heading",
+   "args": [
+    "## Results %% check numbers %%\n\nBody.",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [
+     "## Results",
+     "Body."
+    ],
+    "comments": [
+     {
+      "id": 0,
+      "author": "Lee",
+      "text": "check numbers",
+      "anchor": "Results"
+     }
+    ],
+    "problems": []
+   }
+  },
+  {
+   "name": "Front matter is not exported",
+   "args": [
+    "---\ntags: draft\n---\nBody %% c %%.",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [
+     "Body."
+    ],
+    "comments": [
+     {
+      "id": 0,
+      "author": "Lee",
+      "text": "c",
+      "anchor": "Body"
+     }
+    ],
+    "problems": []
+   }
+  },
+  {
+   "name": "List and block quote are unsupported",
+   "args": [
+    "- item\n\n> quote",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [],
+    "comments": [],
+    "problems": [
+     "line 1: list",
+     "line 3: block quote or callout"
+    ]
+   }
+  },
+  {
+   "name": "Comment ids continue from firstId",
+   "args": [
+    "One %% a %% two %% b %%.",
+    {
+     "author": "Lee",
+     "firstId": 5
+    }
+   ],
+   "expected": {
+    "body": [
+     "One two."
+    ],
+    "comments": [
+     {
+      "id": 5,
+      "author": "Lee",
+      "text": "a",
+      "anchor": "One"
+     },
+     {
+      "id": 6,
+      "author": "Lee",
+      "text": "b",
+      "anchor": "two"
+     }
+    ],
+    "problems": []
+   }
+  },
+  {
+   "name": "Line numbers count comments that span lines",
+   "args": [
+    "Word %% a\nb %%\nNext\n\n```",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [
+     "Word\nNext"
+    ],
+    "comments": [
+     {
+      "id": 0,
+      "author": "Lee",
+      "text": "a b",
+      "anchor": "Word"
+     }
+    ],
+    "problems": [
+     "line 5: fenced code block"
+    ]
+   }
+  },
+  {
+   "name": "Pro: table with a comment in a cell",
+   "args": [
+    "| Item | Cost |\n| --- | ---: |\n| Rent %% check %% | 900 |",
+    {
+     "author": "Lee",
+     "pro": true
+    }
+   ],
+   "expected": {
+    "body": [
+     "| Item | Cost |\n| Rent | 900 |"
+    ],
+    "comments": [
+     {
+      "id": 0,
+      "author": "Lee",
+      "text": "check",
+      "anchor": "Rent"
+     }
+    ],
+    "problems": []
+   }
+  },
+  {
+   "name": "Pro: local image on its own line",
+   "args": [
+    "Intro.\n\n![[chart.png|300]]\n\n![Plan](images/plan.jpg)",
+    {
+     "author": "Lee",
+     "pro": true
+    }
+   ],
+   "expected": {
+    "body": [
+     "Intro.",
+     "[image chart.png]",
+     "[image images/plan.jpg]"
+    ],
+    "comments": [],
+    "problems": []
+   }
+  },
+  {
+   "name": "Pro: image from a web address is unsupported",
+   "args": [
+    "![x](https://example.com/a.png)",
+    {
+     "author": "Lee",
+     "pro": true
+    }
+   ],
+   "expected": {
+    "body": [],
+    "comments": [],
+    "problems": [
+     "line 1: image from a web address"
+    ]
+   }
+  },
+  {
+   "name": "Pro: author labels",
+   "args": [
+    "Claim %% Lee: add a source %% and more %% Sam Ortiz: reword %% end %% plain %%.",
+    {
+     "author": "Lee",
+     "pro": true,
+     "labels": true
+    }
+   ],
+   "expected": {
+    "body": [
+     "Claim and more end."
+    ],
+    "comments": [
+     {
+      "id": 0,
+      "author": "Lee",
+      "text": "add a source",
+      "anchor": "Claim"
+     },
+     {
+      "id": 1,
+      "author": "Sam Ortiz",
+      "text": "reword",
+      "anchor": "more"
+     },
+     {
+      "id": 2,
+      "author": "Lee",
+      "text": "plain",
+      "anchor": "end"
+     }
+    ],
+    "problems": []
+   }
+  },
+  {
+   "name": "Labels off: label stays in the comment text",
+   "args": [
+    "Claim %% Lee: add a source %%.",
+    {
+     "author": "Lee",
+     "pro": true
+    }
+   ],
+   "expected": {
+    "body": [
+     "Claim."
+    ],
+    "comments": [
+     {
+      "id": 0,
+      "author": "Lee",
+      "text": "Lee: add a source",
+      "anchor": "Claim"
+     }
+    ],
+    "problems": []
+   }
+  },
+  {
+   "name": "Snake case and a lone star are plain text",
+   "args": [
+    "Use snake_case names and 5 * 3 math.",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [
+     "Use snake_case names and 5 * 3 math."
+    ],
+    "comments": [],
+    "problems": []
+   }
+  },
+  {
+   "name": "A hash tag line is plain text",
+   "args": [
+    "#tag at the start",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [
+     "#tag at the start"
+    ],
+    "comments": [],
+    "problems": []
+   }
+  },
+  {
+   "name": "Note embed and HTML comment are unsupported",
+   "args": [
+    "Intro.\n\n![[Other note]]\n\nText <!-- hidden --> here.",
+    {
+     "author": "Lee"
+    }
+   ],
+   "expected": {
+    "body": [
+     "Intro.",
+     "Text <!-- hidden --> here."
+    ],
+    "comments": [],
+    "problems": [
+     "line 3: embedded note or file that is not a PNG, JPEG, GIF or BMP image",
+     "line 5: HTML comment"
+    ]
+   }
+  }
+ ]
+}
