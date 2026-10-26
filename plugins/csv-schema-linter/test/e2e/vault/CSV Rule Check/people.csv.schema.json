@@ -1,0 +1,23 @@
+{
+  "columns": {
+    "id": {
+      "type": "string",
+      "unique": true
+    },
+    "name": {
+      "required": true
+    },
+    "age": {
+      "type": "number"
+    },
+    "status": {
+      "enum": [
+        "open",
+        "done"
+      ]
+    },
+    "enabled": {
+      "type": "boolean"
+    }
+  }
+}
