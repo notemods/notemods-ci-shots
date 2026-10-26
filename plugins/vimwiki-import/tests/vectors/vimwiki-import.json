@@ -1,0 +1,1090 @@
+{
+ "slug": "vimwiki-import",
+ "module": "vimwiki-import/src/importer",
+ "function": "planImport",
+ "cases": [
+  {
+   "name": "Heading levels one and two",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "= Title =\n== Part =="
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "= Title =\n== Part ==",
+      "output": "Notes/page.md",
+      "markdown": "# Title\n## Part"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "Labeled local link",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "[[b|Label]]"
+     },
+     {
+      "path": "Wiki/b.wiki",
+      "text": "B"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/b.wiki",
+      "text": "B",
+      "output": "Notes/b.md",
+      "markdown": "B"
+     },
+     {
+      "path": "Wiki/page.wiki",
+      "text": "[[b|Label]]",
+      "output": "Notes/page.md",
+      "markdown": "[[Notes/b|Label]]"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "Parent link uses source directory",
+   "args": [
+    [
+     {
+      "path": "Wiki/folder/a.wiki",
+      "text": "[[../b]]"
+     },
+     {
+      "path": "Wiki/b.wiki",
+      "text": "B"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/b.wiki",
+      "text": "B",
+      "output": "Notes/b.md",
+      "markdown": "B"
+     },
+     {
+      "path": "Wiki/folder/a.wiki",
+      "text": "[[../b]]",
+      "output": "Notes/folder/a.md",
+      "markdown": "[[Notes/b|../b]]"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "External link is Markdown",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "[[https://example.com|Site]]"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "[[https://example.com|Site]]",
+      "output": "Notes/page.md",
+      "markdown": "[Site](https://example.com)"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "Simple task states",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "* [ ] Open\n* [X] Done"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "* [ ] Open\n* [X] Done",
+      "output": "Notes/page.md",
+      "markdown": "- [ ] Open\n- [x] Done"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "Code body stays unchanged",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "{{{\n= not a heading =\n[[missing]]\n}}}"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "{{{\n= not a heading =\n[[missing]]\n}}}",
+      "output": "Notes/page.md",
+      "markdown": "```\n= not a heading =\n[[missing]]\n```"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "Missing page retains target",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "[[missing|Missing]]"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "[[missing|Missing]]",
+      "output": "Notes/page.md",
+      "markdown": "[[missing|Missing]]"
+     }
+    ],
+    "issues": [
+     {
+      "source": "Wiki/page.wiki",
+      "target": "missing",
+      "reason": "Unresolved link; target retained."
+     }
+    ]
+   }
+  },
+  {
+   "name": "Keep subfolders",
+   "args": [
+    [
+     {
+      "path": "Wiki/folder/a.wiki",
+      "text": "= A ="
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/folder/a.wiki",
+      "text": "= A =",
+      "output": "Notes/folder/a.md",
+      "markdown": "# A"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "Six heading levels",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "====== Six ======"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "====== Six ======",
+      "output": "Notes/page.md",
+      "markdown": "###### Six"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "Nonmatching heading stays text",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "= Unclosed"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "= Unclosed",
+      "output": "Notes/page.md",
+      "markdown": "= Unclosed"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "Indented lists",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "  * Item\n    - Child"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "  * Item\n    - Child",
+      "output": "Notes/page.md",
+      "markdown": "  - Item\n    - Child"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "Ordered list",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "3. Item\n4) Next"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "3. Item\n4) Next",
+      "output": "Notes/page.md",
+      "markdown": "1. Item\n1. Next"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "Lowercase completed box",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "* [x] Done"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "* [x] Done",
+      "output": "Notes/page.md",
+      "markdown": "- [x] Done"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "Partial task has warning",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "* [-] Started"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "* [-] Started",
+      "output": "Notes/page.md",
+      "markdown": "- \\[-\\] Started"
+     }
+    ],
+    "issues": [
+     {
+      "source": "Wiki/page.wiki",
+      "target": "-",
+      "reason": "Unsupported checkbox state retained as text."
+     }
+    ]
+   }
+  },
+  {
+   "name": "Rejected task has warning",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "* [o] Stopped"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "* [o] Stopped",
+      "output": "Notes/page.md",
+      "markdown": "- \\[o\\] Stopped"
+     }
+    ],
+    "issues": [
+     {
+      "source": "Wiki/page.wiki",
+      "target": "o",
+      "reason": "Unsupported checkbox state retained as text."
+     }
+    ]
+   }
+  },
+  {
+   "name": "Wiki suffix link",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "[[b.wiki]]"
+     },
+     {
+      "path": "Wiki/b.wiki",
+      "text": "B"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/b.wiki",
+      "text": "B",
+      "output": "Notes/b.md",
+      "markdown": "B"
+     },
+     {
+      "path": "Wiki/page.wiki",
+      "text": "[[b.wiki]]",
+      "output": "Notes/page.md",
+      "markdown": "[[Notes/b|b.wiki]]"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "Dot link",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "[[./b]]"
+     },
+     {
+      "path": "Wiki/b.wiki",
+      "text": "B"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/b.wiki",
+      "text": "B",
+      "output": "Notes/b.md",
+      "markdown": "B"
+     },
+     {
+      "path": "Wiki/page.wiki",
+      "text": "[[./b]]",
+      "output": "Notes/page.md",
+      "markdown": "[[Notes/b|./b]]"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "Repeated local links",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "[[b]] [[b|Two]]"
+     },
+     {
+      "path": "Wiki/b.wiki",
+      "text": "B"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/b.wiki",
+      "text": "B",
+      "output": "Notes/b.md",
+      "markdown": "B"
+     },
+     {
+      "path": "Wiki/page.wiki",
+      "text": "[[b]] [[b|Two]]",
+      "output": "Notes/page.md",
+      "markdown": "[[Notes/b|b]] [[Notes/b|Two]]"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "Anchor is kept",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "[[b#Part]]"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "[[b#Part]]",
+      "output": "Notes/page.md",
+      "markdown": "[[b#Part]]"
+     }
+    ],
+    "issues": [
+     {
+      "source": "Wiki/page.wiki",
+      "target": "b#Part",
+      "reason": "Anchor or link scheme retained; review it."
+     }
+    ]
+   }
+  },
+  {
+   "name": "Image is kept",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "{{images/a.png}}"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "{{images/a.png}}",
+      "output": "Notes/page.md",
+      "markdown": "{{images/a.png}}"
+     }
+    ],
+    "issues": [
+     {
+      "source": "Wiki/page.wiki",
+      "target": "{{images/a.png}}",
+      "reason": "Image, table or directive syntax retained; review it."
+     }
+    ]
+   }
+  },
+  {
+   "name": "Table is kept",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "| A | B |"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "| A | B |",
+      "output": "Notes/page.md",
+      "markdown": "| A | B |"
+     }
+    ],
+    "issues": [
+     {
+      "source": "Wiki/page.wiki",
+      "target": "| A | B |",
+      "reason": "Image, table or directive syntax retained; review it."
+     }
+    ]
+   }
+  },
+  {
+   "name": "Directive is kept",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "%title A"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "%title A",
+      "output": "Notes/page.md",
+      "markdown": "%title A"
+     }
+    ],
+    "issues": [
+     {
+      "source": "Wiki/page.wiki",
+      "target": "%title A",
+      "reason": "Image, table or directive syntax retained; review it."
+     }
+    ]
+   }
+  },
+  {
+   "name": "Unclosed code fence",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "{{{\n= raw ="
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "{{{\n= raw =",
+      "output": "Notes/page.md",
+      "markdown": "```\n= raw =\n```"
+     }
+    ],
+    "issues": [
+     {
+      "source": "Wiki/page.wiki",
+      "target": "{{{",
+      "reason": "Unclosed code block; closing fence added."
+     }
+    ]
+   }
+  },
+  {
+   "name": "Code with backticks",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "{{{\n```\n}}}"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "{{{\n```\n}}}",
+      "output": "Notes/page.md",
+      "markdown": "````\n```\n````"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "Line endings",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "A\r\nB\r\n"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "A\r\nB\r\n",
+      "output": "Notes/page.md",
+      "markdown": "A\nB\n"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "Valid ISO diary",
+   "args": [
+    [
+     {
+      "path": "Wiki/diary/2026-10-14.wiki",
+      "text": "= Day ="
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes",
+     "diary": "Daily"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes",
+     "diary": "Daily"
+    },
+    "pages": [
+     {
+      "path": "Wiki/diary/2026-10-14.wiki",
+      "text": "= Day =",
+      "output": "Daily/2026-10-14.md",
+      "markdown": "# Day"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "Invalid date stays in folder",
+   "args": [
+    [
+     {
+      "path": "Wiki/diary/2026-02-30.wiki",
+      "text": "Day"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes",
+     "diary": "Daily"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes",
+     "diary": "Daily"
+    },
+    "pages": [
+     {
+      "path": "Wiki/diary/2026-02-30.wiki",
+      "text": "Day",
+      "output": "Notes/diary/2026-02-30.md",
+      "markdown": "Day"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "Conflict skips output",
+   "function": "assessPage",
+   "args": [
+    "A",
+    "A",
+    true
+   ],
+   "expected": "Output conflict; page skipped."
+  },
+  {
+   "name": "Cancel has no write",
+   "function": "assessPage",
+   "args": [
+    "A",
+    "A",
+    false,
+    true
+   ],
+   "expected": "Cancelled; no write."
+  },
+  {
+   "name": "Changed source skips output",
+   "function": "assessPage",
+   "args": [
+    "A",
+    "B",
+    false
+   ],
+   "expected": "Source changed or missing; page skipped."
+  },
+  {
+   "name": "Missing source skips output",
+   "function": "assessPage",
+   "args": [
+    "A",
+    null,
+    false
+   ],
+   "expected": "Source changed or missing; page skipped."
+  },
+  {
+   "name": "Rooted wiki link uses the source root map",
+   "args": [
+    [
+     {
+      "path": "Wiki/folder/a.wiki",
+      "text": "[[/b]]"
+     },
+     {
+      "path": "Wiki/b.wiki",
+      "text": "B"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/b.wiki",
+      "text": "B",
+      "output": "Notes/b.md",
+      "markdown": "B"
+     },
+     {
+      "path": "Wiki/folder/a.wiki",
+      "text": "[[/b]]",
+      "output": "Notes/folder/a.md",
+      "markdown": "[[Notes/b|/b]]"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "Default numbered list",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "# One\n# Two"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "# One\n# Two",
+      "output": "Notes/page.md",
+      "markdown": "1. One\n1. Two"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "Plus bullet list",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "+ Item"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "+ Item",
+      "output": "Notes/page.md",
+      "markdown": "- Item"
+     }
+    ],
+    "issues": []
+   }
+  },
+  {
+   "name": "Numbered tasks",
+   "args": [
+    [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "# [ ] Open\n# [X] Done"
+     }
+    ],
+    {
+     "source": "Wiki",
+     "destination": "Notes"
+    }
+   ],
+   "expected": {
+    "options": {
+     "source": "Wiki",
+     "destination": "Notes"
+    },
+    "pages": [
+     {
+      "path": "Wiki/page.wiki",
+      "text": "# [ ] Open\n# [X] Done",
+      "output": "Notes/page.md",
+      "markdown": "1. [ ] Open\n1. [x] Done"
+     }
+    ],
+    "issues": []
+   }
+  }
+ ]
+}

@@ -1,0 +1,12 @@
+= Task review =
+
+* [ ] Write outline
+* [X] Read sources
+* [-] Work in progress
+
+{{{
+= not a heading =
+[[not a link]]
+}}}
+
+{{images/diagram.png}}

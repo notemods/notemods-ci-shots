@@ -1,0 +1,8 @@
+= Project Atlas =
+
+== Next steps ==
+* Review [[reference|the reference page]]
+* [ ] Draft the plan
+* [X] Read the brief
+
+[[missing-plan|Missing plan]]
