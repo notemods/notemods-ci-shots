@@ -1,0 +1,8 @@
+[
+	{
+		"feature": "probe",
+		"caption": "The quotes base in cards view.",
+		"note": "Quotes.base",
+		"wait": 2000
+	}
+]
