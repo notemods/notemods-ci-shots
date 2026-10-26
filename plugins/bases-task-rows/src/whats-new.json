@@ -1,0 +1,29 @@
+{
+	"id": "bases-task-rows",
+	"name": "Bases Task Rows",
+	"version": "1.5.0",
+	"changes": [
+		"New option \"Count only tasks with tag\" in the Task progress view. Open, Done, Total, Progress, Next due and Overdue then count only the tasks with that tag in the task line.",
+		"With a tag, a new Next task column shows the first open task with that tag in each note, or stays empty, so you see which projects have no next step.",
+		"Tags in the Task rows view now follow the Obsidian tag rule. For example #c++ shows as #c."
+	],
+	"tip": "Type #next-action in \"Count only tasks with tag\" of a Task progress view to see which project notes have no next step.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Bases Task Rows is one of over 100 small plugins that I make. Thank you for using it with Bases. Bases is still new, and your setups teach me a lot.",
+	"related": [
+		{
+			"id": "kanban-embed",
+			"name": "Kanban Embed",
+			"blurb": "Use a Kanban board inside a project or daily note."
+		},
+		{
+			"id": "task-field-labels",
+			"name": "Task Field Labels",
+			"blurb": "Show text labels for dates, priority, and recurrence in rendered tasks."
+		},
+		{
+			"id": "task-date-links",
+			"name": "Task Date Links",
+			"blurb": "Adds a real daily note link to a task when you complete it, so backlinks show what you finished each day."
+		}
+	]
+}

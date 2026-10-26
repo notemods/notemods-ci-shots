@@ -1,0 +1,14 @@
+filters:
+  and:
+    - file.inFolder("Bases Task Rows")
+views:
+  - type: task-rows
+    name: By date
+    status: open
+    rowSort: due
+    group: date
+  - type: task-rows
+    name: By tag
+    status: open
+    rowSort: priority
+    group: tag
