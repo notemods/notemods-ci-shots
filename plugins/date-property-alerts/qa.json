@@ -1,0 +1,54 @@
+[
+  {
+    "feature": "alerts",
+    "caption": "Filtered notes with due, upcoming and invalid dates.",
+    "note": "Review dates.base",
+    "wait": 1800
+  },
+  {
+    "feature": "notice",
+    "caption": "A due notice links to its note.",
+    "note": "Review dates.base",
+    "eval": "const f = app.vault.getFileByPath('Date Property Alerts/Renew insurance.md'); await app.fileManager.processFrontMatter(f, fm => fm.due = new Date().toISOString()); 'ok'",
+    "wait": 1500
+  },
+  {
+    "feature": "snooze",
+    "caption": "A free fifteen-minute snooze shows its wake time.",
+    "note": "Review dates.base",
+    "eval": "const root = document.querySelector('.date-property-alerts'); const button = Array.from(root.querySelectorAll('button')).find(b => b.textContent === 'Snooze 15 minutes'); if (!button) throw new Error('Missing snooze button'); button.click(); 'ok'",
+    "wait": 1000
+  },
+  {
+    "feature": "pro-snooze",
+    "caption": "Demo vault with Pro custom snooze controls and a wake time.",
+    "note": "Review dates.base",
+    "eval": "const p = app.plugins.plugins['date-property-alerts']; p.qaOriginalHttp = p.pro.opts.http; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('date-property-alerts-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); const root = document.querySelector('.date-property-alerts'); const input = root.querySelector('input[aria-label=\"Custom snooze minutes\"]'); if (!input) throw new Error('Pro custom snooze missing'); input.value = '45'; Array.from(root.querySelectorAll('button')).find(b => b.textContent === 'Snooze custom').click(); 'demo Pro controls'",
+    "after": "const p = app.plugins.plugins['date-property-alerts']; p.pro.signOut(); p.pro.opts.http = p.qaOriginalHttp; delete p.qaOriginalHttp; 'ok'",
+    "wait": 1000
+  },
+  {
+    "feature": "settings",
+    "caption": "Source guidance and optional Pro controls.",
+    "eval": "app.setting.open(); app.setting.openTabById('date-property-alerts'); 'ok'",
+    "after": "app.setting.close(); 'ok'"
+  },
+  {
+    "feature": "workflow",
+    "caption": "Follow an alert to its source note.",
+    "frames": [
+      {
+        "note": "Review dates.base",
+        "hold": 2400
+      },
+      {
+        "note": "Renew insurance.md",
+        "hold": 2200
+      },
+      {
+        "note": "Review dates.base",
+        "hold": 2200
+      }
+    ]
+  }
+]

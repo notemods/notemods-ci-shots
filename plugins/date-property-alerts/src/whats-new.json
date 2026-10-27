@@ -1,0 +1,27 @@
+{
+	"id": "date-property-alerts",
+	"name": "Date Property Alerts",
+	"version": "1.2.1",
+	"changes": [
+		"The Alerts view now shows Snooze 1 hour, Snooze 1 day and Snooze custom without Pro. They show how to get Pro, with a Sponsor on GitHub button, and do not snooze until Pro is on."
+	],
+	"tip": "Embed the base in a daily note and pick its Alerts view. Alerts then run while that note is open.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Date Property Alerts is one of over 100 small plugins that I make. Thank you for using it to keep track of your dates.",
+	"related": [
+		{
+			"id": "bases-date-backlinks",
+			"name": "Date Property Backlinks",
+			"blurb": "Show notes whose date properties match a daily note in a Bases view."
+		},
+		{
+			"id": "bases-filter-switches",
+			"name": "Bases Filter Switches",
+			"blurb": "Turn saved Bases filters on or off with switches."
+		},
+		{
+			"id": "task-date-links",
+			"name": "Task Date Links",
+			"blurb": "Add a daily note link to a task when you complete it."
+		}
+	]
+}
