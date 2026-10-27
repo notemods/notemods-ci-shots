@@ -1,0 +1,359 @@
+{
+ "slug": "tag-properties",
+ "module": "products/tag-properties/src/tags.ts",
+ "function": "buildIndex",
+ "cases": [
+  {
+   "name": "count a note once for hash and case variants",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "frontmatter": {
+       "topics": [
+        "research",
+        "#Research"
+       ]
+      }
+     }
+    ],
+    [
+     "topics"
+    ]
+   ],
+   "expected": [
+    {
+     "tag": "research",
+     "paths": [
+      "A.md"
+     ],
+     "properties": [
+      "topics"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "ignore malformed and scalar values",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "frontmatter": {
+       "topics": [
+        3,
+        {},
+        null,
+        "a b",
+        "123"
+       ]
+      }
+     },
+     {
+      "path": "B.md",
+      "frontmatter": {
+       "topics": "research"
+      }
+     }
+    ],
+    [
+     "topics"
+    ]
+   ],
+   "expected": []
+  },
+  {
+   "name": "keep parent and child separate",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "frontmatter": {
+       "topics": [
+        "work/review",
+        "work"
+       ]
+      }
+     }
+    ],
+    [
+     "topics"
+    ]
+   ],
+   "expected": [
+    {
+     "tag": "work",
+     "paths": [
+      "A.md"
+     ],
+     "properties": [
+      "topics"
+     ]
+    },
+    {
+     "tag": "work/review",
+     "paths": [
+      "A.md"
+     ],
+     "properties": [
+      "topics"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "free single property does not include other properties",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "frontmatter": {
+       "topics": [
+        "work"
+       ],
+       "company": [
+        "acme"
+       ]
+      }
+     }
+    ],
+    [
+     "topics"
+    ]
+   ],
+   "expected": [
+    {
+     "tag": "work",
+     "paths": [
+      "A.md"
+     ],
+     "properties": [
+      "topics"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "multiple properties keep provenance and unique counts",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "frontmatter": {
+       "topics": [
+        "work"
+       ],
+       "company": [
+        "work"
+       ]
+      }
+     }
+    ],
+    [
+     "topics",
+     "company"
+    ]
+   ],
+   "expected": [
+    {
+     "tag": "work",
+     "paths": [
+      "A.md"
+     ],
+     "properties": [
+      "company",
+      "topics"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "core and custom tags combine once per note",
+   "args": [
+    [
+     {
+      "path": "A.md",
+      "frontmatter": {
+       "topics": [
+        "work"
+       ]
+      },
+      "coreTags": [
+       "#work"
+      ]
+     }
+    ],
+    [
+     "topics"
+    ],
+    true
+   ],
+   "expected": [
+    {
+     "tag": "work",
+     "paths": [
+      "A.md"
+     ],
+     "properties": [
+      "tags",
+      "topics"
+     ]
+    }
+   ]
+  }
+ ],
+ "listCases": [
+  {
+   "name": "fold and deduplicate",
+   "args": [
+    [
+     "research",
+     "#Research",
+     " research "
+    ]
+   ],
+   "expected": [
+    "research"
+   ]
+  },
+  {
+   "name": "ignore malformed list members",
+   "args": [
+    [
+     3,
+     null,
+     true,
+     {},
+     "",
+     "a b",
+     "https://x.y",
+     "123"
+    ]
+   ],
+   "expected": []
+  },
+  {
+   "name": "keep child tags",
+   "args": [
+    [
+     "work",
+     "work/review",
+     "workshop"
+    ]
+   ],
+   "expected": [
+    "work",
+    "work/review",
+    "workshop"
+   ]
+  },
+  {
+   "name": "scalar properties are not lists",
+   "args": [
+    "work"
+   ],
+   "expected": []
+  },
+  {
+   "name": "core-style hash prefixes",
+   "args": [
+    [
+     "#work",
+     "#other"
+    ]
+   ],
+   "expected": [
+    "work",
+    "other"
+   ]
+  },
+  {
+   "name": "unicode and underscores",
+   "args": [
+    [
+     "Café",
+     "你好",
+     "my_tag"
+    ]
+   ],
+   "expected": [
+    "café",
+    "你好",
+    "my_tag"
+   ]
+  },
+  {
+   "name": "reject empty path components",
+   "args": [
+    [
+     "/work",
+     "work/",
+     "work//review"
+    ]
+   ],
+   "expected": []
+  },
+  {
+   "name": "empty list",
+   "args": [
+    []
+   ],
+   "expected": []
+  }
+ ],
+ "filterCases": [
+  {
+   "name": "safe native list filter for a custom property",
+   "args": [
+    [
+     "topics"
+    ],
+    "#Research"
+   ],
+   "expected": "(if(note[\"topics\"].isType(\"list\"), note[\"topics\"].filter(if(value.isType(\"string\"), value.trim().replace(/^#/, \"\").lower() == \"research\", false)).length > 0, false))"
+  }
+ ],
+ "matchingCases": [
+  {
+   "name": "child matching respects path boundary and unique notes",
+   "args": [
+    [
+     {
+      "tag": "work",
+      "paths": [
+       "A.md"
+      ],
+      "properties": [
+       "topics"
+      ]
+     },
+     {
+      "tag": "work/review",
+      "paths": [
+       "A.md",
+       "B.md"
+      ],
+      "properties": [
+       "topics"
+      ]
+     },
+     {
+      "tag": "workshop",
+      "paths": [
+       "C.md"
+      ],
+      "properties": [
+       "topics"
+      ]
+     }
+    ],
+    "work",
+    true
+   ],
+   "expected": [
+    "A.md",
+    "B.md"
+   ]
+  }
+ ]
+}
