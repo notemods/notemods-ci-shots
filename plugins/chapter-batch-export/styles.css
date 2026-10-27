@@ -1,0 +1,68 @@
+.chapter-batch-export-modal {
+	width: min(960px, 94vw);
+}
+
+.chapter-batch-export-modal .cbe-source,
+.chapter-batch-export-modal .cbe-muted {
+	color: var(--text-muted);
+}
+
+.chapter-batch-export-modal .cbe-message {
+	padding: var(--size-4-3);
+	background: var(--background-secondary);
+	border-radius: var(--radius-s);
+	margin-block: var(--size-4-3);
+}
+
+.chapter-batch-export-modal .cbe-message[data-status="error"],
+.chapter-batch-export-modal .cbe-missing {
+	color: var(--text-error);
+}
+
+.chapter-batch-export-modal .cbe-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: var(--font-small);
+}
+
+.chapter-batch-export-modal .cbe-table th,
+.chapter-batch-export-modal .cbe-table td {
+	padding: var(--size-4-2);
+	border-bottom: 1px solid var(--background-modifier-border);
+	text-align: start;
+	vertical-align: top;
+	overflow-wrap: anywhere;
+}
+
+.chapter-batch-export-modal .cbe-text {
+	white-space: pre-wrap;
+	padding: var(--size-4-3);
+	background: var(--background-secondary);
+}
+
+.chapter-batch-export-modal .cbe-pro > summary {
+	cursor: pointer;
+	padding-block: var(--size-4-2);
+	font-weight: var(--font-semibold);
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}

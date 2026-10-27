@@ -1,0 +1,772 @@
+{
+ "slug": "chapter-batch-export",
+ "module": "chapter-batch-export/src/core",
+ "function": "buildPlan",
+ "cases": [
+  {
+   "name": "root scenes give separate chapters",
+   "function": "chapterSources",
+   "args": [
+    {
+     "longform": {
+      "format": "scenes",
+      "sceneFolder": "/",
+      "scenes": [
+       "Start",
+       "End"
+      ]
+     }
+    },
+    "Book/Index.md"
+   ],
+   "expected": [
+    {
+     "title": "Start",
+     "sources": [
+      "Book/Start.md"
+     ]
+    },
+    {
+     "title": "End",
+     "sources": [
+      "Book/End.md"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "children join their root in saved order",
+   "function": "chapterSources",
+   "args": [
+    {
+     "longform": {
+      "format": "scenes",
+      "sceneFolder": "/",
+      "scenes": [
+       "One",
+       [
+        "B",
+        "A"
+       ],
+       "Two"
+      ]
+     }
+    },
+    "Index.md"
+   ],
+   "expected": [
+    {
+     "title": "One",
+     "sources": [
+      "One.md",
+      "B.md",
+      "A.md"
+     ]
+    },
+    {
+     "title": "Two",
+     "sources": [
+      "Two.md"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "nested children use depth first order",
+   "function": "chapterSources",
+   "args": [
+    {
+     "longform": {
+      "format": "scenes",
+      "sceneFolder": "/",
+      "scenes": [
+       "One",
+       [
+        "B",
+        [
+         "C"
+        ],
+        "D"
+       ]
+      ]
+     }
+    },
+    "Index.md"
+   ],
+   "expected": [
+    {
+     "title": "One",
+     "sources": [
+      "One.md",
+      "B.md",
+      "C.md",
+      "D.md"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "sceneFolder is relative to the index",
+   "function": "chapterSources",
+   "args": [
+    {
+     "longform": {
+      "format": "scenes",
+      "sceneFolder": "Scenes",
+      "scenes": [
+       "Start"
+      ]
+     }
+    },
+    "Book/Index.md"
+   ],
+   "expected": [
+    {
+     "title": "Start",
+     "sources": [
+      "Book/Scenes/Start.md"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "slash sceneFolder means the project folder",
+   "function": "chapterSources",
+   "args": [
+    {
+     "longform": {
+      "format": "scenes",
+      "sceneFolder": "/",
+      "scenes": [
+       "Start"
+      ]
+     }
+    },
+    "Book/Index.md"
+   ],
+   "expected": [
+    {
+     "title": "Start",
+     "sources": [
+      "Book/Start.md"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "subfolder scene names retain their path",
+   "function": "chapterSources",
+   "args": [
+    {
+     "longform": {
+      "format": "scenes",
+      "sceneFolder": "Scenes",
+      "scenes": [
+       "Part/Start"
+      ]
+     }
+    },
+    "Book/Index.md"
+   ],
+   "expected": [
+    {
+     "title": "Part/Start",
+     "sources": [
+      "Book/Scenes/Part/Start.md"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "repeated scenes retain both positions",
+   "function": "chapterSources",
+   "args": [
+    {
+     "longform": {
+      "format": "scenes",
+      "sceneFolder": "/",
+      "scenes": [
+       "A",
+       [
+        "A"
+       ]
+      ]
+     }
+    },
+    "Index.md"
+   ],
+   "expected": [
+    {
+     "title": "A",
+     "sources": [
+      "A.md",
+      "A.md"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "single projects are refused",
+   "function": "chapterSources",
+   "args": [
+    {
+     "longform": {
+      "format": "single"
+     }
+    },
+    "Index.md"
+   ],
+   "expected": null,
+   "error": "format scenes"
+  },
+  {
+   "name": "empty scene trees are refused",
+   "function": "chapterSources",
+   "args": [
+    {
+     "longform": {
+      "format": "scenes",
+      "sceneFolder": "/",
+      "scenes": []
+     }
+    },
+    "Index.md"
+   ],
+   "expected": null,
+   "error": "no chapters"
+  },
+  {
+   "name": "orphan child arrays are refused",
+   "function": "chapterSources",
+   "args": [
+    {
+     "longform": {
+      "format": "scenes",
+      "sceneFolder": "/",
+      "scenes": [
+       [
+        "A"
+       ]
+      ]
+     }
+    },
+    "Index.md"
+   ],
+   "expected": null,
+   "error": "follow one parent"
+  },
+  {
+   "name": "second child arrays are refused",
+   "function": "chapterSources",
+   "args": [
+    {
+     "longform": {
+      "format": "scenes",
+      "sceneFolder": "/",
+      "scenes": [
+       "A",
+       [
+        "B"
+       ],
+       [
+        "C"
+       ]
+      ]
+     }
+    },
+    "Index.md"
+   ],
+   "expected": null,
+   "error": "follow one parent"
+  },
+  {
+   "name": "numeric YAML scene names are refused",
+   "function": "chapterSources",
+   "args": [
+    {
+     "longform": {
+      "format": "scenes",
+      "sceneFolder": "/",
+      "scenes": [
+       1
+      ]
+     }
+    },
+    "Index.md"
+   ],
+   "expected": null,
+   "error": "nonempty string"
+  },
+  {
+   "name": "parent traversal is refused",
+   "function": "chapterSources",
+   "args": [
+    {
+     "longform": {
+      "format": "scenes",
+      "sceneFolder": "/",
+      "scenes": [
+       "../Secret"
+      ]
+     }
+    },
+    "Index.md"
+   ],
+   "expected": null,
+   "error": "parent steps"
+  },
+  {
+   "name": "initial frontmatter is removed",
+   "function": "stripInitialFrontmatter",
+   "args": [
+    "---\ntags: scene\n---\nBody"
+   ],
+   "expected": "Body"
+  },
+  {
+   "name": "later frontmatter and dividers stay",
+   "function": "stripInitialFrontmatter",
+   "args": [
+    "Body\n\n---\ntags: scene\n---\nEnd"
+   ],
+   "expected": "Body\n\n---\ntags: scene\n---\nEnd"
+  },
+  {
+   "name": "frontmatter with CRLF is removed",
+   "function": "stripInitialFrontmatter",
+   "args": [
+    "---\r\ntags: scene\r\n---\r\nBody"
+   ],
+   "expected": "Body"
+  },
+  {
+   "name": "unclosed frontmatter stays",
+   "function": "stripInitialFrontmatter",
+   "args": [
+    "---\ntags: scene\nBody"
+   ],
+   "expected": "---\ntags: scene\nBody"
+  },
+  {
+   "name": "UTF8 BOM before frontmatter is supported",
+   "function": "stripInitialFrontmatter",
+   "args": [
+    "﻿---\ntitle: One\n---\nBody"
+   ],
+   "expected": "Body"
+  },
+  {
+   "name": "YAML dot end marker stays as body text",
+   "function": "stripInitialFrontmatter",
+   "args": [
+    "---\ntitle: One\n...\nBody"
+   ],
+   "expected": "---\ntitle: One\n...\nBody"
+  },
+  {
+   "name": "empty range selects each chapter",
+   "function": "selectedNumbers",
+   "args": [
+    "",
+    3
+   ],
+   "expected": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "name": "ranges preserve manuscript order",
+   "function": "selectedNumbers",
+   "args": [
+    "3, 1-2, 2",
+    4
+   ],
+   "expected": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "name": "out of bounds range is refused",
+   "function": "selectedNumbers",
+   "args": [
+    "1-5",
+    4
+   ],
+   "expected": null,
+   "error": "outside this index"
+  },
+  {
+   "name": "reversed ranges are refused",
+   "function": "selectedNumbers",
+   "args": [
+    "3-1",
+    4
+   ],
+   "expected": null,
+   "error": "outside this index"
+  },
+  {
+   "name": "range text is refused",
+   "function": "selectedNumbers",
+   "args": [
+    "one",
+    4
+   ],
+   "expected": null,
+   "error": "chapter numbers"
+  },
+  {
+   "name": "filename punctuation becomes spaces",
+   "function": "safeFilename",
+   "args": [
+    "A: B? / C"
+   ],
+   "expected": "A B C"
+  },
+  {
+   "name": "reserved device names get a prefix",
+   "function": "safeFilename",
+   "args": [
+    "CON"
+   ],
+   "expected": "Chapter CON"
+  },
+  {
+   "name": "empty filenames get a fallback",
+   "function": "safeFilename",
+   "args": [
+    "..."
+   ],
+   "expected": "Chapter"
+  },
+  {
+   "name": "Unicode filenames stay readable",
+   "function": "safeFilename",
+   "args": [
+    "研究 chapter"
+   ],
+   "expected": "研究 chapter"
+  },
+  {
+   "name": "formats expand title and padded number",
+   "function": "formatText",
+   "args": [
+    "# {number} {title}",
+    "Opening",
+    2
+   ],
+   "expected": "# 02 Opening"
+  },
+  {
+   "name": "unknown format tokens are refused",
+   "function": "formatText",
+   "args": [
+    "{date}",
+    "Opening",
+    2
+   ],
+   "expected": null,
+   "error": "single line"
+  },
+  {
+   "name": "new output folder path is normalized",
+   "function": "outputFolder",
+   "args": [
+    "Book\\Exports//Draft"
+   ],
+   "expected": "Book/Exports/Draft"
+  },
+  {
+   "name": "vault root output is refused",
+   "function": "outputFolder",
+   "args": [
+    "/"
+   ],
+   "expected": null,
+   "error": "visible output folder"
+  },
+  {
+   "name": "joined chapter strips scene frontmatter",
+   "function": "buildPlan",
+   "args": [
+    {
+     "longform": {
+      "format": "scenes",
+      "sceneFolder": "/",
+      "scenes": [
+       "One",
+       [
+        "Child"
+       ]
+      ]
+     }
+    },
+    "Index.md",
+    {
+     "One.md": "---\ntags: x\n---\nRoot",
+     "Child.md": "Child text"
+    },
+    {
+     "folder": "Exports",
+     "range": "",
+     "heading": "# {title}",
+     "filename": "{number} {title}"
+    }
+   ],
+   "expected": {
+    "chapters": [
+     {
+      "title": "One",
+      "number": 1,
+      "sources": [
+       "One.md",
+       "Child.md"
+      ],
+      "filename": "01 One.md",
+      "content": "# One\n\nRoot\n\nChild text\n"
+     }
+    ],
+    "missing": [],
+    "index": "# Chapter export index\n\nSource index: [[Index.md]]\n\n## 1. One\n\nOutput: [[Exports/01 One.md]]\n\n- [[One.md]]\n- [[Child.md]]\n"
+   }
+  },
+  {
+   "name": "missing scene paths appear in the preview",
+   "function": "buildPlan",
+   "args": [
+    {
+     "longform": {
+      "format": "scenes",
+      "sceneFolder": "/",
+      "scenes": [
+       "One",
+       [
+        "Lost"
+       ]
+      ]
+     }
+    },
+    "Index.md",
+    {
+     "One.md": "Root"
+    },
+    {
+     "folder": "Exports",
+     "range": "",
+     "heading": "# {title}",
+     "filename": "{number} {title}"
+    }
+   ],
+   "expected": {
+    "chapters": [
+     {
+      "title": "One",
+      "number": 1,
+      "sources": [
+       "One.md",
+       "Lost.md"
+      ],
+      "filename": "01 One.md",
+      "content": "# One\n\nRoot\n"
+     }
+    ],
+    "missing": [
+     "Lost.md"
+    ],
+    "index": "# Chapter export index\n\nSource index: [[Index.md]]\n\n## 1. One\n\nOutput: [[Exports/01 One.md]]\n\n- [[One.md]]\n- [[Lost.md]]\n"
+   }
+  },
+  {
+   "name": "Pro selects chapters and applies formats",
+   "function": "buildPlan",
+   "args": [
+    {
+     "longform": {
+      "format": "scenes",
+      "sceneFolder": "/",
+      "scenes": [
+       "One",
+       "Two"
+      ]
+     }
+    },
+    "Index.md",
+    {
+     "One.md": "First",
+     "Two.md": "Second"
+    },
+    {
+     "folder": "Exports",
+     "range": "2",
+     "heading": "## {number} {title}",
+     "filename": "chapter {number}"
+    },
+    true
+   ],
+   "expected": {
+    "chapters": [
+     {
+      "title": "Two",
+      "number": 2,
+      "sources": [
+       "Two.md"
+      ],
+      "filename": "chapter 02.md",
+      "content": "## 02 Two\n\nSecond\n"
+     }
+    ],
+    "missing": [],
+    "index": "# Chapter export index\n\nSource index: [[Index.md]]\n\n## 2. Two\n\nOutput: [[Exports/chapter 02.md]]\n\n- [[Two.md]]\n"
+   }
+  },
+  {
+   "name": "free export ignores saved Pro options",
+   "function": "buildPlan",
+   "args": [
+    {
+     "longform": {
+      "format": "scenes",
+      "sceneFolder": "/",
+      "scenes": [
+       "One",
+       "Two"
+      ]
+     }
+    },
+    "Index.md",
+    {
+     "One.md": "First",
+     "Two.md": "Second"
+    },
+    {
+     "folder": "Exports",
+     "range": "2",
+     "heading": "## {number} {title}",
+     "filename": "chapter {number}"
+    },
+    false
+   ],
+   "expected": {
+    "chapters": [
+     {
+      "title": "One",
+      "number": 1,
+      "sources": [
+       "One.md"
+      ],
+      "filename": "01 One.md",
+      "content": "# One\n\nFirst\n"
+     },
+     {
+      "title": "Two",
+      "number": 2,
+      "sources": [
+       "Two.md"
+      ],
+      "filename": "02 Two.md",
+      "content": "# Two\n\nSecond\n"
+     }
+    ],
+    "missing": [],
+    "index": "# Chapter export index\n\nSource index: [[Index.md]]\n\n## 1. One\n\nOutput: [[Exports/01 One.md]]\n\n- [[One.md]]\n\n## 2. Two\n\nOutput: [[Exports/02 Two.md]]\n\n- [[Two.md]]\n"
+   }
+  },
+  {
+   "name": "case insensitive filename collisions get suffixes",
+   "function": "buildPlan",
+   "args": [
+    {
+     "longform": {
+      "format": "scenes",
+      "sceneFolder": "/",
+      "scenes": [
+       "One",
+       "one"
+      ]
+     }
+    },
+    "Index.md",
+    {
+     "One.md": "A",
+     "one.md": "B"
+    },
+    {
+     "folder": "Exports",
+     "range": "",
+     "heading": "",
+     "filename": "{title}"
+    },
+    true
+   ],
+   "expected": {
+    "chapters": [
+     {
+      "title": "One",
+      "number": 1,
+      "sources": [
+       "One.md"
+      ],
+      "filename": "One.md",
+      "content": "A\n"
+     },
+     {
+      "title": "one",
+      "number": 2,
+      "sources": [
+       "one.md"
+      ],
+      "filename": "one 2.md",
+      "content": "B\n"
+     }
+    ],
+    "missing": [],
+    "index": "# Chapter export index\n\nSource index: [[Index.md]]\n\n## 1. One\n\nOutput: [[Exports/One.md]]\n\n- [[One.md]]\n\n## 2. one\n\nOutput: [[Exports/one 2.md]]\n\n- [[one.md]]\n"
+   }
+  },
+  {
+   "name": "index filename stays reserved",
+   "function": "buildPlan",
+   "args": [
+    {
+     "longform": {
+      "format": "scenes",
+      "sceneFolder": "/",
+      "scenes": [
+       "_index"
+      ]
+     }
+    },
+    "Index.md",
+    {
+     "_index.md": "A"
+    },
+    {
+     "folder": "Exports",
+     "range": "",
+     "heading": "",
+     "filename": "{title}"
+    },
+    true
+   ],
+   "expected": {
+    "chapters": [
+     {
+      "title": "_index",
+      "number": 1,
+      "sources": [
+       "_index.md"
+      ],
+      "filename": "_index 2.md",
+      "content": "A\n"
+     }
+    ],
+    "missing": [],
+    "index": "# Chapter export index\n\nSource index: [[Index.md]]\n\n## 1. _index\n\nOutput: [[Exports/_index 2.md]]\n\n- [[_index.md]]\n"
+   }
+  }
+ ]
+}

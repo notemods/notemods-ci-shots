@@ -1,0 +1,66 @@
+[
+  {
+    "feature": "preview",
+    "caption": "Three root chapters with their source scenes in saved order.",
+    "note": "Manuscript.md",
+    "eval": "(async()=>{if(window.__cbeModal) window.__cbeModal.close(); app.setting.close(); const p=app.plugins.plugins['chapter-batch-export']; p.pro.signOut(); const m=p.openExport(app.vault.getFileByPath('Chapter Batch Export/Manuscript.md')); window.__cbeModal=m; await m.refresh(); return 'ok';})()",
+    "after": "(async()=>{if(window.__cbeModal) window.__cbeModal.close(); app.setting.close(); app.plugins.plugins['chapter-batch-export'].pro.signOut(); return 'ok';})()"
+  },
+  {
+    "feature": "joined-text",
+    "caption": "The first chapter combines three scenes and removes the initial frontmatter.",
+    "note": "Manuscript.md",
+    "eval": "(async()=>{if(window.__cbeModal) window.__cbeModal.close(); app.setting.close(); const p=app.plugins.plugins['chapter-batch-export']; p.pro.signOut(); const m=p.openExport(app.vault.getFileByPath('Chapter Batch Export/Manuscript.md')); window.__cbeModal=m; await m.refresh(); m.contentEl.querySelector('.cbe-results details').open=true; m.contentEl.querySelector('.cbe-results details').scrollIntoView({block:'end'}); return 'ok';})()",
+    "after": "(async()=>{if(window.__cbeModal) window.__cbeModal.close(); app.setting.close(); app.plugins.plugins['chapter-batch-export'].pro.signOut(); return 'ok';})()"
+  },
+  {
+    "feature": "missing-scenes",
+    "caption": "A missing scene path blocks the export.",
+    "note": "Missing manuscript.md",
+    "eval": "(async()=>{if(window.__cbeModal) window.__cbeModal.close(); app.setting.close(); const p=app.plugins.plugins['chapter-batch-export']; p.pro.signOut(); const m=p.openExport(app.vault.getFileByPath('Chapter Batch Export/Missing manuscript.md')); window.__cbeModal=m; await m.refresh(); return 'ok';})()",
+    "after": "(async()=>{if(window.__cbeModal) window.__cbeModal.close(); app.setting.close(); app.plugins.plugins['chapter-batch-export'].pro.signOut(); return 'ok';})()"
+  },
+  {
+    "feature": "export-index",
+    "caption": "The export index links to the output chapters and their source scenes.",
+    "note": "Manuscript.md",
+    "eval": "(async()=>{if(window.__cbeModal) window.__cbeModal.close(); app.setting.close(); const p=app.plugins.plugins['chapter-batch-export']; p.pro.signOut(); const path='Chapter Batch Export/Sample export'; const old=app.vault.getAbstractFileByPath(path); if(old) await app.vault.delete(old,true); const preview=await p.prepare('Chapter Batch Export/Manuscript.md',{folder:path,range:'',heading:'# {title}',filename:'{number} {title}'}); await p.exportPreview(preview); await app.workspace.getLeaf(false).openFile(app.vault.getFileByPath(path+'/_index.md')); await app.workspace.getLeaf(false).setViewState({type:'markdown',state:{file:path+'/_index.md',mode:'preview'}}); return 'ok';})()",
+    "after": "(async()=>{if(window.__cbeModal) window.__cbeModal.close(); app.setting.close(); app.plugins.plugins['chapter-batch-export'].pro.signOut(); return 'ok';})()"
+  },
+  {
+    "feature": "pro-formats",
+    "caption": "Pro selects the second chapter and applies separate heading and filename formats.",
+    "note": "Manuscript.md",
+    "zoom": 0.85,
+    "eval": "(async()=>{if(window.__cbeModal) window.__cbeModal.close(); app.setting.close(); const p=app.plugins.plugins['chapter-batch-export']; p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'sample-author'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('chapter-batch-export-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow(); const m=p.openExport(app.vault.getFileByPath('Chapter Batch Export/Manuscript.md')); window.__cbeModal=m; m.options={folder:'Method review',range:'2',heading:'## {number} {title}',filename:'chapter-{number}'}; m.contentEl.querySelector('[data-field=folder]').value=m.options.folder; m.contentEl.querySelector('[data-field=range]').value=m.options.range; m.contentEl.querySelector('[data-field=heading]').value=m.options.heading; m.contentEl.querySelector('[data-field=filename]').value=m.options.filename; await m.refresh(); return 'ok';})()",
+    "after": "(async()=>{if(window.__cbeModal) window.__cbeModal.close(); app.setting.close(); app.plugins.plugins['chapter-batch-export'].pro.signOut(); return 'ok';})()"
+  },
+  {
+    "feature": "presets",
+    "caption": "Pro loads a named export preset from local settings.",
+    "note": "Manuscript.md",
+    "zoom": 0.85,
+    "eval": "(async()=>{if(window.__cbeModal) window.__cbeModal.close(); app.setting.close(); const p=app.plugins.plugins['chapter-batch-export']; p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'sample-author'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('chapter-batch-export-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow(); await p.savePreset('Method review',{folder:'Method review',range:'2',heading:'## {number} {title}',filename:'chapter-{number}'}); const m=p.openExport(app.vault.getFileByPath('Chapter Batch Export/Manuscript.md')); window.__cbeModal=m; const select=m.contentEl.querySelector('select'); select.value='Method review'; select.dispatchEvent(new Event('change')); await m.refresh(); m.contentEl.querySelector('select').value='Method review'; return 'ok';})()",
+    "after": "(async()=>{if(window.__cbeModal) window.__cbeModal.close(); app.setting.close(); app.plugins.plugins['chapter-batch-export'].pro.signOut(); return 'ok';})()"
+  },
+  {
+    "feature": "chapter-batch-export",
+    "caption": "Preview root chapters, check the joined text, then review the output index.",
+    "frames": [
+      {
+        "note": "Manuscript.md",
+        "eval": "(async()=>{if(window.__cbeModal) window.__cbeModal.close(); app.setting.close(); const p=app.plugins.plugins['chapter-batch-export']; p.pro.signOut(); const m=p.openExport(app.vault.getFileByPath('Chapter Batch Export/Manuscript.md')); window.__cbeModal=m; await m.refresh(); return 'ok';})()",
+        "hold": 1700
+      },
+      {
+        "eval": "(async()=>{const m=window.__cbeModal; m.contentEl.querySelector('.cbe-results details').open=true; m.contentEl.querySelector('.cbe-results details').scrollIntoView({block:'end'}); return 'ok';})()",
+        "hold": 1700
+      },
+      {
+        "eval": "(async()=>{if(window.__cbeModal) window.__cbeModal.close(); app.setting.close(); await app.workspace.getLeaf(false).openFile(app.vault.getFileByPath('Chapter Batch Export/Sample export/_index.md')); await app.workspace.getLeaf(false).setViewState({type:'markdown',state:{file:'Chapter Batch Export/Sample export/_index.md',mode:'preview'}}); return 'ok';})()",
+        "hold": 1700
+      }
+    ],
+    "after": "(async()=>{if(window.__cbeModal) window.__cbeModal.close(); app.setting.close(); app.plugins.plugins['chapter-batch-export'].pro.signOut(); return 'ok';})()"
+  }
+]
