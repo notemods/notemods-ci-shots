@@ -1,0 +1,667 @@
+{
+ "slug": "relative-image-width",
+ "module": "relative-image-width/src/size",
+ "function": "parseSize",
+ "note": "Each case names its function in fn. parseSize(token) gives the CSS width and height of a size token W or WxH, or null when it is not a size or has no relative unit (core sizes pixels). A percent height maps to vh. splitAlt(alt) splits caption|size. parsePandocAttrs(text) reads {#id .class width= height=}. findPandocAttrs(line) gives the offsets of a block directly after a link to an image file. isImageLink(link) tells if the link target has an image file extension. defaultSize(setting, property) is the Pro default size. Names that start with a number are acceptance groups 1 to 7 of SPEC.md. Reviewed by hand against each input.",
+ "cases": [
+  {
+   "name": "1 percent width",
+   "fn": "parseSize",
+   "args": [
+    "50%"
+   ],
+   "expected": {
+    "width": "50%",
+    "height": null
+   }
+  },
+  {
+   "name": "2 percent width and percent height maps height to vh",
+   "fn": "parseSize",
+   "args": [
+    "50%x30%"
+   ],
+   "expected": {
+    "width": "50%",
+    "height": "30vh"
+   }
+  },
+  {
+   "name": "2 post 1 form 50%x50%",
+   "fn": "parseSize",
+   "args": [
+    "50%x50%"
+   ],
+   "expected": {
+    "width": "50%",
+    "height": "50vh"
+   }
+  },
+  {
+   "name": "3 em width",
+   "fn": "parseSize",
+   "args": [
+    "70em"
+   ],
+   "expected": {
+    "width": "70em",
+    "height": null
+   }
+  },
+  {
+   "name": "3 rem width",
+   "fn": "parseSize",
+   "args": [
+    "20rem"
+   ],
+   "expected": {
+    "width": "20rem",
+    "height": null
+   }
+  },
+  {
+   "name": "3 vw width",
+   "fn": "parseSize",
+   "args": [
+    "40vw"
+   ],
+   "expected": {
+    "width": "40vw",
+    "height": null
+   }
+  },
+  {
+   "name": "3 vh width",
+   "fn": "parseSize",
+   "args": [
+    "30vh"
+   ],
+   "expected": {
+    "width": "30vh",
+    "height": null
+   }
+  },
+  {
+   "name": "4 pixel width stays with core",
+   "fn": "parseSize",
+   "args": [
+    "200"
+   ],
+   "expected": null
+  },
+  {
+   "name": "4 pixel width and height stays with core",
+   "fn": "parseSize",
+   "args": [
+    "200x100"
+   ],
+   "expected": null
+  },
+  {
+   "name": "4 px unit alone stays with core",
+   "fn": "parseSize",
+   "args": [
+    "200px"
+   ],
+   "expected": null
+  },
+  {
+   "name": "percent width with pixel height",
+   "fn": "parseSize",
+   "args": [
+    "50%x120"
+   ],
+   "expected": {
+    "width": "50%",
+    "height": "120px"
+   }
+  },
+  {
+   "name": "pixel width with em height",
+   "fn": "parseSize",
+   "args": [
+    "300x10em"
+   ],
+   "expected": {
+    "width": "300px",
+    "height": "10em"
+   }
+  },
+  {
+   "name": "decimal value",
+   "fn": "parseSize",
+   "args": [
+    "12.5rem"
+   ],
+   "expected": {
+    "width": "12.5rem",
+    "height": null
+   }
+  },
+  {
+   "name": "leading dot decimal",
+   "fn": "parseSize",
+   "args": [
+    ".5em"
+   ],
+   "expected": {
+    "width": "0.5em",
+    "height": null
+   }
+  },
+  {
+   "name": "upper case unit and separator",
+   "fn": "parseSize",
+   "args": [
+    "50EMX2REM"
+   ],
+   "expected": {
+    "width": "50em",
+    "height": "2rem"
+   }
+  },
+  {
+   "name": "spaces around token and separator",
+   "fn": "parseSize",
+   "args": [
+    " 50% x 20% "
+   ],
+   "expected": {
+    "width": "50%",
+    "height": "20vh"
+   }
+  },
+  {
+   "name": "zero is not a size",
+   "fn": "parseSize",
+   "args": [
+    "0%"
+   ],
+   "expected": null
+  },
+  {
+   "name": "negative is not a size",
+   "fn": "parseSize",
+   "args": [
+    "-50%"
+   ],
+   "expected": null
+  },
+  {
+   "name": "too large is not a size",
+   "fn": "parseSize",
+   "args": [
+    "10001%"
+   ],
+   "expected": null
+  },
+  {
+   "name": "limit value is a size",
+   "fn": "parseSize",
+   "args": [
+    "10000%"
+   ],
+   "expected": {
+    "width": "10000%",
+    "height": null
+   }
+  },
+  {
+   "name": "unknown unit is not a size",
+   "fn": "parseSize",
+   "args": [
+    "50pt"
+   ],
+   "expected": null
+  },
+  {
+   "name": "space between number and unit is not a size",
+   "fn": "parseSize",
+   "args": [
+    "50 %"
+   ],
+   "expected": null
+  },
+  {
+   "name": "empty text is not a size",
+   "fn": "parseSize",
+   "args": [
+    ""
+   ],
+   "expected": null
+  },
+  {
+   "name": "caption text is not a size",
+   "fn": "parseSize",
+   "args": [
+    "A sunset"
+   ],
+   "expected": null
+  },
+  {
+   "name": "three sides is not a size",
+   "fn": "parseSize",
+   "args": [
+    "50%x50%x50%"
+   ],
+   "expected": null
+  },
+  {
+   "name": "missing height is not a size",
+   "fn": "parseSize",
+   "args": [
+    "50%x"
+   ],
+   "expected": null
+  },
+  {
+   "name": "cm is not a link size",
+   "fn": "parseSize",
+   "args": [
+    "5cm"
+   ],
+   "expected": null
+  },
+  {
+   "name": "5 alt with only a size",
+   "fn": "splitAlt",
+   "args": [
+    "50%"
+   ],
+   "expected": {
+    "caption": "",
+    "size": {
+     "width": "50%",
+     "height": null
+    }
+   }
+  },
+  {
+   "name": "5 alt caption then size",
+   "fn": "splitAlt",
+   "args": [
+    "alt|50%"
+   ],
+   "expected": {
+    "caption": "alt",
+    "size": {
+     "width": "50%",
+     "height": null
+    }
+   }
+  },
+  {
+   "name": "5 alt with two bars keeps the caption",
+   "fn": "splitAlt",
+   "args": [
+    "A|B|40vw"
+   ],
+   "expected": {
+    "caption": "A|B",
+    "size": {
+     "width": "40vw",
+     "height": null
+    }
+   }
+  },
+  {
+   "name": "alt with pixel size is left to core",
+   "fn": "splitAlt",
+   "args": [
+    "alt|200"
+   ],
+   "expected": null
+  },
+  {
+   "name": "alt with no bar and no size",
+   "fn": "splitAlt",
+   "args": [
+    "wide.png"
+   ],
+   "expected": null
+  },
+  {
+   "name": "alt where the size is not last",
+   "fn": "splitAlt",
+   "args": [
+    "50%|caption"
+   ],
+   "expected": null
+  },
+  {
+   "name": "6 pandoc block of post 1",
+   "fn": "parsePandocAttrs",
+   "args": [
+    "{#id .class width=50% height=50%}"
+   ],
+   "expected": {
+    "id": "id",
+    "classes": [
+     "class"
+    ],
+    "width": "50%",
+    "height": "50vh"
+   }
+  },
+  {
+   "name": "6 pandoc width only",
+   "fn": "parsePandocAttrs",
+   "args": [
+    "{width=50%}"
+   ],
+   "expected": {
+    "id": null,
+    "classes": [],
+    "width": "50%",
+    "height": null
+   }
+  },
+  {
+   "name": "pandoc bare number is pixels",
+   "fn": "parsePandocAttrs",
+   "args": [
+    "{width=300}"
+   ],
+   "expected": {
+    "id": null,
+    "classes": [],
+    "width": "300px",
+    "height": null
+   }
+  },
+  {
+   "name": "pandoc quoted value",
+   "fn": "parsePandocAttrs",
+   "args": [
+    "{width=\"40em\"}"
+   ],
+   "expected": {
+    "id": null,
+    "classes": [],
+    "width": "40em",
+    "height": null
+   }
+  },
+  {
+   "name": "pandoc inch unit",
+   "fn": "parsePandocAttrs",
+   "args": [
+    "{width=2in}"
+   ],
+   "expected": {
+    "id": null,
+    "classes": [],
+    "width": "2in",
+    "height": null
+   }
+  },
+  {
+   "name": "pandoc other key is ignored but block is read",
+   "fn": "parsePandocAttrs",
+   "args": [
+    "{.wide fig-align=center}"
+   ],
+   "expected": {
+    "id": null,
+    "classes": [
+     "wide"
+    ],
+    "width": null,
+    "height": null
+   }
+  },
+  {
+   "name": "pandoc bad width only is not a block",
+   "fn": "parsePandocAttrs",
+   "args": [
+    "{width=abc}"
+   ],
+   "expected": null
+  },
+  {
+   "name": "pandoc text that is not a block",
+   "fn": "parsePandocAttrs",
+   "args": [
+    "{not a block}"
+   ],
+   "expected": null
+  },
+  {
+   "name": "pandoc empty block",
+   "fn": "parsePandocAttrs",
+   "args": [
+    "{}"
+   ],
+   "expected": null
+  },
+  {
+   "name": "pandoc nested braces",
+   "fn": "parsePandocAttrs",
+   "args": [
+    "{{width=50%}}"
+   ],
+   "expected": null
+  },
+  {
+   "name": "6 find block after markdown image",
+   "fn": "findPandocAttrs",
+   "args": [
+    "See ![Image](image.png){width=50%} here"
+   ],
+   "expected": [
+    {
+     "from": 23,
+     "to": 34,
+     "attrs": {
+      "id": null,
+      "classes": [],
+      "width": "50%",
+      "height": null
+     }
+    }
+   ]
+  },
+  {
+   "name": "6 find block after wikilink embed",
+   "fn": "findPandocAttrs",
+   "args": [
+    "![[image.png]]{width=30rem}"
+   ],
+   "expected": [
+    {
+     "from": 14,
+     "to": 27,
+     "attrs": {
+      "id": null,
+      "classes": [],
+      "width": "30rem",
+      "height": null
+     }
+    }
+   ]
+  },
+  {
+   "name": "block with a space after the link is not read",
+   "fn": "findPandocAttrs",
+   "args": [
+    "![x](a.png) {width=50%}"
+   ],
+   "expected": []
+  },
+  {
+   "name": "block after a plain link is not read",
+   "fn": "findPandocAttrs",
+   "args": [
+    "[x](a.png){width=50%}"
+   ],
+   "expected": []
+  },
+  {
+   "name": "two images in one line",
+   "fn": "findPandocAttrs",
+   "args": [
+    "![[a.png]]{width=10%} and ![b](b.png){.r}"
+   ],
+   "expected": [
+    {
+     "from": 10,
+     "to": 21,
+     "attrs": {
+      "id": null,
+      "classes": [],
+      "width": "10%",
+      "height": null
+     }
+    },
+    {
+     "from": 37,
+     "to": 41,
+     "attrs": {
+      "id": null,
+      "classes": [
+       "r"
+      ],
+      "width": null,
+      "height": null
+     }
+    }
+   ]
+  },
+  {
+   "name": "7 pro default from the setting",
+   "fn": "defaultSize",
+   "args": [
+    "100%",
+    null
+   ],
+   "expected": {
+    "width": "100%",
+    "height": null
+   }
+  },
+  {
+   "name": "7 pro note property wins",
+   "fn": "defaultSize",
+   "args": [
+    "100%",
+    "40rem"
+   ],
+   "expected": {
+    "width": "40rem",
+    "height": null
+   }
+  },
+  {
+   "name": "7 pro pixel default",
+   "fn": "defaultSize",
+   "args": [
+    "480",
+    null
+   ],
+   "expected": {
+    "width": "480px",
+    "height": null
+   }
+  },
+  {
+   "name": "7 pro number property",
+   "fn": "defaultSize",
+   "args": [
+    "",
+    300
+   ],
+   "expected": {
+    "width": "300px",
+    "height": null
+   }
+  },
+  {
+   "name": "7 pro bad property falls back to the setting",
+   "fn": "defaultSize",
+   "args": [
+    "60%",
+    "huge"
+   ],
+   "expected": {
+    "width": "60%",
+    "height": null
+   }
+  },
+  {
+   "name": "7 pro empty setting and no property",
+   "fn": "defaultSize",
+   "args": [
+    "",
+    null
+   ],
+   "expected": null
+  },
+  {
+   "name": "6 no block after a note embed",
+   "fn": "findPandocAttrs",
+   "args": [
+    "![[Note]]{width=50%}"
+   ],
+   "expected": []
+  },
+  {
+   "name": "6 no block after a PDF embed",
+   "fn": "findPandocAttrs",
+   "args": [
+    "![[doc.pdf]]{width=50%}"
+   ],
+   "expected": []
+  },
+  {
+   "name": "no block after an image link with no file extension",
+   "fn": "findPandocAttrs",
+   "args": [
+    "![b](https://img.shields.io/badge/x){width=50%}"
+   ],
+   "expected": []
+  },
+  {
+   "name": "block after an image URL with a query",
+   "fn": "findPandocAttrs",
+   "args": [
+    "![b](https://x.org/a.png?s=1){width=50%}"
+   ],
+   "expected": [
+    {
+     "from": 29,
+     "to": 40,
+     "attrs": {
+      "id": null,
+      "classes": [],
+      "width": "50%",
+      "height": null
+     }
+    }
+   ]
+  },
+  {
+   "name": "image link with a heading part and an alias",
+   "fn": "isImageLink",
+   "args": [
+    "![[photo.JPG#x|cap]]"
+   ],
+   "expected": true
+  },
+  {
+   "name": "note link is not an image link",
+   "fn": "isImageLink",
+   "args": [
+    "![[Inner2]]"
+   ],
+   "expected": false
+  },
+  {
+   "name": "markdown image with angle brackets and a title",
+   "fn": "isImageLink",
+   "args": [
+    "![a](<my photo.webp> \"t\")"
+   ],
+   "expected": true
+  }
+ ]
+}
