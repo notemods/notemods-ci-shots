@@ -1,0 +1,776 @@
+{
+ "slug": "pocket-mochi-export",
+ "module": "products/pocket-mochi-export/src/vectors.ts",
+ "function": "evaluateCase",
+ "cases": [
+  {
+   "name": "Case 1 one card gives version 2 data with one deck named after the note",
+   "args": [
+    {
+     "op": "export",
+     "notes": [
+      {
+       "path": "Bio.md",
+       "text": "## Cell #card\nThe basic unit of life\n---\n"
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "edn": "{:version 2\n :decks [{:id \"deck-1\" :name \"Bio\"\n  :cards [{:content \"## Cell\\n---\\nThe basic unit of life\"}]}]}\n",
+    "cardCount": 1,
+    "warnings": [],
+    "missing": [],
+    "media": []
+   }
+  },
+  {
+   "name": "Case 2 two cards and a *** end marker keep source order",
+   "args": [
+    {
+     "op": "export",
+     "notes": [
+      {
+       "path": "Bio.md",
+       "text": "First #card\nOne\n---\nSecond #card\nTwo\n***\nAfter text"
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "cardCount": 2,
+    "decks": [
+     {
+      "id": "deck-1",
+      "name": "Bio",
+      "cards": [
+       "First\n---\nOne",
+       "Second\n---\nTwo"
+      ]
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "Case 3 no end marker runs the back to the end of the note and warns",
+   "args": [
+    {
+     "op": "export",
+     "notes": [
+      {
+       "path": "Bio.md",
+       "text": "Mitosis #card\nCell division\nin two steps\n"
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "cardCount": 1,
+    "decks": [
+     {
+      "id": "deck-1",
+      "name": "Bio",
+      "cards": [
+       "Mitosis\n---\nCell division\nin two steps"
+      ]
+     }
+    ],
+    "warnings": [
+     "card 1 has no end marker"
+    ]
+   }
+  },
+  {
+   "name": "Case 4 EDN string escapes quote and backslash and keeps Unicode",
+   "args": [
+    {
+     "op": "ednString",
+     "text": "He said \"hi\" \\ and ünïcode\nline two"
+    }
+   ],
+   "expected": "\"He said \\\"hi\\\" \\\\ and ünïcode\\nline two\""
+  },
+  {
+   "name": "Case 4 export keeps the escaped back text in the card",
+   "args": [
+    {
+     "op": "export",
+     "notes": [
+      {
+       "path": "Talk.md",
+       "text": "Quote #card\nHe said \"hi\" \\ and ünïcode\nline two\n---"
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "edn": "{:version 2\n :decks [{:id \"deck-1\" :name \"Talk\"\n  :cards [{:content \"Quote\\n---\\nHe said \\\"hi\\\" \\\\ and ünïcode\\nline two\"}]}]}\n",
+    "decks": [
+     {
+      "id": "deck-1",
+      "name": "Talk",
+      "cards": [
+       "Quote\n---\nHe said \"hi\" \\ and ünïcode\nline two"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "Case 5 wiki embed in attachments goes to the archive root as a media reference",
+   "args": [
+    {
+     "op": "export",
+     "notes": [
+      {
+       "path": "Bio.md",
+       "text": "Cell #card\nSee ![[cell.png]]\n---"
+      }
+     ],
+     "files": [
+      "Bio.md",
+      "attachments/cell.png"
+     ]
+    }
+   ],
+   "expected": {
+    "decks": [
+     {
+      "id": "deck-1",
+      "name": "Bio",
+      "cards": [
+       "Cell\n---\nSee ![](@media/cell.png)"
+      ]
+     }
+    ],
+    "media": [
+     {
+      "path": "attachments/cell.png",
+      "name": "cell.png"
+     }
+    ],
+    "missing": []
+   }
+  },
+  {
+   "name": "Case 6 two images with one name get x.png and x-1.png",
+   "args": [
+    {
+     "op": "export",
+     "notes": [
+      {
+       "path": "Bio.md",
+       "text": "One #card\n![[a/x.png]]\n---\nTwo #card\n![[b/x.png]]\n---"
+      }
+     ],
+     "files": [
+      "a/x.png",
+      "b/x.png"
+     ]
+    }
+   ],
+   "expected": {
+    "decks": [
+     {
+      "id": "deck-1",
+      "name": "Bio",
+      "cards": [
+       "One\n---\n![](@media/x.png)",
+       "Two\n---\n![](@media/x-1.png)"
+      ]
+     }
+    ],
+    "media": [
+     {
+      "path": "a/x.png",
+      "name": "x.png"
+     },
+     {
+      "path": "b/x.png",
+      "name": "x-1.png"
+     }
+    ]
+   }
+  },
+  {
+   "name": "Case 7 missing image is listed and the link stays as text",
+   "args": [
+    {
+     "op": "export",
+     "notes": [
+      {
+       "path": "Bio.md",
+       "text": "Gone #card\n![[missing.png]]\n---"
+      }
+     ],
+     "files": [
+      "Bio.md"
+     ]
+    }
+   ],
+   "expected": {
+    "cardCount": 1,
+    "decks": [
+     {
+      "id": "deck-1",
+      "name": "Bio",
+      "cards": [
+       "Gone\n---\n![[missing.png]]"
+      ]
+     }
+    ],
+    "missing": [
+     "missing.png"
+    ],
+    "media": []
+   }
+  },
+  {
+   "name": "Case 8 note with no card line gives no cards and no deck",
+   "args": [
+    {
+     "op": "export",
+     "notes": [
+      {
+       "path": "Plain.md",
+       "text": "# Plain\nNo cards here.\n---\n"
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "cardCount": 0,
+    "decks": [],
+    "edn": "{:version 2\n :decks []}\n",
+    "warnings": []
+   }
+  },
+  {
+   "name": "Case 9 an existing archive gives a new name with 1",
+   "args": [
+    {
+     "op": "archivePath",
+     "folder": "Mochi exports",
+     "name": "Bio",
+     "existing": [
+      "Mochi exports/Bio.mochi"
+     ]
+    }
+   ],
+   "expected": "Mochi exports/Bio 1.mochi"
+  },
+  {
+   "name": "Archive name is free on first export",
+   "args": [
+    {
+     "op": "archivePath",
+     "folder": "Mochi exports",
+     "name": "Bio",
+     "existing": []
+    }
+   ],
+   "expected": "Mochi exports/Bio.mochi"
+  },
+  {
+   "name": "Archive name skips 1 when it also exists",
+   "args": [
+    {
+     "op": "archivePath",
+     "folder": "/Mochi exports/",
+     "name": "Bio",
+     "existing": [
+      "Mochi exports/Bio.mochi",
+      "Mochi exports/Bio 1.mochi"
+     ]
+    }
+   ],
+   "expected": "Mochi exports/Bio 2.mochi"
+  },
+  {
+   "name": "Markdown embed with a relative path is resolved from the note folder",
+   "args": [
+    {
+     "op": "export",
+     "notes": [
+      {
+       "path": "Notes/Bio.md",
+       "text": "Cell #card\n![diagram](../attachments/cell.png)\n---"
+      }
+     ],
+     "files": [
+      "attachments/cell.png"
+     ]
+    }
+   ],
+   "expected": {
+    "decks": [
+     {
+      "id": "deck-1",
+      "name": "Bio",
+      "cards": [
+       "Cell\n---\n![](@media/cell.png)"
+      ]
+     }
+    ],
+    "missing": []
+   }
+  },
+  {
+   "name": "Markdown embed from the vault root is rewritten",
+   "args": [
+    {
+     "op": "export",
+     "notes": [
+      {
+       "path": "Notes/Bio.md",
+       "text": "Cell #card\n![diagram](attachments/cell.png)\n---"
+      }
+     ],
+     "files": [
+      "attachments/cell.png"
+     ]
+    }
+   ],
+   "expected": {
+    "decks": [
+     {
+      "id": "deck-1",
+      "name": "Bio",
+      "cards": [
+       "Cell\n---\n![](@media/cell.png)"
+      ]
+     }
+    ],
+    "media": [
+     {
+      "path": "attachments/cell.png",
+      "name": "cell.png"
+     }
+    ]
+   }
+  },
+  {
+   "name": "Percent encoded Markdown embed with a space gets a dash in the media name",
+   "args": [
+    {
+     "op": "export",
+     "notes": [
+      {
+       "path": "Bio.md",
+       "text": "Leaf #card\n![](my%20leaf.png)\n---"
+      }
+     ],
+     "files": [
+      "my leaf.png"
+     ]
+    }
+   ],
+   "expected": {
+    "decks": [
+     {
+      "id": "deck-1",
+      "name": "Bio",
+      "cards": [
+       "Leaf\n---\n![](@media/my-leaf.png)"
+      ]
+     }
+    ],
+    "media": [
+     {
+      "path": "my leaf.png",
+      "name": "my-leaf.png"
+     }
+    ]
+   }
+  },
+  {
+   "name": "Web image URL stays as text and is not missing",
+   "args": [
+    {
+     "op": "export",
+     "notes": [
+      {
+       "path": "Bio.md",
+       "text": "Web #card\n![](https://example.org/a.png)\n---"
+      }
+     ],
+     "files": []
+    }
+   ],
+   "expected": {
+    "decks": [
+     {
+      "id": "deck-1",
+      "name": "Bio",
+      "cards": [
+       "Web\n---\n![](https://example.org/a.png)"
+      ]
+     }
+    ],
+    "missing": [],
+    "media": []
+   }
+  },
+  {
+   "name": "Note embed stays as text and is not missing",
+   "args": [
+    {
+     "op": "export",
+     "notes": [
+      {
+       "path": "Bio.md",
+       "text": "Ref #card\n![[Other note]]\n---"
+      }
+     ],
+     "files": [
+      "Other note.md"
+     ]
+    }
+   ],
+   "expected": {
+    "decks": [
+     {
+      "id": "deck-1",
+      "name": "Bio",
+      "cards": [
+       "Ref\n---\n![[Other note]]"
+      ]
+     }
+    ],
+    "missing": [],
+    "media": []
+   }
+  },
+  {
+   "name": "One image used two times is stored once",
+   "args": [
+    {
+     "op": "export",
+     "notes": [
+      {
+       "path": "Bio.md",
+       "text": "A #card\n![[cell.png]]\n---\nB #card\n![[cell.png|300]]\n---"
+      }
+     ],
+     "files": [
+      "img/cell.png"
+     ]
+    }
+   ],
+   "expected": {
+    "decks": [
+     {
+      "id": "deck-1",
+      "name": "Bio",
+      "cards": [
+       "A\n---\n![](@media/cell.png)",
+       "B\n---\n![](@media/cell.png)"
+      ]
+     }
+    ],
+    "media": [
+     {
+      "path": "img/cell.png",
+      "name": "cell.png"
+     }
+    ]
+   }
+  },
+  {
+   "name": "Tag match ignores case and skips longer and nested tags",
+   "args": [
+    {
+     "op": "parse",
+     "text": "Upper #Card\nyes\n---\nPlural #cards\nno\n---\nNested #card/sub\nno\n---"
+    }
+   ],
+   "expected": {
+    "cards": [
+     {
+      "front": "Upper",
+      "back": "yes",
+      "line": 1,
+      "ended": true
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "Front matter and code blocks are not cards",
+   "args": [
+    {
+     "op": "parse",
+     "text": "---\ntags: [card]\n---\n```\nx #card\n```\nReal #card\nback\n---"
+    }
+   ],
+   "expected": {
+    "cards": [
+     {
+      "front": "Real",
+      "back": "back",
+      "line": 7,
+      "ended": true
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "A new front ends the card before it and warns",
+   "args": [
+    {
+     "op": "parse",
+     "text": "Q1 #card\nA1\nQ2 #card\nA2\n---"
+    }
+   ],
+   "expected": {
+    "cards": [
+     {
+      "front": "Q1",
+      "back": "A1",
+      "line": 1,
+      "ended": false
+     },
+     {
+      "front": "Q2",
+      "back": "A2",
+      "line": 3,
+      "ended": true
+     }
+    ],
+    "warnings": [
+     "card 1 has no end marker"
+    ]
+   }
+  },
+  {
+   "name": "Tag in the middle of the front line is removed",
+   "args": [
+    {
+     "op": "parse",
+     "text": "What is #card ATP?\nEnergy carrier\n---"
+    }
+   ],
+   "expected": {
+    "cards": [
+     {
+      "front": "What is ATP?",
+      "back": "Energy carrier",
+      "line": 1,
+      "ended": true
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "Custom tag without the hash sign",
+   "args": [
+    {
+     "op": "export",
+     "notes": [
+      {
+       "path": "Bio.md",
+       "text": "Old #card\nno\n---\nNew #bio\nyes\n---"
+      }
+     ],
+     "tag": "bio"
+    }
+   ],
+   "expected": {
+    "cardCount": 1,
+    "decks": [
+     {
+      "id": "deck-1",
+      "name": "Bio",
+      "cards": [
+       "New\n---\nyes"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "Empty back and Windows line ends",
+   "args": [
+    {
+     "op": "parse",
+     "text": "Only front #card\r\n---\r\n"
+    }
+   ],
+   "expected": {
+    "cards": [
+     {
+      "front": "Only front",
+      "back": "",
+      "line": 1,
+      "ended": true
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "Tag setting is cleaned",
+   "args": [
+    {
+     "op": "normalizeTag",
+     "tag": "  ##Card "
+    }
+   ],
+   "expected": "#Card"
+  },
+  {
+   "name": "Tag with a space is refused",
+   "args": [
+    {
+     "op": "normalizeTag",
+     "tag": "my card"
+    }
+   ],
+   "expected": ""
+  },
+  {
+   "name": "Pro folder export gives one deck for each note and skips notes with no cards",
+   "args": [
+    {
+     "op": "export",
+     "notes": [
+      {
+       "path": "Bio/Cell.md",
+       "text": "A #card\n1\n---"
+      },
+      {
+       "path": "Bio/Empty.md",
+       "text": "nothing"
+      },
+      {
+       "path": "Bio/Plant.md",
+       "text": "B #card\n2"
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "cardCount": 2,
+    "decks": [
+     {
+      "id": "deck-1",
+      "name": "Cell",
+      "cards": [
+       "A\n---\n1"
+      ]
+     },
+     {
+      "id": "deck-2",
+      "name": "Plant",
+      "cards": [
+       "B\n---\n2"
+      ]
+     }
+    ],
+    "warnings": [
+     "Plant: card 1 has no end marker"
+    ]
+   }
+  },
+  {
+   "name": "Pro folder export with sub-decks has one parent deck",
+   "args": [
+    {
+     "op": "export",
+     "notes": [
+      {
+       "path": "Bio/Cell.md",
+       "text": "A #card\n1\n---"
+      },
+      {
+       "path": "Bio/Plant.md",
+       "text": "B #card\n2\n---"
+      }
+     ],
+     "mode": "sub-decks",
+     "parentName": "Bio"
+    }
+   ],
+   "expected": {
+    "cardCount": 2,
+    "decks": [
+     {
+      "id": "deck-1",
+      "name": "Bio",
+      "cards": []
+     },
+     {
+      "id": "deck-2",
+      "name": "Cell",
+      "parentId": "deck-1",
+      "cards": [
+       "A\n---\n1"
+      ]
+     },
+     {
+      "id": "deck-3",
+      "name": "Plant",
+      "parentId": "deck-1",
+      "cards": [
+       "B\n---\n2"
+      ]
+     }
+    ],
+    "edn": "{:version 2\n :decks [{:id \"deck-1\" :name \"Bio\"\n  :cards []}\n         {:id \"deck-2\" :name \"Cell\" :parent-id \"deck-1\"\n  :cards [{:content \"A\\n---\\n1\"}]}\n         {:id \"deck-3\" :name \"Plant\" :parent-id \"deck-1\"\n  :cards [{:content \"B\\n---\\n2\"}]}]}\n"
+   }
+  },
+  {
+   "name": "Pro preset deck name replaces the note name",
+   "args": [
+    {
+     "op": "export",
+     "notes": [
+      {
+       "path": "Bio.md",
+       "text": "A #card\n1\n---",
+       "deck": "Biology 101"
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "decks": [
+     {
+      "id": "deck-1",
+      "name": "Biology 101",
+      "cards": [
+       "A\n---\n1"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "Pro presets are read one for each line",
+   "args": [
+    {
+     "op": "presets",
+     "text": "Biology | #bio | Mochi exports/Bio | Biology 101\n\n// comment\nPlain\n | no name"
+    }
+   ],
+   "expected": [
+    {
+     "name": "Biology",
+     "tag": "#bio",
+     "folder": "Mochi exports/Bio",
+     "deck": "Biology 101"
+    },
+    {
+     "name": "Plain",
+     "tag": "",
+     "folder": "",
+     "deck": ""
+    }
+   ]
+  }
+ ]
+}
