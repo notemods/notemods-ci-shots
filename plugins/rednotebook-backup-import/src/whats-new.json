@@ -1,0 +1,27 @@
+{
+	"id": "rednotebook-backup-import",
+	"name": "RedNotebook Backup Import",
+	"version": "1.1.1",
+	"changes": [
+		"Save rules, Merge selected dates and the date toggles now show how to get Pro, with a Sponsor on GitHub button, when you select them. Nothing turns on or saves until Pro is on."
+	],
+	"tip": "You can import the same backup again. Notes that exist are skipped, so no duplicates are made.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. RedNotebook Backup Import is one of over 100 small plugins that I make. Thank you for moving your notes into Obsidian with it.",
+	"related": [
+		{
+			"id": "daylio-backup-import",
+			"name": "Daylio Backup Import",
+			"blurb": "Convert local Daylio version 15 backups into journal notes with moods, activities, and photos."
+		},
+		{
+			"id": "diaro-backup-import",
+			"name": "Diaro Backup Import",
+			"blurb": "Import a Diaro backup with journal entries, tags, and photos."
+		},
+		{
+			"id": "journey-import",
+			"name": "Journey Diary Import",
+			"blurb": "Convert Journey diary ZIP backups into dated Markdown notes with photos."
+		}
+	]
+}
