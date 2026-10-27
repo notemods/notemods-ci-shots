@@ -1,0 +1,372 @@
+{
+ "slug": "properties-pdf-export",
+ "module": "properties-pdf-export/src/header",
+ "function": "propertyRows",
+ "cases": [
+  {
+   "name": "text source order",
+   "args": [
+    {
+     "author": "Ada",
+     "status": "Draft"
+    },
+    {}
+   ],
+   "expected": [
+    {
+     "key": "author",
+     "value": "Ada"
+    },
+    {
+     "key": "status",
+     "value": "Draft"
+    }
+   ]
+  },
+  {
+   "name": "list boolean zero",
+   "args": [
+    {
+     "tags": [
+      "one",
+      "two"
+     ],
+     "approved": false,
+     "count": 0
+    },
+    {}
+   ],
+   "expected": [
+    {
+     "key": "tags",
+     "value": "one, two"
+    },
+    {
+     "key": "approved",
+     "value": "No"
+    },
+    {
+     "key": "count",
+     "value": "0"
+    }
+   ]
+  },
+  {
+   "name": "no frontmatter",
+   "args": [
+    null,
+    {}
+   ],
+   "expected": []
+  },
+  {
+   "name": "empty frontmatter",
+   "args": [
+    {},
+    {}
+   ],
+   "expected": []
+  },
+  {
+   "name": "hide internals",
+   "args": [
+    {
+     "position": {
+      "start": {
+       "offset": 0
+      },
+      "end": {
+       "offset": 20
+      }
+     },
+     "cssclasses": [
+      "wide"
+     ],
+     "secret": "private",
+     "name": "Ada"
+    },
+    {
+     "hidden": "cssclasses,secret"
+    }
+   ],
+   "expected": [
+    {
+     "key": "name",
+     "value": "Ada"
+    }
+   ]
+  },
+  {
+   "name": "preferred order",
+   "args": [
+    {
+     "a": "1",
+     "b": "2",
+     "c": "3"
+    },
+    {
+     "order": "c,a"
+    }
+   ],
+   "expected": [
+    {
+     "key": "c",
+     "value": "3"
+    },
+    {
+     "key": "a",
+     "value": "1"
+    },
+    {
+     "key": "b",
+     "value": "2"
+    }
+   ]
+  },
+  {
+   "name": "skip blanks",
+   "args": [
+    {
+     "a": "",
+     "b": null,
+     "c": [],
+     "d": true
+    },
+    {}
+   ],
+   "expected": [
+    {
+     "key": "d",
+     "value": "Yes"
+    }
+   ]
+  },
+  {
+   "name": "include blanks",
+   "args": [
+    {
+     "empty": ""
+    },
+    {
+     "skipEmpty": false
+    }
+   ],
+   "expected": [
+    {
+     "key": "empty",
+     "value": ""
+    }
+   ]
+  },
+  {
+   "name": "wiki link aliases",
+   "args": [
+    {
+     "related": [
+      "[[Note|Read me]]",
+      "[[Other]]"
+     ]
+    },
+    {}
+   ],
+   "expected": [
+    {
+     "key": "related",
+     "value": "Read me, Other"
+    }
+   ]
+  },
+  {
+   "name": "nested values",
+   "args": [
+    {
+     "meta": {
+      "x": 1,
+      "y": false
+     }
+    },
+    {}
+   ],
+   "expected": [
+    {
+     "key": "meta",
+     "value": "x: 1; y: No"
+    }
+   ]
+  },
+  {
+   "name": "html stays text",
+   "args": [
+    {
+     "author": "<img src=x onerror=alert(1)>"
+    },
+    {}
+   ],
+   "expected": [
+    {
+     "key": "author",
+     "value": "<img src=x onerror=alert(1)>"
+    }
+   ]
+  },
+  {
+   "name": "disabled header",
+   "args": [
+    {
+     "a": "b"
+    },
+    {
+     "enabled": false
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "free layouts ignore folder rules",
+   "function": "layoutFor",
+   "args": [
+    "Reports/a.md",
+    {
+     "enabled": true,
+     "layout": "table",
+     "hidden": "cssclasses",
+     "order": "",
+     "skipEmpty": true,
+     "folderLayouts": "Reports = compact",
+     "preview": false
+    },
+    false
+   ],
+   "expected": "table"
+  },
+  {
+   "name": "Pro folder layouts",
+   "function": "layoutFor",
+   "args": [
+    "Reports/a.md",
+    {
+     "enabled": true,
+     "layout": "table",
+     "hidden": "cssclasses",
+     "order": "",
+     "skipEmpty": true,
+     "folderLayouts": "Reports = compact",
+     "preview": false
+    },
+    true
+   ],
+   "expected": "compact"
+  },
+  {
+   "name": "Pro deepest folder",
+   "function": "layoutFor",
+   "args": [
+    "Reports/Clients/a.md",
+    {
+     "enabled": true,
+     "layout": "table",
+     "hidden": "cssclasses",
+     "order": "",
+     "skipEmpty": true,
+     "folderLayouts": "Reports = compact\nReports/Clients = table",
+     "preview": false
+    },
+    true
+   ],
+   "expected": "table"
+  },
+  {
+   "name": "opening section only",
+   "function": "sectionRows",
+   "args": [
+    {
+     "author": "Ada"
+    },
+    {
+     "enabled": true,
+     "layout": "table",
+     "hidden": "cssclasses",
+     "order": "",
+     "skipEmpty": true,
+     "folderLayouts": "",
+     "preview": false
+    },
+    5
+   ],
+   "expected": []
+  },
+  {
+   "name": "unknown section is safe",
+   "function": "sectionRows",
+   "args": [
+    {
+     "author": "Ada"
+    },
+    {
+     "enabled": true,
+     "layout": "table",
+     "hidden": "cssclasses",
+     "order": "",
+     "skipEmpty": true,
+     "folderLayouts": "",
+     "preview": false
+    },
+    null
+   ],
+   "expected": []
+  },
+  {
+   "name": "repair saved settings",
+   "function": "normalizeSettings",
+   "args": [
+    {
+     "layout": "broken",
+     "hidden": null
+    }
+   ],
+   "expected": {
+    "enabled": true,
+    "layout": "table",
+    "hidden": "cssclasses, aliases",
+    "order": "",
+    "skipEmpty": true,
+    "folderLayouts": "",
+    "preview": false
+   }
+  },
+  {
+   "name": "user position is preserved",
+   "args": [
+    {
+     "position": "Engineer"
+    },
+    {}
+   ],
+   "expected": [
+    {
+     "key": "position",
+     "value": "Engineer"
+    }
+   ]
+  },
+  {
+   "name": "default hidden names",
+   "args": [
+    {
+     "cssclasses": "wide",
+     "aliases": [
+      "Alias"
+     ],
+     "author": "Ada"
+    },
+    {}
+   ],
+   "expected": [
+    {
+     "key": "author",
+     "value": "Ada"
+    }
+   ]
+  }
+ ]
+}
