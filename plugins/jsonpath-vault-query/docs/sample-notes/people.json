@@ -1,0 +1,23 @@
+{
+  "rows": [
+    {
+      "name": "Ada",
+      "age": 20,
+      "team": "Atlas",
+      "hours": 12
+    },
+    {
+      "name": "Lin",
+      "age": 30,
+      "team": "Beacon",
+      "hours": 18
+    },
+    {
+      "name": "Sam",
+      "age": 40,
+      "team": "Atlas",
+      "hours": 24
+    }
+  ],
+  "count": 3
+}
