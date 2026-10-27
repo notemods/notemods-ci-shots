@@ -1,0 +1,17 @@
+filters:
+  and:
+    - 'file.folder == "Bases Manual Order"'
+    - 'file.ext == "md"'
+    - 'collection == "reading"'
+views:
+  - type: bases-manual-order
+    name: Reading list
+    manualLayout: list
+    manualRank: manual_order
+    groupBy:
+      property: note.status
+      direction: ASC
+    order:
+      - file.name
+      - note.status
+      - note.manual_order

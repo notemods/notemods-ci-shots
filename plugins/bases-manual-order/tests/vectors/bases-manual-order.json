@@ -1,0 +1,271 @@
+{
+ "slug": "bases-manual-order",
+ "module": "bases-manual-order/src/order",
+ "function": "planMove",
+ "cases": [
+  {
+   "name": "middle",
+   "args": [
+    [
+     {
+      "id": "a",
+      "rank": 1024
+     },
+     {
+      "id": "b",
+      "rank": 2048
+     },
+     {
+      "id": "c",
+      "rank": 3072
+     }
+    ],
+    "c",
+    "b"
+   ],
+   "expected": [
+    {
+     "id": "c",
+     "rank": 1536,
+     "previous": 3072
+    }
+   ]
+  },
+  {
+   "name": "front",
+   "args": [
+    [
+     {
+      "id": "a",
+      "rank": 1024
+     },
+     {
+      "id": "b",
+      "rank": 2048
+     },
+     {
+      "id": "c",
+      "rank": 3072
+     }
+    ],
+    "c",
+    "a"
+   ],
+   "expected": [
+    {
+     "id": "c",
+     "rank": 0,
+     "previous": 3072
+    }
+   ]
+  },
+  {
+   "name": "end",
+   "args": [
+    [
+     {
+      "id": "a",
+      "rank": 1024
+     },
+     {
+      "id": "b",
+      "rank": 2048
+     },
+     {
+      "id": "c",
+      "rank": 3072
+     }
+    ],
+    "a",
+    null
+   ],
+   "expected": [
+    {
+     "id": "a",
+     "rank": 4096,
+     "previous": 1024
+    }
+   ]
+  },
+  {
+   "name": "missing",
+   "args": [
+    [
+     {
+      "id": "a",
+      "rank": null
+     },
+     {
+      "id": "b",
+      "rank": null
+     },
+     {
+      "id": "c",
+      "rank": null
+     }
+    ],
+    "c",
+    "a"
+   ],
+   "expected": [
+    {
+     "id": "c",
+     "rank": 0,
+     "previous": null
+    },
+    {
+     "id": "a",
+     "rank": 1024,
+     "previous": null
+    },
+    {
+     "id": "b",
+     "rank": 2048,
+     "previous": null
+    }
+   ]
+  },
+  {
+   "name": "ties",
+   "args": [
+    [
+     {
+      "id": "a",
+      "rank": 1
+     },
+     {
+      "id": "b",
+      "rank": 1
+     },
+     {
+      "id": "c",
+      "rank": 1
+     }
+    ],
+    "c",
+    "a"
+   ],
+   "expected": [
+    {
+     "id": "c",
+     "rank": 1024,
+     "previous": 1
+    },
+    {
+     "id": "a",
+     "rank": 2048,
+     "previous": 1
+    },
+    {
+     "id": "b",
+     "rank": 3072,
+     "previous": 1
+    }
+   ]
+  },
+  {
+   "name": "self",
+   "args": [
+    [
+     {
+      "id": "a",
+      "rank": 1
+     },
+     {
+      "id": "b",
+      "rank": 2
+     }
+    ],
+    "a",
+    "a"
+   ],
+   "expected": []
+  },
+  {
+   "name": "adjacent",
+   "args": [
+    [
+     {
+      "id": "a",
+      "rank": 1
+     },
+     {
+      "id": "b",
+      "rank": 2
+     }
+    ],
+    "a",
+    "b"
+   ],
+   "expected": []
+  },
+  {
+   "name": "free property",
+   "function": "rankProperty",
+   "args": [
+    "priority",
+    false
+   ],
+   "expected": "manual_order"
+  },
+  {
+   "name": "pro property",
+   "function": "rankProperty",
+   "args": [
+    "review_order",
+    true
+   ],
+   "expected": "review_order"
+  },
+  {
+   "name": "text is not a numeric rank",
+   "function": "rankNumber",
+   "args": [
+    "high"
+   ],
+   "expected": null
+  },
+  {
+   "name": "append only the missing rank in a mixed group",
+   "args": [
+    [
+     {
+      "id": "a",
+      "rank": 100
+     },
+     {
+      "id": "b",
+      "rank": 200
+     },
+     {
+      "id": "c",
+      "rank": null
+     },
+     {
+      "id": "d",
+      "rank": null
+     }
+    ],
+    "b",
+    "a"
+   ],
+   "expected": [
+    {
+     "id": "b",
+     "rank": -924,
+     "previous": 200
+    },
+    {
+     "id": "c",
+     "rank": 1224,
+     "previous": null
+    },
+    {
+     "id": "d",
+     "rank": 2248,
+     "previous": null
+    }
+   ]
+  }
+ ]
+}
