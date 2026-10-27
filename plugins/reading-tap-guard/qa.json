@@ -1,0 +1,66 @@
+[
+	{
+		"feature": "double-tap-guard",
+		"caption": "After a double tap on the paragraph, the note stays in Reading view.",
+		"note": "Tap test.md",
+		"eval": "(async () => { app.plugins.plugins['reading-tap-guard'].settings.action='nothing';document.querySelectorAll('.modal-container').forEach(el => el.remove()); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'preview'}}); await new Promise(r=>setTimeout(r,800)); window.getSelection().removeAllRanges(); const v=l.view; const p=[...v.containerEl.querySelectorAll('.markdown-reading-view p')].find(e=>e.textContent.startsWith('Double tap')); const n=p.firstChild; const at=(w)=>{const i=n.nodeValue.indexOf(w); const r=document.createRange(); r.setStart(n,i); r.setEnd(n,i+w.length); const b=r.getBoundingClientRect(); return [b.left+b.width/2,b.top+b.height/2];};const tap=(x,y)=>{for(let i=0;i<2;i++){const el=document.elementFromPoint(x,y);const init={pointerType:'touch',pointerId:60+i,button:0,buttons:1,isPrimary:true,bubbles:true,cancelable:true,composed:true,clientX:x,clientY:y};el.dispatchEvent(new PointerEvent('pointerdown',init));el.dispatchEvent(new PointerEvent('pointerup',{...init,buttons:0}));el.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,clientX:x,clientY:y}));}}; const [x,y]=at('paragraph'); tap(x,y); await new Promise(r=>setTimeout(r,1000)); const m=v.getMode(); if (m!=='preview') throw new Error('mode '+m); return m; })()",
+		"wait": 400,
+		"zoom": 1.2
+	},
+	{
+		"feature": "before-after",
+		"caption": "Without the plugin a double tap opens the editor. With the plugin the note stays in Reading view.",
+		"frames": [
+			{
+				"note": "Tap test.md",
+				"eval": "(async () => { await app.plugins.disablePlugin('reading-tap-guard'); document.querySelectorAll('.modal-container').forEach(el => el.remove()); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'preview'}}); await new Promise(r=>setTimeout(r,800)); window.getSelection().removeAllRanges(); const v=l.view; const p=[...v.containerEl.querySelectorAll('.markdown-reading-view p')].find(e=>e.textContent.startsWith('Double tap')); const n=p.firstChild; const at=(w)=>{const i=n.nodeValue.indexOf(w); const r=document.createRange(); r.setStart(n,i); r.setEnd(n,i+w.length); const b=r.getBoundingClientRect(); return [b.left+b.width/2,b.top+b.height/2];}; return 'off'; })()",
+				"wait": 400,
+				"hold": 1800,
+				"zoom": 1.2
+			},
+			{
+				"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'preview'}}); await new Promise(r=>setTimeout(r,800)); window.getSelection().removeAllRanges(); const v=l.view; const p=[...v.containerEl.querySelectorAll('.markdown-reading-view p')].find(e=>e.textContent.startsWith('Double tap')); const n=p.firstChild; const at=(w)=>{const i=n.nodeValue.indexOf(w); const r=document.createRange(); r.setStart(n,i); r.setEnd(n,i+w.length); const b=r.getBoundingClientRect(); return [b.left+b.width/2,b.top+b.height/2];};const tap=(x,y,k)=>{for(let i=0;i<k;i++){const el=document.elementFromPoint(x,y);const init={pointerType:'touch',pointerId:60+i,button:0,buttons:1,isPrimary:true,bubbles:true,cancelable:true,composed:true,clientX:x,clientY:y};el.dispatchEvent(new PointerEvent('pointerdown',init));el.dispatchEvent(new PointerEvent('pointerup',{...init,buttons:0}));el.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,clientX:x,clientY:y}));}}; const [x,y]=at('paragraph'); tap(x,y,2); await new Promise(r=>setTimeout(r,1000)); const m=l.view.getMode(); if (m!=='source') throw new Error('positive control mode '+m); return m; })()",
+				"wait": 300,
+				"hold": 2200,
+				"zoom": 1.2
+			},
+			{
+				"eval": "(async () => { await app.plugins.enablePlugin('reading-tap-guard'); await new Promise(r=>setTimeout(r,300)); document.querySelectorAll('.modal-container').forEach(el => el.remove()); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'preview'}}); await new Promise(r=>setTimeout(r,800)); window.getSelection().removeAllRanges(); const v=l.view; const p=[...v.containerEl.querySelectorAll('.markdown-reading-view p')].find(e=>e.textContent.startsWith('Double tap')); const n=p.firstChild; const at=(w)=>{const i=n.nodeValue.indexOf(w); const r=document.createRange(); r.setStart(n,i); r.setEnd(n,i+w.length); const b=r.getBoundingClientRect(); return [b.left+b.width/2,b.top+b.height/2];}; return 'on'; })()",
+				"wait": 400,
+				"hold": 1800,
+				"zoom": 1.2
+			},
+			{
+				"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'preview'}}); await new Promise(r=>setTimeout(r,800)); window.getSelection().removeAllRanges(); const v=l.view; const p=[...v.containerEl.querySelectorAll('.markdown-reading-view p')].find(e=>e.textContent.startsWith('Double tap')); const n=p.firstChild; const at=(w)=>{const i=n.nodeValue.indexOf(w); const r=document.createRange(); r.setStart(n,i); r.setEnd(n,i+w.length); const b=r.getBoundingClientRect(); return [b.left+b.width/2,b.top+b.height/2];};const tap=(x,y,k)=>{for(let i=0;i<k;i++){const el=document.elementFromPoint(x,y);const init={pointerType:'touch',pointerId:60+i,button:0,buttons:1,isPrimary:true,bubbles:true,cancelable:true,composed:true,clientX:x,clientY:y};el.dispatchEvent(new PointerEvent('pointerdown',init));el.dispatchEvent(new PointerEvent('pointerup',{...init,buttons:0}));el.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,clientX:x,clientY:y}));}}; const [x,y]=at('paragraph'); tap(x,y,2); await new Promise(r=>setTimeout(r,1000)); const m=l.view.getMode(); if (m!=='preview') throw new Error('guard mode '+m); return m; })()",
+				"wait": 300,
+				"hold": 2200,
+				"zoom": 1.2
+			}
+		]
+	},
+	{
+		"feature": "single-taps",
+		"caption": "One tap on a link in Reading view opens the linked note.",
+		"note": "Tap test.md",
+		"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'preview'}}); await new Promise(r=>setTimeout(r,800)); window.getSelection().removeAllRanges(); const v=l.view; const p=[...v.containerEl.querySelectorAll('.markdown-reading-view p')].find(e=>e.textContent.startsWith('Double tap')); const n=p.firstChild; const at=(w)=>{const i=n.nodeValue.indexOf(w); const r=document.createRange(); r.setStart(n,i); r.setEnd(n,i+w.length); const b=r.getBoundingClientRect(); return [b.left+b.width/2,b.top+b.height/2];};const tap=(x,y,k)=>{for(let i=0;i<k;i++){const el=document.elementFromPoint(x,y);const init={pointerType:'touch',pointerId:60+i,button:0,buttons:1,isPrimary:true,bubbles:true,cancelable:true,composed:true,clientX:x,clientY:y};el.dispatchEvent(new PointerEvent('pointerdown',init));el.dispatchEvent(new PointerEvent('pointerup',{...init,buttons:0}));el.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,clientX:x,clientY:y}));}}; const a=v.containerEl.querySelector('a.internal-link[data-href=\"Target\"]'); const b=a.getBoundingClientRect(); tap(b.left+b.width/2,b.top+b.height/2,1); for (let i=0;i<30 && !(app.workspace.getActiveFile()?.path??'').endsWith('Target.md');i++) await new Promise(r=>setTimeout(r,100)); const f=app.workspace.getActiveFile()?.path; if (!f || !f.endsWith('Target.md')) throw new Error('open '+f); const l2=app.workspace.getLeaf(false); const s2=l2.getViewState(); await l2.setViewState({...s2,state:{...s2.state,mode:'preview'}}); return f; })()",
+		"wait": 600,
+		"zoom": 1.2
+	},
+	{
+		"feature": "select-word",
+		"caption": "With Select the word, a double tap selects the word and the note stays in Reading view.",
+		"note": "Tap test.md",
+		"eval": "(async () => { app.plugins.plugins['reading-tap-guard'].settings.action='select-word';document.querySelectorAll('.modal-container').forEach(el => el.remove()); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'preview'}}); await new Promise(r=>setTimeout(r,800)); window.getSelection().removeAllRanges(); const v=l.view; const p=[...v.containerEl.querySelectorAll('.markdown-reading-view p')].find(e=>e.textContent.startsWith('Double tap')); const n=p.firstChild; const at=(w)=>{const i=n.nodeValue.indexOf(w); const r=document.createRange(); r.setStart(n,i); r.setEnd(n,i+w.length); const b=r.getBoundingClientRect(); return [b.left+b.width/2,b.top+b.height/2];};const tap=(x,y)=>{for(let i=0;i<2;i++){const el=document.elementFromPoint(x,y);const init={pointerType:'touch',pointerId:60+i,button:0,buttons:1,isPrimary:true,bubbles:true,cancelable:true,composed:true,clientX:x,clientY:y};el.dispatchEvent(new PointerEvent('pointerdown',init));el.dispatchEvent(new PointerEvent('pointerup',{...init,buttons:0}));el.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,clientX:x,clientY:y}));}}; const [x,y]=at('quick'); tap(x,y); await new Promise(r=>setTimeout(r,800)); const t=window.getSelection().toString(); if (t!=='quick') throw new Error('selection '+t); if (v.getMode()!=='preview') throw new Error('mode'); return t; })()",
+		"after": "(async () => { window.getSelection().removeAllRanges(); app.plugins.plugins['reading-tap-guard'].settings.action='nothing'; return 'ok'; })()",
+		"wait": 400,
+		"zoom": 1.2
+	},
+	{
+		"feature": "settings",
+		"caption": "The setting picks what a double tap does in Reading view. Do nothing is the default.",
+		"note": "Tap test.md",
+		"eval": "(async () => { app.setting.open(); app.setting.openTabById('reading-tap-guard'); await new Promise(r=>setTimeout(r,800)); const t=document.querySelector('.modal.mod-settings')?.textContent??''; if (!t.includes('Double tap in reading view')) throw new Error('no setting'); return 'ok'; })()",
+		"after": "(async () => { app.setting.close(); return 'ok'; })()",
+		"wait": 500
+	}
+]
