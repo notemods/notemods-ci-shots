@@ -1,0 +1,53 @@
+.remnote-import-modal {
+ width: min(920px, 94vw);
+}
+
+.remnote-import-source {
+ width: 100%;
+ font-family: var(--font-monospace);
+ resize: vertical;
+}
+
+.remnote-import-preview {
+ max-height: 42vh;
+ overflow: auto;
+ padding: var(--size-4-2);
+ border-top: 1px solid var(--background-modifier-border);
+}
+
+.remnote-import-count {
+ font-weight: var(--font-bold);
+ color: var(--text-accent);
+}
+
+.remnote-import-warning {
+ color: var(--text-error);
+}
+
+.remnote-import-markdown {
+ white-space: pre-wrap;
+ font-size: var(--font-smallest);
+ background: var(--background-secondary);
+ padding: var(--size-4-2);
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
