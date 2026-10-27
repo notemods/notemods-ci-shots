@@ -1,0 +1,27 @@
+{
+	"id": "tag-properties",
+	"name": "Tag Properties",
+	"version": "1.2.1",
+	"changes": [
+		"Include core tags and a second tag property now show how to get Pro, with a Sponsor on GitHub button. The first tag property stays free."
+	],
+	"tip": "Select \"Copy bases filter\" to use the current tag selection in the advanced filter editor of a base.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Tag Properties is one of over 100 small plugins that I make. Thank you for using it to browse your notes by topic.",
+	"related": [
+		{
+			"id": "search-operators",
+			"name": "Search Operators",
+			"blurb": "Find notes by date and links, with a preview for each result."
+		},
+		{
+			"id": "context-trees",
+			"name": "Context Trees",
+			"blurb": "Show parent headings and lists in search results."
+		},
+		{
+			"id": "bases-filter-switches",
+			"name": "Bases Filter Switches",
+			"blurb": "Turn saved Bases filters on or off with switches."
+		}
+	]
+}

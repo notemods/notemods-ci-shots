@@ -1,0 +1,52 @@
+[
+	{
+		"feature": "tag-view",
+		"caption": "Clickable custom tags with counts and note links.",
+		"note": "Research plan.md",
+		"eval": "const p=app.plugins.plugins['tag-properties']; for(const l of app.workspace.getLeavesOfType('tag-properties-view')) l.detach(); const l=app.workspace.getLeaf(true); await l.setViewState({type:'tag-properties-view',active:true}); await app.workspace.revealLeaf(l); const v=app.workspace.getLeavesOfType('tag-properties-view')[0].view; v.selected='research'; v.render(); 'ok'",
+		"zoom": 0.9,
+		"wait": 1000
+	},
+	{
+		"feature": "child-tags",
+		"caption": "Include interview notes with child tags.",
+		"eval": "const v=app.workspace.getLeavesOfType('tag-properties-view')[0].view; v.descendants=true; v.render(); 'ok'",
+		"zoom": 0.9
+	},
+	{
+		"feature": "bases-filter",
+		"caption": "Use the selected tag in a native Bases filter.",
+		"note": "Research.base",
+		"eval": "'ok'",
+		"zoom": 0.9
+	},
+	{
+		"feature": "settings",
+		"caption": "Choose tag properties and see the optional Pro offer.",
+		"eval": "app.setting.open(); app.setting.openTabById('tag-properties'); 'ok'",
+		"after": "app.setting.close(); 'ok'",
+		"zoom": 0.9
+	},
+	{
+		"feature": "tag-properties",
+		"caption": "Select a tag and include its child tags.",
+		"frames": [
+			{
+				"note": "Research plan.md",
+				"eval": "const p=app.plugins.plugins['tag-properties']; for(const l of app.workspace.getLeavesOfType('tag-properties-view')) l.detach(); const l=app.workspace.getLeaf(true); await l.setViewState({type:'tag-properties-view',active:true}); await app.workspace.revealLeaf(l); const v=app.workspace.getLeavesOfType('tag-properties-view')[0].view; v.selected='research'; v.render(); 'ok'",
+				"zoom": 0.9,
+				"hold": 1800
+			},
+			{
+				"eval": "const v=app.workspace.getLeavesOfType('tag-properties-view')[0].view; v.descendants=true; v.render(); 'ok'",
+				"zoom": 0.9,
+				"hold": 1800
+			},
+			{
+				"eval": "const v=app.workspace.getLeavesOfType('tag-properties-view')[0].view; v.selected='writing'; v.descendants=false; v.render(); 'ok'",
+				"zoom": 0.9,
+				"hold": 1800
+			}
+		]
+	}
+]
