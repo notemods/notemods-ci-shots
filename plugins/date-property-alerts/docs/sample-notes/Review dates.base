@@ -1,0 +1,10 @@
+filters:
+  and:
+    - file.ext == "md"
+    - status == "active"
+views:
+  - type: date-property-alerts
+    name: Review dates
+    alertProperty: note.due
+    alertHour: "9"
+    alertsEnabled: true
