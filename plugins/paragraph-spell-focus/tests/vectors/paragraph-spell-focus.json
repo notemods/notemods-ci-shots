@@ -1,0 +1,151 @@
+{
+ "slug": "paragraph-spell-focus",
+ "module": "src/core",
+ "function": "spellFocusRange",
+ "cases": [
+  {
+   "name": "empty note",
+   "args": [
+    "",
+    0,
+    "paragraph"
+   ],
+   "expected": {
+    "from": 0,
+    "to": 0
+   }
+  },
+  {
+   "name": "first paragraph",
+   "args": [
+    "alpha\nbeta\n\ngamma",
+    2,
+    "paragraph"
+   ],
+   "expected": {
+    "from": 0,
+    "to": 10
+   }
+  },
+  {
+   "name": "second paragraph",
+   "args": [
+    "alpha\nbeta\n\ngamma",
+    15,
+    "paragraph"
+   ],
+   "expected": {
+    "from": 12,
+    "to": 17
+   }
+  },
+  {
+   "name": "blank separator",
+   "args": [
+    "alpha\n\nbeta",
+    6,
+    "paragraph"
+   ],
+   "expected": {
+    "from": 6,
+    "to": 6
+   }
+  },
+  {
+   "name": "empty first line",
+   "args": [
+    "\nalpha",
+    0,
+    "paragraph"
+   ],
+   "expected": {
+    "from": 0,
+    "to": 0
+   }
+  },
+  {
+   "name": "CRLF separator",
+   "args": [
+    "a\r\n\r\nb",
+    5,
+    "paragraph"
+   ],
+   "expected": {
+    "from": 5,
+    "to": 6
+   }
+  },
+  {
+   "name": "clamped caret",
+   "args": [
+    "first\n\nlast",
+    100,
+    "paragraph"
+   ],
+   "expected": {
+    "from": 7,
+    "to": 11
+   }
+  },
+  {
+   "name": "nested section",
+   "args": [
+    "# One\na\n\n## Child\nb\n\n# Two\nc",
+    7,
+    "section"
+   ],
+   "expected": {
+    "from": 0,
+    "to": 20
+   }
+  },
+  {
+   "name": "child section",
+   "args": [
+    "# One\na\n\n## Child\nb\n\n# Two\nc",
+    18,
+    "section"
+   ],
+   "expected": {
+    "from": 9,
+    "to": 20
+   }
+  },
+  {
+   "name": "heading inside fence",
+   "args": [
+    "# One\n```md\n# fake\n```\nx\n# Two\ny",
+    23,
+    "section"
+   ],
+   "expected": {
+    "from": 0,
+    "to": 24
+   }
+  },
+  {
+   "name": "preamble before heading",
+   "args": [
+    "intro\n# One\nbody",
+    2,
+    "section"
+   ],
+   "expected": {
+    "from": 0,
+    "to": 5
+   }
+  },
+  {
+   "name": "frontmatter heading ignored",
+   "args": [
+    "---\n# fake\ntitle: hi\n---\ntext\n# Real\nx",
+    27,
+    "section"
+   ],
+   "expected": {
+    "from": 0,
+    "to": 29
+   }
+  }
+ ]
+}
