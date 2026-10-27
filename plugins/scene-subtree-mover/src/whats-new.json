@@ -1,0 +1,27 @@
+{
+	"id": "scene-subtree-mover",
+	"name": "Scene Subtree Mover",
+	"version": "1.2.1",
+	"changes": [
+		"Add move (Pro), Save named order (Pro) and Preview saved order (Pro) can now be selected without Pro. They show how to get Pro, with a Sponsor on GitHub button. The preview and the saved orders do not change."
+	],
+	"tip": "Select Manuscript root in Destination parent to promote a nested scene.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Scene Subtree Mover is one of over 100 small plugins that I make. Thank you for using it with your writing.",
+	"related": [
+		{
+			"id": "revision-session-marks",
+			"name": "Revision Session Marks",
+			"blurb": "Save a prose baseline and a marked review of edits."
+		},
+		{
+			"id": "compile-loss-check",
+			"name": "Compile Loss Check",
+			"blurb": "Find source paragraphs that do not match a compiled manuscript."
+		},
+		{
+			"id": "scene-notes-to-fountain",
+			"name": "Scene Notes to Fountain",
+			"blurb": "Convert planning notes into an ordered Fountain outline with scene headings and summaries."
+		}
+	]
+}
