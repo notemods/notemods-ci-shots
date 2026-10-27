@@ -1,0 +1,78 @@
+[
+	{
+		"feature": "timeline",
+		"caption": "Read the trip dates and tags in a vertical timeline.",
+		"note": "Trip.mw",
+		"eval": "(async () => { const p = app.plugins.plugins['pocket-markwhen']; p.pro.signOut(); await p.openTimeline(app.vault.getFileByPath('Pocket Markwhen/Trip.mw')); const v = app.workspace.getMostRecentLeaf().view; v.showTab(false);  return 'ok'; })()"
+	},
+	{
+		"feature": "source",
+		"caption": "Edit the same Markwhen source file.",
+		"note": "Trip.mw",
+		"eval": "(async () => { const p = app.plugins.plugins['pocket-markwhen']; p.pro.signOut(); await p.openTimeline(app.vault.getFileByPath('Pocket Markwhen/Trip.mw')); const v = app.workspace.getMostRecentLeaf().view; v.showTab(false); v.showTab(true); return 'ok'; })()"
+	},
+	{
+		"feature": "embedded",
+		"caption": "Read an mw block in a weekly review note.",
+		"note": "Weekly review.md",
+		"eval": "(async () => { app.plugins.plugins['pocket-markwhen'].pro.signOut(); const leaf = app.workspace.getMostRecentLeaf(); await leaf.setViewState({ type: 'markdown', state: { file: 'Pocket Markwhen/Weekly review.md', mode: 'preview' }, active: true }); return 'ok'; })()"
+	},
+	{
+		"feature": "groups",
+		"caption": "Collapse the Later group to read the trip events.",
+		"note": "Trip.mw",
+		"eval": "(async () => { const p = app.plugins.plugins['pocket-markwhen']; p.pro.signOut(); await p.openTimeline(app.vault.getFileByPath('Pocket Markwhen/Trip.mw')); const v = app.workspace.getMostRecentLeaf().view; v.showTab(false); v.containerEl.querySelector('.pocket-markwhen-group').open = false; return 'ok'; })()"
+	},
+	{
+		"feature": "filter",
+		"caption": "Keep dates that overlap the selected range.",
+		"note": "Trip.mw",
+		"eval": "(async () => { const p = app.plugins.plugins['pocket-markwhen']; p.pro.signOut(); await p.openTimeline(app.vault.getFileByPath('Pocket Markwhen/Trip.mw')); const v = app.workspace.getMostRecentLeaf().view; v.showTab(false); v.panel.applyFilter({from:'2026-03-02',to:'2026-03-05',tag:''}); return 'ok'; })()"
+	},
+	{
+		"feature": "today",
+		"caption": "Today highlights the next event and opens its group.",
+		"note": "Trip.mw",
+		"eval": "(async () => { const p = app.plugins.plugins['pocket-markwhen']; p.pro.signOut(); await p.openTimeline(app.vault.getFileByPath('Pocket Markwhen/Trip.mw')); const v = app.workspace.getMostRecentLeaf().view; v.showTab(false); v.panel.goToday('2026-10-12'); return 'ok'; })()"
+	},
+	{
+		"feature": "combine",
+		"caption": "Pro combines travel and work events in one view.",
+		"note": "Trip.mw",
+		"eval": "(async () => { const p = app.plugins.plugins['pocket-markwhen']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('pocket-markwhen-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); await p.openTimeline(app.vault.getFileByPath('Pocket Markwhen/Trip.mw')); const v = app.workspace.getMostRecentLeaf().view; v.showTab(false); await v.panel.combine(['Pocket Markwhen/Work.mw']); v.panel.applyFilter({from:'2026-03-02',to:'2026-03-09',tag:''}); return 'ok'; })()",
+		"after": "app.plugins.plugins['pocket-markwhen'].pro.signOut(); 'ok'"
+	},
+	{
+		"feature": "saved-filter",
+		"caption": "Pro saves the Italy tag and date filter.",
+		"note": "Trip.mw",
+		"eval": "(async () => { const p = app.plugins.plugins['pocket-markwhen']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('pocket-markwhen-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); await p.openTimeline(app.vault.getFileByPath('Pocket Markwhen/Trip.mw')); const v = app.workspace.getMostRecentLeaf().view; v.showTab(false); v.panel.applyFilter({from:'2026-03-02',to:'2026-03-08',tag:'italy'}); await v.panel.saveFilter('Italy trip'); const saved = v.containerEl.querySelector('select[aria-label=\"Saved filter\"]'); saved.value = 'Italy trip'; saved.dispatchEvent(new Event('change')); v.containerEl.querySelector('.pocket-markwhen-pro details').open = true; return 'ok'; })()",
+		"after": "app.plugins.plugins['pocket-markwhen'].pro.signOut(); 'ok'"
+	},
+	{
+		"feature": "export",
+		"caption": "Pro writes the filtered events as a Markdown list.",
+		"note": "Trip.mw",
+		"eval": "(async () => { const p = app.plugins.plugins['pocket-markwhen']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('pocket-markwhen-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); await p.openTimeline(app.vault.getFileByPath('Pocket Markwhen/Trip.mw')); const v = app.workspace.getMostRecentLeaf().view; v.showTab(false); v.panel.applyFilter({from:'2026-03-02',to:'2026-03-08',tag:'italy'}); const path = await v.panel.exportMarkdown(); window.__pmExport = path; await app.workspace.getLeaf(true).openFile(app.vault.getFileByPath(path)); return 'ok'; })()",
+		"after": "(async () => { const f = app.vault.getFileByPath(window.__pmExport); app.workspace.getMostRecentLeaf().detach(); if (f) await app.vault.delete(f); app.plugins.plugins['pocket-markwhen'].pro.signOut(); return 'ok'; })()"
+	},
+	{
+		"feature": "pocket-markwhen",
+		"caption": "Open the timeline, edit the source and use the date filter.",
+		"frames": [
+			{
+				"note": "Trip.mw",
+				"eval": "(async () => { const p = app.plugins.plugins['pocket-markwhen']; p.pro.signOut(); await p.openTimeline(app.vault.getFileByPath('Pocket Markwhen/Trip.mw')); const v = app.workspace.getMostRecentLeaf().view; v.showTab(false);  return 'ok'; })()",
+				"hold": 1300
+			},
+			{
+				"eval": "(async () => { const v = app.workspace.getMostRecentLeaf().view; v.showTab(true); return 'ok'; })()",
+				"hold": 1300
+			},
+			{
+				"eval": "(async () => { const v = app.workspace.getMostRecentLeaf().view; v.showTab(false); v.panel.applyFilter({from:'2026-03-02',to:'2026-03-08',tag:'italy'}); return 'ok'; })()",
+				"hold": 1500
+			}
+		]
+	}
+]
