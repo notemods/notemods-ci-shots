@@ -1,0 +1,27 @@
+{
+	"id": "bases-view-checkpoints",
+	"name": "Bases View Checkpoints",
+	"version": "1.1.1",
+	"changes": [
+		"Save named checkpoint and Compare checkpoint with current view now show in the command palette without Pro. They show how to get Pro, with a Sponsor on GitHub button."
+	],
+	"tip": "Run \"Undo last checkpoint restore\" to put the file text back after a restore, if the file has not changed since.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Bases View Checkpoints is one of over 100 small plugins that I make. Thank you for using it with Bases. Bases is still new, and your setups teach me a lot.",
+	"related": [
+		{
+			"id": "bases-filter-switches",
+			"name": "Bases Filter Switches",
+			"blurb": "Turn saved Bases filters on or off with switches."
+		},
+		{
+			"id": "bases-view-tabs",
+			"name": "Bases View Tabs",
+			"blurb": "Switch between the saved views of a base from a tab strip."
+		},
+		{
+			"id": "bases-freeze-panes",
+			"name": "Bases Freeze Panes",
+			"blurb": "Keep column and note names visible as you scroll a base."
+		}
+	]
+}

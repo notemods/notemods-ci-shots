@@ -1,0 +1,375 @@
+{
+ "slug": "bases-view-checkpoints",
+ "module": "bases-view-checkpoints/src/basefile",
+ "cases": [
+  {
+   "name": "restore view A brings back its sort and keeps view B filter",
+   "args": [
+    {
+     "file": "filters:\n  and:\n    - 'file.hasProperty(\"status\")'\nformulas:\n  total: '1 + 1'\nviews:\n  - type: table\n    name: A\n    filters: 'file.name != x'\n    order:\n      - file.name\n      - asc\n  - type: table\n    name: B\n    filters: 'status = todo'\n",
+     "saveView": "A",
+     "edit": "filters:\n  and:\n    - 'file.hasProperty(\"status\")'\nformulas:\n  total: '1 + 1'\nviews:\n  - type: table\n    name: A\n    filters: 'file.name != x'\n    order:\n      - file.name\n      - desc\n  - type: table\n    name: B\n    filters: 'status = done'\n"
+    }
+   ],
+   "expected": "filters:\n  and:\n    - 'file.hasProperty(\"status\")'\nformulas:\n  total: '1 + 1'\nviews:\n  - type: table\n    name: A\n    filters: 'file.name != x'\n    order:\n      - file.name\n      - asc\n  - type: table\n    name: B\n    filters: 'status = done'\n"
+  },
+  {
+   "name": "changed shared formulas are listed in the preview and written back",
+   "args": [
+    {
+     "file": "formulas:\n  total: \"1 + 1\"\nviews:\n  - type: table\n    name: A\n    order:\n      - file.name\n",
+     "saveView": "A",
+     "edit": "formulas:\n  total: \"2 + 2\"\nviews:\n  - type: table\n    name: A\n    order:\n      - file.name\n",
+     "action": "restore-changes"
+    }
+   ],
+   "expected": {
+    "changes": [
+     "formulas"
+    ]
+   }
+  },
+  {
+   "name": "unknown view key and unknown top-level key survive save and restore",
+   "args": [
+    {
+     "file": "customTop: keepMe\nviews:\n  - type: table\n    name: A\n    mysteryKey: 7\n",
+     "saveView": "A",
+     "edit": "customTop: keepMe\nviews:\n  - type: table\n    name: A\n    mysteryKey: 99\n"
+    }
+   ],
+   "expected": "customTop: keepMe\nviews:\n  - type: table\n    name: A\n    mysteryKey: 7\n"
+  },
+  {
+   "name": "groupOrder with null entries keeps order and null after restore",
+   "args": [
+    {
+     "file": "views:\n  - type: table\n    name: A\n    groupOrder:\n      - B\n      - null\n      - A\n",
+     "saveView": "A",
+     "edit": "views:\n  - type: table\n    name: A\n    groupOrder:\n      - A\n      - null\n      - B\n"
+    }
+   ],
+   "expected": "views:\n  - type: table\n    name: A\n    groupOrder:\n      - B\n      - null\n      - A\n"
+  },
+  {
+   "name": "two views with the same name refuse to save",
+   "args": [
+    {
+     "file": "views:\n  - type: table\n    name: A\n  - type: table\n    name: A\n",
+     "saveView": "A"
+    }
+   ],
+   "expected": {
+    "error": "The file has invalid YAML or two views with the same name."
+   }
+  },
+  {
+   "name": "two views with the same name refuse to restore",
+   "args": [
+    {
+     "file": "views:\n  - type: table\n    name: A\n  - type: table\n    name: A\n",
+     "checkpointView": "A"
+    }
+   ],
+   "expected": {
+    "error": "Two views have the same name."
+   }
+  },
+  {
+   "name": "deleted view is appended back and other views stay",
+   "args": [
+    {
+     "file": "views:\n  - type: table\n    name: A\n    order:\n      - file.name\n",
+     "saveView": "A",
+     "edit": "views:\n  - type: table\n    name: B\n"
+    }
+   ],
+   "expected": "views:\n  - type: table\n    name: B\n  - type: table\n    name: A\n    order:\n      - file.name\n"
+  },
+  {
+   "name": "invalid YAML refuses to save",
+   "args": [
+    {
+     "file": "views: [oops\n",
+     "saveView": "A"
+    }
+   ],
+   "expected": {
+    "error": "The file has invalid YAML or two views with the same name."
+   }
+  },
+  {
+   "name": "invalid YAML refuses to restore",
+   "args": [
+    {
+     "file": "views: [oops\n",
+     "checkpointView": "A"
+    }
+   ],
+   "expected": {
+    "error": "The file has invalid YAML or two views with the same name."
+   }
+  },
+  {
+   "name": "viewNames returns null when a view has no name",
+   "args": [
+    {
+     "file": "views:\n  - type: table\n",
+     "action": "viewnames"
+    }
+   ],
+   "expected": {
+    "viewNames": null
+   }
+  },
+  {
+   "name": "viewNames lists the view names in file order",
+   "args": [
+    {
+     "file": "views:\n  - type: table\n    name: Zed\n  - type: cards\n    name: Alpha\n",
+     "action": "viewnames"
+    }
+   ],
+   "expected": {
+    "viewNames": [
+     "Zed",
+     "Alpha"
+    ]
+   }
+  },
+  {
+   "name": "restore with no changes reports an empty change list",
+   "args": [
+    {
+     "file": "views:\n  - type: table\n    name: A\n",
+     "saveView": "A",
+     "edit": "views:\n  - type: table\n    name: A\n",
+     "action": "restore-changes"
+    }
+   ],
+   "expected": {
+    "changes": []
+   }
+  },
+  {
+   "name": "restore keeps the other view data",
+   "args": [
+    {
+     "file": "views:\n  - type: table\n    name: A\n    order: desc\n  - type: table\n    name: B\n    order: asc\n",
+     "saveView": "B",
+     "edit": "views:\n  - type: table\n    name: A\n    order: desc\n  - type: table\n    name: B\n    order: desc\n"
+    }
+   ],
+   "expected": "views:\n  - type: table\n    name: A\n    order: desc\n  - type: table\n    name: B\n    order: asc\n"
+  },
+  {
+   "name": "summaries shared key is restored",
+   "args": [
+    {
+     "file": "summaries:\n  total: count\nviews:\n  - type: table\n    name: A\n",
+     "saveView": "A",
+     "edit": "summaries:\n  total: sum\nviews:\n  - type: table\n    name: A\n"
+    }
+   ],
+   "expected": "summaries:\n  total: count\nviews:\n  - type: table\n    name: A\n"
+  },
+  {
+   "name": "restore removes a shared key absent at save time",
+   "args": [
+    {
+     "file": "views:\n  - type: table\n    name: A\n",
+     "saveView": "A",
+     "edit": "properties:\n  note: true\nviews:\n  - type: table\n    name: A\n"
+    }
+   ],
+   "expected": "views:\n  - type: table\n    name: A\n"
+  },
+  {
+   "name": "compare lists changed view and shared keys sorted",
+   "args": [
+    {
+     "file": "formulas:\n  a: \"1\"\nviews:\n  - type: table\n    name: A\n    order: asc\n",
+     "saveView": "A",
+     "edit": "formulas:\n  a: \"2\"\nviews:\n  - type: table\n    name: A\n    order: desc\n",
+     "action": "compare"
+    }
+   ],
+   "expected": {
+    "compare": [
+     "A.order",
+     "formulas"
+    ]
+   }
+  },
+  {
+   "name": "compare of an unchanged checkpoint is empty",
+   "args": [
+    {
+     "file": "views:\n  - type: table\n    name: A\n    order: asc\n",
+     "saveView": "A",
+     "edit": "views:\n  - type: table\n    name: A\n    order: asc\n",
+     "action": "compare"
+    }
+   ],
+   "expected": {
+    "compare": []
+   }
+  },
+  {
+   "name": "compare returns null when the view is gone",
+   "args": [
+    {
+     "file": "views:\n  - type: table\n    name: A\n    order: asc\n",
+     "saveView": "A",
+     "edit": "views:\n  - type: table\n    name: B\n",
+     "action": "compare"
+    }
+   ],
+   "expected": {
+    "compare": null
+   }
+  },
+  {
+   "name": "restore of a missing view name appends the entry",
+   "args": [
+    {
+     "file": "views:\n  - type: table\n    name: Zed\n",
+     "checkpointView": "Ghost",
+     "checkpointText": "views:\n  - type: table\n    name: Ghost\n    order: asc\n"
+    }
+   ],
+   "expected": "views:\n  - type: table\n    name: Zed\n  - type: table\n    name: Ghost\n    order: asc\n"
+  },
+  {
+   "name": "save picks the named view and not the first one",
+   "args": [
+    {
+     "file": "views:\n  - type: table\n    name: A\n    order: asc\n  - type: table\n    name: C\n    order: desc\n",
+     "saveView": "C",
+     "edit": "views:\n  - type: table\n    name: A\n    order: asc\n  - type: table\n    name: C\n    order: asc\n"
+    }
+   ],
+   "expected": "views:\n  - type: table\n    name: A\n    order: asc\n  - type: table\n    name: C\n    order: desc\n"
+  },
+  {
+   "name": "properties shared key round trip",
+   "args": [
+    {
+     "file": "properties:\n  status: text\nviews:\n  - type: table\n    name: A\n",
+     "saveView": "A",
+     "edit": "properties:\n  status: number\nviews:\n  - type: table\n    name: A\n"
+    }
+   ],
+   "expected": "properties:\n  status: text\nviews:\n  - type: table\n    name: A\n"
+  },
+  {
+   "name": "null view entry is refused",
+   "args": [
+    {
+     "file": "views: [null]\n",
+     "action": "viewnames"
+    }
+   ],
+   "expected": {
+    "viewNames": null
+   }
+  },
+  {
+   "name": "scalar YAML root is refused",
+   "args": [
+    {
+     "file": "hello\n",
+     "saveView": "A"
+    }
+   ],
+   "expected": {
+    "error": "The file has invalid YAML or two views with the same name."
+   }
+  },
+  {
+   "name": "unknown alias is refused",
+   "args": [
+    {
+     "file": "views: [*unknown]\n",
+     "action": "viewnames"
+    }
+   ],
+   "expected": {
+    "viewNames": null
+   }
+  },
+  {
+   "name": "undo restores the exact source bytes",
+   "args": [
+    {
+     "file": "views:\n  - name: A\n    type: table\n    order: asc\n",
+     "saveView": "A",
+     "edit": "# User comment\nviews: [{name: A, type: table, order: desc}]\n",
+     "action": "undo"
+    }
+   ],
+   "expected": {
+    "undo": "# User comment\nviews: [{name: A, type: table, order: desc}]\n"
+   }
+  },
+  {
+   "name": "undo refuses a later edit",
+   "args": [
+    {
+     "file": "views: [{name: A, type: table}]\n",
+     "saveView": "A",
+     "action": "undo-conflict"
+    }
+   ],
+   "expected": {
+    "refused": true
+   }
+  },
+  {
+   "name": "checkpoint follows a vault rename",
+   "args": [
+    {
+     "file": "views: [{name: A, type: table}]\n",
+     "saveView": "A",
+     "action": "rename"
+    }
+   ],
+   "expected": {
+    "path": "renamed.base"
+   }
+  },
+  {
+   "name": "restore-changes lists a shared filter added after save",
+   "args": [
+    {
+     "file": "views: [{name: A, type: table}]\n",
+     "saveView": "A",
+     "edit": "filters: 'status == \"done\"'\nviews: [{name: A, type: table}]\n",
+     "action": "restore-changes"
+    }
+   ],
+   "expected": {
+    "changes": [
+     "filters"
+    ]
+   }
+  },
+  {
+   "name": "compare lists a shared filter added after save",
+   "args": [
+    {
+     "file": "views: [{name: A, type: table}]\n",
+     "saveView": "A",
+     "edit": "filters: 'status == \"done\"'\nviews: [{name: A, type: table}]\n",
+     "action": "compare"
+    }
+   ],
+   "expected": {
+    "compare": [
+     "filters"
+    ]
+   }
+  }
+ ],
+ "function": "restoreCheckpoint"
+}
