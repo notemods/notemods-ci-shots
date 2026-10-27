@@ -1,0 +1,529 @@
+{
+ "slug": "openapi-spec-viewer",
+ "module": "openapi-spec-viewer/src/model",
+ "function": "parseSpec",
+ "note": "Each case names its function. Object expectations select exact fields with toMatchObject. String expectations use equality. Errors select the error message.",
+ "cases": [
+  {
+   "name": "A01 JSON tag method and path",
+   "function": "parseSpec",
+   "args": [
+    "{\"openapi\": \"3.0.3\", \"paths\": {\"/pets\": {\"get\": {\"tags\": [\"Pets\"]}}}}",
+    "json"
+   ],
+   "expected": {
+    "endpoints": [
+     {
+      "id": "GET /pets",
+      "tags": [
+       "Pets"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "A02 YAML gives the same endpoint",
+   "function": "parseSpec",
+   "args": [
+    "openapi: 3.0.3\npaths:\n  /pets:\n    get:\n      tags: [Pets]\n",
+    "yaml"
+   ],
+   "expected": {
+    "endpoints": [
+     {
+      "id": "GET /pets",
+      "tags": [
+       "Pets"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "A03 required integer path parameter",
+   "function": "parseSpec",
+   "args": [
+    "{\"openapi\": \"3.0.3\", \"paths\": {\"/pets/{id}\": {\"parameters\": [{\"name\": \"id\", \"in\": \"path\", \"required\": true, \"schema\": {\"type\": \"integer\"}}], \"get\": {}}}}",
+    "json"
+   ],
+   "expected": {
+    "endpoints": [
+     {
+      "parameters": [
+       {
+        "name": "id",
+        "location": "path",
+        "type": "integer",
+        "required": true
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "A04 request content and response status codes",
+   "function": "parseSpec",
+   "args": [
+    "{\"openapi\": \"3.0.3\", \"paths\": {\"/pets\": {\"post\": {\"requestBody\": {\"content\": {\"application/json\": {}}}, \"responses\": {\"201\": {\"description\": \"Created\"}, \"400\": {\"description\": \"Invalid\"}}}}}}",
+    "json"
+   ],
+   "expected": {
+    "endpoints": [
+     {
+      "requestTypes": [
+       "application/json"
+      ],
+      "responses": [
+       {
+        "code": "201",
+        "description": "Created"
+       },
+       {
+        "code": "400",
+        "description": "Invalid"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "A05 internal Pet reference",
+   "function": "schemaDetails",
+   "args": [
+    {
+     "components": {
+      "schemas": {
+       "Pet": {
+        "type": "object",
+        "properties": {
+         "name": {
+          "type": "string"
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "$ref": "#/components/schemas/Pet"
+    }
+   ],
+   "expected": {
+    "title": "#/components/schemas/Pet",
+    "error": "",
+    "properties": [
+     {
+      "name": "name",
+      "type": "string"
+     }
+    ]
+   }
+  },
+  {
+   "name": "A06 self reference stays shallow",
+   "function": "schemaDetails",
+   "args": [
+    {
+     "components": {
+      "schemas": {
+       "Pet": {
+        "type": "object",
+        "properties": {
+         "child": {
+          "$ref": "#/components/schemas/Pet"
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "$ref": "#/components/schemas/Pet"
+    }
+   ],
+   "expected": {
+    "error": "",
+    "properties": [
+     {
+      "name": "child",
+      "type": "#/components/schemas/Pet"
+     }
+    ]
+   }
+  },
+  {
+   "name": "A07 external reference is unsupported",
+   "function": "schemaDetails",
+   "args": [
+    {},
+    {
+     "$ref": "https://example.com/Pet.json"
+    }
+   ],
+   "expected": {
+    "error": "Unsupported reference: https://example.com/Pet.json"
+   }
+  },
+  {
+   "name": "A08 malformed YAML reports a parse error",
+   "function": "parseSpec",
+   "args": [
+    "openapi: [}",
+    "yaml"
+   ],
+   "expected": {
+    "error": "Parse error. Check the JSON or YAML syntax."
+   }
+  },
+  {
+   "name": "A09 Swagger version is rejected",
+   "function": "parseSpec",
+   "args": [
+    "{\"swagger\": \"2.0\"}",
+    "json"
+   ],
+   "expected": {
+    "error": "Unsupported version. Use OpenAPI 3.0 or 3.1."
+   }
+  },
+  {
+   "name": "A10 HTML summary remains text",
+   "function": "parseSpec",
+   "args": [
+    "{\"openapi\": \"3.0.3\", \"paths\": {\"/pets\": {\"get\": {\"summary\": \"<img src=x onerror=alert(1)>\"}}}}",
+    "json"
+   ],
+   "expected": {
+    "endpoints": [
+     {
+      "summary": "<img src=x onerror=alert(1)>"
+     }
+    ]
+   }
+  },
+  {
+   "name": "A11 OpenAPI 3.1 accepted",
+   "function": "parseSpec",
+   "args": [
+    "{\"openapi\": \"3.1.1\", \"paths\": {\"/pets\": {\"get\": {}}}}",
+    "json"
+   ],
+   "expected": {
+    "version": "3.1.1",
+    "endpoints": [
+     {
+      "tags": [
+       "Untagged"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "A12 operation parameter overrides path parameter",
+   "function": "parseSpec",
+   "args": [
+    "{\"openapi\": \"3.0.3\", \"paths\": {\"/pets\": {\"parameters\": [{\"name\": \"limit\", \"in\": \"query\", \"schema\": {\"type\": \"string\"}}], \"get\": {\"parameters\": [{\"name\": \"limit\", \"in\": \"query\", \"schema\": {\"type\": \"integer\"}}]}}}}",
+    "json"
+   ],
+   "expected": {
+    "endpoints": [
+     {
+      "parameters": [
+       {
+        "name": "limit",
+        "type": "integer"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "A13 escaped pointer tokens",
+   "function": "resolve",
+   "args": [
+    {
+     "a/b": {
+      "~name": {
+       "type": "integer"
+      }
+     }
+    },
+    {
+     "$ref": "#/a~1b/~0name"
+    }
+   ],
+   "expected": {
+    "value": {
+     "type": "integer"
+    },
+    "error": ""
+   }
+  },
+  {
+   "name": "A14 missing pointer target",
+   "function": "resolve",
+   "args": [
+    {},
+    {
+     "$ref": "#/missing"
+    }
+   ],
+   "expected": {
+    "error": "Unresolved reference: #/missing"
+   }
+  },
+  {
+   "name": "A15 reference chain cycle",
+   "function": "resolve",
+   "args": [
+    {
+     "a": {
+      "$ref": "#/b"
+     },
+     "b": {
+      "$ref": "#/a"
+     }
+    },
+    {
+     "$ref": "#/a"
+    }
+   ],
+   "expected": {
+    "error": "Reference cycle or depth limit: #/a"
+   }
+  },
+  {
+   "name": "A16 array pointer token",
+   "function": "resolve",
+   "args": [
+    {
+     "a": [
+      {
+       "type": "boolean"
+      }
+     ]
+    },
+    {
+     "$ref": "#/a/0"
+    }
+   ],
+   "expected": {
+    "value": {
+     "type": "boolean"
+    },
+    "error": ""
+   }
+  },
+  {
+   "name": "A17 inherited properties are not pointer targets",
+   "function": "resolve",
+   "args": [
+    {},
+    {
+     "$ref": "#/constructor"
+    }
+   ],
+   "expected": {
+    "error": "Unresolved reference: #/constructor"
+   }
+  },
+  {
+   "name": "A18 empty paths give empty endpoint list",
+   "function": "parseSpec",
+   "args": [
+    "{\"openapi\": \"3.0.3\", \"paths\": {}}",
+    "json"
+   ],
+   "expected": {
+    "endpoints": []
+   }
+  },
+  {
+   "name": "A19 malformed JSON",
+   "function": "parseSpec",
+   "args": [
+    "{\"openapi\":",
+    "json"
+   ],
+   "expected": {
+    "error": "Parse error. Check the JSON or YAML syntax."
+   }
+  },
+  {
+   "name": "A20 nonobject document",
+   "function": "parseSpec",
+   "args": [
+    "null",
+    "json"
+   ],
+   "expected": {
+    "error": "Unsupported version. Use OpenAPI 3.0 or 3.1."
+   }
+  },
+  {
+   "name": "A21 multiple tags and methods",
+   "function": "parseSpec",
+   "args": [
+    "{\"openapi\": \"3.0.3\", \"paths\": {\"/pets\": {\"get\": {\"tags\": [\"Pets\", \"Search\"]}, \"post\": {\"tags\": [\"Pets\"]}}}}",
+    "json"
+   ],
+   "expected": {
+    "endpoints": [
+     {
+      "method": "GET",
+      "tags": [
+       "Pets",
+       "Search"
+      ]
+     },
+     {
+      "method": "POST",
+      "tags": [
+       "Pets"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "A22 nullable OpenAPI 3.1 type",
+   "function": "schemaDetails",
+   "args": [
+    {},
+    {
+     "type": [
+      "string",
+      "null"
+     ]
+    }
+   ],
+   "expected": {
+    "type": "string | null"
+   }
+  },
+  {
+   "name": "A23 shared parameter reference",
+   "function": "parseSpec",
+   "args": [
+    "{\"openapi\": \"3.0.3\", \"paths\": {\"/pets\": {\"get\": {\"parameters\": [{\"$ref\": \"#/components/parameters/Limit\"}]}}}, \"components\": {\"parameters\": {\"Limit\": {\"name\": \"limit\", \"in\": \"query\", \"schema\": {\"type\": \"integer\"}}}}}",
+    "json"
+   ],
+   "expected": {
+    "endpoints": [
+     {
+      "parameters": [
+       {
+        "name": "limit",
+        "type": "integer",
+        "required": false
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "A24 external response reference keeps status",
+   "function": "parseSpec",
+   "args": [
+    "{\"openapi\": \"3.0.3\", \"paths\": {\"/pets\": {\"get\": {\"responses\": {\"200\": {\"$ref\": \"other.yaml#/Pet\"}}}}}}",
+    "json"
+   ],
+   "expected": {
+    "endpoints": [
+     {
+      "responses": [
+       {
+        "code": "200"
+       }
+      ],
+      "warnings": [
+       "Unsupported reference: other.yaml#/Pet"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "A25 required schema properties",
+   "function": "schemaDetails",
+   "args": [
+    {},
+    {
+     "type": "object",
+     "required": [
+      "name"
+     ],
+     "properties": {
+      "name": {
+       "type": "string"
+      },
+      "age": {
+       "type": "integer"
+      }
+     }
+    }
+   ],
+   "expected": {
+    "properties": [
+     {
+      "name": "name",
+      "required": true
+     },
+     {
+      "name": "age",
+      "required": false
+     }
+    ]
+   }
+  },
+  {
+   "name": "A26 unsafe Markdown characters are escaped",
+   "function": "safeText",
+   "args": [
+    "<img src=x> ![x](remote)"
+   ],
+   "expected": "&lt;img src\\=x&gt; \\!\\[x\\]\\(remote\\)"
+  },
+  {
+   "name": "A27 percent encoded pointer token",
+   "function": "resolve",
+   "args": [
+    {
+     "Pet name": {
+      "type": "string"
+     }
+    },
+    {
+     "$ref": "#/Pet%20name"
+    }
+   ],
+   "expected": {
+    "value": {
+     "type": "string"
+    },
+    "error": ""
+   }
+  },
+  {
+   "name": "A28 invalid pointer escape",
+   "function": "resolve",
+   "args": [
+    {
+     "a~2b": {}
+    },
+    {
+     "$ref": "#/a~2b"
+    }
+   ],
+   "expected": {
+    "error": "Unresolved reference: #/a~2b"
+   }
+  }
+ ]
+}
