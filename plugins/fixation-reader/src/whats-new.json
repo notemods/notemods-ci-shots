@@ -1,0 +1,27 @@
+{
+	"id": "fixation-reader",
+	"name": "Fixation Reader",
+	"version": "1.1.1",
+	"changes": [
+		"Enable in Live Preview, the folder and tag rules and the custom style settings now show how to get Pro, with a Sponsor on GitHub button. Nothing is saved until Pro is on."
+	],
+	"tip": "Add the boolean property fixation: false to keep one note plain.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Fixation Reader is one of over 100 small plugins that I make. Thank you for reading your notes with it.",
+	"related": [
+		{
+			"id": "parallel-paragraph-reader",
+			"name": "Parallel Paragraph Reader",
+			"blurb": "Read two existing language versions in matched paragraph rows."
+		},
+		{
+			"id": "word-count-property",
+			"name": "Word Count Property",
+			"blurb": "Write word count and reading time properties to notes you choose."
+		},
+		{
+			"id": "hr-fold-stop",
+			"name": "Fold Stop",
+			"blurb": "Stop heading folds at horizontal rules."
+		}
+	]
+}

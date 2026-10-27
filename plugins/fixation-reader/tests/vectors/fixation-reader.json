@@ -1,0 +1,515 @@
+{
+ "slug": "fixation-reader",
+ "module": "fixation-reader/src/words",
+ "function": "wordStarts",
+ "note": "Word cases pin UTF-16 offsets and HTML. DOM, rule and lifetime cases below run against the processor and plugin.",
+ "cases": [
+  {
+   "name": "Reading is fast at minimum one",
+   "args": [
+    "Reading is fast",
+    0.5,
+    1
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "split": 4,
+     "to": 7
+    },
+    {
+     "from": 8,
+     "split": 9,
+     "to": 10
+    },
+    {
+     "from": 11,
+     "split": 13,
+     "to": 15
+    }
+   ],
+   "expectedHtml": "<b class=\"fx\">Read</b>ing <b class=\"fx\">i</b>s <b class=\"fx\">fa</b>st"
+  },
+  {
+   "name": "Reading is fast at minimum three",
+   "args": [
+    "Reading is fast",
+    0.5,
+    3
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "split": 4,
+     "to": 7
+    },
+    {
+     "from": 11,
+     "split": 13,
+     "to": 15
+    }
+   ],
+   "expectedHtml": "<b class=\"fx\">Read</b>ing is <b class=\"fx\">fa</b>st"
+  },
+  {
+   "name": "German letters",
+   "args": [
+    "Übermäßig",
+    0.5,
+    1
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "split": 5,
+     "to": 9
+    }
+   ],
+   "expectedHtml": "<b class=\"fx\">Überm</b>äßig"
+  },
+  {
+   "name": "Hyphen and comma",
+   "args": [
+    "well-known,",
+    0.5,
+    1
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "split": 2,
+     "to": 4
+    },
+    {
+     "from": 5,
+     "split": 8,
+     "to": 10
+    }
+   ],
+   "expectedHtml": "<b class=\"fx\">we</b>ll-<b class=\"fx\">kno</b>wn,"
+  },
+  {
+   "name": "Japanese stays unchanged",
+   "args": [
+    "日本語のテキスト",
+    0.5,
+    1
+   ],
+   "expected": [],
+   "expectedHtml": "日本語のテキスト"
+  },
+  {
+   "name": "Empty text",
+   "args": [
+    "",
+    0.5,
+    1
+   ],
+   "expected": [],
+   "expectedHtml": ""
+  },
+  {
+   "name": "Digits stay unchanged",
+   "args": [
+    "123 456",
+    0.5,
+    1
+   ],
+   "expected": [],
+   "expectedHtml": "123 456"
+  },
+  {
+   "name": "Punctuation stays unchanged",
+   "args": [
+    "?! — ...",
+    0.5,
+    1
+   ],
+   "expected": [],
+   "expectedHtml": "?! — ..."
+  },
+  {
+   "name": "One letter",
+   "args": [
+    "a",
+    0.2,
+    1
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "split": 1,
+     "to": 1
+    }
+   ],
+   "expectedHtml": "<b class=\"fx\">a</b>"
+  },
+  {
+   "name": "Short word below minimum",
+   "args": [
+    "an",
+    0.7,
+    3
+   ],
+   "expected": [],
+   "expectedHtml": "an"
+  },
+  {
+   "name": "Lower strength",
+   "args": [
+    "reading",
+    0.2,
+    1
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "split": 1,
+     "to": 7
+    }
+   ],
+   "expectedHtml": "<b class=\"fx\">r</b>eading"
+  },
+  {
+   "name": "Upper strength",
+   "args": [
+    "reading",
+    0.7,
+    1
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "split": 5,
+     "to": 7
+    }
+   ],
+   "expectedHtml": "<b class=\"fx\">readi</b>ng"
+  },
+  {
+   "name": "Round halves up",
+   "args": [
+    "abcde",
+    0.5,
+    1
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "split": 3,
+     "to": 5
+    }
+   ],
+   "expectedHtml": "<b class=\"fx\">abc</b>de"
+  },
+  {
+   "name": "Combining mark stays with letter",
+   "args": [
+    "étude",
+    0.5,
+    1
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "split": 4,
+     "to": 6
+    }
+   ],
+   "expectedHtml": "<b class=\"fx\">étu</b>de"
+  },
+  {
+   "name": "Greek letters",
+   "args": [
+    "κόσμος",
+    0.5,
+    1
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "split": 3,
+     "to": 6
+    }
+   ],
+   "expectedHtml": "<b class=\"fx\">κόσ</b>μος"
+  },
+  {
+   "name": "Cyrillic letters",
+   "args": [
+    "Привет",
+    0.5,
+    1
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "split": 3,
+     "to": 6
+    }
+   ],
+   "expectedHtml": "<b class=\"fx\">При</b>вет"
+  },
+  {
+   "name": "Arabic stays unchanged",
+   "args": [
+    "العربية",
+    0.5,
+    1
+   ],
+   "expected": [],
+   "expectedHtml": "العربية"
+  },
+  {
+   "name": "Korean stays unchanged",
+   "args": [
+    "한국어",
+    0.5,
+    1
+   ],
+   "expected": [],
+   "expectedHtml": "한국어"
+  },
+  {
+   "name": "Mixed CJK word stays unchanged",
+   "args": [
+    "abc日本",
+    0.5,
+    1
+   ],
+   "expected": [],
+   "expectedHtml": "abc日本"
+  },
+  {
+   "name": "Whitespace preserved",
+   "args": [
+    " fast\nreading\t",
+    0.5,
+    1
+   ],
+   "expected": [
+    {
+     "from": 1,
+     "split": 3,
+     "to": 5
+    },
+    {
+     "from": 6,
+     "split": 10,
+     "to": 13
+    }
+   ],
+   "expectedHtml": " <b class=\"fx\">fa</b>st\n<b class=\"fx\">read</b>ing\t"
+  },
+  {
+   "name": "Apostrophe separates words",
+   "args": [
+    "don't",
+    0.5,
+    1
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "split": 2,
+     "to": 3
+    },
+    {
+     "from": 4,
+     "split": 5,
+     "to": 5
+    }
+   ],
+   "expectedHtml": "<b class=\"fx\">do</b>n'<b class=\"fx\">t</b>"
+  },
+  {
+   "name": "Emoji preserved",
+   "args": [
+    "😀fast",
+    0.5,
+    1
+   ],
+   "expected": [
+    {
+     "from": 2,
+     "split": 4,
+     "to": 6
+    }
+   ],
+   "expectedHtml": "😀<b class=\"fx\">fa</b>st"
+  },
+  {
+   "name": "Exact minimum",
+   "args": [
+    "fast",
+    0.5,
+    4
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "split": 2,
+     "to": 4
+    }
+   ],
+   "expectedHtml": "<b class=\"fx\">fa</b>st"
+  },
+  {
+   "name": "Case preserved",
+   "args": [
+    "READING",
+    0.5,
+    1
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "split": 4,
+     "to": 7
+    }
+   ],
+   "expectedHtml": "<b class=\"fx\">READ</b>ING"
+  },
+  {
+   "name": "Accent at split",
+   "args": [
+    "naïve",
+    0.5,
+    1
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "split": 3,
+     "to": 5
+    }
+   ],
+   "expectedHtml": "<b class=\"fx\">naï</b>ve"
+  }
+ ],
+ "domCases": [
+  {
+   "name": "Code block and inline code",
+   "html": "<pre><code>const value = 1</code></pre><p><code>foo bar</code></p>",
+   "expected": 0
+  },
+  {
+   "name": "Existing bold text",
+   "html": "<strong>Important note</strong><b>Existing bold</b>",
+   "expected": 0
+  },
+  {
+   "name": "Math elements",
+   "html": "<span class=\"math\">value plus</span><mjx-container>value plus</mjx-container>",
+   "expected": 0
+  },
+  {
+   "name": "Note switch off",
+   "html": "<p>Reading is fast</p>",
+   "frontmatter": {
+    "fixation": false
+   },
+   "expected": 0
+  },
+  {
+   "name": "Disabled view",
+   "html": "<p>Reading is fast</p>",
+   "enabled": false,
+   "expected": 0
+  },
+  {
+   "name": "Live Preview post processor stays unchanged",
+   "html": "<div class=\"markdown-source-view\"><p>Reading is fast</p></div>",
+   "expected": 0
+  }
+ ],
+ "ruleCases": [
+  {
+   "name": "Free ignores folder rules",
+   "args": [
+    false,
+    "Archive/a.md",
+    [],
+    null
+   ],
+   "expected": true
+  },
+  {
+   "name": "Pro excludes folder",
+   "args": [
+    true,
+    "Archive/a.md",
+    [],
+    null
+   ],
+   "expected": false
+  },
+  {
+   "name": "Folder prefix is distinct",
+   "args": [
+    true,
+    "Archive2/a.md",
+    [],
+    null
+   ],
+   "expected": true
+  },
+  {
+   "name": "Pro excludes exact tag",
+   "args": [
+    true,
+    "a.md",
+    [
+     "#skip"
+    ],
+    null
+   ],
+   "expected": false
+  },
+  {
+   "name": "Tag child is distinct",
+   "args": [
+    true,
+    "a.md",
+    [
+     "#skip/child"
+    ],
+    null
+   ],
+   "expected": true
+  },
+  {
+   "name": "False property has priority",
+   "args": [
+    true,
+    "a.md",
+    [],
+    {
+     "fixation": false
+    }
+   ],
+   "expected": false
+  },
+  {
+   "name": "String false is ignored",
+   "args": [
+    false,
+    "a.md",
+    [],
+    {
+     "fixation": "false"
+    }
+   ],
+   "expected": true
+  }
+ ],
+ "lifetimeCases": [
+  {
+   "name": "Toggle removes marks and keeps file bytes",
+   "expected": {
+    "marks": 0,
+    "sameBytes": true
+   }
+  }
+ ]
+}
