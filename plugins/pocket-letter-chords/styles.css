@@ -1,0 +1,44 @@
+.pocket-letter-chords-dictionary textarea {
+ width: 100%;
+ min-height: 180px;
+ font-family: var(--font-monospace);
+}
+
+.pocket-letter-chords-rows {
+ flex-direction: column;
+ align-items: stretch;
+ gap: 12px;
+}
+
+.pocket-letter-chords-rows .setting-item-control {
+ width: 100%;
+}
+
+.pocket-letter-chords-error {
+ color: var(--text-error);
+}
+
+.pocket-letter-chords-file {
+ display: none;
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}

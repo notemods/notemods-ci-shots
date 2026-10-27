@@ -1,0 +1,745 @@
+{
+ "slug": "pocket-letter-chords",
+ "module": "pocket-letter-chords/src/chords",
+ "function": "ChordEngine",
+ "cases": [
+  {
+   "name": "forward overlap",
+   "args": [
+    [
+     {
+      "keys": "qw",
+      "text": "Done"
+     }
+    ],
+    [
+     [
+      "down",
+      "q",
+      0
+     ],
+     [
+      "down",
+      "w",
+      20
+     ],
+     [
+      "up",
+      "q"
+     ],
+     [
+      "up",
+      "w"
+     ]
+    ]
+   ],
+   "expected": "Done"
+  },
+  {
+   "name": "reverse overlap",
+   "args": [
+    [
+     {
+      "keys": "qw",
+      "text": "Done"
+     }
+    ],
+    [
+     [
+      "down",
+      "w",
+      0
+     ],
+     [
+      "down",
+      "q",
+      20
+     ],
+     [
+      "up",
+      "w"
+     ],
+     [
+      "up",
+      "q"
+     ]
+    ]
+   ],
+   "expected": "Done"
+  },
+  {
+   "name": "nonoverlap",
+   "args": [
+    [
+     {
+      "keys": "qw",
+      "text": "Done"
+     }
+    ],
+    [
+     [
+      "down",
+      "q",
+      0
+     ],
+     [
+      "up",
+      "q"
+     ],
+     [
+      "down",
+      "w",
+      20
+     ],
+     [
+      "up",
+      "w"
+     ]
+    ]
+   ],
+   "expected": "qw"
+  },
+  {
+   "name": "unmatched overlap",
+   "args": [
+    [
+     {
+      "keys": "qw",
+      "text": "Done"
+     }
+    ],
+    [
+     [
+      "down",
+      "q",
+      0
+     ],
+     [
+      "down",
+      "x",
+      20
+     ],
+     [
+      "up",
+      "q"
+     ],
+     [
+      "up",
+      "x"
+     ]
+    ]
+   ],
+   "expected": "qx"
+  },
+  {
+   "name": "single timeout",
+   "args": [
+    [
+     {
+      "keys": "qw",
+      "text": "Done"
+     }
+    ],
+    [
+     [
+      "down",
+      "q",
+      0
+     ],
+     [
+      "tick",
+      80
+     ]
+    ]
+   ],
+   "expected": "q"
+  },
+  {
+   "name": "selection and undo",
+   "args": [
+    [
+     {
+      "keys": "qw",
+      "text": "Done"
+     }
+    ],
+    [
+     [
+      "select",
+      "old"
+     ],
+     [
+      "down",
+      "q",
+      0
+     ],
+     [
+      "down",
+      "w",
+      20
+     ],
+     [
+      "undo"
+     ]
+    ]
+   ],
+   "expected": "old"
+  },
+  {
+   "name": "composition bypass",
+   "args": [
+    [
+     {
+      "keys": "qw",
+      "text": "Done"
+     }
+    ],
+    [
+     [
+      "composition",
+      true
+     ],
+     [
+      "down",
+      "q",
+      0
+     ],
+     [
+      "native",
+      "漢"
+     ],
+     [
+      "composition",
+      false
+     ]
+    ]
+   ],
+   "expected": "漢"
+  },
+  {
+   "name": "modifier bypass",
+   "args": [
+    [
+     {
+      "keys": "qw",
+      "text": "Done"
+     }
+    ],
+    [
+     [
+      "modified",
+      "c"
+     ],
+     [
+      "modified",
+      "q"
+     ]
+    ]
+   ],
+   "expected": ""
+  },
+  {
+   "name": "focus change origin",
+   "args": [
+    [
+     {
+      "keys": "qw",
+      "text": "Done"
+     }
+    ],
+    [
+     [
+      "down",
+      "q",
+      0
+     ],
+     [
+      "focus",
+      "B"
+     ],
+     [
+      "tick",
+      80
+     ]
+    ]
+   ],
+   "expected": "q|"
+  },
+  {
+   "name": "pause and reload",
+   "args": [
+    [
+     {
+      "keys": "qw",
+      "text": "Done"
+     }
+    ],
+    [
+     [
+      "pause",
+      true
+     ],
+     [
+      "down",
+      "q",
+      0
+     ],
+     [
+      "up",
+      "q"
+     ],
+     [
+      "down",
+      "w",
+      20
+     ],
+     [
+      "up",
+      "w"
+     ],
+     [
+      "reload"
+     ],
+     [
+      "pause",
+      false
+     ],
+     [
+      "down",
+      "q",
+      40
+     ],
+     [
+      "down",
+      "w",
+      60
+     ]
+    ]
+   ],
+   "expected": "qwDone"
+  },
+  {
+   "name": "boundary before",
+   "args": [
+    [
+     {
+      "keys": "qw",
+      "text": "Done"
+     }
+    ],
+    [
+     [
+      "down",
+      "q",
+      0
+     ],
+     [
+      "down",
+      "w",
+      79
+     ]
+    ]
+   ],
+   "expected": "Done"
+  },
+  {
+   "name": "boundary expires",
+   "args": [
+    [
+     {
+      "keys": "qw",
+      "text": "Done"
+     }
+    ],
+    [
+     [
+      "down",
+      "q",
+      0
+     ],
+     [
+      "down",
+      "w",
+      80
+     ],
+     [
+      "up",
+      "q"
+     ],
+     [
+      "up",
+      "w"
+     ]
+    ]
+   ],
+   "expected": "qw"
+  },
+  {
+   "name": "repeat chord keys",
+   "args": [
+    [
+     {
+      "keys": "qw",
+      "text": "Done"
+     }
+    ],
+    [
+     [
+      "down",
+      "q",
+      0
+     ],
+     [
+      "down",
+      "w",
+      10
+     ],
+     [
+      "down",
+      "q",
+      20,
+      true
+     ],
+     [
+      "down",
+      "w",
+      30,
+      true
+     ]
+    ]
+   ],
+   "expected": "Done"
+  },
+  {
+   "name": "repeat single before timeout",
+   "args": [
+    [
+     {
+      "keys": "qw",
+      "text": "Done"
+     }
+    ],
+    [
+     [
+      "down",
+      "q",
+      0
+     ],
+     [
+      "down",
+      "q",
+      30,
+      true
+     ],
+     [
+      "up",
+      "q"
+     ]
+    ]
+   ],
+   "expected": "qq"
+  },
+  {
+   "name": "repeat single after timeout",
+   "args": [
+    [
+     {
+      "keys": "qw",
+      "text": "Done"
+     }
+    ],
+    [
+     [
+      "down",
+      "q",
+      0
+     ],
+     [
+      "tick",
+      80
+     ],
+     [
+      "down",
+      "q",
+      90,
+      true
+     ],
+     [
+      "up",
+      "q"
+     ]
+    ]
+   ],
+   "expected": "qq"
+  },
+  {
+   "name": "two cycles",
+   "args": [
+    [
+     {
+      "keys": "qw",
+      "text": "Done"
+     }
+    ],
+    [
+     [
+      "down",
+      "q",
+      0
+     ],
+     [
+      "down",
+      "w",
+      10
+     ],
+     [
+      "up",
+      "q"
+     ],
+     [
+      "up",
+      "w"
+     ],
+     [
+      "down",
+      "w",
+      100
+     ],
+     [
+      "down",
+      "q",
+      120
+     ]
+    ]
+   ],
+   "expected": "DoneDone"
+  },
+  {
+   "name": "empty dictionary",
+   "args": [
+    [],
+    [
+     [
+      "down",
+      "q",
+      0
+     ],
+     [
+      "up",
+      "q"
+     ],
+     [
+      "down",
+      "w",
+      20
+     ]
+    ]
+   ],
+   "expected": "qw"
+  },
+  {
+   "name": "native punctuation after buffer",
+   "args": [
+    [
+     {
+      "keys": "qw",
+      "text": "Done"
+     }
+    ],
+    [
+     [
+      "down",
+      "q",
+      0
+     ],
+     [
+      "native",
+      "."
+     ]
+    ]
+   ],
+   "expected": "q."
+  },
+  {
+   "name": "reset keeps pending",
+   "args": [
+    [
+     {
+      "keys": "qw",
+      "text": "Done"
+     }
+    ],
+    [
+     [
+      "down",
+      "w",
+      0
+     ],
+     [
+      "reset"
+     ]
+    ]
+   ],
+   "expected": "w"
+  },
+  {
+   "name": "unmatched reverse",
+   "args": [
+    [
+     {
+      "keys": "qw",
+      "text": "Done"
+     }
+    ],
+    [
+     [
+      "down",
+      "w",
+      0
+     ],
+     [
+      "down",
+      "x",
+      10
+     ]
+    ]
+   ],
+   "expected": "wx"
+  },
+  {
+   "name": "three letter overlap",
+   "args": [
+    [
+     {
+      "keys": "eqw",
+      "text": "Three"
+     }
+    ],
+    [
+     [
+      "down",
+      "q",
+      0
+     ],
+     [
+      "down",
+      "w",
+      10
+     ],
+     [
+      "down",
+      "e",
+      20
+     ]
+    ]
+   ],
+   "expected": "Three"
+  },
+  {
+   "name": "three letter nonoverlap",
+   "args": [
+    [
+     {
+      "keys": "eqw",
+      "text": "Three"
+     }
+    ],
+    [
+     [
+      "down",
+      "q",
+      0
+     ],
+     [
+      "down",
+      "w",
+      10
+     ],
+     [
+      "up",
+      "q"
+     ],
+     [
+      "down",
+      "e",
+      20
+     ],
+     [
+      "up",
+      "w"
+     ],
+     [
+      "up",
+      "e"
+     ]
+    ]
+   ],
+   "expected": "qwe"
+  },
+  {
+   "name": "multiline value",
+   "args": [
+    [
+     {
+      "keys": "qw",
+      "text": "one\ntwo"
+     }
+    ],
+    [
+     [
+      "down",
+      "q",
+      0
+     ],
+     [
+      "down",
+      "w",
+      20
+     ]
+    ]
+   ],
+   "expected": "one\ntwo"
+  },
+  {
+   "name": "no second cycle until release",
+   "args": [
+    [
+     {
+      "keys": "qw",
+      "text": "Done"
+     }
+    ],
+    [
+     [
+      "down",
+      "q",
+      0
+     ],
+     [
+      "down",
+      "w",
+      10
+     ],
+     [
+      "up",
+      "q"
+     ],
+     [
+      "down",
+      "q",
+      20
+     ],
+     [
+      "up",
+      "q"
+     ],
+     [
+      "up",
+      "w"
+     ]
+    ]
+   ],
+   "expected": "Doneq"
+  }
+ ]
+}
