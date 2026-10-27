@@ -1,0 +1,1116 @@
+{
+ "slug": "visual-line-numbers",
+ "module": "visual-line-numbers/src/numbering",
+ "function": "labelUnits",
+ "note": "args = [units as [{line, rows, hidden}] in document order, options {mode, countFolded, cursorRow, cursorLine}]; expected = the gutter text of each display row, one array of strings for each unit. cursorRow is counted in rows from the start of the first unit, negative above it.",
+ "cases": [
+  {
+   "name": "relative: cursor on a single row line, neighbours count one each",
+   "args": [
+    [
+     {
+      "line": 1,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 2,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 3,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "relative",
+     "countFolded": false,
+     "cursorRow": 1,
+     "cursorLine": 2
+    }
+   ],
+   "expected": [
+    [
+     "1"
+    ],
+    [
+     "0"
+    ],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "name": "relative: a wrapped line gets one number for each display row",
+   "args": [
+    [
+     {
+      "line": 1,
+      "rows": 3,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "relative",
+     "countFolded": false,
+     "cursorRow": 0,
+     "cursorLine": 1
+    }
+   ],
+   "expected": [
+    [
+     "0",
+     "1",
+     "2"
+    ]
+   ]
+  },
+  {
+   "name": "relative: cursor on the second row of a wrapped line",
+   "args": [
+    [
+     {
+      "line": 1,
+      "rows": 4,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "relative",
+     "countFolded": false,
+     "cursorRow": 1,
+     "cursorLine": 1
+    }
+   ],
+   "expected": [
+    [
+     "1",
+     "0",
+     "1",
+     "2"
+    ]
+   ]
+  },
+  {
+   "name": "relative: wrapped line above the cursor counts every row",
+   "args": [
+    [
+     {
+      "line": 1,
+      "rows": 3,
+      "hidden": 0
+     },
+     {
+      "line": 2,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "relative",
+     "countFolded": false,
+     "cursorRow": 3,
+     "cursorLine": 2
+    }
+   ],
+   "expected": [
+    [
+     "3",
+     "2",
+     "1"
+    ],
+    [
+     "0"
+    ]
+   ]
+  },
+  {
+   "name": "relative: wrapped line below the cursor counts every row",
+   "args": [
+    [
+     {
+      "line": 1,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 2,
+      "rows": 3,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "relative",
+     "countFolded": false,
+     "cursorRow": 0,
+     "cursorLine": 1
+    }
+   ],
+   "expected": [
+    [
+     "0"
+    ],
+    [
+     "1",
+     "2",
+     "3"
+    ]
+   ]
+  },
+  {
+   "name": "relative: cursor on the last row of a wrapped line",
+   "args": [
+    [
+     {
+      "line": 1,
+      "rows": 3,
+      "hidden": 0
+     },
+     {
+      "line": 2,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "relative",
+     "countFolded": false,
+     "cursorRow": 2,
+     "cursorLine": 1
+    }
+   ],
+   "expected": [
+    [
+     "2",
+     "1",
+     "0"
+    ],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "name": "relative: numbers are the same distance above and below",
+   "args": [
+    [
+     {
+      "line": 1,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 2,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 3,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 4,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 5,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "relative",
+     "countFolded": false,
+     "cursorRow": 2,
+     "cursorLine": 3
+    }
+   ],
+   "expected": [
+    [
+     "2"
+    ],
+    [
+     "1"
+    ],
+    [
+     "0"
+    ],
+    [
+     "1"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "name": "relative: two wrapped lines, count 5gj lands on the row that shows 5",
+   "args": [
+    [
+     {
+      "line": 1,
+      "rows": 3,
+      "hidden": 0
+     },
+     {
+      "line": 2,
+      "rows": 4,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "relative",
+     "countFolded": false,
+     "cursorRow": 0,
+     "cursorLine": 1
+    }
+   ],
+   "expected": [
+    [
+     "0",
+     "1",
+     "2"
+    ],
+    [
+     "3",
+     "4",
+     "5",
+     "6"
+    ]
+   ]
+  },
+  {
+   "name": "hybrid: the cursor row shows the line number",
+   "args": [
+    [
+     {
+      "line": 1,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 2,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 3,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "hybrid",
+     "countFolded": false,
+     "cursorRow": 1,
+     "cursorLine": 2
+    }
+   ],
+   "expected": [
+    [
+     "1"
+    ],
+    [
+     "2"
+    ],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "name": "hybrid: only the cursor row of a wrapped line shows the line number",
+   "args": [
+    [
+     {
+      "line": 7,
+      "rows": 3,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "hybrid",
+     "countFolded": false,
+     "cursorRow": 1,
+     "cursorLine": 7
+    }
+   ],
+   "expected": [
+    [
+     "1",
+     "7",
+     "1"
+    ]
+   ]
+  },
+  {
+   "name": "hybrid: other rows keep the relative count",
+   "args": [
+    [
+     {
+      "line": 10,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 11,
+      "rows": 2,
+      "hidden": 0
+     },
+     {
+      "line": 12,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "hybrid",
+     "countFolded": false,
+     "cursorRow": 1,
+     "cursorLine": 11
+    }
+   ],
+   "expected": [
+    [
+     "1"
+    ],
+    [
+     "11",
+     "1"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "name": "absolute: first row shows the line number, continuation rows are empty",
+   "args": [
+    [
+     {
+      "line": 1,
+      "rows": 3,
+      "hidden": 0
+     },
+     {
+      "line": 2,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 3,
+      "rows": 2,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "absolute",
+     "countFolded": false,
+     "cursorRow": 0,
+     "cursorLine": 1
+    }
+   ],
+   "expected": [
+    [
+     "1",
+     "",
+     ""
+    ],
+    [
+     "2"
+    ],
+    [
+     "3",
+     ""
+    ]
+   ]
+  },
+  {
+   "name": "absolute: does not depend on the cursor",
+   "args": [
+    [
+     {
+      "line": 5,
+      "rows": 2,
+      "hidden": 0
+     },
+     {
+      "line": 6,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "absolute",
+     "countFolded": false,
+     "cursorRow": 40,
+     "cursorLine": 99
+    }
+   ],
+   "expected": [
+    [
+     "5",
+     ""
+    ],
+    [
+     "6"
+    ]
+   ]
+  },
+  {
+   "name": "absolute: a folded section shows the real line number after it",
+   "args": [
+    [
+     {
+      "line": 1,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 2,
+      "rows": 1,
+      "hidden": 3
+     },
+     {
+      "line": 6,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "absolute",
+     "countFolded": false,
+     "cursorRow": 0,
+     "cursorLine": 1
+    }
+   ],
+   "expected": [
+    [
+     "1"
+    ],
+    [
+     "2"
+    ],
+    [
+     "6"
+    ]
+   ]
+  },
+  {
+   "name": "relative: a fold counts as one row by default",
+   "args": [
+    [
+     {
+      "line": 1,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 2,
+      "rows": 1,
+      "hidden": 3
+     },
+     {
+      "line": 6,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "relative",
+     "countFolded": false,
+     "cursorRow": 0,
+     "cursorLine": 1
+    }
+   ],
+   "expected": [
+    [
+     "0"
+    ],
+    [
+     "1"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "name": "relative: with count folded each hidden line takes one count",
+   "args": [
+    [
+     {
+      "line": 1,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 2,
+      "rows": 1,
+      "hidden": 3
+     },
+     {
+      "line": 6,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "relative",
+     "countFolded": true,
+     "cursorRow": 0,
+     "cursorLine": 1
+    }
+   ],
+   "expected": [
+    [
+     "0"
+    ],
+    [
+     "1"
+    ],
+    [
+     "5"
+    ]
+   ]
+  },
+  {
+   "name": "relative: count folded with the cursor below the fold",
+   "args": [
+    [
+     {
+      "line": 1,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 2,
+      "rows": 1,
+      "hidden": 3
+     },
+     {
+      "line": 6,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "relative",
+     "countFolded": true,
+     "cursorRow": 5,
+     "cursorLine": 6
+    }
+   ],
+   "expected": [
+    [
+     "5"
+    ],
+    [
+     "4"
+    ],
+    [
+     "0"
+    ]
+   ]
+  },
+  {
+   "name": "relative: count folded off keeps the cursor below the fold close",
+   "args": [
+    [
+     {
+      "line": 1,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 2,
+      "rows": 1,
+      "hidden": 3
+     },
+     {
+      "line": 6,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "relative",
+     "countFolded": false,
+     "cursorRow": 2,
+     "cursorLine": 6
+    }
+   ],
+   "expected": [
+    [
+     "2"
+    ],
+    [
+     "1"
+    ],
+    [
+     "0"
+    ]
+   ]
+  },
+  {
+   "name": "relative: a wrapped fold header counts its rows and its hidden lines",
+   "args": [
+    [
+     {
+      "line": 1,
+      "rows": 2,
+      "hidden": 4
+     },
+     {
+      "line": 6,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "relative",
+     "countFolded": true,
+     "cursorRow": 0,
+     "cursorLine": 1
+    }
+   ],
+   "expected": [
+    [
+     "0",
+     "1"
+    ],
+    [
+     "6"
+    ]
+   ]
+  },
+  {
+   "name": "relative: cursor above the first drawn row",
+   "args": [
+    [
+     {
+      "line": 30,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 31,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 32,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "relative",
+     "countFolded": false,
+     "cursorRow": -4,
+     "cursorLine": 26
+    }
+   ],
+   "expected": [
+    [
+     "4"
+    ],
+    [
+     "5"
+    ],
+    [
+     "6"
+    ]
+   ]
+  },
+  {
+   "name": "relative: cursor below the last drawn row",
+   "args": [
+    [
+     {
+      "line": 30,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 31,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "relative",
+     "countFolded": false,
+     "cursorRow": 6,
+     "cursorLine": 36
+    }
+   ],
+   "expected": [
+    [
+     "6"
+    ],
+    [
+     "5"
+    ]
+   ]
+  },
+  {
+   "name": "hybrid: cursor off screen shows no line number",
+   "args": [
+    [
+     {
+      "line": 30,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 31,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "hybrid",
+     "countFolded": false,
+     "cursorRow": -3,
+     "cursorLine": 27
+    }
+   ],
+   "expected": [
+    [
+     "3"
+    ],
+    [
+     "4"
+    ]
+   ]
+  },
+  {
+   "name": "relative: large counts",
+   "args": [
+    [
+     {
+      "line": 1,
+      "rows": 2,
+      "hidden": 0
+     },
+     {
+      "line": 2,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "relative",
+     "countFolded": false,
+     "cursorRow": 120,
+     "cursorLine": 80
+    }
+   ],
+   "expected": [
+    [
+     "120",
+     "119"
+    ],
+    [
+     "118"
+    ]
+   ]
+  },
+  {
+   "name": "relative: no units gives no labels",
+   "args": [
+    [],
+    {
+     "mode": "relative",
+     "countFolded": false,
+     "cursorRow": 0,
+     "cursorLine": 1
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "relative: bad rows count as one row",
+   "args": [
+    [
+     {
+      "line": 1,
+      "rows": 0,
+      "hidden": 0
+     },
+     {
+      "line": 2,
+      "rows": -3,
+      "hidden": -2
+     }
+    ],
+    {
+     "mode": "relative",
+     "countFolded": false,
+     "cursorRow": 0,
+     "cursorLine": 1
+    }
+   ],
+   "expected": [
+    [
+     "0"
+    ],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "name": "dual: two columns with the cursor on the first row",
+   "args": [
+    [
+     {
+      "line": 1,
+      "rows": 3,
+      "hidden": 0
+     },
+     {
+      "line": 2,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "dual",
+     "countFolded": false,
+     "cursorRow": 0,
+     "cursorLine": 1
+    }
+   ],
+   "expected": [
+    [
+     "1 | 0",
+     " | 1",
+     " | 2"
+    ],
+    [
+     "2 | 3"
+    ]
+   ]
+  },
+  {
+   "name": "dual: cursor on a wrapped continuation row",
+   "args": [
+    [
+     {
+      "line": 7,
+      "rows": 4,
+      "hidden": 0
+     },
+     {
+      "line": 8,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "dual",
+     "countFolded": false,
+     "cursorRow": 2,
+     "cursorLine": 7
+    }
+   ],
+   "expected": [
+    [
+     "7 | 2",
+     " | 1",
+     " | 0",
+     " | 1"
+    ],
+    [
+     "8 | 2"
+    ]
+   ]
+  },
+  {
+   "name": "dual: counts above and below the cursor",
+   "args": [
+    [
+     {
+      "line": 1,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 2,
+      "rows": 1,
+      "hidden": 0
+     },
+     {
+      "line": 3,
+      "rows": 2,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "dual",
+     "countFolded": false,
+     "cursorRow": 1,
+     "cursorLine": 2
+    }
+   ],
+   "expected": [
+    [
+     "1 | 1"
+    ],
+    [
+     "2 | 0"
+    ],
+    [
+     "3 | 1",
+     " | 2"
+    ]
+   ]
+  },
+  {
+   "name": "dual: a folded section takes one free count",
+   "args": [
+    [
+     {
+      "line": 3,
+      "rows": 1,
+      "hidden": 4
+     },
+     {
+      "line": 8,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "dual",
+     "countFolded": false,
+     "cursorRow": 0,
+     "cursorLine": 3
+    }
+   ],
+   "expected": [
+    [
+     "3 | 0"
+    ],
+    [
+     "8 | 1"
+    ]
+   ]
+  },
+  {
+   "name": "dual: Pro counts hidden lines with both columns",
+   "args": [
+    [
+     {
+      "line": 3,
+      "rows": 1,
+      "hidden": 4
+     },
+     {
+      "line": 8,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "dual",
+     "countFolded": true,
+     "cursorRow": 0,
+     "cursorLine": 3
+    }
+   ],
+   "expected": [
+    [
+     "3 | 0"
+    ],
+    [
+     "8 | 5"
+    ]
+   ]
+  },
+  {
+   "name": "dual: cursor above the viewport",
+   "args": [
+    [
+     {
+      "line": 90,
+      "rows": 2,
+      "hidden": 0
+     },
+     {
+      "line": 91,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "dual",
+     "countFolded": false,
+     "cursorRow": -3,
+     "cursorLine": 87
+    }
+   ],
+   "expected": [
+    [
+     "90 | 3",
+     " | 4"
+    ],
+    [
+     "91 | 5"
+    ]
+   ]
+  },
+  {
+   "name": "dual: cursor below the viewport",
+   "args": [
+    [
+     {
+      "line": 99,
+      "rows": 2,
+      "hidden": 0
+     },
+     {
+      "line": 100,
+      "rows": 1,
+      "hidden": 0
+     }
+    ],
+    {
+     "mode": "dual",
+     "countFolded": false,
+     "cursorRow": 5,
+     "cursorLine": 103
+    }
+   ],
+   "expected": [
+    [
+     "99 | 5",
+     " | 4"
+    ],
+    [
+     "100 | 3"
+    ]
+   ]
+  },
+  {
+   "name": "dual: an empty viewport has no labels",
+   "args": [
+    [],
+    {
+     "mode": "dual",
+     "countFolded": false,
+     "cursorRow": 0,
+     "cursorLine": 1
+    }
+   ],
+   "expected": []
+  }
+ ]
+}
