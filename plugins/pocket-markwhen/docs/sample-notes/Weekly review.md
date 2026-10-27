@@ -1,0 +1,16 @@
+# Weekly review
+
+The travel plan stays in this note. The dates below use the Markwhen format.
+
+```mw
+---
+title: Spring trip
+---
+2026-03-01: Fly out #travel
+2026-03-02 / 2026-03-05: Rome #italy
+2026-03-06 / 2026-03-08: Florence #italy
+
+# Later
+2026-04: Return home #planning
+2027: Plan the next trip #future
+```
