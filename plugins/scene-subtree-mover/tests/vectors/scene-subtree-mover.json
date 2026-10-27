@@ -1,0 +1,1200 @@
+{
+ "slug": "scene-subtree-mover",
+ "module": "scene-subtree-mover",
+ "function": "moveTree",
+ "note": "Each case declares its tested function. Tree inputs use the Longform adjacent child-array format. applyPreview fixtures run the plugin against an in-memory Vault with an injected failure.",
+ "cases": [
+  {
+   "name": "01 parent and two children follow the move",
+   "function": "moveTree",
+   "args": [
+    [
+     "A",
+     [
+      "a1",
+      "a2"
+     ],
+     "B"
+    ],
+    {
+     "path": [
+      0
+     ],
+     "position": 1
+    }
+   ],
+   "expected": [
+    "B",
+    "A",
+    [
+     "a1",
+     "a2"
+    ]
+   ]
+  },
+  {
+   "name": "02 descendant x follows its chapter",
+   "function": "moveTree",
+   "args": [
+    [
+     "A",
+     [
+      "a1",
+      [
+       "x"
+      ]
+     ],
+     "B"
+    ],
+    {
+     "path": [
+      0
+     ],
+     "position": 1
+    }
+   ],
+   "expected": [
+    "B",
+    "A",
+    [
+     "a1",
+     [
+      "x"
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "03 B and child become first",
+   "function": "moveTree",
+   "args": [
+    [
+     "A",
+     "B",
+     [
+      "b1"
+     ],
+     "C"
+    ],
+    {
+     "path": [
+      1
+     ],
+     "position": 0
+    }
+   ],
+   "expected": [
+    "B",
+    [
+     "b1"
+    ],
+    "A",
+    "C"
+   ]
+  },
+  {
+   "name": "04 chapter without children moves alone",
+   "function": "moveTree",
+   "args": [
+    [
+     "A",
+     "B",
+     [
+      "b1"
+     ],
+     "C"
+    ],
+    {
+     "path": [
+      0
+     ],
+     "position": 1
+    }
+   ],
+   "expected": [
+    "B",
+    [
+     "b1"
+    ],
+    "A",
+    "C"
+   ]
+  },
+  {
+   "name": "05 same final position gives unchanged tree",
+   "function": "moveTree",
+   "args": [
+    [
+     "A",
+     [
+      "a1"
+     ],
+     "B"
+    ],
+    {
+     "path": [
+      0
+     ],
+     "position": 0
+    }
+   ],
+   "expected": [
+    "A",
+    [
+     "a1"
+    ],
+    "B"
+   ]
+  },
+  {
+   "name": "06 leading child array",
+   "function": "readTree",
+   "args": [
+    [
+     [
+      "a1"
+     ],
+     "A"
+    ]
+   ],
+   "expected": {
+    "error": "A child array must follow one parent scene."
+   }
+  },
+  {
+   "name": "06 number scene",
+   "function": "readTree",
+   "args": [
+    [
+     "A",
+     42
+    ]
+   ],
+   "expected": {
+    "error": "Each scene must be a nonempty string or a child array."
+   }
+  },
+  {
+   "name": "06 null scene",
+   "function": "readTree",
+   "args": [
+    [
+     "A",
+     null
+    ]
+   ],
+   "expected": {
+    "error": "Each scene must be a nonempty string or a child array."
+   }
+  },
+  {
+   "name": "06 consecutive child arrays",
+   "function": "readTree",
+   "args": [
+    [
+     "A",
+     [
+      "a1"
+     ],
+     [
+      "a2"
+     ]
+    ]
+   ],
+   "expected": {
+    "error": "A child array must follow one parent scene."
+   }
+  },
+  {
+   "name": "06 object scene",
+   "function": "readTree",
+   "args": [
+    [
+     "A",
+     {
+      "title": "B"
+     }
+    ]
+   ],
+   "expected": {
+    "error": "Each scene must be a nonempty string or a child array."
+   }
+  },
+  {
+   "name": "06 blank scene",
+   "function": "readTree",
+   "args": [
+    [
+     "A",
+     "  "
+    ]
+   ],
+   "expected": {
+    "error": "Each scene must be a nonempty string or a child array."
+   }
+  },
+  {
+   "name": "06 not an array",
+   "function": "readTree",
+   "args": [
+    {
+     "scenes": [
+      "A"
+     ]
+    }
+   ],
+   "expected": {
+    "error": "The scene tree must be an array."
+   }
+  },
+  {
+   "name": "07 conflict inside process retains changed source",
+   "function": "applyPreview",
+   "args": [
+    {
+     "scenes": [
+      "A",
+      [
+       "a1",
+       [
+        "x"
+       ]
+      ],
+      "B",
+      "C"
+     ],
+     "path": [
+      0
+     ],
+     "position": 2,
+     "inject": "process"
+    }
+   ],
+   "expected": {
+    "outcome": "conflict",
+    "unchanged": false,
+    "backupCount": 1,
+    "backupExact": true,
+    "processCalls": 1,
+    "scenes": [
+     "A",
+     [
+      "a1",
+      [
+       "x"
+      ]
+     ],
+     "B",
+     "C"
+    ],
+    "body": "\n# Manuscript\nKeep this paragraph.\n\n[[A]]\n\nSync edit.\n",
+    "title": "Original title"
+   }
+  },
+  {
+   "name": "07 conflict before backup retains changed source",
+   "function": "applyPreview",
+   "args": [
+    {
+     "scenes": [
+      "A",
+      [
+       "a1",
+       [
+        "x"
+       ]
+      ],
+      "B",
+      "C"
+     ],
+     "path": [
+      0
+     ],
+     "position": 2,
+     "inject": "before"
+    }
+   ],
+   "expected": {
+    "outcome": "conflict",
+    "unchanged": false,
+    "backupCount": 0,
+    "backupExact": true,
+    "processCalls": 0,
+    "scenes": [
+     "A",
+     [
+      "a1",
+      [
+       "x"
+      ]
+     ],
+     "B",
+     "C"
+    ],
+    "body": "\n# Manuscript\nKeep this paragraph.\n\n[[A]]\n\nSync edit.\n",
+    "title": "Original title"
+   }
+  },
+  {
+   "name": "08 backup failure prevents process",
+   "function": "applyPreview",
+   "args": [
+    {
+     "scenes": [
+      "A",
+      [
+       "a1",
+       [
+        "x"
+       ]
+      ],
+      "B",
+      "C"
+     ],
+     "path": [
+      0
+     ],
+     "position": 2,
+     "inject": "backup"
+    }
+   ],
+   "expected": {
+    "outcome": "backup-failed",
+    "unchanged": true,
+    "backupCount": 0,
+    "backupExact": true,
+    "processCalls": 0,
+    "scenes": [
+     "A",
+     [
+      "a1",
+      [
+       "x"
+      ]
+     ],
+     "B",
+     "C"
+    ],
+    "body": "\n# Manuscript\nKeep this paragraph.\n\n[[A]]\n",
+    "title": "Original title"
+   }
+  },
+  {
+   "name": "09 metadata and body survive checked update",
+   "function": "applyPreview",
+   "args": [
+    {
+     "scenes": [
+      "A",
+      [
+       "a1",
+       [
+        "x"
+       ]
+      ],
+      "B",
+      "C"
+     ],
+     "path": [
+      0
+     ],
+     "position": 2,
+     "inject": "none"
+    }
+   ],
+   "expected": {
+    "outcome": "applied",
+    "unchanged": false,
+    "backupCount": 1,
+    "backupExact": true,
+    "processCalls": 1,
+    "scenes": [
+     "B",
+     "C",
+     "A",
+     [
+      "a1",
+      [
+       "x"
+      ]
+     ]
+    ],
+    "body": "\n# Manuscript\nKeep this paragraph.\n\n[[A]]\n",
+    "title": "Original title"
+   }
+  },
+  {
+   "name": "10 child destination is refused",
+   "function": "moveAfter",
+   "args": [
+    [
+     "A",
+     [
+      "a1",
+      [
+       "x"
+      ]
+     ],
+     "B",
+     "C"
+    ],
+    [
+     0
+    ],
+    [
+     0,
+     0
+    ]
+   ],
+   "expected": {
+    "error": "V1 permits sibling reordering only."
+   }
+  },
+  {
+   "name": "10 cross parent destination is refused",
+   "function": "moveAfter",
+   "args": [
+    [
+     "A",
+     [
+      "a1"
+     ],
+     "B",
+     [
+      "b1"
+     ]
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     1,
+     0
+    ]
+   ],
+   "expected": {
+    "error": "V1 permits sibling reordering only."
+   }
+  },
+  {
+   "name": "11 reorder siblings within one parent",
+   "function": "moveTree",
+   "args": [
+    [
+     "A",
+     [
+      "a1",
+      [
+       "x"
+      ],
+      "a2"
+     ],
+     "B"
+    ],
+    {
+     "path": [
+      0,
+      0
+     ],
+     "position": 1
+    }
+   ],
+   "expected": [
+    "A",
+    [
+     "a2",
+     "a1",
+     [
+      "x"
+     ]
+    ],
+    "B"
+   ]
+  },
+  {
+   "name": "12 keep empty child array",
+   "function": "moveTree",
+   "args": [
+    [
+     "A",
+     [],
+     "B"
+    ],
+    {
+     "path": [
+      0
+     ],
+     "position": 1
+    }
+   ],
+   "expected": [
+    "B",
+    "A",
+    []
+   ]
+  },
+  {
+   "name": "12 keep Unicode scene names",
+   "function": "moveTree",
+   "args": [
+    [
+     "第一章",
+     [
+      "Café",
+      "🌊"
+     ],
+     "結末"
+    ],
+    {
+     "path": [
+      0
+     ],
+     "position": 1
+    }
+   ],
+   "expected": [
+    "結末",
+    "第一章",
+    [
+     "Café",
+     "🌊"
+    ]
+   ]
+  },
+  {
+   "name": "13 target beyond sibling group",
+   "function": "moveTree",
+   "args": [
+    [
+     "A",
+     "B"
+    ],
+    {
+     "path": [
+      0
+     ],
+     "position": 2
+    }
+   ],
+   "expected": {
+    "error": "Select a position in the same sibling group."
+   }
+  },
+  {
+   "name": "13 missing source chapter",
+   "function": "moveTree",
+   "args": [
+    [
+     "A",
+     "B"
+    ],
+    {
+     "path": [
+      2
+     ],
+     "position": 0
+    }
+   ],
+   "expected": {
+    "error": "The selected scene is missing."
+   }
+  },
+  {
+   "name": "13 fractional position",
+   "function": "moveTree",
+   "args": [
+    [
+     "A",
+     "B"
+    ],
+    {
+     "path": [
+      0
+     ],
+     "position": 0.5
+    }
+   ],
+   "expected": {
+    "error": "Select a position in the same sibling group."
+   }
+  },
+  {
+   "name": "14 several moves keep nested arrays",
+   "function": "batch",
+   "args": [
+    [
+     "A",
+     [
+      "a1"
+     ],
+     "B",
+     [
+      "b1"
+     ],
+     "C"
+    ],
+    [
+     {
+      "path": [
+       0
+      ],
+      "position": 2
+     },
+     {
+      "path": [
+       0
+      ],
+      "position": 1
+     }
+    ]
+   ],
+   "expected": [
+    "C",
+    "B",
+    [
+     "b1"
+    ],
+    "A",
+    [
+     "a1"
+    ]
+   ]
+  },
+  {
+   "name": "16 restore accepts sibling order differences",
+   "function": "checkRestore",
+   "args": [
+    [
+     "B",
+     "A",
+     [
+      "a2",
+      "a1"
+     ]
+    ],
+    [
+     "A",
+     [
+      "a1",
+      "a2"
+     ],
+     "B"
+    ]
+   ],
+   "expected": true
+  },
+  {
+   "name": "16 restore rejects a new scene",
+   "function": "checkRestore",
+   "args": [
+    [
+     "A",
+     [
+      "a1"
+     ],
+     "B",
+     "C"
+    ],
+    [
+     "A",
+     [
+      "a1"
+     ],
+     "B"
+    ]
+   ],
+   "expected": {
+    "error": "Conflict: the saved order has different scenes or parent relationships."
+   }
+  },
+  {
+   "name": "16 restore rejects changed parent",
+   "function": "checkRestore",
+   "args": [
+    [
+     "A",
+     "B",
+     [
+      "a1"
+     ]
+    ],
+    [
+     "A",
+     [
+      "a1"
+     ],
+     "B"
+    ]
+   ],
+   "expected": {
+    "error": "Conflict: the saved order has different scenes or parent relationships."
+   }
+  },
+  {
+   "name": "16 restore rejects removed child array",
+   "function": "checkRestore",
+   "args": [
+    [
+     "A",
+     "B"
+    ],
+    [
+     "A",
+     [],
+     "B"
+    ]
+   ],
+   "expected": {
+    "error": "Conflict: the saved order has different scenes or parent relationships."
+   }
+  },
+  {
+   "name": "duplicate labels retain separate child groups",
+   "function": "moveTree",
+   "args": [
+    [
+     "A",
+     [
+      "x"
+     ],
+     "A",
+     [
+      "y"
+     ],
+     "B"
+    ],
+    {
+     "path": [
+      0
+     ],
+     "position": 2
+    }
+   ],
+   "expected": [
+    "A",
+    [
+     "y"
+    ],
+    "B",
+    "A",
+    [
+     "x"
+    ]
+   ]
+  },
+  {
+   "name": "19 move a chapter under another chapter with descendants",
+   "function": "moveSubtree",
+   "args": [
+    [
+     "A",
+     [
+      "a1",
+      [
+       "x"
+      ]
+     ],
+     "B"
+    ],
+    {
+     "path": [
+      0
+     ],
+     "parent": [
+      1
+     ],
+     "position": 0
+    }
+   ],
+   "expected": [
+    "B",
+    [
+     "A",
+     [
+      "a1",
+      [
+       "x"
+      ]
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "20 move a nested scene to a different chapter",
+   "function": "moveSubtree",
+   "args": [
+    [
+     "A",
+     [
+      "a1",
+      [
+       "x"
+      ],
+      "a2"
+     ],
+     "B",
+     [
+      "b1"
+     ]
+    ],
+    {
+     "path": [
+      0,
+      0
+     ],
+     "parent": [
+      1
+     ],
+     "position": 1
+    }
+   ],
+   "expected": [
+    "A",
+    [
+     "a2"
+    ],
+    "B",
+    [
+     "b1",
+     "a1",
+     [
+      "x"
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "21 promote a child to the manuscript root",
+   "function": "moveSubtree",
+   "args": [
+    [
+     "A",
+     [
+      "a1",
+      [
+       "x"
+      ]
+     ],
+     "B"
+    ],
+    {
+     "path": [
+      0,
+      0
+     ],
+     "parent": [],
+     "position": 1
+    }
+   ],
+   "expected": [
+    "A",
+    [],
+    "a1",
+    [
+     "x"
+    ],
+    "B"
+   ]
+  },
+  {
+   "name": "22 keep the target when removal changes its path",
+   "function": "moveSubtree",
+   "args": [
+    [
+     "A",
+     "B",
+     [
+      "b1"
+     ],
+     "C"
+    ],
+    {
+     "path": [
+      0
+     ],
+     "parent": [
+      1
+     ],
+     "position": 0
+    }
+   ],
+   "expected": [
+    "B",
+    [
+     "A",
+     "b1"
+    ],
+    "C"
+   ]
+  },
+  {
+   "name": "23 keep a descendant target when a sibling shifts",
+   "function": "moveSubtree",
+   "args": [
+    [
+     "A",
+     "B",
+     [
+      "b1"
+     ],
+     "C"
+    ],
+    {
+     "path": [
+      0
+     ],
+     "parent": [
+      1,
+      0
+     ],
+     "position": 0
+    }
+   ],
+   "expected": [
+    "B",
+    [
+     "b1",
+     [
+      "A"
+     ]
+    ],
+    "C"
+   ]
+  },
+  {
+   "name": "24 keep duplicate names and empty child arrays",
+   "function": "moveSubtree",
+   "args": [
+    [
+     "Same",
+     [],
+     "Same",
+     []
+    ],
+    {
+     "path": [
+      0
+     ],
+     "parent": [
+      1
+     ],
+     "position": 0
+    }
+   ],
+   "expected": [
+    "Same",
+    [
+     "Same",
+     []
+    ]
+   ]
+  },
+  {
+   "name": "25 keep Unicode scene names",
+   "function": "moveSubtree",
+   "args": [
+    [
+     "海",
+     [
+      "é"
+     ],
+     "章"
+    ],
+    {
+     "path": [
+      0
+     ],
+     "parent": [
+      1
+     ],
+     "position": 0
+    }
+   ],
+   "expected": [
+    "章",
+    [
+     "海",
+     [
+      "é"
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "26 refuse a move under the selected scene",
+   "function": "moveSubtree",
+   "args": [
+    [
+     "A",
+     [
+      "a1"
+     ],
+     "B"
+    ],
+    {
+     "path": [
+      0
+     ],
+     "parent": [
+      0
+     ],
+     "position": 0
+    }
+   ],
+   "expected": {
+    "error": "A scene cannot move under itself or one of its descendants."
+   }
+  },
+  {
+   "name": "27 refuse a move under a descendant",
+   "function": "moveSubtree",
+   "args": [
+    [
+     "A",
+     [
+      "a1",
+      [
+       "x"
+      ]
+     ],
+     "B"
+    ],
+    {
+     "path": [
+      0
+     ],
+     "parent": [
+      0,
+      0,
+      0
+     ],
+     "position": 0
+    }
+   ],
+   "expected": {
+    "error": "A scene cannot move under itself or one of its descendants."
+   }
+  },
+  {
+   "name": "28 refuse a missing destination",
+   "function": "moveSubtree",
+   "args": [
+    [
+     "A",
+     "B"
+    ],
+    {
+     "path": [
+      0
+     ],
+     "parent": [
+      9
+     ],
+     "position": 0
+    }
+   ],
+   "expected": {
+    "error": "The selected scene is missing."
+   }
+  },
+  {
+   "name": "29 refuse an invalid final position",
+   "function": "moveSubtree",
+   "args": [
+    [
+     "A",
+     "B"
+    ],
+    {
+     "path": [
+      0
+     ],
+     "parent": [
+      1
+     ],
+     "position": 1
+    }
+   ],
+   "expected": {
+    "error": "Select a final position in the destination group."
+   }
+  },
+  {
+   "name": "30 keep the same sibling move free",
+   "function": "moveSubtree",
+   "args": [
+    [
+     "A",
+     [
+      "a1"
+     ],
+     "B"
+    ],
+    {
+     "path": [
+      0
+     ],
+     "parent": [],
+     "position": 1
+    }
+   ],
+   "expected": [
+    "B",
+    "A",
+    [
+     "a1"
+    ]
+   ]
+  },
+  {
+   "name": "31 retain the current position",
+   "function": "moveSubtree",
+   "args": [
+    [
+     "A",
+     [
+      "a1"
+     ],
+     "B"
+    ],
+    {
+     "path": [
+      0
+     ],
+     "parent": [],
+     "position": 0
+    }
+   ],
+   "expected": [
+    "A",
+    [
+     "a1"
+    ],
+    "B"
+   ]
+  },
+  {
+   "name": "32 refuse an invalid parent path",
+   "function": "moveSubtree",
+   "args": [
+    [
+     "A",
+     "B"
+    ],
+    {
+     "path": [
+      0
+     ],
+     "parent": [
+      -1
+     ],
+     "position": 0
+    }
+   ],
+   "expected": {
+    "error": "Select a scene in the preview."
+   }
+  }
+ ]
+}
