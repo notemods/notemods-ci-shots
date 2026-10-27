@@ -1,0 +1,70 @@
+[
+	{
+		"feature": "without-plugin",
+		"caption": "Without the plugin, a relative size in the link does nothing, and each image fills the column.",
+		"note": "Relative sizes.md",
+		"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); const e=l.view.editor; e.setCursor({line:0,ch:0}); await app.plugins.disablePlugin('relative-image-width'); await new Promise(r => setTimeout(r, 1500)); const n=document.querySelectorAll('.workspace-leaf.mod-active img[data-riw]').length; if (n) throw new Error('still sized '+n); return 'off'; })()",
+		"after": "(async () => { await app.plugins.enablePlugin('relative-image-width'); await new Promise(r => setTimeout(r, 1200)); return 'ok'; })()",
+		"wait": 800,
+		"zoom": 0.8
+	},
+	{
+		"feature": "live-preview",
+		"caption": "With the plugin, Live Preview shows each image at its relative size. The pixel size stays as before.",
+		"note": "Relative sizes.md",
+		"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); const e=l.view.editor; e.setCursor({line:0,ch:0}); for (let i=0;i<60 && document.querySelectorAll('.workspace-leaf.mod-active .cm-content img[data-riw]').length<3;i++) await new Promise(r=>setTimeout(r,100)); const n=document.querySelectorAll('.workspace-leaf.mod-active .cm-content img[data-riw]').length; if (n<3) throw new Error('sized images: '+n); return n; })()",
+		"wait": 800,
+		"zoom": 0.8
+	},
+	{
+		"feature": "reading-view",
+		"caption": "Reading view uses the same sizes.",
+		"note": "Relative sizes.md",
+		"eval": "(async () => { const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'preview',source:false}}); for (let i=0;i<60 && document.querySelectorAll('.workspace-leaf.mod-active .markdown-reading-view img[data-riw]').length<3;i++) await new Promise(r=>setTimeout(r,100)); const n=document.querySelectorAll('.workspace-leaf.mod-active .markdown-reading-view img[data-riw]').length; if (n<3) throw new Error('sized images: '+n); return n; })()",
+		"after": "(async () => { const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); const e=l.view.editor; e.setCursor({line:0,ch:0}); return 'ok'; })()",
+		"wait": 800,
+		"zoom": 0.8
+	},
+	{
+		"feature": "pandoc",
+		"caption": "With Read Pandoc attributes on, the attribute block sizes the image and Reading view hides it.",
+		"note": "Pandoc.md",
+		"eval": "(async () => { const p=app.plugins.plugins['relative-image-width']; p.settings.pandoc=true; p.refreshAll(); await new Promise(r=>setTimeout(r,300)); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'preview',source:false}}); for (let i=0;i<60 && document.querySelectorAll('.workspace-leaf.mod-active .markdown-reading-view img[data-riw]').length<1;i++) await new Promise(r=>setTimeout(r,100)); const n=document.querySelectorAll('.workspace-leaf.mod-active .markdown-reading-view img[data-riw]').length; if (n<1) throw new Error('sized images: '+n); if (!document.querySelector('.workspace-leaf.mod-active .riw-hidden')) throw new Error('block not hidden'); return n; })()",
+		"after": "(async () => { const p=app.plugins.plugins['relative-image-width']; p.settings.pandoc=false; p.refreshAll(); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); const e=l.view.editor; e.setCursor({line:0,ch:0}); return 'ok'; })()",
+		"wait": 800
+	},
+	{
+		"feature": "default-size",
+		"caption": "Pro: the note property image-width sizes each image that has no size in its link.",
+		"note": "Default size.md",
+		"eval": "(async () => { const p=app.plugins.plugins['relative-image-width']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('relative-image-width-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'preview',source:false}}); for (let i=0;i<60 && document.querySelectorAll('.workspace-leaf.mod-active .markdown-reading-view img[data-riw]').length<2;i++) await new Promise(r=>setTimeout(r,100)); const n=document.querySelectorAll('.workspace-leaf.mod-active .markdown-reading-view img[data-riw]').length; if (n<2) throw new Error('sized images: '+n); return n; })()",
+		"after": "(async () => { const p=app.plugins.plugins['relative-image-width']; p.pro.signOut(); p.refreshAll(); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); const e=l.view.editor; e.setCursor({line:0,ch:0}); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "settings",
+		"caption": "The settings: Read Pandoc attributes, and the default image size (Pro).",
+		"eval": "(async () => { app.setting.open(); app.setting.openTabById('relative-image-width'); await new Promise(r => setTimeout(r, 800)); return 'ok'; })()",
+		"after": "(async () => { app.setting.close(); return 'ok'; })()",
+		"wait": 700
+	},
+	{
+		"feature": "relative-image-width",
+		"caption": "The same note before and after: the plugin turns the relative sizes on.",
+		"frames": [
+			{
+				"note": "Relative sizes.md",
+				"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); const e=l.view.editor; e.setCursor({line:0,ch:0}); await app.plugins.disablePlugin('relative-image-width'); await new Promise(r => setTimeout(r, 1500)); const n=document.querySelectorAll('.workspace-leaf.mod-active img[data-riw]').length; if (n) throw new Error('still sized '+n); return 'off'; })()",
+				"wait": 500,
+				"hold": 2200,
+				"zoom": 0.8
+			},
+			{
+				"eval": "(async () => { await app.plugins.enablePlugin('relative-image-width'); await new Promise(r => setTimeout(r, 300)); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); const e=l.view.editor; e.setCursor({line:0,ch:0}); for (let i=0;i<60 && document.querySelectorAll('.workspace-leaf.mod-active .cm-content img[data-riw]').length<3;i++) await new Promise(r=>setTimeout(r,100)); const n=document.querySelectorAll('.workspace-leaf.mod-active .cm-content img[data-riw]').length; if (n<3) throw new Error('sized images: '+n); return 'on'; })()",
+				"wait": 500,
+				"hold": 2600,
+				"zoom": 0.8
+			}
+		]
+	}
+]
