@@ -1,0 +1,28 @@
+{
+	"id": "bases-multi-edit",
+	"name": "Bases Multi-Row Edit",
+	"version": "1.3.0",
+	"changes": [
+		"New Replace list items operation. It renames one tag or list item in place on the selected notes.",
+		"Apply now skips a note when Obsidian has seen a change to its file after the preview, and names it."
+	],
+	"tip": "To rename a tag on many notes, choose Replace list items, put the old tag in Find items and the new tag in Value.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Bases Multi-Row Edit is one of over 100 small plugins that I make. Thank you for using it with Bases.",
+	"related": [
+		{
+			"id": "bases-filter-switches",
+			"name": "Bases Filter Switches",
+			"blurb": "Turn saved Bases filters on or off with switches."
+		},
+		{
+			"id": "bases-transpose-table",
+			"name": "Bases Transpose Table",
+			"blurb": "Compare notes in columns and edit simple properties in rows."
+		},
+		{
+			"id": "bases-freeze-panes",
+			"name": "Bases Freeze Panes",
+			"blurb": "Keep column and note names visible as you scroll a base."
+		}
+	]
+}
