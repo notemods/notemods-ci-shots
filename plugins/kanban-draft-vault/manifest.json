@@ -1,0 +1,11 @@
+{
+	"id": "kanban-draft-vault",
+	"name": "Kanban Draft Vault",
+	"version": "1.1.1",
+	"minAppVersion": "1.13.4",
+	"description": "Keep new-card drafts and copy lost text from a recovery list.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}
