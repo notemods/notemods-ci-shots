@@ -1,0 +1,383 @@
+{
+ "slug": "task-field-labels",
+ "module": "task-field-labels/tests/scenarios",
+ "function": "runScenario",
+ "cases": [
+  {
+   "name": "due field",
+   "args": [
+    {
+     "field": "due",
+     "text": "📅 2026-10-15"
+    }
+   ],
+   "expected": "Due: 2026-10-15"
+  },
+  {
+   "name": "start field",
+   "args": [
+    {
+     "field": "start",
+     "text": "🛫 2026-10-15"
+    }
+   ],
+   "expected": "Start: 2026-10-15"
+  },
+  {
+   "name": "scheduled field",
+   "args": [
+    {
+     "field": "scheduled",
+     "text": "⏳ 2026-10-15"
+    }
+   ],
+   "expected": "Scheduled: 2026-10-15"
+  },
+  {
+   "name": "created field",
+   "args": [
+    {
+     "field": "created",
+     "text": "➕ 2026-10-15"
+    }
+   ],
+   "expected": "Created: 2026-10-15"
+  },
+  {
+   "name": "done field",
+   "args": [
+    {
+     "field": "done",
+     "text": "✅ 2026-10-15"
+    }
+   ],
+   "expected": "Done: 2026-10-15"
+  },
+  {
+   "name": "cancelled field",
+   "args": [
+    {
+     "field": "cancelled",
+     "text": "❌ 2026-10-15"
+    }
+   ],
+   "expected": "Cancelled: 2026-10-15"
+  },
+  {
+   "name": "priority Highest",
+   "args": [
+    {
+     "field": "priority",
+     "text": "🔺"
+    }
+   ],
+   "expected": "Priority: Highest"
+  },
+  {
+   "name": "priority High",
+   "args": [
+    {
+     "field": "priority",
+     "text": "⏫"
+    }
+   ],
+   "expected": "Priority: High"
+  },
+  {
+   "name": "priority Medium",
+   "args": [
+    {
+     "field": "priority",
+     "text": "🔼"
+    }
+   ],
+   "expected": "Priority: Medium"
+  },
+  {
+   "name": "priority Low",
+   "args": [
+    {
+     "field": "priority",
+     "text": "🔽"
+    }
+   ],
+   "expected": "Priority: Low"
+  },
+  {
+   "name": "priority Lowest",
+   "args": [
+    {
+     "field": "priority",
+     "text": "⏬"
+    }
+   ],
+   "expected": "Priority: Lowest"
+  },
+  {
+   "name": "weekly recurrence",
+   "args": [
+    {
+     "field": "recurring",
+     "text": "🔁 every week"
+    }
+   ],
+   "expected": "Repeat: every week"
+  },
+  {
+   "name": "description icon stays",
+   "args": [
+    {
+     "field": "description",
+     "text": "Call 📅 team"
+    }
+   ],
+   "expected": "Call 📅 team"
+  },
+  {
+   "name": "unknown field stays",
+   "args": [
+    {
+     "field": "future",
+     "text": "📅 2026-10-15"
+    }
+   ],
+   "expected": "📅 2026-10-15"
+  },
+  {
+   "name": "short date stays",
+   "args": [
+    {
+     "field": "due",
+     "text": "📅"
+    }
+   ],
+   "expected": "📅"
+  },
+  {
+   "name": "wrong date field icon stays",
+   "args": [
+    {
+     "field": "start",
+     "text": "📅 2026-10-15"
+    }
+   ],
+   "expected": "📅 2026-10-15"
+  },
+  {
+   "name": "non date text stays",
+   "args": [
+    {
+     "field": "due",
+     "text": "📅 team"
+    }
+   ],
+   "expected": "📅 team"
+  },
+  {
+   "name": "spaces stay",
+   "args": [
+    {
+     "field": "due",
+     "text": "  📅 2026-10-15 "
+    }
+   ],
+   "expected": "  Due: 2026-10-15 "
+  },
+  {
+   "name": "Tasks disabled leaves ordinary task",
+   "args": [
+    {
+     "field": "due",
+     "text": "📅 2026-10-15",
+     "ordinary": true
+    }
+   ],
+   "expected": "📅 2026-10-15"
+  },
+  {
+   "name": "unknown nested structure stays",
+   "args": [
+    {
+     "field": "due",
+     "text": "📅 2026-10-15",
+     "nested": true
+    }
+   ],
+   "expected": "📅 2026-10-15"
+  },
+  {
+   "name": "repeat ten scans",
+   "args": [
+    {
+     "field": "due",
+     "text": "📅 2026-10-15",
+     "mode": "repeat"
+    }
+   ],
+   "expected": "Due: 2026-10-15"
+  },
+  {
+   "name": "date click and menu remain",
+   "args": [
+    {
+     "field": "due",
+     "text": "📅 2026-10-15",
+     "mode": "events"
+    }
+   ],
+   "expected": {
+    "text": "Due: 2026-10-15",
+    "clicks": 1,
+    "menus": 1,
+    "checks": 1,
+    "links": 1
+   }
+  },
+  {
+   "name": "three late query rows",
+   "args": [
+    {
+     "field": "due",
+     "text": "📅 2026-10-15",
+     "mode": "async"
+    }
+   ],
+   "expected": [
+    "Due: 2026-10-15",
+    "Due: 2026-10-15",
+    "Due: 2026-10-15"
+   ]
+  },
+  {
+   "name": "disable restores note and query",
+   "args": [
+    {
+     "field": "due",
+     "text": "📅 2026-10-15",
+     "mode": "disable"
+    }
+   ],
+   "expected": {
+    "texts": [
+     "📅 2026-10-15",
+     "📅 2026-10-15"
+    ],
+    "observing": false,
+    "clicks": 1
+   }
+  },
+  {
+   "name": "checkbox refresh runs once",
+   "args": [
+    {
+     "field": "recurring",
+     "text": "🔁 every week",
+     "mode": "checkbox"
+    }
+   ],
+   "expected": {
+    "text": "Repeat: every week",
+    "checks": 1
+   }
+  },
+  {
+   "name": "external edit survives cleanup",
+   "args": [
+    {
+     "field": "due",
+     "text": "📅 2026-10-15",
+     "mode": "external"
+    }
+   ],
+   "expected": "Other plugin text"
+  },
+  {
+   "name": "custom label free stays fixed",
+   "args": [
+    {
+     "field": "due",
+     "text": "📅 2026-10-15",
+     "custom": "Deadline",
+     "pro": false
+    }
+   ],
+   "expected": "Due: 2026-10-15"
+  },
+  {
+   "name": "custom label Pro",
+   "args": [
+    {
+     "field": "due",
+     "text": "📅 2026-10-15",
+     "custom": "Deadline",
+     "pro": true
+    }
+   ],
+   "expected": "Deadline: 2026-10-15"
+  },
+  {
+   "name": "folder boundary does not match",
+   "args": [
+    {
+     "field": "due",
+     "text": "📅 2026-10-15",
+     "pro": true,
+     "rules": "Work|off",
+     "path": "Workshop/a.md"
+    }
+   ],
+   "expected": "Due: 2026-10-15"
+  },
+  {
+   "name": "folder off Pro",
+   "args": [
+    {
+     "field": "due",
+     "text": "📅 2026-10-15",
+     "pro": true,
+     "rules": "Work|off",
+     "path": "Work/a.md"
+    }
+   ],
+   "expected": "📅 2026-10-15"
+  },
+  {
+   "name": "folder off free ignored",
+   "args": [
+    {
+     "field": "due",
+     "text": "📅 2026-10-15",
+     "pro": false,
+     "rules": "Work|off",
+     "path": "Work/a.md"
+    }
+   ],
+   "expected": "Due: 2026-10-15"
+  },
+  {
+   "name": "compact Pro",
+   "args": [
+    {
+     "field": "due",
+     "text": "📅 2026-10-15",
+     "compact": true,
+     "pro": true,
+     "mode": "compact"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "compact free blocked",
+   "args": [
+    {
+     "field": "due",
+     "text": "📅 2026-10-15",
+     "compact": true,
+     "mode": "compact"
+    }
+   ],
+   "expected": false
+  }
+ ]
+}
