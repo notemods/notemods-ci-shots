@@ -1,0 +1,27 @@
+{
+	"id": "research-source-review",
+	"name": "Research Source Review",
+	"version": "1.1.1",
+	"changes": [
+		"Save dated report (Pro) now shows in the review window without Pro. It shows how to get Pro, with a Sponsor on GitHub button, and writes no report."
+	],
+	"tip": "Run Scan saved pins to check for changed source paragraphs.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Research Source Review is one of over 100 small plugins that I make. Thank you for using it in your research notes.",
+	"related": [
+		{
+			"id": "local-citation-page-jump",
+			"name": "Local Citation Page Jump",
+			"blurb": "Open a local PDF at a cited page."
+		},
+		{
+			"id": "retraction-review-queue",
+			"name": "Retraction Review Queue",
+			"blurb": "Match a local notice list to reference notes and linked manuscripts for review."
+		},
+		{
+			"id": "bibliography-path-audit",
+			"name": "Bibliography Path Audit",
+			"blurb": "Find invalid local bibliography paths saved in citation tool settings."
+		}
+	]
+}
