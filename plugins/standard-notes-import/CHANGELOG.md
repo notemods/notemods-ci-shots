@@ -1,0 +1,37 @@
+# standard-notes-import
+
+## 1.2.1
+
+### Patch Changes
+
+- e98dad2: Preview changes (pro) and Save rules now show how to get Pro, with a Sponsor on GitHub button, when you select them. Nothing is read or saved until Pro is on.
+
+## 1.2.0
+
+### Minor Changes
+
+- After a minor or major update, Standard Notes Import opens one What's new tab in the background. The tab and settings card suggest other NoteMods plugins and Zovo Chat and link to notemods.com for feedback ([privacy](https://notemods.com/privacy/)). The tab sends no data. Turn the tab off in Settings. Add the Send feedback command. The plugin makes no new network requests.
+
+## 1.1.2
+
+### Patch Changes
+
+- 85e6f8b: Treat a GitHub sponsorship reply without an amount as a failed check, not a refusal, and stop the GitHub sign in when the settings close or the plugin unloads.
+
+## 1.1.1
+
+### Patch Changes
+
+- f672154: The destination folder setting shows an inline message for an unsafe path and does not show a notice for each partial entry.
+
+## 1.1.0
+
+### Minor Changes
+
+- ed27a1b: Import decrypted Standard Notes JSON backups with their native .txt filename.
+
+## 1.0.1
+
+### Patch Changes
+
+- efdff8f: Correct the GitHub Sponsors payment, check and token storage text in the README.
