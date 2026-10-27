@@ -1,0 +1,11 @@
+{
+	"id": "craft-link-repair",
+	"name": "Craft Link Repair",
+	"version": "1.1.1",
+	"minAppVersion": "1.13.4",
+	"description": "Restore Craft page links from exported note identifiers.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}
