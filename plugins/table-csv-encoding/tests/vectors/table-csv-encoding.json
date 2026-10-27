@@ -1,0 +1,434 @@
+{
+ "slug": "table-csv-encoding",
+ "module": "tests/scenarios",
+ "function": "runAcceptanceCase",
+ "cases": [
+  {
+   "name": "Unicode table",
+   "args": [
+    {
+     "mode": "parse",
+     "source": "| Name | Value |\n| --- | --- |\n| Đặng | 你好 🙂 |\n"
+    }
+   ],
+   "expected": [
+    {
+     "line": 1,
+     "endLine": 3,
+     "rows": [
+      [
+       "Name",
+       "Value"
+      ],
+      [
+       "Đặng",
+       "你好 🙂"
+      ]
+     ],
+     "problem": null
+    }
+   ]
+  },
+  {
+   "name": "two tables",
+   "args": [
+    {
+     "mode": "parse",
+     "source": "| Name | Value |\n| --- | --- |\n| Đặng | 你好 🙂 |\n\n| Item | Price |\n| --- | --- |\n| Tea | 3 |\n"
+    }
+   ],
+   "expected": [
+    {
+     "line": 1,
+     "endLine": 3,
+     "rows": [
+      [
+       "Name",
+       "Value"
+      ],
+      [
+       "Đặng",
+       "你好 🙂"
+      ]
+     ],
+     "problem": null
+    },
+    {
+     "line": 5,
+     "endLine": 7,
+     "rows": [
+      [
+       "Item",
+       "Price"
+      ],
+      [
+       "Tea",
+       "3"
+      ]
+     ],
+     "problem": null
+    }
+   ]
+  },
+  {
+   "name": "escaped pipe",
+   "args": [
+    {
+     "mode": "parse",
+     "source": "| A | B |\n| --- | --- |\n| a\\|b | c |\n"
+    }
+   ],
+   "expected": [
+    {
+     "line": 1,
+     "endLine": 3,
+     "rows": [
+      [
+       "A",
+       "B"
+      ],
+      [
+       "a|b",
+       "c"
+      ]
+     ],
+     "problem": null
+    }
+   ]
+  },
+  {
+   "name": "fence ignored",
+   "args": [
+    {
+     "mode": "parse",
+     "source": "```md\n| Name | Value |\n| --- | --- |\n| Đặng | 你好 🙂 |\n```\n"
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "frontmatter ignored",
+   "args": [
+    {
+     "mode": "parse",
+     "source": "---\n| Name | Value |\n| --- | --- |\n| Đặng | 你好 🙂 |\n---\n"
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "unbordered table",
+   "args": [
+    {
+     "mode": "parse",
+     "source": "Name | Value\n--- | ---\nTea | 3\n"
+    }
+   ],
+   "expected": [
+    {
+     "line": 1,
+     "endLine": 3,
+     "rows": [
+      [
+       "Name",
+       "Value"
+      ],
+      [
+       "Tea",
+       "3"
+      ]
+     ],
+     "problem": null
+    }
+   ]
+  },
+  {
+   "name": "alignment separators",
+   "args": [
+    {
+     "mode": "parse",
+     "source": "| A | B |\n| :--- | ---: |\n| 1 | 2 |\n"
+    }
+   ],
+   "expected": [
+    {
+     "line": 1,
+     "endLine": 3,
+     "rows": [
+      [
+       "A",
+       "B"
+      ],
+      [
+       "1",
+       "2"
+      ]
+     ],
+     "problem": null
+    }
+   ]
+  },
+  {
+   "name": "ragged row blocks export",
+   "args": [
+    {
+     "mode": "parse",
+     "source": "| A | B |\n| --- | --- |\n| One |\n"
+    }
+   ],
+   "expected": [
+    {
+     "line": 1,
+     "endLine": 3,
+     "rows": [
+      [
+       "A",
+       "B"
+      ],
+      [
+       "One"
+      ]
+     ],
+     "problem": "Line 3 has 1 cells. The header has 2. Correct the row before export."
+    }
+   ]
+  },
+  {
+   "name": "escaped pipe alone is not a table",
+   "args": [
+    {
+     "mode": "parse",
+     "source": "a\\|b\n---\n"
+    }
+   ],
+   "expected": []
+  },
+  {
+   "name": "cell Markdown source stays",
+   "args": [
+    {
+     "mode": "parse",
+     "source": "| A | B |\n| --- | --- |\n| **bold** | [[Note]] |\n"
+    }
+   ],
+   "expected": [
+    {
+     "line": 1,
+     "endLine": 3,
+     "rows": [
+      [
+       "A",
+       "B"
+      ],
+      [
+       "**bold**",
+       "[[Note]]"
+      ]
+     ],
+     "problem": null
+    }
+   ]
+  },
+  {
+   "name": "BOM CSV",
+   "args": [
+    {
+     "mode": "csv",
+     "rows": [
+      [
+       "Name",
+       "Value"
+      ],
+      [
+       "Đặng",
+       "你好 🙂"
+      ]
+     ]
+    }
+   ],
+   "expected": "﻿Name,Value\r\nĐặng,你好 🙂\r\n"
+  },
+  {
+   "name": "comma without BOM",
+   "args": [
+    {
+     "mode": "csv",
+     "rows": [
+      [
+       "Name",
+       "Value"
+      ],
+      [
+       "Đặng",
+       "你好 🙂"
+      ]
+     ],
+     "options": {
+      "delimiter": ",",
+      "bom": false,
+      "headers": true
+     }
+    }
+   ],
+   "expected": "Name,Value\r\nĐặng,你好 🙂\r\n"
+  },
+  {
+   "name": "semicolon without BOM",
+   "args": [
+    {
+     "mode": "csv",
+     "rows": [
+      [
+       "Name",
+       "Value"
+      ],
+      [
+       "Đặng",
+       "你好 🙂"
+      ]
+     ],
+     "options": {
+      "delimiter": ";",
+      "bom": false,
+      "headers": true
+     }
+    }
+   ],
+   "expected": "Name;Value\r\nĐặng;你好 🙂\r\n"
+  },
+  {
+   "name": "tab without BOM",
+   "args": [
+    {
+     "mode": "csv",
+     "rows": [
+      [
+       "Name",
+       "Value"
+      ],
+      [
+       "Đặng",
+       "你好 🙂"
+      ]
+     ],
+     "options": {
+      "delimiter": "\t",
+      "bom": false,
+      "headers": true
+     }
+    }
+   ],
+   "expected": "Name\tValue\r\nĐặng\t你好 🙂\r\n"
+  },
+  {
+   "name": "CSV quotes and embedded line breaks",
+   "args": [
+    {
+     "mode": "csv",
+     "rows": [
+      [
+       "A",
+       "B"
+      ],
+      [
+       "x,y",
+       "He said \"yes\"\nAgain"
+      ]
+     ]
+    }
+   ],
+   "expected": "﻿A,B\r\n\"x,y\",\"He said \"\"yes\"\"\nAgain\"\r\n"
+  },
+  {
+   "name": "omit header",
+   "args": [
+    {
+     "mode": "csv",
+     "rows": [
+      [
+       "Name",
+       "Value"
+      ],
+      [
+       "Đặng",
+       "你好 🙂"
+      ]
+     ],
+     "options": {
+      "delimiter": ";",
+      "bom": true,
+      "headers": false
+     }
+    }
+   ],
+   "expected": "﻿Đặng;你好 🙂\r\n"
+  },
+  {
+   "name": "Unicode filename",
+   "args": [
+    {
+     "mode": "stem",
+     "source": "Đây là bảng.csv"
+    }
+   ],
+   "expected": "Đây là bảng"
+  },
+  {
+   "name": "filename separators",
+   "args": [
+    {
+     "mode": "stem",
+     "source": "../A:B/C.csv"
+    }
+   ],
+   "expected": "_A_B_C"
+  },
+  {
+   "name": "empty filename",
+   "args": [
+    {
+     "mode": "stem",
+     "source": "..."
+    }
+   ],
+   "expected": {
+    "error": "Enter a file name."
+   }
+  },
+  {
+   "name": "note size limit",
+   "args": [
+    {
+     "mode": "limit"
+    }
+   ],
+   "expected": {
+    "error": "The note exceeds 2,097,152 characters. Use a smaller note."
+   }
+  },
+  {
+   "name": "one-column plain data row",
+   "args": [
+    {
+     "mode": "parse",
+     "source": "| Name |\n| --- |\nTea\n\n# Next\n"
+    }
+   ],
+   "expected": [
+    {
+     "line": 1,
+     "endLine": 3,
+     "rows": [
+      [
+       "Name"
+      ],
+      [
+       "Tea"
+      ]
+     ],
+     "problem": null
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,40 @@
+.table-csv-modal {
+ width: min(900px, 94vw);
+}
+
+.table-csv-preview {
+ max-height: 220px;
+ overflow: auto;
+ white-space: pre-wrap;
+}
+
+.table-csv-summary {
+ color: var(--text-muted);
+ overflow-wrap: anywhere;
+}
+
+.table-csv-batch-list {
+ max-height: 260px;
+ overflow: auto;
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
