@@ -1,0 +1,64 @@
+[
+  {
+    "feature": "file-picker",
+    "caption": "Select a local JSON or YAML file.",
+    "note": "Welcome.md",
+    "eval": "app.commands.executeCommandById('openapi-spec-viewer:open-reference'); 'ok'",
+    "after": "document.querySelector('.modal .setting-item button').click(); 'ok'",
+    "zoom": 0.85
+  },
+  {
+    "feature": "endpoints",
+    "caption": "Read Pet service endpoints by tag.",
+    "eval": "(async () => { const p = app.plugins.plugins['openapi-spec-viewer']; app.workspace.getLeavesOfType('local-api-reference').forEach(l => l.detach()); await p.openFile('Local API Reference/pets.json'); const v = [...p.views].find(v => v.path === 'Local API Reference/pets.json'); p.pro.signOut();  return 'ok'; })()",
+    "zoom": 0.85
+  },
+  {
+    "feature": "details",
+    "caption": "Read request content and response status codes.",
+    "eval": "(async () => { const p = app.plugins.plugins['openapi-spec-viewer']; app.workspace.getLeavesOfType('local-api-reference').forEach(l => l.detach()); await p.openFile('Local API Reference/pets.json'); const v = [...p.views].find(v => v.path === 'Local API Reference/pets.json'); p.pro.signOut(); v.selected = 'POST /pets'; v.render(); v.contentEl.scrollTop = 80; return 'ok'; })()",
+    "zoom": 0.85
+  },
+  {
+    "feature": "schema",
+    "caption": "Open a shallow Pet schema.",
+    "eval": "(async () => { const p = app.plugins.plugins['openapi-spec-viewer']; app.workspace.getLeavesOfType('local-api-reference').forEach(l => l.detach()); await p.openFile('Local API Reference/pets.json'); const v = [...p.views].find(v => v.path === 'Local API Reference/pets.json'); p.pro.signOut(); v.selected = 'POST /pets'; v.render(); v.contentEl.querySelector('.lar-schema-links button').click(); v.contentEl.scrollTop = 300; return 'ok'; })()",
+    "zoom": 0.85
+  },
+  {
+    "feature": "endpoint-note",
+    "caption": "Pro writes an endpoint description to a new note.",
+    "eval": "(async () => { const p = app.plugins.plugins['openapi-spec-viewer']; app.workspace.getLeavesOfType('local-api-reference').forEach(l => l.detach()); await p.openFile('Local API Reference/pets.json'); const v = [...p.views].find(v => v.path === 'Local API Reference/pets.json'); p.pro.opts.http = async () => ({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('openapi-spec-viewer-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow(); const f = await p.exportEndpoint(v.spec.endpoints.find(e => e.id === 'POST /pets'), v.path); if (!f) throw new Error('Missing endpoint note'); await app.workspace.getLeaf('tab').openFile(f); return 'ok'; })()",
+    "after": "app.plugins.plugins['openapi-spec-viewer'].pro.signOut(); 'ok'",
+    "zoom": 0.85
+  },
+  {
+    "feature": "bookmarks",
+    "caption": "Pro saves endpoint bookmarks and named tag filters.",
+    "eval": "(async () => { const p = app.plugins.plugins['openapi-spec-viewer']; app.workspace.getLeavesOfType('local-api-reference').forEach(l => l.detach()); await p.openFile('Local API Reference/pets.json'); const v = [...p.views].find(v => v.path === 'Local API Reference/pets.json'); p.pro.opts.http = async () => ({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('openapi-spec-viewer-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow(); p.settings.bookmarks = []; await p.bookmark(v.path, 'GET /pets/{id}'); await p.saveFilter('Pet review', 'Pets'); v.selected = 'GET /pets/{id}'; v.tag='Pets'; v.render(); return 'ok'; })()",
+    "after": "app.plugins.plugins['openapi-spec-viewer'].pro.signOut(); 'ok'",
+    "zoom": 0.85
+  },
+  {
+    "feature": "local-api-reference",
+    "caption": "Select an endpoint and open a local schema.",
+    "frames": [
+      {
+        "eval": "(async () => { const p = app.plugins.plugins['openapi-spec-viewer']; app.workspace.getLeavesOfType('local-api-reference').forEach(l => l.detach()); await p.openFile('Local API Reference/pets.json'); const v = [...p.views].find(v => v.path === 'Local API Reference/pets.json'); p.pro.signOut();  return 'ok'; })()",
+        "hold": 1600,
+        "zoom": 0.85
+      },
+      {
+        "eval": "(async () => { const p=app.plugins.plugins['openapi-spec-viewer']; const v=[...p.views].find(v=>v.path==='Local API Reference/pets.json'); v.selected='POST /pets'; v.render(); v.contentEl.scrollTop=80; return 'ok'; })()",
+        "hold": 1600,
+        "zoom": 0.85
+      },
+      {
+        "eval": "(async () => { const p=app.plugins.plugins['openapi-spec-viewer']; const v=[...p.views].find(v=>v.path==='Local API Reference/pets.json'); v.contentEl.querySelector('.lar-schema-links button').click(); v.contentEl.scrollTop=300; return 'ok'; })()",
+        "hold": 1800,
+        "zoom": 0.85
+      }
+    ],
+    "zoom": 0.85
+  }
+]
