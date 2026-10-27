@@ -1,0 +1,27 @@
+{
+	"id": "revision-session-marks",
+	"name": "Revision Session Marks",
+	"version": "1.1.0",
+	"changes": [
+		"New Send feedback command. It opens a page where you can report a problem or suggest an idea."
+	],
+	"tip": "Run Show session and baselines to see the saved text and check which draft the baseline belongs to.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Revision Session Marks is one of over 100 small plugins that I make. Thank you for using it with your writing.",
+	"related": [
+		{
+			"id": "scene-subtree-mover",
+			"name": "Scene Subtree Mover",
+			"blurb": "Move chapters with their child scenes."
+		},
+		{
+			"id": "note-word-comments",
+			"name": "Word Comment Export",
+			"blurb": "Export inline note comments as native Word comments in a new DOCX file."
+		},
+		{
+			"id": "compile-loss-check",
+			"name": "Compile Loss Check",
+			"blurb": "Find source paragraphs that do not match a compiled manuscript."
+		}
+	]
+}
