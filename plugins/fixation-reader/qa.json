@@ -1,0 +1,67 @@
+[
+  {
+    "feature": "reading",
+    "caption": "Bold word starts in a sample reading session.",
+    "note": "Reading session.md",
+    "eval": "(async () => {const p = app.plugins.plugins['fixation-reader']; p.pro.signOut(); Object.assign(p.settings, {enabled:true,strength:0.5,minimum:3,livePreview:false,excludedFolders:'',excludedTags:'',weight:700,color:'',endingOpacity:1}); await p.saveSettings();const v = app.workspace.getMostRecentLeaf().view; const s = v.leaf.getViewState(); await v.leaf.setViewState({...s,state:{...s.state,mode:'preview'}}); return 'ok';})()"
+  },
+  {
+    "feature": "protected",
+    "caption": "Code, math and existing bold text stay unchanged.",
+    "note": "Protected text.md",
+    "eval": "(async () => {const p = app.plugins.plugins['fixation-reader']; p.pro.signOut(); Object.assign(p.settings, {enabled:true,strength:0.5,minimum:3,livePreview:false,excludedFolders:'',excludedTags:'',weight:700,color:'',endingOpacity:1}); await p.saveSettings();const v = app.workspace.getMostRecentLeaf().view; const s = v.leaf.getViewState(); await v.leaf.setViewState({...s,state:{...s.state,mode:'preview'}}); return 'ok';})()"
+  },
+  {
+    "feature": "note-switch",
+    "caption": "The note property turns the effect off for one note.",
+    "note": "Plain note.md",
+    "eval": "(async () => {const p = app.plugins.plugins['fixation-reader']; p.pro.signOut(); Object.assign(p.settings, {enabled:true,strength:0.5,minimum:3,livePreview:false,excludedFolders:'',excludedTags:'',weight:700,color:'',endingOpacity:1}); await p.saveSettings();const v = app.workspace.getMostRecentLeaf().view; const s = v.leaf.getViewState(); await v.leaf.setViewState({...s,state:{...s.state,mode:'preview'}}); return 'ok';})()"
+  },
+  {
+    "feature": "live-preview",
+    "caption": "Pro word starts in Live Preview with the source unchanged.",
+    "note": "Reading session.md",
+    "eval": "(async () => {const p = app.plugins.plugins['fixation-reader']; p.pro.signOut(); Object.assign(p.settings, {enabled:true,strength:0.5,minimum:3,livePreview:false,excludedFolders:'',excludedTags:'',weight:700,color:'',endingOpacity:1}); await p.saveSettings();p.pro.opts.http = async () => ({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('fixation-reader-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow();p.settings.livePreview = true; await p.saveSettings(); const v = app.workspace.getMostRecentLeaf().view; const s = v.leaf.getViewState(); await v.leaf.setViewState({...s,state:{...s.state,mode:'source',source:false}}); return 'ok';})()",
+    "after": "app.plugins.plugins['fixation-reader'].pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "folder-rules",
+    "caption": "A Pro folder exclusion keeps an archive note plain.",
+    "note": "Archive/Quiet plan.md",
+    "eval": "(async () => {const p = app.plugins.plugins['fixation-reader']; p.pro.signOut(); Object.assign(p.settings, {enabled:true,strength:0.5,minimum:3,livePreview:false,excludedFolders:'',excludedTags:'',weight:700,color:'',endingOpacity:1}); await p.saveSettings();p.pro.opts.http = async () => ({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('fixation-reader-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow();p.settings.excludedFolders='Fixation Reader/Archive'; await p.saveSettings();const v = app.workspace.getMostRecentLeaf().view; const s = v.leaf.getViewState(); await v.leaf.setViewState({...s,state:{...s.state,mode:'preview'}}); return 'ok';})()",
+    "after": "app.plugins.plugins['fixation-reader'].pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "custom-style",
+    "caption": "Pro blue word starts and dimmed word endings.",
+    "note": "Reading session.md",
+    "eval": "(async () => {const p = app.plugins.plugins['fixation-reader']; p.pro.signOut(); Object.assign(p.settings, {enabled:true,strength:0.5,minimum:3,livePreview:false,excludedFolders:'',excludedTags:'',weight:700,color:'',endingOpacity:1}); await p.saveSettings();p.pro.opts.http = async () => ({status:200,json:{data:{viewer:{login:'demo-reader'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('fixation-reader-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow();Object.assign(p.settings,{weight:800,color:'#527a99',endingOpacity:0.55}); await p.saveSettings();const v = app.workspace.getMostRecentLeaf().view; const s = v.leaf.getViewState(); await v.leaf.setViewState({...s,state:{...s.state,mode:'preview'}}); return 'ok';})()",
+    "after": "app.plugins.plugins['fixation-reader'].pro.signOut(); 'ok'"
+  },
+  {
+    "feature": "settings",
+    "caption": "Free strength and minimum length with GitHub account controls.",
+    "note": "Reading session.md",
+    "eval": "(async () => {const p = app.plugins.plugins['fixation-reader']; p.pro.signOut(); Object.assign(p.settings, {enabled:true,strength:0.5,minimum:3,livePreview:false,excludedFolders:'',excludedTags:'',weight:700,color:'',endingOpacity:1}); await p.saveSettings();app.setting.open(); app.setting.openTabById('fixation-reader'); return 'ok';})()",
+    "after": "app.setting.close(); 'ok'"
+  },
+  {
+    "feature": "fixation-reader",
+    "caption": "Turn word starts off and on without changes to the source.",
+    "frames": [
+      {
+        "note": "Reading session.md",
+        "eval": "(async () => {const p = app.plugins.plugins['fixation-reader']; p.pro.signOut(); Object.assign(p.settings, {enabled:true,strength:0.5,minimum:3,livePreview:false,excludedFolders:'',excludedTags:'',weight:700,color:'',endingOpacity:1}); await p.saveSettings();const v = app.workspace.getMostRecentLeaf().view; const s = v.leaf.getViewState(); await v.leaf.setViewState({...s,state:{...s.state,mode:'preview'}}); return 'ok';})()",
+        "hold": 1800
+      },
+      {
+        "eval": "(async () => {await app.plugins.plugins['fixation-reader'].toggle(); return 'ok';})()",
+        "hold": 1800
+      },
+      {
+        "eval": "(async () => {await app.plugins.plugins['fixation-reader'].toggle(); return 'ok';})()",
+        "hold": 1800
+      }
+    ]
+  }
+]
