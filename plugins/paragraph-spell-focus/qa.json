@@ -1,0 +1,46 @@
+[
+  {
+    "feature": "paragraph-focus",
+    "caption": "Native spelling follows a paragraph.",
+    "note": "Story.md",
+    "eval": "electron.remote.app.focus({steal:true}); electron.remote.getCurrentWindow().focus(); const p=app.plugins.plugins['paragraph-spell-focus']; app.workspace.activeEditor.editor.focus(); p.settings.scope='paragraph'; p.settings.enabled=true; p.refreshExtension(); app.workspace.activeEditor.editor.setCursor({line:2,ch:23}); 'ready'",
+    "wait": 1200
+  },
+  {
+    "feature": "section-focus",
+    "caption": "Pro section scope includes nearby paragraphs.",
+    "note": "Story.md",
+    "eval": "electron.remote.app.focus({steal:true}); electron.remote.getCurrentWindow().focus(); const p=app.plugins.plugins['paragraph-spell-focus']; app.workspace.activeEditor.editor.focus(); window.__n4Pro=p.pro.isPro; p.pro.isPro=()=>true; p.settings.scope='section'; p.refreshExtension(); app.workspace.activeEditor.editor.setCursor({line:2,ch:23}); 'ready'",
+    "wait": 1200,
+    "after": "const p=app.plugins.plugins['paragraph-spell-focus']; p.pro.isPro=window.__n4Pro; p.settings.scope='paragraph'; p.refreshExtension(); 'restored'"
+  },
+  {
+    "feature": "folder-rules",
+    "caption": "Saved Pro rules select a scope per folder.",
+    "note": "Story.md",
+    "eval": "electron.remote.app.focus({steal:true}); electron.remote.getCurrentWindow().focus(); const p=app.plugins.plugins['paragraph-spell-focus']; window.__n4Pro=p.pro.isPro; p.pro.isPro=()=>true; p.settings.rules=[{folder:'Drafts',scope:'section'},{folder:'Code',scope:'off'}]; app.setting.open(); app.setting.openTabById('paragraph-spell-focus'); 'ready'",
+    "wait": 1000,
+    "after": "const p=app.plugins.plugins['paragraph-spell-focus']; app.setting.close(); p.pro.isPro=window.__n4Pro; p.settings.rules=[]; p.refreshExtension(); 'restored'"
+  },
+  {
+    "feature": "focus-demo",
+    "caption": "Move the caret to change paragraph scope.",
+    "frames": [
+      {
+        "note": "Story.md",
+        "eval": "electron.remote.app.focus({steal:true}); electron.remote.getCurrentWindow().focus(); const p=app.plugins.plugins['paragraph-spell-focus']; app.workspace.activeEditor.editor.focus(); p.settings.enabled=true; p.settings.scope='paragraph'; p.refreshExtension(); app.workspace.activeEditor.editor.setCursor({line:2,ch:23}); 'ready'",
+        "hold": 1600
+      },
+      {
+        "note": "Story.md",
+        "eval": "electron.remote.app.focus({steal:true}); electron.remote.getCurrentWindow().focus(); const p=app.plugins.plugins['paragraph-spell-focus']; app.workspace.activeEditor.editor.focus(); app.workspace.activeEditor.editor.setCursor({line:5,ch:15}); 'ready'",
+        "hold": 1600
+      },
+      {
+        "note": "Story.md",
+        "eval": "electron.remote.app.focus({steal:true}); electron.remote.getCurrentWindow().focus(); const p=app.plugins.plugins['paragraph-spell-focus']; app.workspace.activeEditor.editor.focus(); app.workspace.activeEditor.editor.setCursor({line:10,ch:23}); 'ready'",
+        "hold": 1600
+      }
+    ]
+  }
+]
