@@ -1,0 +1,64 @@
+[
+	{
+		"feature": "preview",
+		"caption": "The preview shows three source pages, proposed local links, and unresolved URLs.",
+		"note": "Welcome.md",
+		"eval": "(async () => { const p = app.plugins.plugins['craft-link-repair']; window.__craftModal?.close(); p.pro.signOut(); p.settings = { folder: 'Craft Link Repair/Export', outputFolder: '', dateFolder: '', dateFormat: 'YYYY-MM-DD', automatic: false }; p.receipts = {}; p.lastResult = null; for (const f of app.vault.getFiles().filter(f => f.path.startsWith('Craft Link Repair/Export/') && (/\\.repaired\\.md$/.test(f.path) || /\\/Craft repair report(?: \\d+)?\\.md$/.test(f.path)))) await app.vault.delete(f); await p.saveSettings(); window.__craftModal = p.openPreview(); [...window.__craftModal.contentEl.querySelectorAll('button')].find(b => b.textContent === 'Preview links').click(); const end = Date.now()+30000; while (!window.__craftModal.contentEl.querySelector('.craft-repair-summary')) { if (Date.now()>end) throw new Error('Preview did not finish'); await new Promise(r=>setTimeout(r,50)); } return 'ok'; })()",
+		"wait": 700
+	},
+	{
+		"feature": "copies",
+		"caption": "The repaired Atlas copy has local links. The source note stays intact.",
+		"eval": "(async () => { const p = app.plugins.plugins['craft-link-repair']; [...window.__craftModal.contentEl.querySelectorAll('button')].find(b=>b.textContent==='Write copies').click(); const stop=Date.now()+30000; while (!p.lastResult) { if(Date.now()>stop) throw new Error('Write did not finish'); await new Promise(r=>setTimeout(r,50)); } if(p.lastResult.failures.length) throw new Error(p.lastResult.failures.join('; ')); window.__craftModal?.close(); await app.workspace.getLeaf(false).setViewState({type:'markdown',state:{file:\"Craft Link Repair/Export/Atlas.textbundle/text.repaired.md\",mode:'preview'}}); return 'ok'; })()",
+		"wait": 700
+	},
+	{
+		"feature": "dates",
+		"caption": "The repaired weekly review links to date notes and keeps the missing page URL.",
+		"eval": "(async () => { const p = app.plugins.plugins['craft-link-repair']; window.__craftModal?.close(); await app.workspace.getLeaf(false).setViewState({type:'markdown',state:{file:\"Craft Link Repair/Export/Weekly.textbundle/text.repaired.md\",mode:'preview'}}); return 'ok'; })()",
+		"wait": 700
+	},
+	{
+		"feature": "report",
+		"caption": "The repair report keeps the missing page and block URLs for manual review.",
+		"eval": "(async () => { const p = app.plugins.plugins['craft-link-repair']; window.__craftModal?.close(); await app.workspace.getLeaf(false).setViewState({type:'markdown',state:{file:\"Craft Link Repair/Export/Craft repair report.md\",mode:'preview'}}); return 'ok'; })()",
+		"wait": 700
+	},
+	{
+		"feature": "pro-options",
+		"caption": "Pro adds saved output paths, date formats, and repair on new exports. This account is a local fixture.",
+		"eval": "(async () => { const p = app.plugins.plugins['craft-link-repair']; window.__craftModal?.close(); p.pro.opts.http = async () => ({status:200,json:{data:{viewer:{login:'demo-sponsor'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('craft-link-repair-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow(); if(!p.pro.isPro()) throw new Error('Demo sponsor fixture failed'); p.settings.outputFolder='Repaired Craft'; p.settings.dateFolder='Daily'; p.settings.dateFormat='YYYY.MM.DD'; app.setting.open(); app.setting.openTabById('craft-link-repair'); return 'ok'; })()",
+		"after": "app.setting.close(); 'ok'",
+		"wait": 700
+	},
+	{
+		"feature": "automatic",
+		"caption": "A new export page has a repaired copy after the automatic pass.",
+		"eval": "(async () => { const p = app.plugins.plugins['craft-link-repair']; window.__craftModal?.close(); p.pro.opts.http = async () => ({status:200,json:{data:{viewer:{login:'demo-sponsor'},user:{sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); app.secretStorage.setSecret('craft-link-repair-github-token','gho_'+'0'.repeat(36)); await p.pro.refreshNow(); if(!p.pro.isPro()) throw new Error('Demo sponsor fixture failed'); p.settings.folder='Craft Link Repair/New export'; p.settings.outputFolder=''; p.settings.dateFolder=''; p.settings.dateFormat='YYYY-MM-DD'; p.settings.automatic=true; if(!app.vault.getAbstractFileByPath(p.settings.folder)) await app.vault.createFolder(p.settings.folder); for(const name of ['text.repaired.md','Craft repair report.md','text.md','info.json']) { const f=app.vault.getFileByPath(p.settings.folder+'/'+name); if(f) await app.vault.delete(f); } p.receipts={}; await app.vault.create(p.settings.folder+'/text.md','# New export page\\n\\n[Planning day](day://2026-10-13)\\n\\nThis page arrived after automatic repair was enabled. The source text stays intact.'); await app.vault.create(p.settings.folder+'/info.json','{\"identifier\":\"new-demo\"}'); const end=Date.now()+30000; while(!app.vault.getFileByPath(p.settings.folder+'/text.repaired.md')) { if(Date.now()>end) throw new Error('Automatic pass did not finish'); await new Promise(r=>setTimeout(r,100)); } p.settings.automatic=false; await app.workspace.getLeaf(false).setViewState({type:'markdown',state:{file:\"Craft Link Repair/New export/text.repaired.md\",mode:'preview'}}); return 'ok'; })()",
+		"after": "app.plugins.plugins['craft-link-repair'].pro.signOut(); 'ok'",
+		"wait": 700
+	},
+	{
+		"feature": "repair-flow",
+		"caption": "Preview the source URLs, write repaired copies, then review the report.",
+		"frames": [
+			{
+				"note": "Welcome.md",
+				"eval": "(async () => { const p = app.plugins.plugins['craft-link-repair']; window.__craftModal?.close(); p.pro.signOut(); p.settings = { folder: 'Craft Link Repair/Export', outputFolder: '', dateFolder: '', dateFormat: 'YYYY-MM-DD', automatic: false }; p.receipts = {}; p.lastResult = null; for (const f of app.vault.getFiles().filter(f => f.path.startsWith('Craft Link Repair/Export/') && (/\\.repaired\\.md$/.test(f.path) || /\\/Craft repair report(?: \\d+)?\\.md$/.test(f.path)))) await app.vault.delete(f); await p.saveSettings(); return 'ok'; })()",
+				"hold": 1000
+			},
+			{
+				"eval": "(async () => { const p = app.plugins.plugins['craft-link-repair']; window.__craftModal = p.openPreview(); [...window.__craftModal.contentEl.querySelectorAll('button')].find(b => b.textContent === 'Preview links').click(); const end = Date.now()+30000; while (!window.__craftModal.contentEl.querySelector('.craft-repair-summary')) { if (Date.now()>end) throw new Error('Preview did not finish'); await new Promise(r=>setTimeout(r,50)); } return 'ok'; })()",
+				"hold": 1500
+			},
+			{
+				"eval": "(async () => { const p = app.plugins.plugins['craft-link-repair']; [...window.__craftModal.contentEl.querySelectorAll('button')].find(b=>b.textContent==='Write copies').click(); const stop=Date.now()+30000; while (!p.lastResult) { if(Date.now()>stop) throw new Error('Write did not finish'); await new Promise(r=>setTimeout(r,50)); } if(p.lastResult.failures.length) throw new Error(p.lastResult.failures.join('; ')); window.__craftModal?.close(); await app.workspace.getLeaf(false).setViewState({type:'markdown',state:{file:\"Craft Link Repair/Export/Atlas.textbundle/text.repaired.md\",mode:'preview'}}); return 'ok'; })()",
+				"hold": 1400
+			},
+			{
+				"eval": "(async () => { const p = app.plugins.plugins['craft-link-repair']; await app.workspace.getLeaf(false).setViewState({type:'markdown',state:{file:\"Craft Link Repair/Export/Craft repair report.md\",mode:'preview'}}); return 'ok'; })()",
+				"hold": 1800
+			}
+		]
+	}
+]
