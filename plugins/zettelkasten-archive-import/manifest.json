@@ -1,0 +1,11 @@
+{
+	"id": "zettelkasten-archive-import",
+	"name": "Zettelkasten Archive Import",
+	"version": "1.1.1",
+	"minAppVersion": "1.13.4",
+	"description": "Convert version 3.8 Zettelkasten archives into notes with keywords, links, and note sequences.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}

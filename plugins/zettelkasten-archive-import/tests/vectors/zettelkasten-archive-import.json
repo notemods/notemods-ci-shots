@@ -1,0 +1,541 @@
+{
+ "slug": "zettelkasten-archive-import",
+ "module": "zettelkasten-archive-import/src",
+ "function": "inspectXml",
+ "note": "Each case names its function. tests/vectors.test.ts runs each case. convertMarkup takes [position, file name] pairs.",
+ "cases": [
+  {
+   "name": "official-like 75 note archive previews 75 live notes",
+   "function": "inspectZipBase64",
+   "args": [
+    "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"
+   ],
+   "expected": {
+    "live": 75,
+    "positions": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     43,
+     44,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     51,
+     52,
+     53,
+     54,
+     55,
+     56,
+     57,
+     58,
+     59,
+     60,
+     61,
+     62,
+     63,
+     64,
+     65,
+     66,
+     67,
+     68,
+     69,
+     70,
+     71,
+     72,
+     73,
+     74,
+     75
+    ]
+   }
+  },
+  {
+   "name": "deleted slot archive keeps positions 1 and 3",
+   "function": "inspectZipBase64",
+   "args": [
+    "UEsDBBQAAAAIAAAAIVxTFMF5bQAAAIwAAAATAAAAbWV0YUluZm9ybWF0aW9uLnhtbLOxr8jNUShLLSrOzM+zVTLUM1BSSM1Lzk/JzEu3VQoNcdO1ULK347LJTS1JzMxLyy/KTSwBqrSzgWpRyEyxVTLWs1BS0LezSUktTi7KLAApAHETS0oSkzNyU/NKChJLMkAimbmJ6akwjj66mQBQSwMEFAAAAAgAAAAhXPKOVrsyAQAAHwMAAAsAAAB6a25GaWxlLnhtbK2STU/EIBCG7/4Kwtld+uHBA8ve9Gii62mzMaQdLWkLBqZ+9NcLpTRR18RN9sQzb4bwzrzw7UffkTewThm9ofk6owR0ZWqlXzb0cXezuqZbccFHQISulQ5Bk2dlHUbFX6Gk83IqSyrmZjK2WtUbquqV70H3VFmQCF4prrI8y/Mi8495HWo1yZRYidO7iSozaPSl4KiwA/GA0iJnseCV0d4NinuQNdmPpDzcYQN2z8ZDtLjmLPVwOWBjrOAsQQuf78bWTuSXBWdLxXupO6VbJ0rOFubzweazV67yVTy6ofGNOlxIyFncwc9dfN/DadMTtowcMM4RKHkPnBwHXiDYnIToLuAf/nxW5ZmymrL4ldWuUY5og0BejdLoCJoQXXG4NRpCcv/L7HhipwZ2LK8Z4k8XX1BLAwQUAAAACAAAACFcufEuAF4AAACQAAAADwAAAGtleXdvcmRGaWxlLnhtbLOxr8jNUShLLSrOzM+zVTLUM1BSSM1Lzk/JzEu3VQoNcdO1ULK347LJTq0szy9KKbazSc0rKapUSAOqVVIAiWam2CplGyrZlZTnK4CV2OiDleBQaQRWqYuqUh9uPABQSwMEFAAAAAgAAAAhXH9+r7UNAAAACwAAAA4AAABhdXRob3JGaWxlLnhtbLNJLC3JyC8qVtC3AwBQSwECFAAUAAAACAAAACFcUxTBeW0AAACMAAAAEwAAAAAAAAAAAAAAAAAAAAAAbWV0YUluZm9ybWF0aW9uLnhtbFBLAQIUABQAAAAIAAAAIVzyjla7MgEAAB8DAAALAAAAAAAAAAAAAAAAAJ4AAAB6a25GaWxlLnhtbFBLAQIUABQAAAAIAAAAIVy58S4AXgAAAJAAAAAPAAAAAAAAAAAAAAAAAPkBAABrZXl3b3JkRmlsZS54bWxQSwECFAAUAAAACAAAACFcf36vtQ0AAAALAAAADgAAAAAAAAAAAAAAAACEAgAAYXV0aG9yRmlsZS54bWxQSwUGAAAAAAQABADzAAAAvQIAAAAA"
+   ],
+   "expected": {
+    "live": 2,
+    "positions": [
+     1,
+     3
+    ]
+   }
+  },
+  {
+   "name": "deleted slot is listed and not renumbered",
+   "function": "inspectXml",
+   "args": [
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metainformation><version id=\"3.8\" /><description /><attachmentpath /><imagepath /></metainformation>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<zettelkasten firstzettel=\"1\" lastzettel=\"3\"><zettel zknid=\"id-1\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title>Start</title><content>Read [z 3]Other[/z] first.</content><author></author><keywords>1,2</keywords><manlinks>3</manlinks><links></links><misc></misc><luhmann>3</luhmann></zettel><zettel zknid=\"\" ts_created=\"\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title /><content /><author /><keywords /><manlinks /><links /><misc /><luhmann /></zettel><zettel zknid=\"id-3\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title>Other</title><content>This note points to [z 2]Gone[/z].</content><author></author><keywords>2</keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel></zettelkasten>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<keywords><entry f=\"1\" keywid=\"k1\">two words</entry><entry f=\"1\" keywid=\"k2\">two-words</entry></keywords>"
+   ],
+   "expected": {
+    "live": 2,
+    "positions": [
+     1,
+     3
+    ],
+    "deleted": [
+     2
+    ],
+    "keywords": [
+     [
+      "two words",
+      "two-words"
+     ],
+     [
+      "two-words"
+     ]
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "note 1 file is 1.md in the import folder",
+   "function": "renderXml",
+   "args": [
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metainformation><version id=\"3.8\" /><description /><attachmentpath /><imagepath /></metainformation>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<zettelkasten firstzettel=\"1\" lastzettel=\"3\"><zettel zknid=\"id-1\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title>Start</title><content>Read [z 3]Other[/z] first.</content><author></author><keywords>1,2</keywords><manlinks>3</manlinks><links></links><misc></misc><luhmann>3</luhmann></zettel><zettel zknid=\"\" ts_created=\"\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title /><content /><author /><keywords /><manlinks /><links /><misc /><luhmann /></zettel><zettel zknid=\"id-3\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title>Other</title><content>This note points to [z 2]Gone[/z].</content><author></author><keywords>2</keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel></zettelkasten>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<keywords><entry f=\"1\" keywid=\"k1\">two words</entry><entry f=\"1\" keywid=\"k2\">two-words</entry></keywords>",
+    1,
+    "Zettelkasten"
+   ],
+   "expected": {
+    "path": "Zettelkasten/1.md",
+    "text": "---\nzkn3_position: 1\nzkn3_id: id-1\ntitle: Start\nkeywords:\n  - two words\n  - two-words\nzkn3_created: \"2401011200\"\n---\n\n# Start\n\nRead [[3|Other]] first.\n\n## Cross-references\n\n- [[3|Other]]\n\n## Note sequence\n\n1. [[3|Other]]\n",
+    "missing": [],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "note 3 keeps link to deleted slot 2 and reports it",
+   "function": "renderXml",
+   "args": [
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metainformation><version id=\"3.8\" /><description /><attachmentpath /><imagepath /></metainformation>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<zettelkasten firstzettel=\"1\" lastzettel=\"3\"><zettel zknid=\"id-1\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title>Start</title><content>Read [z 3]Other[/z] first.</content><author></author><keywords>1,2</keywords><manlinks>3</manlinks><links></links><misc></misc><luhmann>3</luhmann></zettel><zettel zknid=\"\" ts_created=\"\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title /><content /><author /><keywords /><manlinks /><links /><misc /><luhmann /></zettel><zettel zknid=\"id-3\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title>Other</title><content>This note points to [z 2]Gone[/z].</content><author></author><keywords>2</keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel></zettelkasten>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<keywords><entry f=\"1\" keywid=\"k1\">two words</entry><entry f=\"1\" keywid=\"k2\">two-words</entry></keywords>",
+    3,
+    "Zettelkasten"
+   ],
+   "expected": {
+    "path": "Zettelkasten/3.md",
+    "text": "---\nzkn3_position: 3\nzkn3_id: id-3\ntitle: Other\nkeywords:\n  - two-words\nzkn3_created: \"2401011200\"\n---\n\n# Other\n\nThis note points to [z 2]Gone[/z].\n",
+    "missing": [
+     2
+    ],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "z link becomes a wiki link with the label",
+   "function": "convertMarkup",
+   "args": [
+    "Read [z 3]Other[/z] first.",
+    [
+     [
+      3,
+      "3"
+     ]
+    ]
+   ],
+   "expected": {
+    "text": "Read [[3|Other]] first.",
+    "missing": [],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "z link to an absent position keeps source text",
+   "function": "convertMarkup",
+   "args": [
+    "See [z 9]Nine[/z].",
+    [
+     [
+      3,
+      "3"
+     ]
+    ]
+   ],
+   "expected": {
+    "text": "See [z 9]Nine[/z].",
+    "missing": [
+     9
+    ],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "z link with empty label gives a plain wiki link",
+   "function": "convertMarkup",
+   "args": [
+    "[z 3][/z]",
+    [
+     [
+      3,
+      "3"
+     ]
+    ]
+   ],
+   "expected": {
+    "text": "[[3]]",
+    "missing": [],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "manlinks and luhmann sections list note 3",
+   "function": "renderXml",
+   "args": [
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metainformation><version id=\"3.8\" /><description /><attachmentpath /><imagepath /></metainformation>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<zettelkasten firstzettel=\"1\" lastzettel=\"3\"><zettel zknid=\"id-1\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title>A</title><content>Body.</content><author></author><keywords></keywords><manlinks>3</manlinks><links></links><misc></misc><luhmann>3</luhmann></zettel><zettel zknid=\"\" ts_created=\"\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title /><content /><author /><keywords /><manlinks /><links /><misc /><luhmann /></zettel><zettel zknid=\"id-3\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title>C</title><content>Other.</content><author></author><keywords></keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel></zettelkasten>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<keywords></keywords>",
+    1,
+    "Z"
+   ],
+   "expected": {
+    "path": "Z/1.md",
+    "text": "---\nzkn3_position: 1\nzkn3_id: id-1\ntitle: A\nzkn3_created: \"2401011200\"\n---\n\n# A\n\nBody.\n\n## Cross-references\n\n- [[3|C]]\n\n## Note sequence\n\n1. [[3|C]]\n",
+    "missing": [],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "luhmann sequence keeps source order",
+   "function": "renderXml",
+   "args": [
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metainformation><version id=\"3.8\" /><description /><attachmentpath /><imagepath /></metainformation>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<zettelkasten firstzettel=\"1\" lastzettel=\"3\"><zettel zknid=\"id-1\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title>A</title><content>Body.</content><author></author><keywords></keywords><manlinks></manlinks><links></links><misc></misc><luhmann>3,2</luhmann></zettel><zettel zknid=\"id-2\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title>B</title><content>B.</content><author></author><keywords></keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel><zettel zknid=\"id-3\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title>C</title><content>C.</content><author></author><keywords></keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel></zettelkasten>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<keywords></keywords>",
+    1,
+    "Z"
+   ],
+   "expected": {
+    "path": "Z/1.md",
+    "text": "---\nzkn3_position: 1\nzkn3_id: id-1\ntitle: A\nzkn3_created: \"2401011200\"\n---\n\n# A\n\nBody.\n\n## Note sequence\n\n1. [[3|C]]\n2. [[2|B]]\n",
+    "missing": [],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "keywords two words and two-words stay separate exact values",
+   "function": "inspectXml",
+   "args": [
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metainformation><version id=\"3.8\" /><description /><attachmentpath /><imagepath /></metainformation>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<zettelkasten firstzettel=\"1\" lastzettel=\"1\"><zettel zknid=\"id-1\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title></title><content>x</content><author></author><keywords>1,2</keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel></zettelkasten>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<keywords><entry f=\"1\" keywid=\"k1\">two words</entry><entry f=\"1\" keywid=\"k2\">two-words</entry></keywords>"
+   ],
+   "expected": {
+    "live": 1,
+    "positions": [
+     1
+    ],
+    "deleted": [],
+    "keywords": [
+     [
+      "two words",
+      "two-words"
+     ]
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "keyword values with a slash stay exact",
+   "function": "renderXml",
+   "args": [
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metainformation><version id=\"3.8\" /><description /><attachmentpath /><imagepath /></metainformation>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<zettelkasten firstzettel=\"1\" lastzettel=\"1\"><zettel zknid=\"id-1\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title></title><content>x</content><author></author><keywords>1</keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel></zettelkasten>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<keywords><entry f=\"1\" keywid=\"k1\">topic/sub topic</entry></keywords>",
+    1,
+    "Z"
+   ],
+   "expected": {
+    "path": "Z/1.md",
+    "text": "---\nzkn3_position: 1\nzkn3_id: id-1\nkeywords:\n  - topic/sub topic\nzkn3_created: \"2401011200\"\n---\n\nx\n",
+    "missing": [],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "missing keyword index is reported",
+   "function": "inspectXml",
+   "args": [
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metainformation><version id=\"3.8\" /><description /><attachmentpath /><imagepath /></metainformation>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<zettelkasten firstzettel=\"1\" lastzettel=\"1\"><zettel zknid=\"id-1\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title></title><content>x</content><author></author><keywords>1,4</keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel></zettelkasten>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<keywords><entry f=\"1\" keywid=\"k1\">one</entry></keywords>"
+   ],
+   "expected": {
+    "live": 1,
+    "positions": [
+     1
+    ],
+    "deleted": [],
+    "keywords": [
+     [
+      "one"
+     ]
+    ],
+    "warnings": [
+     "Note 1: missing keyword 4."
+    ]
+   }
+  },
+  {
+   "name": "h1 and q markup become a heading and a quote",
+   "function": "renderXml",
+   "args": [
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metainformation><version id=\"3.8\" /><description /><attachmentpath /><imagepath /></metainformation>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<zettelkasten firstzettel=\"1\" lastzettel=\"1\"><zettel zknid=\"id-1\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title>Markup</title><content>[h1]Main idea[/h1]Some *Markdown* and a [list](https://example.com) link.[br][q]A short quote.[br]Second line.[/q]After [f]bold[/f] and [k]italic[/k] and [u]underline[/u].</content><author></author><keywords></keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel></zettelkasten>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<keywords></keywords>",
+    1,
+    "Z"
+   ],
+   "expected": {
+    "path": "Z/1.md",
+    "text": "---\nzkn3_position: 1\nzkn3_id: id-1\ntitle: Markup\nzkn3_created: \"2401011200\"\n---\n\n# Markup\n\n# Main idea\nSome *Markdown* and a [list](https://example.com) link.\n\n> A short quote.\n> Second line.\n\nAfter **bold** and *italic* and [u]underline[/u].\n",
+    "missing": [],
+    "unsupported": [
+     "u"
+    ]
+   }
+  },
+  {
+   "name": "br f and k become line break bold and italic",
+   "function": "convertMarkup",
+   "args": [
+    "A[br][f]B[/f] [k]C[/k]",
+    []
+   ],
+   "expected": {
+    "text": "A\n**B** *C*",
+    "missing": [],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "other markup is kept and reported",
+   "function": "convertMarkup",
+   "args": [
+    "[color red]Red[/color] and [sup]2[/sup]",
+    []
+   ],
+   "expected": {
+    "text": "[color red]Red[/color] and [sup]2[/sup]",
+    "missing": [],
+    "unsupported": [
+     "color",
+     "sup"
+    ]
+   }
+  },
+  {
+   "name": "existing Markdown text is unchanged",
+   "function": "convertMarkup",
+   "args": [
+    "# Head\n\n- item with [link](https://example.com) and `code`",
+    []
+   ],
+   "expected": {
+    "text": "# Head\n\n- item with [link](https://example.com) and `code`",
+    "missing": [],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "malformed XML is rejected",
+   "function": "inspectXml",
+   "args": [
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metainformation><version id=\"3.8\" /><description /><attachmentpath /><imagepath /></metainformation>",
+    "<zettelkasten><zettel><content>x</content></zettel>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<keywords></keywords>"
+   ],
+   "expected": {
+    "error": "zknFile.xml is not valid XML."
+   }
+  },
+  {
+   "name": "DOCTYPE is rejected",
+   "function": "inspectXml",
+   "args": [
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metainformation><version id=\"3.8\" /><description /><attachmentpath /><imagepath /></metainformation>",
+    "<?xml version=\"1.0\"?><!DOCTYPE z [<!ENTITY x \"y\">]><zettelkasten></zettelkasten>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<keywords></keywords>"
+   ],
+   "expected": {
+    "error": "zknFile.xml has a document type or an entity. The archive is rejected."
+   }
+  },
+  {
+   "name": "version 9.0 is rejected",
+   "function": "inspectXml",
+   "args": [
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metainformation><version id=\"9.0\" /><description /><attachmentpath /><imagepath /></metainformation>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<zettelkasten firstzettel=\"1\" lastzettel=\"1\"><zettel zknid=\"id-1\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title></title><content>x</content><author></author><keywords></keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel></zettelkasten>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<keywords></keywords>"
+   ],
+   "expected": {
+    "error": "Archive version 9.0 is not supported. Select a version 3.8 archive."
+   }
+  },
+  {
+   "name": "parent path in ZIP is rejected",
+   "function": "inspectZipBase64",
+   "args": [
+    "UEsDBBQAAAAIAAAAIVxTFMF5bQAAAIwAAAATAAAAbWV0YUluZm9ybWF0aW9uLnhtbLOxr8jNUShLLSrOzM+zVTLUM1BSSM1Lzk/JzEu3VQoNcdO1ULK347LJTS1JzMxLyy/KTSwBqrSzgWpRyEyxVTLWs1BS0LezSUktTi7KLAApAHETS0oSkzNyU/NKChJLMkAimbmJ6akwjj66mQBQSwMEFAAAAAgAAAAhXPToePS/AAAATAEAAAsAAAB6a25GaWxlLnhtbEWQy47DIAxF9/MViH2nSTWLWRC66xe06wqB21ohRgKnr6+v82pWPj6+yIDZP7uo7pALJmp0/VtpBeRTQLo2+nQ8bP713v6YNzBDbF1hIHXBXHgyckSrKHpt7RxW75YwNBrDRjJczj6DYxCz+6vqqq53lSwTDwFHrVV2PO5dyKeeWFprGDmCNdu5+kRyEbZPs13QuJ5vKUtmgRZej5RDEbVi5ygitYNccTFz7bD4YT6W2N8kSMP0S9MDvzB9i/0AUEsDBBQAAAAIAAAAIVyDFtyMAwAAAAEAAAALAAAALi4vZXZpbC54bWyrAABQSwECFAAUAAAACAAAACFcUxTBeW0AAACMAAAAEwAAAAAAAAAAAAAAAAAAAAAAbWV0YUluZm9ybWF0aW9uLnhtbFBLAQIUABQAAAAIAAAAIVz06Hj0vwAAAEwBAAALAAAAAAAAAAAAAAAAAJ4AAAB6a25GaWxlLnhtbFBLAQIUABQAAAAIAAAAIVyDFtyMAwAAAAEAAAALAAAAAAAAAAAAAAAAAIYBAAAuLi9ldmlsLnhtbFBLBQYAAAAAAwADALMAAACyAQAAAAA="
+   ],
+   "expected": {
+    "error": "Cannot read the .zkn3 archive. The archive has an unsafe path."
+   }
+  },
+  {
+   "name": "absolute path in ZIP is rejected",
+   "function": "inspectZipBase64",
+   "args": [
+    "UEsDBBQAAAAIAAAAIVxTFMF5bQAAAIwAAAATAAAAbWV0YUluZm9ybWF0aW9uLnhtbLOxr8jNUShLLSrOzM+zVTLUM1BSSM1Lzk/JzEu3VQoNcdO1ULK347LJTS1JzMxLyy/KTSwBqrSzgWpRyEyxVTLWs1BS0LezSUktTi7KLAApAHETS0oSkzNyU/NKChJLMkAimbmJ6akwjj66mQBQSwMEFAAAAAgAAAAhXPToePS/AAAATAEAAAsAAAB6a25GaWxlLnhtbEWQy47DIAxF9/MViH2nSTWLWRC66xe06wqB21ohRgKnr6+v82pWPj6+yIDZP7uo7pALJmp0/VtpBeRTQLo2+nQ8bP713v6YNzBDbF1hIHXBXHgyckSrKHpt7RxW75YwNBrDRjJczj6DYxCz+6vqqq53lSwTDwFHrVV2PO5dyKeeWFprGDmCNdu5+kRyEbZPs13QuJ5vKUtmgRZej5RDEbVi5ygitYNccTFz7bD4YT6W2N8kSMP0S9MDvzB9i/0AUEsDBBQAAAAIAAAAIVyDFtyMAwAAAAEAAAAJAAAAL2V2aWwueG1sqwAAUEsBAhQAFAAAAAgAAAAhXFMUwXltAAAAjAAAABMAAAAAAAAAAAAAAAAAAAAAAG1ldGFJbmZvcm1hdGlvbi54bWxQSwECFAAUAAAACAAAACFc9Oh49L8AAABMAQAACwAAAAAAAAAAAAAAAACeAAAAemtuRmlsZS54bWxQSwECFAAUAAAACAAAACFcgxbcjAMAAAABAAAACQAAAAAAAAAAAAAAAACGAQAAL2V2aWwueG1sUEsFBgAAAAADAAMAsQAAALABAAAAAA=="
+   ],
+   "expected": {
+    "error": "Cannot read the .zkn3 archive. The archive has an unsafe path."
+   }
+  },
+  {
+   "name": "archive without zknFile.xml is rejected",
+   "function": "inspectZipBase64",
+   "args": [
+    "UEsDBBQAAAAIAAAAIVxTFMF5bQAAAIwAAAATAAAAbWV0YUluZm9ybWF0aW9uLnhtbLOxr8jNUShLLSrOzM+zVTLUM1BSSM1Lzk/JzEu3VQoNcdO1ULK347LJTS1JzMxLyy/KTSwBqrSzgWpRyEyxVTLWs1BS0LezSUktTi7KLAApAHETS0oSkzNyU/NKChJLMkAimbmJ6akwjj66mQBQSwECFAAUAAAACAAAACFcUxTBeW0AAACMAAAAEwAAAAAAAAAAAAAAAAAAAAAAbWV0YUluZm9ybWF0aW9uLnhtbFBLBQYAAAAAAQABAEEAAACeAAAAAAA="
+   ],
+   "expected": {
+    "error": "The archive has no zknFile.xml. Select a .zkn3 file."
+   }
+  },
+  {
+   "name": "duplicate zknid is rejected",
+   "function": "inspectXml",
+   "args": [
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metainformation><version id=\"3.8\" /><description /><attachmentpath /><imagepath /></metainformation>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<zettelkasten firstzettel=\"1\" lastzettel=\"2\"><zettel zknid=\"same\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title></title><content>a</content><author></author><keywords></keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel><zettel zknid=\"same\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title></title><content>b</content><author></author><keywords></keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel></zettelkasten>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<keywords></keywords>"
+   ],
+   "expected": {
+    "error": "Two notes have the same zknid: same."
+   }
+  },
+  {
+   "name": "position and title file name rule",
+   "function": "renderXml",
+   "args": [
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metainformation><version id=\"3.8\" /><description /><attachmentpath /><imagepath /></metainformation>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<zettelkasten firstzettel=\"1\" lastzettel=\"2\"><zettel zknid=\"id-1\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title>A/B: idea</title><content>See [z 2]two[/z].</content><author></author><keywords></keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel><zettel zknid=\"id-2\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title>Two</title><content>x</content><author></author><keywords></keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel></zettelkasten>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<keywords></keywords>",
+    1,
+    "Z",
+    {
+     "fileName": "number-title",
+     "keywordProperty": "zkn_keywords",
+     "keywordTags": true
+    }
+   ],
+   "expected": {
+    "path": "Z/1 A-B- idea.md",
+    "text": "---\nzkn3_position: 1\nzkn3_id: id-1\ntitle: \"A/B: idea\"\nzkn3_created: \"2401011200\"\n---\n\n# A/B: idea\n\nSee [[2 Two|two]].\n",
+    "missing": [],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "tags rule adds safe tags and keeps exact keyword values",
+   "function": "renderXml",
+   "args": [
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metainformation><version id=\"3.8\" /><description /><attachmentpath /><imagepath /></metainformation>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<zettelkasten firstzettel=\"1\" lastzettel=\"1\"><zettel zknid=\"id-1\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title></title><content>x</content><author></author><keywords>1,2,3</keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel></zettelkasten>",
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<keywords><entry f=\"1\" keywid=\"k1\">two words</entry><entry f=\"1\" keywid=\"k2\">two-words</entry><entry f=\"1\" keywid=\"k3\">2024</entry></keywords>",
+    1,
+    "Z",
+    {
+     "fileName": "number",
+     "keywordProperty": "keywords",
+     "keywordTags": true
+    }
+   ],
+   "expected": {
+    "path": "Z/1.md",
+    "text": "---\nzkn3_position: 1\nzkn3_id: id-1\nkeywords:\n  - two words\n  - two-words\n  - \"2024\"\ntags:\n  - two-words\nzkn3_created: \"2401011200\"\n---\n\nx\n",
+    "missing": [],
+    "unsupported": []
+   }
+  },
+  {
+   "name": "comparison lists added changed removed and unchanged notes",
+   "function": "compareXml",
+   "args": [
+    [
+     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metainformation><version id=\"3.8\" /><description /><attachmentpath /><imagepath /></metainformation>",
+     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<zettelkasten firstzettel=\"1\" lastzettel=\"3\"><zettel zknid=\"id-1\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title></title><content>a</content><author></author><keywords></keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel><zettel zknid=\"id-2\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title></title><content>b</content><author></author><keywords></keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel><zettel zknid=\"id-3\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title></title><content>c</content><author></author><keywords></keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel></zettelkasten>",
+     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<keywords></keywords>"
+    ],
+    [
+     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metainformation><version id=\"3.8\" /><description /><attachmentpath /><imagepath /></metainformation>",
+     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<zettelkasten firstzettel=\"1\" lastzettel=\"4\"><zettel zknid=\"id-1\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title></title><content>a</content><author></author><keywords></keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel><zettel zknid=\"id-2\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title></title><content>b2</content><author></author><keywords></keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel><zettel zknid=\"\" ts_created=\"\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title /><content /><author /><keywords /><manlinks /><links /><misc /><luhmann /></zettel><zettel zknid=\"id-4\" ts_created=\"2401011200\" ts_edited=\"\" rating=\"\" ratingcount=\"\"><title></title><content>d</content><author></author><keywords></keywords><manlinks></manlinks><links></links><misc></misc><luhmann></luhmann></zettel></zettelkasten>",
+     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<keywords></keywords>"
+    ]
+   ],
+   "expected": {
+    "added": [
+     4
+    ],
+    "changed": [
+     2
+    ],
+    "removed": [
+     3
+    ],
+    "unchanged": [
+     1
+    ]
+   }
+  }
+ ]
+}
