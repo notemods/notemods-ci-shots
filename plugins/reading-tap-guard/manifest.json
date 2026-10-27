@@ -1,0 +1,11 @@
+{
+	"id": "reading-tap-guard",
+	"name": "Reading Tap Guard",
+	"version": "1.0.2",
+	"minAppVersion": "1.13.4",
+	"description": "Stops a double tap in Reading view on phone and tablet from switching the note to editing, with a setting for what a double tap does.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}

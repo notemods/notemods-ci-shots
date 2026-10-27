@@ -1,0 +1,13 @@
+# reading-tap-guard
+
+## 1.0.2
+
+### Patch Changes
+
+- 6e8206b: Reading Tap Guard now keeps the focus on the same control after a refused change of a Pro setting.
+
+## 1.0.1
+
+### Patch Changes
+
+- 912afa8: Double tap interval now shows how to get Pro, with a Sponsor on GitHub button, when you select it without Pro. Nothing is saved until Pro is on.
