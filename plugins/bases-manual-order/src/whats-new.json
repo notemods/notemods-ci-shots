@@ -1,0 +1,28 @@
+{
+	"id": "bases-manual-order",
+	"name": "Bases Manual Order",
+	"version": "1.2.2",
+	"changes": [
+		"Without Pro, a view with a custom rank property now says that moving rows needs Pro.",
+		"The text gives the next step and no longer says that the ordering is read-only."
+	],
+	"tip": "To show the same order in a core Bases table, sort that table ascending by manual_order.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Bases Manual Order is one of over 100 small plugins that I make. Thank you for putting your notes in order with it.",
+	"related": [
+		{
+			"id": "bases-filter-switches",
+			"name": "Bases Filter Switches",
+			"blurb": "Turn saved Bases filters on or off with switches."
+		},
+		{
+			"id": "bases-multi-edit",
+			"name": "Bases Multi-Row Edit",
+			"blurb": "Set, append or remove a property on selected rows with preview and undo."
+		},
+		{
+			"id": "bases-freeze-panes",
+			"name": "Bases Freeze Panes",
+			"blurb": "Keep column and note names visible as you scroll a base."
+		}
+	]
+}

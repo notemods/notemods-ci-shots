@@ -1,0 +1,11 @@
+{
+	"id": "bases-manual-order",
+	"name": "Bases Manual Order",
+	"version": "1.2.2",
+	"minAppVersion": "1.13.4",
+	"description": "Drag rows into a lasting order stored in a numeric note property.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}
