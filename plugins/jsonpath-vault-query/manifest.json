@@ -1,0 +1,11 @@
+{
+	"id": "jsonpath-vault-query",
+	"name": "Local JSON Queries",
+	"version": "1.1.1",
+	"minAppVersion": "1.13.4",
+	"description": "Run local JSON queries on vault files and show the results as tables or text.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}

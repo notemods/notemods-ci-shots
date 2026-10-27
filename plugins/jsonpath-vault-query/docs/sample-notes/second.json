@@ -1,0 +1,16 @@
+{
+  "rows": [
+    {
+      "name": "Kai",
+      "age": 28,
+      "team": "Cobalt",
+      "hours": 9
+    },
+    {
+      "name": "Mira",
+      "age": 34,
+      "team": "Beacon",
+      "hours": 21
+    }
+  ]
+}
