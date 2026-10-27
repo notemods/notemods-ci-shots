@@ -1,0 +1,167 @@
+.lar-view {
+	padding: 24px;
+	overflow: auto;
+}
+
+.lar-header {
+	border-bottom: 1px solid var(--background-modifier-border);
+	padding-bottom: 16px;
+	margin-bottom: 16px;
+}
+
+.lar-eyebrow {
+	color: var(--text-accent);
+	font-size: var(--font-smallest);
+	letter-spacing: 0.12em;
+	font-weight: 700;
+}
+
+.lar-source, .lar-meta {
+	color: var(--text-muted);
+	font-size: var(--font-small);
+	overflow-wrap: anywhere;
+}
+
+.lar-controls {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 12px 0;
+}
+
+.lar-body {
+	display: grid;
+	grid-template-columns: minmax(180px, 30%) minmax(0, 1fr);
+	gap: 24px;
+}
+
+.lar-endpoints {
+	border-right: 1px solid var(--background-modifier-border);
+	padding-right: 16px;
+}
+
+.lar-endpoint {
+	display: flex;
+	flex-wrap: wrap;
+	width: 100%;
+	height: auto;
+	text-align: left;
+	gap: 8px;
+	padding: 12px;
+	margin-bottom: 8px;
+	white-space: normal;
+	overflow-wrap: anywhere;
+}
+
+.lar-endpoint small {
+	flex-basis: 100%;
+	color: var(--text-muted);
+}
+
+.lar-endpoint[aria-pressed="true"] {
+	background: var(--background-modifier-hover);
+	box-shadow: inset 3px 0 var(--interactive-accent);
+}
+
+.lar-method {
+	color: var(--text-accent);
+	font-weight: 700;
+	font-size: var(--font-small);
+}
+
+.lar-detail {
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+
+.lar-detail table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.lar-detail th, .lar-detail td {
+	padding: 8px;
+	border-bottom: 1px solid var(--background-modifier-border);
+	text-align: left;
+}
+
+.lar-description {
+	white-space: pre-wrap;
+}
+
+.lar-response, .lar-property {
+	background: var(--background-secondary);
+	border-radius: var(--radius-s);
+	padding: 10px;
+}
+
+.lar-property {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin-bottom: 6px;
+}
+
+.lar-schema-links {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 8px;
+}
+
+.lar-schema-links button {
+	height: auto;
+	white-space: normal;
+	text-align: left;
+}
+
+.lar-schema {
+	margin-top: 12px;
+}
+
+.lar-error {
+	color: var(--text-error);
+	border-left: 3px solid var(--text-error);
+	padding: 12px;
+}
+
+.lar-file-list {
+	max-height: 60vh;
+	overflow: auto;
+}
+
+@media (width <= 650px) {
+	.lar-body {
+		grid-template-columns: 1fr;
+	}
+
+	.lar-endpoints {
+		border-right: none;
+		border-bottom: 1px solid var(--background-modifier-border);
+	}
+
+	.lar-view {
+		padding: 12px;
+	}
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
