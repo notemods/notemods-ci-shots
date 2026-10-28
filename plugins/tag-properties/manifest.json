@@ -1,0 +1,11 @@
+{
+	"id": "tag-properties",
+	"name": "Tag Properties",
+	"version": "1.2.2",
+	"minAppVersion": "1.13.4",
+	"description": "Browse custom list properties as clickable tags with note counts and Bases filters.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}

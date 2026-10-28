@@ -1,0 +1,27 @@
+{
+	"id": "tag-properties",
+	"name": "Tag Properties",
+	"version": "1.2.2",
+	"changes": [
+		"When the settings refuse a Pro choice, for example in Include core tags, the keyboard focus now stays on that setting."
+	],
+	"tip": "Select \"Copy bases filter\" to use the current tag selection in the advanced filter editor of a base.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Tag Properties is one of over 100 small plugins that I make. Thank you for using it to browse your notes by topic.",
+	"related": [
+		{
+			"id": "search-operators",
+			"name": "Search Operators",
+			"blurb": "Find notes by date and links, with a preview for each result."
+		},
+		{
+			"id": "context-trees",
+			"name": "Context Trees",
+			"blurb": "Show parent headings and lists in search results."
+		},
+		{
+			"id": "bases-filter-switches",
+			"name": "Bases Filter Switches",
+			"blurb": "Turn saved Bases filters on or off with switches."
+		}
+	]
+}
