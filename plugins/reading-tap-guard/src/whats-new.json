@@ -1,0 +1,27 @@
+{
+	"id": "reading-tap-guard",
+	"name": "Reading Tap Guard",
+	"version": "1.0.1",
+	"changes": [
+		"Double tap interval now shows how to get Pro, with a Sponsor on GitHub button, when you select it without Pro. Nothing is saved until Pro is on."
+	],
+	"tip": "Open Settings, Reading Tap Guard, and pick what a double tap does in Reading view. The edit button and the Toggle reading view command always work.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Reading Tap Guard is one of over 100 small plugins that I make. Thank you for trusting it with your notes.",
+	"related": [
+		{
+			"id": "bases-read-only",
+			"name": "Bases Read Only",
+			"blurb": "Lock chosen bases to block clicks, keys and drags that change cells, cards or view settings."
+		},
+		{
+			"id": "fixation-reader",
+			"name": "Fixation Reader",
+			"blurb": "Bold the first letters of words in Reading view to guide the eye through long text."
+		},
+		{
+			"id": "reading-pace",
+			"name": "Reading Pace",
+			"blurb": "See how long the current note or selection takes to read, with your own words per minute."
+		}
+	]
+}
