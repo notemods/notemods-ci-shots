@@ -1,0 +1,55 @@
+.craft-repair {
+    max-width: 850px;
+}
+
+.craft-repair-summary {
+    padding: var(--size-4-3);
+    background-color: var(--background-secondary);
+    border-radius: var(--radius-m);
+    font-weight: var(--font-semibold);
+}
+
+.craft-repair-list {
+    max-height: 310px;
+    overflow-y: auto;
+    overflow-wrap: anywhere;
+    padding: var(--size-4-2);
+}
+
+.craft-repair-output {
+    font-weight: var(--font-semibold);
+    margin-top: var(--size-4-4);
+}
+
+.craft-repair-list code {
+    display: block;
+    color: var(--text-accent);
+    margin-bottom: var(--size-4-2);
+    white-space: pre-wrap;
+}
+
+.craft-repair-issue {
+    color: var(--text-warning);
+    overflow-wrap: anywhere;
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
