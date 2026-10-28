@@ -1,0 +1,11 @@
+{
+	"id": "paragraph-spell-focus",
+	"name": "Paragraph Spell Focus",
+	"version": "1.2.2",
+	"minAppVersion": "1.13.4",
+	"description": "Limit native spellcheck to the paragraph under the cursor.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": true
+}
