@@ -1,0 +1,32 @@
+/* The variables come from the saved Pro style. Free marks use the defaults. */
+.markdown-preview-view b.fx,
+.markdown-source-view .fx {
+  font-weight: var(--fx-weight, 700);
+  color: var(--fx-color, inherit);
+}
+
+.markdown-preview-view .fx-end,
+.markdown-source-view .fx-end {
+  opacity: var(--fx-ending-opacity, 1);
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}

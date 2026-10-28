@@ -1,0 +1,28 @@
+{
+	"id": "fixation-reader",
+	"name": "Fixation Reader",
+	"version": "1.1.2",
+	"changes": [
+		"When the settings refuse a Pro choice, for example in Enable in Live Preview, the keyboard focus now stays on that setting.",
+		"In a text field the focus leaves the field, as before."
+	],
+	"tip": "Add the boolean property fixation: false to keep one note plain.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Fixation Reader is one of over 100 small plugins that I make. Thank you for reading your notes with it.",
+	"related": [
+		{
+			"id": "parallel-paragraph-reader",
+			"name": "Parallel Paragraph Reader",
+			"blurb": "Read two existing language versions in matched paragraph rows."
+		},
+		{
+			"id": "word-count-property",
+			"name": "Word Count Property",
+			"blurb": "Write word count and reading time properties to notes you choose."
+		},
+		{
+			"id": "hr-fold-stop",
+			"name": "Fold Stop",
+			"blurb": "Stop heading folds at horizontal rules."
+		}
+	]
+}
