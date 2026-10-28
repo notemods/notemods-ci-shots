@@ -1,0 +1,27 @@
+{
+	"id": "properties-pdf-export",
+	"name": "Properties in PDF Export",
+	"version": "1.2.3",
+	"changes": [
+		"The README now shows a separate screenshot of the Folder layouts field. The plugin does not change."
+	],
+	"tip": "In reading view, run \"Toggle printable header preview\" to check the header before you export to PDF.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Properties in PDF Export is one of over 100 small plugins that I make. Thank you for using it for the documents you share.",
+	"related": [
+		{
+			"id": "note-word-comments",
+			"name": "Word Comment Export",
+			"blurb": "Export inline note comments as native Word comments in a new DOCX file."
+		},
+		{
+			"id": "property-change-ledger",
+			"name": "Property Change Ledger",
+			"blurb": "Record observed changes to selected note properties in a local history file."
+		},
+		{
+			"id": "tag-properties",
+			"name": "Tag Properties",
+			"blurb": "Browse the values of a list property as tags with note counts."
+		}
+	]
+}
