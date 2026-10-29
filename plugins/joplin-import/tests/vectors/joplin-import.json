@@ -1,0 +1,725 @@
+{
+ "slug": "joplin-import",
+ "module": "joplin-import/src/vector",
+ "function": "importCase",
+ "note": "Each case runs importCase(members, folder, existing). The test compares the keys of expected only. Members with base64 hold binary resource bytes.",
+ "cases": [
+  {
+   "name": "one notebook Work and one note Plan",
+   "args": [
+    [
+     {
+      "name": "ffff0001000000000000000000000001.md",
+      "text": "Work\n\nid: ffff0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2023-03-14T09:26:53.589Z\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2023-03-14T09:26:53.589Z\nencryption_applied: 0\nparent_id: \nis_shared: 0\ntype_: 2"
+     },
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Plan\n\nShip the plan.\n\nid: aaaa0001000000000000000000000001\nparent_id: ffff0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "counts": {
+     "notes": 1,
+     "notebooks": 1,
+     "tags": 0,
+     "resources": 0
+    },
+    "newPaths": [
+     "Joplin import/Work/Plan--aaaa0001000000000000000000000001.md"
+    ],
+    "notes": {
+     "Joplin import/Work/Plan--aaaa0001000000000000000000000001.md": "---\ntitle: \"Plan\"\njoplin_id: aaaa0001000000000000000000000001\ncreated: 2023-03-14T09:26:53.589Z\nupdated: 2024-01-02T03:04:05.000Z\ntags: []\njoplin_hash: 3ed59e43\n---\nShip the plan."
+    }
+   }
+  },
+  {
+   "name": "nested notebooks Work and Meetings map to Work/Meetings",
+   "args": [
+    [
+     {
+      "name": "ffff0001000000000000000000000001.md",
+      "text": "Work\n\nid: ffff0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2023-03-14T09:26:53.589Z\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2023-03-14T09:26:53.589Z\nencryption_applied: 0\nparent_id: \nis_shared: 0\ntype_: 2"
+     },
+     {
+      "name": "ffff0002000000000000000000000002.md",
+      "text": "Meetings\n\nid: ffff0002000000000000000000000002\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2023-03-14T09:26:53.589Z\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2023-03-14T09:26:53.589Z\nencryption_applied: 0\nparent_id: ffff0001000000000000000000000001\nis_shared: 0\ntype_: 2"
+     },
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Standup\n\nLine one.\n\nLine two.\n\nid: aaaa0001000000000000000000000001\nparent_id: ffff0002000000000000000000000002\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "folders": [
+     "Joplin import",
+     "Joplin import/Work",
+     "Joplin import/Work/Meetings"
+    ],
+    "newPaths": [
+     "Joplin import/Work/Meetings/Standup--aaaa0001000000000000000000000001.md"
+    ],
+    "notes": {
+     "Joplin import/Work/Meetings/Standup--aaaa0001000000000000000000000001.md": "---\ntitle: \"Standup\"\njoplin_id: aaaa0001000000000000000000000001\ncreated: 2023-03-14T09:26:53.589Z\nupdated: 2024-01-02T03:04:05.000Z\ntags: []\njoplin_hash: 1f17a901\n---\nLine one.\n\nLine two."
+    }
+   }
+  },
+  {
+   "name": "note link becomes a vault link and keeps its label",
+   "args": [
+    [
+     {
+      "name": "ffff0001000000000000000000000001.md",
+      "text": "Work\n\nid: ffff0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2023-03-14T09:26:53.589Z\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2023-03-14T09:26:53.589Z\nencryption_applied: 0\nparent_id: \nis_shared: 0\ntype_: 2"
+     },
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Plan\n\nRead [Other](:/aaaa0002000000000000000000000002) first.\n\nid: aaaa0001000000000000000000000001\nparent_id: ffff0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     },
+     {
+      "name": "aaaa0002000000000000000000000002.md",
+      "text": "Other\n\nTarget.\n\nid: aaaa0002000000000000000000000002\nparent_id: ffff0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "notes": {
+     "Joplin import/Work/Plan--aaaa0001000000000000000000000001.md": "---\ntitle: \"Plan\"\njoplin_id: aaaa0001000000000000000000000001\ncreated: 2023-03-14T09:26:53.589Z\nupdated: 2024-01-02T03:04:05.000Z\ntags: []\njoplin_hash: b8af7143\n---\nRead [[Joplin import/Work/Other--aaaa0002000000000000000000000002|Other]] first.",
+     "Joplin import/Work/Other--aaaa0002000000000000000000000002.md": "---\ntitle: \"Other\"\njoplin_id: aaaa0002000000000000000000000002\ncreated: 2023-03-14T09:26:53.589Z\nupdated: 2024-01-02T03:04:05.000Z\ntags: []\njoplin_hash: 3b5f0efb\n---\nTarget."
+    }
+   }
+  },
+  {
+   "name": "resource embed copies one attachment and embeds it",
+   "args": [
+    [
+     {
+      "name": "ffff0001000000000000000000000001.md",
+      "text": "Work\n\nid: ffff0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2023-03-14T09:26:53.589Z\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2023-03-14T09:26:53.589Z\nencryption_applied: 0\nparent_id: \nis_shared: 0\ntype_: 2"
+     },
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Trip\n\n![Photo](:/eeee0001000000000000000000000001)\n\nid: aaaa0001000000000000000000000001\nparent_id: ffff0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     },
+     {
+      "name": "eeee0001000000000000000000000001.md",
+      "text": "photo.png\n\nid: eeee0001000000000000000000000001\nmime: image/png\nfilename: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2023-03-14T09:26:53.589Z\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2023-03-14T09:26:53.589Z\nfile_extension: png\nencryption_cipher_text: \nencryption_applied: 0\nencryption_blob_encrypted: 0\nsize: 8\nis_shared: 0\ntype_: 4"
+     },
+     {
+      "name": "resources/eeee0001000000000000000000000001.png",
+      "base64": "iVBORw0KGgo="
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "counts": {
+     "notes": 1,
+     "notebooks": 1,
+     "tags": 0,
+     "resources": 1
+    },
+    "attachments": [
+     {
+      "path": "Joplin import/_resources/eeee0001000000000000000000000001.png",
+      "size": 8
+     }
+    ],
+    "newPaths": [
+     "Joplin import/_resources/eeee0001000000000000000000000001.png",
+     "Joplin import/Work/Trip--aaaa0001000000000000000000000001.md"
+    ],
+    "notes": {
+     "Joplin import/Work/Trip--aaaa0001000000000000000000000001.md": "---\ntitle: \"Trip\"\njoplin_id: aaaa0001000000000000000000000001\ncreated: 2023-03-14T09:26:53.589Z\nupdated: 2024-01-02T03:04:05.000Z\ntags: []\njoplin_hash: b626e464\n---\n![[Joplin import/_resources/eeee0001000000000000000000000001.png|Photo]]"
+    }
+   }
+  },
+  {
+   "name": "tag Research and a note-tag relation give a tags list",
+   "args": [
+    [
+     {
+      "name": "ffff0001000000000000000000000001.md",
+      "text": "Work\n\nid: ffff0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2023-03-14T09:26:53.589Z\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2023-03-14T09:26:53.589Z\nencryption_applied: 0\nparent_id: \nis_shared: 0\ntype_: 2"
+     },
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Plan\n\nBody.\n\nid: aaaa0001000000000000000000000001\nparent_id: ffff0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     },
+     {
+      "name": "cccc0001000000000000000000000001.md",
+      "text": "Research\n\nid: cccc0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2023-03-14T09:26:53.589Z\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2023-03-14T09:26:53.589Z\nencryption_applied: 0\nis_shared: 0\nparent_id: \ntype_: 5"
+     },
+     {
+      "name": "dddd0001000000000000000000000001.md",
+      "text": "id: dddd0001000000000000000000000001\nnote_id: aaaa0001000000000000000000000001\ntag_id: cccc0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2023-03-14T09:26:53.589Z\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2023-03-14T09:26:53.589Z\nencryption_applied: 0\nis_shared: 0\ntype_: 6"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "counts": {
+     "notes": 1,
+     "notebooks": 1,
+     "tags": 1,
+     "resources": 0
+    },
+    "notes": {
+     "Joplin import/Work/Plan--aaaa0001000000000000000000000001.md": "---\ntitle: \"Plan\"\njoplin_id: aaaa0001000000000000000000000001\ncreated: 2023-03-14T09:26:53.589Z\nupdated: 2024-01-02T03:04:05.000Z\ntags:\n  - \"Research\"\njoplin_hash: beec8e25\n---\nBody."
+    }
+   }
+  },
+  {
+   "name": "created_time and updated_time are written as ISO values",
+   "args": [
+    [
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Dated\n\nBody.\n\nid: aaaa0001000000000000000000000001\nparent_id: \ncreated_time: 2020-02-29T23:59:59.000Z\nupdated_time: 2021-07-04T12:00:00.123Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2020-02-29T23:59:59.000Z\nuser_updated_time: 2021-07-04T12:00:00.123Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "notes": {
+     "Joplin import/Dated--aaaa0001000000000000000000000001.md": "---\ntitle: \"Dated\"\njoplin_id: aaaa0001000000000000000000000001\ncreated: 2020-02-29T23:59:59.000Z\nupdated: 2021-07-04T12:00:00.123Z\ntags: []\njoplin_hash: 976f5caa\n---\nBody."
+    }
+   }
+  },
+  {
+   "name": "user_created_time wins over created_time like in the Joplin app",
+   "args": [
+    [
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Dated\n\nBody.\n\nid: aaaa0001000000000000000000000001\nparent_id: \ncreated_time: 2022-01-01T00:00:00.000Z\nupdated_time: 2022-01-01T00:00:00.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2019-05-05T05:05:05.000Z\nuser_updated_time: 2022-01-01T00:00:00.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "notes": {
+     "Joplin import/Dated--aaaa0001000000000000000000000001.md": "---\ntitle: \"Dated\"\njoplin_id: aaaa0001000000000000000000000001\ncreated: 2019-05-05T05:05:05.000Z\nupdated: 2022-01-01T00:00:00.000Z\ntags: []\njoplin_hash: a19b430c\n---\nBody."
+    }
+   }
+  },
+  {
+   "name": "link to an absent resource stays and the report names it",
+   "args": [
+    [
+     {
+      "name": "ffff0001000000000000000000000001.md",
+      "text": "Work\n\nid: ffff0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2023-03-14T09:26:53.589Z\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2023-03-14T09:26:53.589Z\nencryption_applied: 0\nparent_id: \nis_shared: 0\ntype_: 2"
+     },
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Broken\n\n![Lost](:/eeee0001000000000000000000000001)\n\nid: aaaa0001000000000000000000000001\nparent_id: ffff0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     },
+     {
+      "name": "aaaa0002000000000000000000000002.md",
+      "text": "Fine\n\nFine.\n\nid: aaaa0002000000000000000000000002\nparent_id: ffff0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     },
+     {
+      "name": "eeee0001000000000000000000000001.md",
+      "text": "lost.png\n\nid: eeee0001000000000000000000000001\nmime: image/png\nfilename: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2023-03-14T09:26:53.589Z\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2023-03-14T09:26:53.589Z\nfile_extension: png\nencryption_cipher_text: \nencryption_applied: 0\nencryption_blob_encrypted: 0\nsize: 8\nis_shared: 0\ntype_: 4"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "newPaths": [
+     "Joplin import/Work/Broken--aaaa0001000000000000000000000001.md",
+     "Joplin import/Work/Fine--aaaa0002000000000000000000000002.md"
+    ],
+    "notes": {
+     "Joplin import/Work/Broken--aaaa0001000000000000000000000001.md": "---\ntitle: \"Broken\"\njoplin_id: aaaa0001000000000000000000000001\ncreated: 2023-03-14T09:26:53.589Z\nupdated: 2024-01-02T03:04:05.000Z\ntags: []\njoplin_hash: 7e25a81e\n---\n![Lost](:/eeee0001000000000000000000000001)",
+     "Joplin import/Work/Fine--aaaa0002000000000000000000000002.md": "---\ntitle: \"Fine\"\njoplin_id: aaaa0002000000000000000000000002\ncreated: 2023-03-14T09:26:53.589Z\nupdated: 2024-01-02T03:04:05.000Z\ntags: []\njoplin_hash: 7085b01a\n---\nFine."
+    },
+    "report": {
+     "missingResources": [
+      "Resource \"lost.png\" (eeee0001000000000000000000000001) in note \"Broken\": the archive has no file for it. The link stays as source text."
+     ],
+     "missingNotes": [],
+     "unsupported": [],
+     "tags": [],
+     "notebooks": []
+    }
+   }
+  },
+  {
+   "name": "link to an id that is in no item stays and goes into the report",
+   "args": [
+    [
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Ghost\n\nSee [x](:/bbbb0009000000000000000000000009).\n\nid: aaaa0001000000000000000000000001\nparent_id: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "notes": {
+     "Joplin import/Ghost--aaaa0001000000000000000000000001.md": "---\ntitle: \"Ghost\"\njoplin_id: aaaa0001000000000000000000000001\ncreated: 2023-03-14T09:26:53.589Z\nupdated: 2024-01-02T03:04:05.000Z\ntags: []\njoplin_hash: 6da7d9fa\n---\nSee [x](:/bbbb0009000000000000000000000009)."
+    },
+    "report": {
+     "missingResources": [
+      "Resource or note bbbb0009000000000000000000000009 in note \"Ghost\" is not in the archive. The link stays as source text."
+     ],
+     "missingNotes": [],
+     "unsupported": [],
+     "tags": [],
+     "notebooks": []
+    }
+   }
+  },
+  {
+   "name": "second import skips existing output paths",
+   "args": [
+    [
+     {
+      "name": "ffff0001000000000000000000000001.md",
+      "text": "Work\n\nid: ffff0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2023-03-14T09:26:53.589Z\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2023-03-14T09:26:53.589Z\nencryption_applied: 0\nparent_id: \nis_shared: 0\ntype_: 2"
+     },
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Trip\n\n![Photo](:/eeee0001000000000000000000000001)\n\nid: aaaa0001000000000000000000000001\nparent_id: ffff0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     },
+     {
+      "name": "eeee0001000000000000000000000001.md",
+      "text": "photo.png\n\nid: eeee0001000000000000000000000001\nmime: image/png\nfilename: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2023-03-14T09:26:53.589Z\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2023-03-14T09:26:53.589Z\nfile_extension: png\nencryption_cipher_text: \nencryption_applied: 0\nencryption_blob_encrypted: 0\nsize: 8\nis_shared: 0\ntype_: 4"
+     },
+     {
+      "name": "resources/eeee0001000000000000000000000001.png",
+      "base64": "iVBORw0KGgo="
+     }
+    ],
+    "Joplin import",
+    [
+     "Joplin import/Work/Trip--aaaa0001000000000000000000000001.md",
+     "Joplin import/_resources/eeee0001000000000000000000000001.png"
+    ]
+   ],
+   "expected": {
+    "newPaths": [],
+    "skipped": [
+     "Joplin import/_resources/eeee0001000000000000000000000001.png",
+     "Joplin import/Work/Trip--aaaa0001000000000000000000000001.md"
+    ]
+   }
+  },
+  {
+   "name": "tar member ../../outside.txt rejects the archive",
+   "args": [
+    [
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Plan\n\nx\n\nid: aaaa0001000000000000000000000001\nparent_id: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     },
+     {
+      "name": "../../outside.txt",
+      "text": "bad"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "error": "Unsafe archive member \"../../outside.txt\". The import stops before it writes a file."
+   }
+  },
+  {
+   "name": "absolute tar member path rejects the archive",
+   "args": [
+    [
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Plan\n\nx\n\nid: aaaa0001000000000000000000000001\nparent_id: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     },
+     {
+      "name": "/etc/outside.txt",
+      "text": "bad"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "error": "Unsafe archive member \"/etc/outside.txt\". The import stops before it writes a file."
+   }
+  },
+  {
+   "name": "symbolic link member rejects the archive",
+   "args": [
+    [
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Plan\n\nx\n\nid: aaaa0001000000000000000000000001\nparent_id: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     },
+     {
+      "name": "link.md",
+      "text": "",
+      "type": "2",
+      "link": "/etc/passwd"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "error": "Unsafe archive member \"link.md\": links are not allowed. The import stops before it writes a file."
+   }
+  },
+  {
+   "name": "preview plan of a closed window lists paths only",
+   "note": "The plan is in memory. The unit and e2e tests check that the vault gets no file.",
+   "args": [
+    [
+     {
+      "name": "ffff0001000000000000000000000001.md",
+      "text": "Work\n\nid: ffff0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2023-03-14T09:26:53.589Z\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2023-03-14T09:26:53.589Z\nencryption_applied: 0\nparent_id: \nis_shared: 0\ntype_: 2"
+     },
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Plan\n\nBody.\n\nid: aaaa0001000000000000000000000001\nparent_id: ffff0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     }
+    ],
+    "New import"
+   ],
+   "expected": {
+    "folders": [
+     "New import",
+     "New import/Work"
+    ],
+    "newPaths": [
+     "New import/Work/Plan--aaaa0001000000000000000000000001.md"
+    ],
+    "skipped": []
+   }
+  },
+  {
+   "name": "HTML note is reported and not imported",
+   "args": [
+    [
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Web clip\n\n<p>Hi</p>\n\nid: aaaa0001000000000000000000000001\nparent_id: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 2\nis_shared: 0\ntype_: 1"
+     },
+     {
+      "name": "aaaa0002000000000000000000000002.md",
+      "text": "Plain\n\nHi\n\nid: aaaa0002000000000000000000000002\nparent_id: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "counts": {
+     "notes": 2,
+     "notebooks": 0,
+     "tags": 0,
+     "resources": 0
+    },
+    "newPaths": [
+     "Joplin import/Plain--aaaa0002000000000000000000000002.md"
+    ],
+    "report": {
+     "missingResources": [],
+     "missingNotes": [],
+     "unsupported": [
+      "HTML note \"Web clip\" (aaaa0001000000000000000000000001) is not imported. Only Markdown note bodies are converted."
+     ],
+     "tags": [],
+     "notebooks": []
+    }
+   }
+  },
+  {
+   "name": "encrypted item and a revision item are reported",
+   "args": [
+    [
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Secret\n\n\n\nid: aaaa0001000000000000000000000001\nparent_id: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 1\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     },
+     {
+      "name": "aaaa0002000000000000000000000002.md",
+      "text": "Plain\n\nHi\n\nid: aaaa0002000000000000000000000002\nparent_id: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     },
+     {
+      "name": "99990001000000000000000000000001.md",
+      "text": "id: 99990001000000000000000000000001\nitem_id: aaaa0002000000000000000000000002\ntype_: 13"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "newPaths": [
+     "Joplin import/Plain--aaaa0002000000000000000000000002.md"
+    ],
+    "report": {
+     "missingResources": [],
+     "missingNotes": [],
+     "unsupported": [
+      "Encrypted item aaaa0001000000000000000000000001",
+      "1 revision item (not imported)"
+     ],
+     "tags": [],
+     "notebooks": []
+    }
+   }
+  },
+  {
+   "name": "tag with a space becomes a hyphen tag and is reported",
+   "args": [
+    [
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Plan\n\nBody.\n\nid: aaaa0001000000000000000000000001\nparent_id: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     },
+     {
+      "name": "cccc0001000000000000000000000001.md",
+      "text": "project alpha\n\nid: cccc0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2023-03-14T09:26:53.589Z\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2023-03-14T09:26:53.589Z\nencryption_applied: 0\nis_shared: 0\nparent_id: \ntype_: 5"
+     },
+     {
+      "name": "dddd0001000000000000000000000001.md",
+      "text": "id: dddd0001000000000000000000000001\nnote_id: aaaa0001000000000000000000000001\ntag_id: cccc0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2023-03-14T09:26:53.589Z\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2023-03-14T09:26:53.589Z\nencryption_applied: 0\nis_shared: 0\ntype_: 6"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "notes": {
+     "Joplin import/Plan--aaaa0001000000000000000000000001.md": "---\ntitle: \"Plan\"\njoplin_id: aaaa0001000000000000000000000001\ncreated: 2023-03-14T09:26:53.589Z\nupdated: 2024-01-02T03:04:05.000Z\ntags:\n  - \"project-alpha\"\njoplin_hash: 9dd32848\n---\nBody."
+    },
+    "report": {
+     "missingResources": [],
+     "missingNotes": [],
+     "unsupported": [],
+     "tags": [
+      "Tag \"project alpha\" is written as \"project-alpha\"."
+     ],
+     "notebooks": []
+    }
+   }
+  },
+  {
+   "name": "sibling notebooks with the same title get the id suffix",
+   "args": [
+    [
+     {
+      "name": "ffff0001000000000000000000000001.md",
+      "text": "Work\n\nid: ffff0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2023-03-14T09:26:53.589Z\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2023-03-14T09:26:53.589Z\nencryption_applied: 0\nparent_id: \nis_shared: 0\ntype_: 2"
+     },
+     {
+      "name": "ffff0002000000000000000000000002.md",
+      "text": "work\n\nid: ffff0002000000000000000000000002\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2023-03-14T09:26:53.589Z\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2023-03-14T09:26:53.589Z\nencryption_applied: 0\nparent_id: \nis_shared: 0\ntype_: 2"
+     },
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "A\n\na\n\nid: aaaa0001000000000000000000000001\nparent_id: ffff0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     },
+     {
+      "name": "aaaa0002000000000000000000000002.md",
+      "text": "B\n\nb\n\nid: aaaa0002000000000000000000000002\nparent_id: ffff0002000000000000000000000002\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "folders": [
+     "Joplin import",
+     "Joplin import/Work",
+     "Joplin import/work--ffff0002000000000000000000000002"
+    ],
+    "newPaths": [
+     "Joplin import/Work/A--aaaa0001000000000000000000000001.md",
+     "Joplin import/work--ffff0002000000000000000000000002/B--aaaa0002000000000000000000000002.md"
+    ]
+   }
+  },
+  {
+   "name": "note in a missing notebook goes to the top of the folder",
+   "args": [
+    [
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Lost\n\nx\n\nid: aaaa0001000000000000000000000001\nparent_id: ffff0002000000000000000000000002\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "newPaths": [
+     "Joplin import/Lost--aaaa0001000000000000000000000001.md"
+    ],
+    "report": {
+     "missingResources": [],
+     "missingNotes": [],
+     "unsupported": [],
+     "tags": [],
+     "notebooks": [
+      "Note \"Lost\" (aaaa0001000000000000000000000001) has a missing notebook ffff0002000000000000000000000002. It is put at the top of the output folder."
+     ]
+    }
+   }
+  },
+  {
+   "name": "Joplin link in a fenced code block stays unchanged",
+   "args": [
+    [
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Code\n\n```\n[a](:/aaaa0002000000000000000000000002)\n```\n[b](:/aaaa0002000000000000000000000002)\n\nid: aaaa0001000000000000000000000001\nparent_id: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     },
+     {
+      "name": "aaaa0002000000000000000000000002.md",
+      "text": "T\n\nt\n\nid: aaaa0002000000000000000000000002\nparent_id: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "notes": {
+     "Joplin import/Code--aaaa0001000000000000000000000001.md": "---\ntitle: \"Code\"\njoplin_id: aaaa0001000000000000000000000001\ncreated: 2023-03-14T09:26:53.589Z\nupdated: 2024-01-02T03:04:05.000Z\ntags: []\njoplin_hash: dde58550\n---\n```\n[a](:/aaaa0002000000000000000000000002)\n```\n[[Joplin import/T--aaaa0002000000000000000000000002|b]]",
+     "Joplin import/T--aaaa0002000000000000000000000002.md": "---\ntitle: \"T\"\njoplin_id: aaaa0002000000000000000000000002\ncreated: 2023-03-14T09:26:53.589Z\nupdated: 2024-01-02T03:04:05.000Z\ntags: []\njoplin_hash: d112ad5c\n---\nt"
+    }
+   }
+  },
+  {
+   "name": "note link with a heading anchor keeps the anchor",
+   "args": [
+    [
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "A\n\n[Go](:/aaaa0002000000000000000000000002#next-step)\n\nid: aaaa0001000000000000000000000001\nparent_id: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     },
+     {
+      "name": "aaaa0002000000000000000000000002.md",
+      "text": "B\n\nb\n\nid: aaaa0002000000000000000000000002\nparent_id: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "notes": {
+     "Joplin import/A--aaaa0001000000000000000000000001.md": "---\ntitle: \"A\"\njoplin_id: aaaa0001000000000000000000000001\ncreated: 2023-03-14T09:26:53.589Z\nupdated: 2024-01-02T03:04:05.000Z\ntags: []\njoplin_hash: 7a3be066\n---\n[[Joplin import/B--aaaa0002000000000000000000000002#next-step|Go]]",
+     "Joplin import/B--aaaa0002000000000000000000000002.md": "---\ntitle: \"B\"\njoplin_id: aaaa0002000000000000000000000002\ncreated: 2023-03-14T09:26:53.589Z\nupdated: 2024-01-02T03:04:05.000Z\ntags: []\njoplin_hash: d2b892d4\n---\nb"
+    }
+   }
+  },
+  {
+   "name": "completed to-do note gets joplin_todo done",
+   "args": [
+    [
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Buy milk\n\n\n\nid: aaaa0001000000000000000000000001\nparent_id: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 1\ntodo_due: 0\ntodo_completed: 1700000000000\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "notes": {
+     "Joplin import/Buy milk--aaaa0001000000000000000000000001.md": "---\ntitle: \"Buy milk\"\njoplin_id: aaaa0001000000000000000000000001\ncreated: 2023-03-14T09:26:53.589Z\nupdated: 2024-01-02T03:04:05.000Z\ntags: []\njoplin_todo: done\njoplin_hash: da185a12\n---\n"
+    }
+   }
+  },
+  {
+   "name": "title with forbidden file name characters is cleaned",
+   "args": [
+    [
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "a/b: c? [d]\n\nx\n\nid: aaaa0001000000000000000000000001\nparent_id: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "newPaths": [
+     "Joplin import/a b c d--aaaa0001000000000000000000000001.md"
+    ]
+   }
+  },
+  {
+   "name": "non-image resource becomes a plain vault link",
+   "args": [
+    [
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Docs\n\n[report.pdf](:/eeee0001000000000000000000000001)\n\nid: aaaa0001000000000000000000000001\nparent_id: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     },
+     {
+      "name": "eeee0001000000000000000000000001.md",
+      "text": "report.pdf\n\nid: eeee0001000000000000000000000001\nmime: application/pdf\nfilename: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2023-03-14T09:26:53.589Z\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2023-03-14T09:26:53.589Z\nfile_extension: pdf\nencryption_cipher_text: \nencryption_applied: 0\nencryption_blob_encrypted: 0\nsize: 8\nis_shared: 0\ntype_: 4"
+     },
+     {
+      "name": "resources/eeee0001000000000000000000000001.pdf",
+      "base64": "JVBERi0xLjQK"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "notes": {
+     "Joplin import/Docs--aaaa0001000000000000000000000001.md": "---\ntitle: \"Docs\"\njoplin_id: aaaa0001000000000000000000000001\ncreated: 2023-03-14T09:26:53.589Z\nupdated: 2024-01-02T03:04:05.000Z\ntags: []\njoplin_hash: af0a6ae8\n---\n[[Joplin import/_resources/eeee0001000000000000000000000001.pdf|report.pdf]]"
+    },
+    "attachments": [
+     {
+      "path": "Joplin import/_resources/eeee0001000000000000000000000001.pdf",
+      "size": 9
+     }
+    ]
+   }
+  },
+  {
+   "name": "output folder with .. is refused",
+   "args": [
+    [
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Plan\n\nx\n\nid: aaaa0001000000000000000000000001\nparent_id: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     }
+    ],
+    "../outside"
+   ],
+   "expected": {
+    "error": "The output folder must be a plain vault path, without \"..\", without hidden folders and without spaces at the ends of a name."
+   }
+  },
+  {
+   "name": "two members with the same name reject the archive",
+   "args": [
+    [
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Plan\n\nx\n\nid: aaaa0001000000000000000000000001\nparent_id: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     },
+     {
+      "name": "aaaa0001000000000000000000000001.md",
+      "text": "Plan\n\ny\n\nid: aaaa0001000000000000000000000001\nparent_id: \ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2024-01-02T03:04:05.000Z\nis_conflict: 0\nauthor: \nsource_url: \nis_todo: 0\ntodo_due: 0\ntodo_completed: 0\nsource: joplin-desktop\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2024-01-02T03:04:05.000Z\nencryption_applied: 0\nmarkup_language: 1\nis_shared: 0\ntype_: 1"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "error": "The archive has two members with the name \"aaaa0001000000000000000000000001.md\"."
+   }
+  },
+  {
+   "name": "archive with no notes or notebooks is refused",
+   "args": [
+    [
+     {
+      "name": "cccc0001000000000000000000000001.md",
+      "text": "Lonely\n\nid: cccc0001000000000000000000000001\ncreated_time: 2023-03-14T09:26:53.589Z\nupdated_time: 2023-03-14T09:26:53.589Z\nuser_created_time: 2023-03-14T09:26:53.589Z\nuser_updated_time: 2023-03-14T09:26:53.589Z\nencryption_applied: 0\nis_shared: 0\nparent_id: \ntype_: 5"
+     }
+    ],
+    "Joplin import"
+   ],
+   "expected": {
+    "error": "The archive has no Joplin notes or notebooks. Select a JEX file from Joplin (File, Export all, JEX)."
+   }
+  }
+ ]
+}
