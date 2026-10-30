@@ -1,0 +1,11 @@
+{
+	"id": "line-cut-guard",
+	"name": "Line Cut Guard",
+	"version": "1.0.0",
+	"minAppVersion": "1.13.4",
+	"description": "Stops Ctrl-X and Cmd-X from cutting the whole line when no text is selected, and can do the same for copy.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}
