@@ -1,0 +1,159 @@
+/* Bases Freeze Panes. Every rule depends on a class that the plugin adds, so with the plugin
+   off or unloaded the app's own table styles apply unchanged. */
+
+/* Header row: solid background, so rows that scroll under it never show through.
+   A view with its own header choice has bfp-view-header or bfp-no-header, which wins over the tab. */
+.bases-view.bfp-view-header .bases-thead,
+.bfp-header .bases-view:not(.bfp-no-header) .bases-thead {
+	background-color: var(--background-primary);
+	background-image: linear-gradient(var(--bases-table-header-background), var(--bases-table-header-background));
+}
+
+/* Embedded bases: a table in a note grows to full height, so the note scrolls and the sticky
+   header of the table never sticks. A height cap gives the table its own scroll box. */
+.workspace-leaf-content[data-type="markdown"].bfp-header .bases-embed .bases-view[data-view-type="table"]:not(.bfp-no-header),
+.workspace-leaf-content[data-type="markdown"].bfp-header .block-language-base .bases-view[data-view-type="table"]:not(.bfp-no-header),
+.workspace-leaf-content[data-type="markdown"] .bases-embed .bases-view.bfp-view-header[data-view-type="table"],
+.workspace-leaf-content[data-type="markdown"] .block-language-base .bases-view.bfp-view-header[data-view-type="table"] {
+	max-height: var(--bfp-embed-height, 500px);
+}
+
+/* Frozen columns: the patch keeps these cells in the row and puts them first, so they take part
+   in the row's flex layout. position: sticky then holds each one at its own start offset. */
+.bases-tr.bfp-row > .bases-td.bfp-frozen {
+	position: sticky;
+	top: auto;
+	flex: none;
+	z-index: 2;
+	background-color: var(--background-primary);
+}
+
+.bases-tr.bfp-row > .bases-td.bfp-frozen:focus-within {
+	z-index: 3;
+	background-image: linear-gradient(var(--bases-table-cell-background-active), var(--bases-table-cell-background-active));
+}
+
+.bases-thead .bases-tr.bfp-row > .bases-td.bfp-frozen {
+	background-image: linear-gradient(var(--bases-table-header-background), var(--bases-table-header-background));
+}
+
+.bases-tr.bfp-row.bases-table-group-summary-row > .bases-td.bfp-frozen {
+	background-image: linear-gradient(var(--bases-table-group-background), var(--bases-table-group-background));
+}
+
+.bases-tr.bfp-row.bases-table-footer > .bases-td.bfp-frozen {
+	background-image: linear-gradient(var(--bases-table-summary-background), var(--bases-table-summary-background));
+}
+
+.bases-tbody > .bases-tr.bfp-row:hover > .bases-td.bfp-frozen {
+	background-image: linear-gradient(var(--bases-table-row-background-hover), var(--bases-table-row-background-hover));
+}
+
+/* A line on the end edge of the last frozen column, so the columns that slide under it have a clear edge. */
+.bases-tr.bfp-row > .bases-td.bfp-frozen.bfp-last {
+	box-shadow:
+		calc(var(--bases-table-column-border-width) * -1) 0 0 var(--table-border-color),
+		inset calc(var(--bases-table-column-border-width) * -1) 0 0 var(--table-border-color);
+}
+
+/* Pro: the last column pinned to the end edge. The patch keeps the cell in the row after the frozen
+   cells and gives it a start margin, so it sits at its own offset; sticky then holds it at the end edge. */
+.bases-tr.bfp-row > .bases-td.bfp-end {
+	position: sticky;
+	inset-inline-end: 0;
+	top: auto;
+	flex: none;
+	z-index: 2;
+	background-color: var(--background-primary);
+	box-shadow:
+		var(--bases-table-column-border-width) 0 0 var(--table-border-color),
+		inset var(--bases-table-column-border-width) 0 0 var(--table-border-color);
+}
+
+.bases-tr.bfp-row > .bases-td.bfp-end:focus-within {
+	z-index: 3;
+	background-image: linear-gradient(var(--bases-table-cell-background-active), var(--bases-table-cell-background-active));
+}
+
+.bases-thead .bases-tr.bfp-row > .bases-td.bfp-end {
+	background-image: linear-gradient(var(--bases-table-header-background), var(--bases-table-header-background));
+}
+
+.bases-tr.bfp-row.bases-table-group-summary-row > .bases-td.bfp-end {
+	background-image: linear-gradient(var(--bases-table-group-background), var(--bases-table-group-background));
+}
+
+.bases-tr.bfp-row.bases-table-footer > .bases-td.bfp-end {
+	background-image: linear-gradient(var(--bases-table-summary-background), var(--bases-table-summary-background));
+}
+
+.bases-tbody > .bases-tr.bfp-row:hover > .bases-td.bfp-end {
+	background-image: linear-gradient(var(--bases-table-row-background-hover), var(--bases-table-row-background-hover));
+}
+
+/* The GitHub sign in code in the Pro settings. */
+.pf-github-user-code {
+	font-size: var(--font-ui-large);
+	font-weight: var(--font-bold);
+	letter-spacing: 0.1em;
+	user-select: all;
+}
+
+/* Each rendered note table has its own scroll box. The original cells stay in the table. */
+.bfp-note-table {
+	position: relative;
+	max-height: var(--bfp-note-height, 500px);
+	max-width: 100%;
+	overflow: auto;
+	isolation: isolate;
+}
+
+.bfp-note-table > table {
+	width: max-content;
+	min-width: 100%;
+	border-collapse: separate;
+	border-spacing: 0;
+	margin: 0;
+}
+
+.bfp-note-table.bfp-note-header > table > thead > tr > th {
+	position: sticky;
+	top: 0;
+	z-index: 2;
+	background-color: var(--background-primary);
+	background-image: linear-gradient(var(--table-header-background), var(--table-header-background));
+}
+
+.bfp-note-table.bfp-note-column > table > tbody > tr > :first-child,
+.bfp-note-table.bfp-note-column > table > thead > tr > :first-child {
+	position: sticky;
+	inset-inline-start: 0;
+	z-index: 1;
+	background-color: var(--background-primary);
+	box-shadow: 1px 0 0 var(--table-border-color);
+}
+
+.bfp-note-table.bfp-note-header.bfp-note-column > table > thead > tr > :first-child {
+	z-index: 3;
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
