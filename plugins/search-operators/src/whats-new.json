@@ -1,0 +1,27 @@
+{
+	"id": "search-operators",
+	"name": "Search Operators",
+	"version": "1.2.2",
+	"changes": [
+		"The Sponsor on GitHub button now opens the one-time payment tab of GitHub Sponsors."
+	],
+	"tip": "Type linksto:[[Projects/*]] to find notes that link to any note in a folder.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Search Operators is one of over 100 small plugins that I make. Thank you for using it to find things in your vault.",
+	"related": [
+		{
+			"id": "context-trees",
+			"name": "Context Trees",
+			"blurb": "Show parent headings and lists in search results."
+		},
+		{
+			"id": "embedded-text-finder",
+			"name": "Embedded Text Finder",
+			"blurb": "Find notes through text in their Markdown embeds."
+		},
+		{
+			"id": "tag-properties",
+			"name": "Tag Properties",
+			"blurb": "Browse the values of a list property as tags with note counts."
+		}
+	]
+}
