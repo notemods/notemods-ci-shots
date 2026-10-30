@@ -1,0 +1,1084 @@
+{
+ "slug": "line-cut-guard",
+ "module": "line-cut-guard/src/guard",
+ "function": "step",
+ "note": "Each case names its function in fn. step(input) decides pass or stop for one cut or copy, the next pending first press and the notice. nothingSelected(ranges, marked). effectiveMode(mode, pro). mayNotify(lastShown, now, message). noticeText(kind, message, mod). shortcutKind(code, key, ctrl, meta, alt, shift, mac). lineRanges(doc, cursors, lineBreak) follows copiedRange of @codemirror/view. Names that start with A1 to A8 are the acceptance criteria of lanes/NEW/SPEC.md. Expected values written by hand from SPEC R1 to R5 and the CodeMirror rule.",
+ "cases": [
+  {
+   "name": "A1 cut with nothing selected is stopped",
+   "fn": "step",
+   "args": [
+    {
+     "kind": "cut",
+     "mode": "block",
+     "pro": false,
+     "nothingSelected": true,
+     "token": "e1:1",
+     "now": 1000,
+     "repeat": false,
+     "pending": null
+    }
+   ],
+   "expected": {
+    "action": "stop",
+    "pending": null,
+    "message": "stopped"
+   }
+  },
+  {
+   "name": "A1 cut with nothing selected is stopped also with an old first press",
+   "fn": "step",
+   "args": [
+    {
+     "kind": "cut",
+     "mode": "block",
+     "pro": false,
+     "nothingSelected": true,
+     "token": "e1:1",
+     "now": 1000,
+     "repeat": false,
+     "pending": {
+      "kind": "cut",
+      "token": "e1:1",
+      "time": 900
+     }
+    }
+   ],
+   "expected": {
+    "action": "stop",
+    "pending": null,
+    "message": "stopped"
+   }
+  },
+  {
+   "name": "A2 cut with a selection passes",
+   "fn": "step",
+   "args": [
+    {
+     "kind": "cut",
+     "mode": "block",
+     "pro": false,
+     "nothingSelected": false,
+     "token": "e1:1",
+     "now": 1000,
+     "repeat": false,
+     "pending": null
+    }
+   ],
+   "expected": {
+    "action": "pass",
+    "pending": null,
+    "message": null
+   }
+  },
+  {
+   "name": "A3 cut mode allow passes (Obsidian line cut)",
+   "fn": "step",
+   "args": [
+    {
+     "kind": "cut",
+     "mode": "allow",
+     "pro": false,
+     "nothingSelected": true,
+     "token": "e1:1",
+     "now": 1000,
+     "repeat": false,
+     "pending": null
+    }
+   ],
+   "expected": {
+    "action": "pass",
+    "pending": null,
+    "message": null
+   }
+  },
+  {
+   "name": "A4 copy mode block with nothing selected is stopped",
+   "fn": "step",
+   "args": [
+    {
+     "kind": "copy",
+     "mode": "block",
+     "pro": false,
+     "nothingSelected": true,
+     "token": "e1:1",
+     "now": 1000,
+     "repeat": false,
+     "pending": null
+    }
+   ],
+   "expected": {
+    "action": "stop",
+    "pending": null,
+    "message": "stopped"
+   }
+  },
+  {
+   "name": "A4 copy mode allow passes",
+   "fn": "step",
+   "args": [
+    {
+     "kind": "copy",
+     "mode": "allow",
+     "pro": false,
+     "nothingSelected": true,
+     "token": "e1:1",
+     "now": 1000,
+     "repeat": false,
+     "pending": null
+    }
+   ],
+   "expected": {
+    "action": "pass",
+    "pending": null,
+    "message": null
+   }
+  },
+  {
+   "name": "A4 copy with a selection passes in mode block",
+   "fn": "step",
+   "args": [
+    {
+     "kind": "copy",
+     "mode": "block",
+     "pro": false,
+     "nothingSelected": false,
+     "token": "e1:1",
+     "now": 1000,
+     "repeat": false,
+     "pending": null
+    }
+   ],
+   "expected": {
+    "action": "pass",
+    "pending": null,
+    "message": null
+   }
+  },
+  {
+   "name": "A7 first press in mode twice is stopped and armed",
+   "fn": "step",
+   "args": [
+    {
+     "kind": "cut",
+     "mode": "twice",
+     "pro": true,
+     "nothingSelected": true,
+     "token": "e1:1",
+     "now": 1000,
+     "repeat": false,
+     "pending": null
+    }
+   ],
+   "expected": {
+    "action": "stop",
+    "pending": {
+     "kind": "cut",
+     "token": "e1:1",
+     "time": 1000
+    },
+    "message": "press-again"
+   }
+  },
+  {
+   "name": "A7 second press after 500 ms passes",
+   "fn": "step",
+   "args": [
+    {
+     "kind": "cut",
+     "mode": "twice",
+     "pro": true,
+     "nothingSelected": true,
+     "token": "e1:1",
+     "now": 1500,
+     "repeat": false,
+     "pending": {
+      "kind": "cut",
+      "token": "e1:1",
+      "time": 1000
+     }
+    }
+   ],
+   "expected": {
+    "action": "pass",
+    "pending": null,
+    "message": null
+   }
+  },
+  {
+   "name": "A7 second press after exactly 250 ms passes",
+   "fn": "step",
+   "args": [
+    {
+     "kind": "cut",
+     "mode": "twice",
+     "pro": true,
+     "nothingSelected": true,
+     "token": "e1:1",
+     "now": 1250,
+     "repeat": false,
+     "pending": {
+      "kind": "cut",
+      "token": "e1:1",
+      "time": 1000
+     }
+    }
+   ],
+   "expected": {
+    "action": "pass",
+    "pending": null,
+    "message": null
+   }
+  },
+  {
+   "name": "A7 second press after exactly 2000 ms passes",
+   "fn": "step",
+   "args": [
+    {
+     "kind": "cut",
+     "mode": "twice",
+     "pro": true,
+     "nothingSelected": true,
+     "token": "e1:1",
+     "now": 3000,
+     "repeat": false,
+     "pending": {
+      "kind": "cut",
+      "token": "e1:1",
+      "time": 1000
+     }
+    }
+   ],
+   "expected": {
+    "action": "pass",
+    "pending": null,
+    "message": null
+   }
+  },
+  {
+   "name": "A7 second press after 100 ms is too fast and arms again",
+   "fn": "step",
+   "args": [
+    {
+     "kind": "cut",
+     "mode": "twice",
+     "pro": true,
+     "nothingSelected": true,
+     "token": "e1:1",
+     "now": 1100,
+     "repeat": false,
+     "pending": {
+      "kind": "cut",
+      "token": "e1:1",
+      "time": 1000
+     }
+    }
+   ],
+   "expected": {
+    "action": "stop",
+    "pending": {
+     "kind": "cut",
+     "token": "e1:1",
+     "time": 1100
+    },
+    "message": "press-again"
+   }
+  },
+  {
+   "name": "A7 second press after 2001 ms is too late and arms again",
+   "fn": "step",
+   "args": [
+    {
+     "kind": "cut",
+     "mode": "twice",
+     "pro": true,
+     "nothingSelected": true,
+     "token": "e1:1",
+     "now": 3001,
+     "repeat": false,
+     "pending": {
+      "kind": "cut",
+      "token": "e1:1",
+      "time": 1000
+     }
+    }
+   ],
+   "expected": {
+    "action": "stop",
+    "pending": {
+     "kind": "cut",
+     "token": "e1:1",
+     "time": 3001
+    },
+    "message": "press-again"
+   }
+  },
+  {
+   "name": "A7 second press after the cursor moved arms again",
+   "fn": "step",
+   "args": [
+    {
+     "kind": "cut",
+     "mode": "twice",
+     "pro": true,
+     "nothingSelected": true,
+     "token": "e1:2",
+     "now": 1500,
+     "repeat": false,
+     "pending": {
+      "kind": "cut",
+      "token": "e1:1",
+      "time": 1000
+     }
+    }
+   ],
+   "expected": {
+    "action": "stop",
+    "pending": {
+     "kind": "cut",
+     "token": "e1:2",
+     "time": 1500
+    },
+    "message": "press-again"
+   }
+  },
+  {
+   "name": "A7 second press in another editor arms again",
+   "fn": "step",
+   "args": [
+    {
+     "kind": "cut",
+     "mode": "twice",
+     "pro": true,
+     "nothingSelected": true,
+     "token": "e2:5",
+     "now": 1500,
+     "repeat": false,
+     "pending": {
+      "kind": "cut",
+      "token": "e1:1",
+      "time": 1000
+     }
+    }
+   ],
+   "expected": {
+    "action": "stop",
+    "pending": {
+     "kind": "cut",
+     "token": "e2:5",
+     "time": 1500
+    },
+    "message": "press-again"
+   }
+  },
+  {
+   "name": "A7 copy after a first cut press arms copy",
+   "fn": "step",
+   "args": [
+    {
+     "kind": "copy",
+     "mode": "twice",
+     "pro": true,
+     "nothingSelected": true,
+     "token": "e1:1",
+     "now": 1500,
+     "repeat": false,
+     "pending": {
+      "kind": "cut",
+      "token": "e1:1",
+      "time": 1000
+     }
+    }
+   ],
+   "expected": {
+    "action": "stop",
+    "pending": {
+     "kind": "copy",
+     "token": "e1:1",
+     "time": 1500
+    },
+    "message": "press-again"
+   }
+  },
+  {
+   "name": "A7 a held key repeat is stopped and keeps the first press",
+   "fn": "step",
+   "args": [
+    {
+     "kind": "cut",
+     "mode": "twice",
+     "pro": true,
+     "nothingSelected": true,
+     "token": "e1:1",
+     "now": 1300,
+     "repeat": true,
+     "pending": {
+      "kind": "cut",
+      "token": "e1:1",
+      "time": 1000
+     }
+    }
+   ],
+   "expected": {
+    "action": "stop",
+    "pending": {
+     "kind": "cut",
+     "token": "e1:1",
+     "time": 1000
+    },
+    "message": null
+   }
+  },
+  {
+   "name": "A7 a held key repeat with no first press is stopped with no notice",
+   "fn": "step",
+   "args": [
+    {
+     "kind": "cut",
+     "mode": "twice",
+     "pro": true,
+     "nothingSelected": true,
+     "token": "e1:1",
+     "now": 1000,
+     "repeat": true,
+     "pending": null
+    }
+   ],
+   "expected": {
+    "action": "stop",
+    "pending": null,
+    "message": null
+   }
+  },
+  {
+   "name": "A7 mode twice without Pro acts as block",
+   "fn": "step",
+   "args": [
+    {
+     "kind": "cut",
+     "mode": "twice",
+     "pro": false,
+     "nothingSelected": true,
+     "token": "e1:1",
+     "now": 1000,
+     "repeat": false,
+     "pending": null
+    }
+   ],
+   "expected": {
+    "action": "stop",
+    "pending": null,
+    "message": "stopped"
+   }
+  },
+  {
+   "name": "A7 mode twice without Pro stops also a would-be second press",
+   "fn": "step",
+   "args": [
+    {
+     "kind": "cut",
+     "mode": "twice",
+     "pro": false,
+     "nothingSelected": true,
+     "token": "e1:1",
+     "now": 1500,
+     "repeat": false,
+     "pending": {
+      "kind": "cut",
+      "token": "e1:1",
+      "time": 1000
+     }
+    }
+   ],
+   "expected": {
+    "action": "stop",
+    "pending": null,
+    "message": "stopped"
+   }
+  },
+  {
+   "name": "A7 mode twice with a selection passes and forgets the first press",
+   "fn": "step",
+   "args": [
+    {
+     "kind": "cut",
+     "mode": "twice",
+     "pro": true,
+     "nothingSelected": false,
+     "token": "e1:1",
+     "now": 1500,
+     "repeat": false,
+     "pending": {
+      "kind": "cut",
+      "token": "e1:1",
+      "time": 1000
+     }
+    }
+   ],
+   "expected": {
+    "action": "pass",
+    "pending": null,
+    "message": null
+   }
+  },
+  {
+   "name": "A7 effective mode twice without Pro is block",
+   "fn": "effectiveMode",
+   "args": [
+    "twice",
+    false
+   ],
+   "expected": "block"
+  },
+  {
+   "name": "A7 effective mode twice with Pro is twice",
+   "fn": "effectiveMode",
+   "args": [
+    "twice",
+    true
+   ],
+   "expected": "twice"
+  },
+  {
+   "name": "A3 effective mode allow stays allow",
+   "fn": "effectiveMode",
+   "args": [
+    "allow",
+    false
+   ],
+   "expected": "allow"
+  },
+  {
+   "name": "A1 effective mode block stays block with Pro",
+   "fn": "effectiveMode",
+   "args": [
+    "block",
+    true
+   ],
+   "expected": "block"
+  },
+  {
+   "name": "A6 one empty cursor is nothing selected",
+   "fn": "nothingSelected",
+   "args": [
+    [
+     [
+      3,
+      3
+     ]
+    ],
+    false
+   ],
+   "expected": true
+  },
+  {
+   "name": "A6 two empty cursors are nothing selected",
+   "fn": "nothingSelected",
+   "args": [
+    [
+     [
+      3,
+      3
+     ],
+     [
+      9,
+      9
+     ]
+    ],
+    false
+   ],
+   "expected": true
+  },
+  {
+   "name": "A6 a cursor and a selection is a selection",
+   "fn": "nothingSelected",
+   "args": [
+    [
+     [
+      3,
+      3
+     ],
+     [
+      5,
+      9
+     ]
+    ],
+    false
+   ],
+   "expected": false
+  },
+  {
+   "name": "A6 one selection is a selection",
+   "fn": "nothingSelected",
+   "args": [
+    [
+     [
+      0,
+      1
+     ]
+    ],
+    false
+   ],
+   "expected": false
+  },
+  {
+   "name": "A6 a backward selection is a selection",
+   "fn": "nothingSelected",
+   "args": [
+    [
+     [
+      2,
+      7
+     ]
+    ],
+    false
+   ],
+   "expected": false
+  },
+  {
+   "name": "A6 selected table cells or an image count as a selection",
+   "fn": "nothingSelected",
+   "args": [
+    [
+     [
+      3,
+      3
+     ]
+    ],
+    true
+   ],
+   "expected": false
+  },
+  {
+   "name": "A6 no ranges is nothing selected",
+   "fn": "nothingSelected",
+   "args": [
+    [],
+    false
+   ],
+   "expected": true
+  },
+  {
+   "name": "A8 first notice shows",
+   "fn": "mayNotify",
+   "args": [
+    null,
+    5000,
+    "stopped"
+   ],
+   "expected": true
+  },
+  {
+   "name": "A8 a notice 1999 ms after the last one does not show",
+   "fn": "mayNotify",
+   "args": [
+    5000,
+    6999,
+    "stopped"
+   ],
+   "expected": false
+  },
+  {
+   "name": "A8 a notice 2000 ms after the last one shows",
+   "fn": "mayNotify",
+   "args": [
+    5000,
+    7000,
+    "stopped"
+   ],
+   "expected": true
+  },
+  {
+   "name": "A8 the press again notice always shows",
+   "fn": "mayNotify",
+   "args": [
+    5000,
+    5100,
+    "press-again"
+   ],
+   "expected": true
+  },
+  {
+   "name": "A8 cut notice text on Windows and Linux",
+   "fn": "noticeText",
+   "args": [
+    "cut",
+    "stopped",
+    "Ctrl"
+   ],
+   "expected": "Nothing is selected, so Ctrl+X did not cut the line."
+  },
+  {
+   "name": "A8 copy notice text on macOS",
+   "fn": "noticeText",
+   "args": [
+    "copy",
+    "stopped",
+    "Cmd"
+   ],
+   "expected": "Nothing is selected, so Cmd+C did not copy the line. Your clipboard did not change."
+  },
+  {
+   "name": "A8 press again notice text",
+   "fn": "noticeText",
+   "args": [
+    "cut",
+    "press-again",
+    "Ctrl"
+   ],
+   "expected": "Nothing is selected. Press Ctrl+X again to cut the line."
+  },
+  {
+   "name": "A7 Ctrl+X on Linux is the cut shortcut",
+   "fn": "shortcutKind",
+   "args": [
+    "KeyX",
+    "x",
+    true,
+    false,
+    false,
+    false,
+    false
+   ],
+   "expected": "cut"
+  },
+  {
+   "name": "A7 Cmd+X on macOS is the cut shortcut",
+   "fn": "shortcutKind",
+   "args": [
+    "KeyX",
+    "x",
+    false,
+    true,
+    false,
+    false,
+    true
+   ],
+   "expected": "cut"
+  },
+  {
+   "name": "A7 Ctrl+X on macOS is not the cut shortcut",
+   "fn": "shortcutKind",
+   "args": [
+    "KeyX",
+    "x",
+    true,
+    false,
+    false,
+    false,
+    true
+   ],
+   "expected": null
+  },
+  {
+   "name": "A7 Ctrl+Shift+X is not the cut shortcut",
+   "fn": "shortcutKind",
+   "args": [
+    "KeyX",
+    "X",
+    true,
+    false,
+    false,
+    true,
+    false
+   ],
+   "expected": null
+  },
+  {
+   "name": "A7 Ctrl+Alt+X is not the cut shortcut",
+   "fn": "shortcutKind",
+   "args": [
+    "KeyX",
+    "x",
+    true,
+    false,
+    true,
+    false,
+    false
+   ],
+   "expected": null
+  },
+  {
+   "name": "A7 Ctrl+X on a Cyrillic layout is the cut shortcut",
+   "fn": "shortcutKind",
+   "args": [
+    "KeyX",
+    "ч",
+    true,
+    false,
+    false,
+    false,
+    false
+   ],
+   "expected": "cut"
+  },
+  {
+   "name": "A7 Ctrl+C is the copy shortcut",
+   "fn": "shortcutKind",
+   "args": [
+    "KeyC",
+    "c",
+    true,
+    false,
+    false,
+    false,
+    false
+   ],
+   "expected": "copy"
+  },
+  {
+   "name": "A7 Ctrl+V is no shortcut of the plugin",
+   "fn": "shortcutKind",
+   "args": [
+    "KeyV",
+    "v",
+    true,
+    false,
+    false,
+    false,
+    false
+   ],
+   "expected": null
+  },
+  {
+   "name": "A7 X with no modifier is no shortcut",
+   "fn": "shortcutKind",
+   "args": [
+    "KeyX",
+    "x",
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "expected": null
+  },
+  {
+   "name": "A5 line of one cursor in the middle",
+   "fn": "lineRanges",
+   "args": [
+    "a\nb\nc",
+    [
+     2
+    ]
+   ],
+   "expected": {
+    "text": "b",
+    "ranges": [
+     [
+      2,
+      4
+     ]
+    ]
+   }
+  },
+  {
+   "name": "A5 last line has no line break to remove",
+   "fn": "lineRanges",
+   "args": [
+    "a\nb",
+    [
+     3
+    ]
+   ],
+   "expected": {
+    "text": "b",
+    "ranges": [
+     [
+      2,
+      3
+     ]
+    ]
+   }
+  },
+  {
+   "name": "A5 two cursors on one line give the line once",
+   "fn": "lineRanges",
+   "args": [
+    "abc\nd",
+    [
+     0,
+     2
+    ]
+   ],
+   "expected": {
+    "text": "abc",
+    "ranges": [
+     [
+      0,
+      4
+     ]
+    ]
+   }
+  },
+  {
+   "name": "A5 two cursors on two lines give both lines",
+   "fn": "lineRanges",
+   "args": [
+    "a\nb\nc",
+    [
+     0,
+     4
+    ]
+   ],
+   "expected": {
+    "text": "a\nc",
+    "ranges": [
+     [
+      0,
+      2
+     ],
+     [
+      4,
+      5
+     ]
+    ]
+   }
+  },
+  {
+   "name": "A5 cursors out of order are sorted",
+   "fn": "lineRanges",
+   "args": [
+    "a\nb\nc",
+    [
+     4,
+     0
+    ]
+   ],
+   "expected": {
+    "text": "a\nc",
+    "ranges": [
+     [
+      0,
+      2
+     ],
+     [
+      4,
+      5
+     ]
+    ]
+   }
+  },
+  {
+   "name": "A5 empty note gives an empty line",
+   "fn": "lineRanges",
+   "args": [
+    "",
+    [
+     0
+    ]
+   ],
+   "expected": {
+    "text": "",
+    "ranges": [
+     [
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "name": "A5 cursor at the end of a line",
+   "fn": "lineRanges",
+   "args": [
+    "ab\ncd",
+    [
+     2
+    ]
+   ],
+   "expected": {
+    "text": "ab",
+    "ranges": [
+     [
+      0,
+      3
+     ]
+    ]
+   }
+  },
+  {
+   "name": "A5 cursor at the start of a line",
+   "fn": "lineRanges",
+   "args": [
+    "ab\ncd",
+    [
+     3
+    ]
+   ],
+   "expected": {
+    "text": "cd",
+    "ranges": [
+     [
+      3,
+      5
+     ]
+    ]
+   }
+  },
+  {
+   "name": "A5 empty line in the middle",
+   "fn": "lineRanges",
+   "args": [
+    "a\n\nb",
+    [
+     2
+    ]
+   ],
+   "expected": {
+    "text": "",
+    "ranges": [
+     [
+      2,
+      3
+     ]
+    ]
+   }
+  },
+  {
+   "name": "A5 line break CRLF joins the lines with CRLF",
+   "fn": "lineRanges",
+   "args": [
+    "a\nb",
+    [
+     0,
+     2
+    ],
+    "\r\n"
+   ],
+   "expected": {
+    "text": "a\r\nb",
+    "ranges": [
+     [
+      0,
+      2
+     ],
+     [
+      2,
+      3
+     ]
+    ]
+   }
+  },
+  {
+   "name": "A5 a cursor past the end is clamped to the last line",
+   "fn": "lineRanges",
+   "args": [
+    "a\nb",
+    [
+     99
+    ]
+   ],
+   "expected": {
+    "text": "b",
+    "ranges": [
+     [
+      2,
+      3
+     ]
+    ]
+   }
+  }
+ ]
+}
