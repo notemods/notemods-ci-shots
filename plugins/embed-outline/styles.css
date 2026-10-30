@@ -1,0 +1,167 @@
+/* Styles for Embed Outline. Obsidian loads this file while the plugin is enabled. */
+.embed-outline {
+	padding: var(--size-4-2);
+	font-size: var(--font-ui-small);
+}
+
+.embed-outline-header {
+	position: sticky;
+	top: calc(-1 * var(--size-4-2));
+	z-index: 1;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	gap: var(--size-2-1) var(--size-4-2);
+	margin-bottom: var(--size-4-2);
+	padding-bottom: var(--size-4-2);
+	border-bottom: 1px solid var(--background-modifier-border);
+	background-color: var(--background-secondary);
+}
+
+.embed-outline-title {
+	overflow: hidden;
+	font-weight: var(--font-semibold);
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.embed-outline-stats {
+	grid-column: 1;
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+}
+
+.embed-outline-buttons {
+	display: flex;
+	grid-row: 1 / span 2;
+	grid-column: 2;
+	gap: var(--size-2-1);
+	align-items: center;
+}
+
+.embed-outline-search {
+	display: flex;
+	gap: var(--size-2-1);
+	margin-bottom: var(--size-4-2);
+}
+
+.embed-outline-search input {
+	flex: 1;
+	min-width: 0;
+	width: 100%;
+}
+
+.embed-outline-search-status {
+	padding: var(--size-2-1) var(--size-4-2);
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+}
+
+.embed-outline-empty,
+.embed-outline-hint {
+	padding: var(--size-4-2);
+	color: var(--text-muted);
+}
+
+.embed-outline-hint {
+	margin-bottom: var(--size-4-2);
+	border-radius: var(--radius-s);
+	background-color: var(--background-secondary);
+	font-size: var(--font-ui-smaller);
+}
+
+.embed-outline-row {
+	display: flex;
+	gap: var(--size-2-2);
+	align-items: center;
+	padding: var(--size-2-1) var(--size-4-1);
+	border-radius: var(--radius-s);
+	color: var(--nav-item-color);
+	cursor: var(--cursor);
+}
+
+.embed-outline-row:hover,
+.embed-outline-row:focus-visible {
+	background-color: var(--nav-item-background-hover);
+	color: var(--nav-item-color-hover);
+}
+
+/* The current section: the row of the place at the top of the open note. */
+.embed-outline-row.is-active {
+	background-color: var(--nav-item-background-active);
+	color: var(--nav-item-color-active);
+	font-weight: var(--nav-item-weight-active);
+}
+
+.embed-outline-fold,
+.embed-outline-icon {
+	display: flex;
+	flex: none;
+	align-items: center;
+	width: var(--icon-xs);
+	color: var(--icon-color);
+}
+
+.embed-outline-fold svg,
+.embed-outline-icon svg {
+	width: var(--icon-xs);
+	height: var(--icon-xs);
+}
+
+.embed-outline-text {
+	flex: 1 1 auto;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.embed-outline-words {
+	flex: none;
+	color: var(--text-faint);
+	font-size: var(--font-ui-smaller);
+	font-variant-numeric: tabular-nums;
+}
+
+.embed-outline-children {
+	margin-left: var(--size-4-3);
+	padding-left: var(--size-4-1);
+	border-left: 1px solid var(--background-modifier-border);
+}
+
+.embed-outline-item[data-kind='embed'] > .embed-outline-row .embed-outline-text {
+	color: var(--text-accent);
+}
+
+.embed-outline-item[data-kind='callout'] > .embed-outline-row,
+.embed-outline-item[data-kind='list-heading'] > .embed-outline-row {
+	color: var(--text-muted);
+}
+
+.embed-outline-item[data-kind='callout'] > .embed-outline-row .embed-outline-icon {
+	color: rgb(var(--callout-color, var(--callout-default)));
+}
+
+.embed-outline-item[data-kind='broken'] > .embed-outline-row,
+.embed-outline-item[data-kind='cycle'] > .embed-outline-row {
+	color: var(--text-error);
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}

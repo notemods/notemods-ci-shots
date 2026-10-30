@@ -1,0 +1,27 @@
+{
+	"id": "embed-outline",
+	"name": "Embed Outline",
+	"version": "1.4.2",
+	"changes": [
+		"The Sponsor on GitHub button now opens the one-time payment tab of GitHub Sponsors."
+	],
+	"tip": "Click a heading row in an embedded note to scroll to that heading inside the embed.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Embed Outline is one of over 100 small plugins that I make. Thank you for using it.",
+	"related": [
+		{
+			"id": "embedded-text-finder",
+			"name": "Embedded Text Finder",
+			"blurb": "Find the notes that hold a text inside their embeds."
+		},
+		{
+			"id": "heading-link-sync",
+			"name": "Heading Link Sync",
+			"blurb": "Update heading links and embeds when you edit a heading."
+		},
+		{
+			"id": "hr-fold-stop",
+			"name": "Fold Stop",
+			"blurb": "Stop heading folds at horizontal rules."
+		}
+	]
+}

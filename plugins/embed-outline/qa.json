@@ -1,0 +1,105 @@
+[
+	{
+		"feature": "embedded",
+		"caption": "The manuscript embeds four chapters. Each chapter's headings sit under its embed, and the embed of Chapter 4 shows only the section The storm.",
+		"note": "Manuscript.md",
+		"eval": "(async () => { const p = app.plugins.plugins['embed-outline']; p.pro.signOut(); p.settings.words = true; app.workspace.rightSplit.expand(); await p.activateView(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "jump",
+		"caption": "Click a heading of an embedded chapter: the note scrolls to that heading inside the embed.",
+		"note": "Manuscript.md",
+		"eval": "(async () => { const p = app.plugins.plugins['embed-outline']; p.pro.signOut(); p.settings.words = true; app.workspace.rightSplit.expand(); await p.activateView(); await new Promise((r) => setTimeout(r, 700)); [...document.querySelectorAll('.embed-outline-row')].find((r) => r.querySelector('.embed-outline-text')?.textContent === \"A letter in the drawer\")?.click(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "callouts",
+		"caption": "Callout titles and headings written in list items are rows too, under the heading they belong to.",
+		"note": "Research notes.md",
+		"eval": "(async () => { const p = app.plugins.plugins['embed-outline']; p.pro.signOut(); p.settings.words = true; app.workspace.rightSplit.expand(); await p.activateView(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "search",
+		"caption": "Search for ferry to show the heading of an embedded chapter and its parent rows.",
+		"note": "Manuscript.md",
+		"eval": "(async () => { const p = app.plugins.plugins['embed-outline']; p.pro.signOut(); app.workspace.rightSplit.expand(); await p.activateView(); await new Promise((r) => setTimeout(r, 700)); const input = document.querySelector('.embed-outline-search input'); input.value = 'ferry'; input.dispatchEvent(new Event('input', { bubbles: true })); return 'ok'; })()",
+		"after": "document.querySelector('[aria-label=\"Clear outline search\"]')?.click(); 'ok'",
+		"wait": 900
+	},
+	{
+		"feature": "nested",
+		"caption": "Pro: the letter embedded in Chapter 2 opens one level deeper. Without Pro it shows as a locked row.",
+		"note": "Manuscript.md",
+		"eval": "(async () => { const p = app.plugins.plugins['embed-outline']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('embed-outline-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); app.workspace.rightSplit.expand(); await p.activateView(); await new Promise((r) => setTimeout(r, 700)); await new Promise((r) => setTimeout(r, 700)); p.settings.words = false; p.refreshViews(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { app.plugins.plugins['embed-outline'].settings.words = true; app.plugins.plugins['embed-outline'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "word-counts",
+		"caption": "Pro: words per heading and per embed, with the embedded chapters counted, and 439 words for the whole book.",
+		"note": "Manuscript.md",
+		"eval": "(async () => { const p = app.plugins.plugins['embed-outline']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('embed-outline-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); app.workspace.rightSplit.expand(); await p.activateView(); await new Promise((r) => setTimeout(r, 700)); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { app.plugins.plugins['embed-outline'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "broken",
+		"caption": "Pro: the embed of a note that does not exist yet is marked in red.",
+		"note": "Manuscript.md",
+		"eval": "(async () => { const p = app.plugins.plugins['embed-outline']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('embed-outline-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); app.workspace.rightSplit.expand(); await p.activateView(); await new Promise((r) => setTimeout(r, 700)); await new Promise((r) => setTimeout(r, 700)); const v = app.workspace.getLeavesOfType('embed-outline')[0].view.contentEl; v.scrollTop = v.scrollHeight; await new Promise((r) => setTimeout(r, 300)); return 'ok'; })()",
+		"after": "(async () => { app.plugins.plugins['embed-outline'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "copy",
+		"caption": "Pro: the outline copied as a nested Markdown list, with a link to each heading and the word counts.",
+		"note": "Manuscript.md",
+		"eval": "(async () => { const p = app.plugins.plugins['embed-outline']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('embed-outline-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); app.workspace.rightSplit.expand(); await p.activateView(); await new Promise((r) => setTimeout(r, 700)); await new Promise((r) => setTimeout(r, 700)); const text = await p.copyOutline(); const f = await app.vault.create('Embed Outline/Outline copy.md', text); await app.workspace.getLeaf(false).openFile(f); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { const f = app.vault.getFileByPath('Embed Outline/Outline copy.md'); if (f) await app.vault.delete(f); app.plugins.plugins['embed-outline'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "current-section",
+		"caption": "Scroll the manuscript into Chapter 2: the outline marks First entries, a heading inside the embedded chapter.",
+		"note": "Manuscript.md",
+		"eval": "(async () => { const p = app.plugins.plugins['embed-outline']; p.pro.signOut(); p.settings.words = true; p.settings.highlight = true; app.workspace.rightSplit.expand(); await p.activateView(); await new Promise((r) => setTimeout(r, 700)); const leaf = app.workspace.getLeavesOfType('markdown').find((l) => l.view.file?.path.endsWith('Manuscript.md')); const v = leaf.view; app.workspace.setActiveLeaf(leaf, { focus: true }); const sc = v.getMode() === 'preview' ? v.contentEl.querySelector('.markdown-reading-view .markdown-preview-view') : v.contentEl.querySelector('.markdown-source-view .cm-scroller'); for (let i = 0; i < 30; i++) { const h = [...sc.querySelectorAll('.markdown-embed [data-heading]')].find((e) => e.getAttribute('data-heading') === 'First entries' && e.getBoundingClientRect().height > 0); if (h) { sc.scrollTop += h.getBoundingClientRect().top - sc.getBoundingClientRect().top - 2; break; } v.currentMode.applyScroll(12); await new Promise((r) => setTimeout(r, 100)); } await new Promise((r) => setTimeout(r, 600)); return document.querySelector('.embed-outline-row.is-active .embed-outline-text')?.textContent ?? 'none'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "settings",
+		"caption": "Settings after sign in: the Pro section with the GitHub account, then the outline options.",
+		"eval": "(async () => { const p = app.plugins.plugins['embed-outline']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('embed-outline-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); app.workspace.rightSplit.expand(); await p.activateView(); await new Promise((r) => setTimeout(r, 700)); await new Promise((r) => setTimeout(r, 700)); app.setting.open(); app.setting.openTabById('embed-outline'); await new Promise((r) => setTimeout(r, 500)); return 'ok'; })()",
+		"after": "app.setting.close(); app.plugins.plugins['embed-outline'].pro.signOut(); 'ok'"
+	},
+	{
+		"feature": "embed-outline",
+		"caption": "Open the manuscript, jump into an embedded chapter, then turn on Pro for nested embeds and word counts.",
+		"frames": [
+			{
+				"note": "Manuscript.md",
+				"eval": "(async () => { const p = app.plugins.plugins['embed-outline']; p.pro.signOut(); p.settings.words = true; app.workspace.rightSplit.expand(); await p.activateView(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 1800
+			},
+			{
+				"eval": "(async () => { [...document.querySelectorAll('.embed-outline-row')].find((r) => r.querySelector('.embed-outline-text')?.textContent === \"The ferry\")?.click(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 1500
+			},
+			{
+				"eval": "(async () => { [...document.querySelectorAll('.embed-outline-row')].find((r) => r.querySelector('.embed-outline-text')?.textContent === \"A letter in the drawer\")?.click(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 1500
+			},
+			{
+				"note": "Manuscript.md",
+				"eval": "(async () => { const p = app.plugins.plugins['embed-outline']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('embed-outline-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); app.workspace.rightSplit.expand(); await p.activateView(); await new Promise((r) => setTimeout(r, 700)); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 2200
+			},
+			{
+				"note": "Research notes.md",
+				"eval": "(async () => { await new Promise((r) => setTimeout(r, 700)); app.plugins.plugins['embed-outline'].pro.signOut(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 1800
+			}
+		]
+	}
+]
