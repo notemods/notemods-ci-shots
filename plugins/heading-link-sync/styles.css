@@ -1,0 +1,99 @@
+.hls-preview {
+	width: min(760px, 92vw);
+}
+
+.hls-list {
+	max-height: 50vh;
+	overflow-y: auto;
+	margin-bottom: var(--size-4-3);
+}
+
+.hls-more {
+	color: var(--text-warning);
+	font-weight: var(--font-semibold);
+}
+
+.hls-file {
+	margin-top: var(--size-4-2);
+	font-weight: var(--font-semibold);
+	color: var(--text-muted);
+}
+
+.hls-row {
+	display: flex;
+	align-items: center;
+	gap: var(--size-4-2);
+	padding: var(--size-2-1) 0;
+	flex-wrap: wrap;
+}
+
+.hls-line {
+	min-width: 2.5em;
+	color: var(--text-faint);
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+}
+
+.hls-from {
+	color: var(--text-muted);
+	text-decoration: line-through;
+}
+
+.hls-broken {
+	color: var(--text-error);
+}
+
+.hls-to {
+	color: var(--text-success);
+}
+
+.hls-none {
+	color: var(--text-faint);
+	font-style: italic;
+}
+
+.hls-undo {
+	margin-left: var(--size-4-2);
+}
+
+.hls-reference-cell {
+	padding: 0 var(--size-2-2);
+	color: var(--text-accent);
+	font-variant-numeric: tabular-nums;
+}
+
+.hls-reference-count {
+	font-size: var(--font-smallest);
+}
+
+button.hls-reference-count {
+	padding: 0;
+	height: auto;
+	border: none;
+	box-shadow: none;
+	background: transparent;
+	color: inherit;
+	line-height: inherit;
+	cursor: pointer;
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
