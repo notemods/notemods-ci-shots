@@ -1,0 +1,25 @@
+{
+	"id": "line-cut-guard",
+	"name": "Line Cut Guard",
+	"version": "1.0.0",
+	"changes": [],
+	"tip": "Press Ctrl+X or Cmd+X with no text selected: the line stays. To cut a whole line on purpose, give the command \"Cut selection or line\" a hotkey.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Line Cut Guard is one of over 100 small plugins that I make. Thank you for trusting it with your notes.",
+	"related": [
+		{
+			"id": "paragraph-enter",
+			"name": "Paragraph Enter",
+			"blurb": "Press Enter once to start a new paragraph."
+		},
+		{
+			"id": "reading-tap-guard",
+			"name": "Reading Tap Guard",
+			"blurb": "Stop a double tap in Reading view from opening the editor."
+		},
+		{
+			"id": "plain-text-tables",
+			"name": "Plain Text Tables",
+			"blurb": "Edit a table as Markdown text in Live Preview."
+		}
+	]
+}
