@@ -1,0 +1,67 @@
+[
+	{
+		"feature": "cut-stopped",
+		"caption": "Ctrl+X with only a cursor in the paragraph: the paragraph stays, and a notice says why.",
+		"note": "Meeting notes.md",
+		"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); document.querySelectorAll('.notice').forEach(n => n.remove()); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); const e=l.view.editor; e.focus(); await new Promise(r=>setTimeout(r,300)); const before=e.getValue(); e.setCursor({line:6,ch:20}); await new Promise(r=>setTimeout(r,200)); const tgt=document.querySelector('.workspace-leaf.mod-active .cm-content'); app.workspace.activeEditor.editor.focus(); const ev={type:'cut',isTrusted:true,target:tgt,defaultPrevented:false,preventDefault(){this.defaultPrevented=true},stopImmediatePropagation(){}}; app.plugins.plugins['line-cut-guard'].guard.onClipboard(ev); if (!ev.defaultPrevented) { const sel=window.getSelection(); throw new Error('the guard did not stop the cut: '+JSON.stringify({active:String(document.activeElement&&document.activeElement.className).slice(0,60), tgt:!!tgt, sel: sel? sel.type+':'+sel.toString().slice(0,40):'none', cur: app.workspace.activeEditor.editor.listSelections()})); } await new Promise(r=>setTimeout(r,300)); if (e.getValue()!==before) throw new Error('the line was cut: '+e.getValue()); const n=[...document.querySelectorAll('.notice')].map(x=>x.textContent).join('|'); if (!n.includes('did not cut the line')) throw new Error('no notice: '+n); return n; })()",
+		"wait": 600,
+		"zoom": 1.2
+	},
+	{
+		"feature": "commands",
+		"caption": "The two commands for a line cut or copy on purpose. Give them a hotkey in Settings, Hotkeys.",
+		"note": "Meeting notes.md",
+		"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); document.querySelectorAll('.notice').forEach(n => n.remove()); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); const e=l.view.editor; e.focus(); await new Promise(r=>setTimeout(r,300)); e.setCursor({line:6,ch:0}); app.commands.executeCommandById('command-palette:open'); await new Promise(r=>setTimeout(r,400)); const i=document.querySelector('.prompt-input'); if (!i) throw new Error('no palette'); i.value='selection or line'; i.dispatchEvent(new Event('input')); await new Promise(r=>setTimeout(r,400)); const t=[...document.querySelectorAll('.suggestion-item')].map(x=>x.textContent).join('|'); if (!t.includes('Cut selection or line') || !t.includes('Copy selection or line')) throw new Error('commands: '+t); return t; })()",
+		"after": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); return 'ok'; })()",
+		"wait": 600,
+		"zoom": 1.2
+	},
+	{
+		"feature": "second-press",
+		"caption": "Pro: with the second press mode, the first Ctrl+X only shows this hint. Press again within 2 seconds to cut the line.",
+		"note": "Meeting notes.md",
+		"eval": "(async () => { const p=app.plugins.plugins['line-cut-guard']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('line-cut-guard-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); p.settings.cut='twice'; p.applySettings(); document.querySelectorAll('.modal-container').forEach(el => el.remove()); document.querySelectorAll('.notice').forEach(n => n.remove()); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); const e=l.view.editor; e.focus(); await new Promise(r=>setTimeout(r,300)); const before=e.getValue(); e.setCursor({line:6,ch:20}); await new Promise(r=>setTimeout(r,200)); const tgt=document.querySelector('.workspace-leaf.mod-active .cm-content'); app.workspace.activeEditor.editor.focus(); const ev={type:'cut',isTrusted:true,target:tgt,defaultPrevented:false,preventDefault(){this.defaultPrevented=true},stopImmediatePropagation(){}}; app.plugins.plugins['line-cut-guard'].guard.onClipboard(ev); if (!ev.defaultPrevented) { const sel=window.getSelection(); throw new Error('the guard did not stop the cut: '+JSON.stringify({active:String(document.activeElement&&document.activeElement.className).slice(0,60), tgt:!!tgt, sel: sel? sel.type+':'+sel.toString().slice(0,40):'none', cur: app.workspace.activeEditor.editor.listSelections()})); } await new Promise(r=>setTimeout(r,300)); if (e.getValue()!==before) throw new Error('cut on the first press'); const n=[...document.querySelectorAll('.notice')].map(x=>x.textContent).join('|'); if (!n.includes('again')) throw new Error('no hint: '+n); return n; })()",
+		"after": "(async () => { const p=app.plugins.plugins['line-cut-guard']; p.settings.cut='block'; p.pro.signOut(); p.applySettings(); document.querySelectorAll('.notice').forEach(n => n.remove()); return 'ok'; })()",
+		"wait": 600,
+		"zoom": 1.2
+	},
+	{
+		"feature": "line-cut-guard",
+		"caption": "A cursor in the paragraph and Ctrl+X: nothing is cut. Select two words and Ctrl+X cuts them as usual.",
+		"frames": [
+			{
+				"note": "Meeting notes.md",
+				"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); document.querySelectorAll('.notice').forEach(n => n.remove()); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); const e=l.view.editor; e.focus(); await new Promise(r=>setTimeout(r,300)); e.setCursor({line:6,ch:20}); return 'cursor'; })()",
+				"wait": 400,
+				"hold": 1600,
+				"zoom": 1.2
+			},
+			{
+				"eval": "(async () => { const e=app.workspace.activeEditor.editor; const before=e.getValue(); const tgt=document.querySelector('.workspace-leaf.mod-active .cm-content'); app.workspace.activeEditor.editor.focus(); const ev={type:'cut',isTrusted:true,target:tgt,defaultPrevented:false,preventDefault(){this.defaultPrevented=true},stopImmediatePropagation(){}}; app.plugins.plugins['line-cut-guard'].guard.onClipboard(ev); if (!ev.defaultPrevented) { const sel=window.getSelection(); throw new Error('the guard did not stop the cut: '+JSON.stringify({active:String(document.activeElement&&document.activeElement.className).slice(0,60), tgt:!!tgt, sel: sel? sel.type+':'+sel.toString().slice(0,40):'none', cur: app.workspace.activeEditor.editor.listSelections()})); } await new Promise(r=>setTimeout(r,300)); if (e.getValue()!==before) throw new Error('the line was cut'); return 'stopped'; })()",
+				"wait": 400,
+				"hold": 2200,
+				"zoom": 1.2
+			},
+			{
+				"eval": "(async () => { document.querySelectorAll('.notice').forEach(n => n.remove()); const e=app.workspace.activeEditor.editor; e.setSelection({line:6,ch:28},{line:6,ch:35}); await new Promise(r=>setTimeout(r,200)); return e.getSelection(); })()",
+				"wait": 400,
+				"hold": 1600,
+				"zoom": 1.2
+			},
+			{
+				"eval": "(async () => { const e=app.workspace.activeEditor.editor; const sel=e.getSelection(); await navigator.clipboard.writeText(sel); e.replaceSelection(''); await new Promise(r=>setTimeout(r,300)); if (e.getLine(6).includes('to May')) throw new Error('the selection was not cut: '+e.getLine(6)); return e.getLine(6); })()",
+				"after": "(async () => { const e=app.workspace.activeEditor.editor; e.setValue('# Meeting notes\\n\\nAgenda for Thursday:\\n- Budget review\\n- Hiring plan\\n\\nWe agreed to move the launch to May. Ana will send the new dates to the team.\\n\\nOpen question: who owns the support inbox?\\n'); return 'ok'; })()",
+				"wait": 400,
+				"hold": 1800,
+				"zoom": 1.2
+			}
+		]
+	},
+	{
+		"feature": "settings",
+		"caption": "The settings: what Ctrl+X and Ctrl+C do with nothing selected, the notice, and the Pro section.",
+		"eval": "(async () => { app.setting.open(); app.setting.openTabById('line-cut-guard'); await new Promise(r => setTimeout(r, 800)); return 'ok'; })()",
+		"after": "(async () => { app.setting.close(); return 'ok'; })()",
+		"wait": 700
+	}
+]
