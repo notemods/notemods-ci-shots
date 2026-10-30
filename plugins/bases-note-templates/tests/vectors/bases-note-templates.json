@@ -1,0 +1,772 @@
+{
+ "slug": "bases-note-templates",
+ "module": "bases-note-templates/src/template",
+ "function": "planNewNote",
+ "note": "args = [input {baseFilters, viewFilters: the filters of the .base file and of the view (parsed YAML), order: view columns, template: template note text, pattern: file name pattern, folder: folder setting, base, view, templateName, now: local ISO time, types: .obsidian/types.json types}, template properties (parsed frontmatter of the template)]; expected = {folder, name, properties, body}. Filter rules follow what Obsidian 1.13.4 and 1.14.4 pre-fill on New (test/e2e/parity.e2e.ts compares them in the app).",
+ "cases": [
+  {
+   "name": "equality filters of the base and the view become properties",
+   "args": [
+    {
+     "baseFilters": {
+      "and": [
+       "file.inFolder(\"Tasks\")",
+       "status == \"todo\""
+      ]
+     },
+     "viewFilters": {
+      "and": [
+       "project == \"[[Apollo]]\""
+      ]
+     },
+     "order": [
+      "file.name",
+      "status",
+      "project",
+      "due"
+     ],
+     "template": "---\nstatus: draft\npriority: normal\n---\n## Goal\n",
+     "now": "2026-10-10T09:30:00"
+    },
+    {
+     "status": "draft",
+     "priority": "normal"
+    }
+   ],
+   "expected": {
+    "folder": "Tasks",
+    "name": "Untitled",
+    "properties": {
+     "status": "todo",
+     "priority": "normal",
+     "project": "[[Apollo]]",
+     "due": null
+    },
+    "body": "## Goal\n"
+   }
+  },
+  {
+   "name": "name pattern with a date and a link property",
+   "args": [
+    {
+     "viewFilters": {
+      "and": [
+       "project == \"[[Apollo]]\""
+      ]
+     },
+     "pattern": "{{date}} {{project}}",
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "2026-10-10 Apollo",
+    "properties": {
+     "project": "[[Apollo]]"
+    },
+    "body": ""
+   }
+  },
+  {
+   "name": "hasTag adds tags and contains makes a list",
+   "args": [
+    {
+     "baseFilters": {
+      "and": [
+       "file.hasTag(\"book\")",
+       "file.hasTag(\"to-read\")",
+       "genre.contains(\"scifi\")"
+      ]
+     },
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Untitled",
+    "properties": {
+     "tags": [
+      "book",
+      "to-read"
+     ],
+     "genre": [
+      "scifi"
+     ]
+    },
+    "body": ""
+   }
+  },
+  {
+   "name": "a text property in types.json keeps contains as a single value",
+   "args": [
+    {
+     "baseFilters": {
+      "and": [
+       "genre.contains(\"scifi\")"
+      ]
+     },
+     "types": {
+      "genre": "text"
+     },
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Untitled",
+    "properties": {
+     "genre": "scifi"
+    },
+    "body": ""
+   }
+  },
+  {
+   "name": "rules under or and not groups: or rules count (the last wins), not rules do not, not inside not counts",
+   "args": [
+    {
+     "baseFilters": {
+      "and": [
+       "status == \"todo\"",
+       {
+        "or": [
+         "a == 1",
+         "a == 2"
+        ]
+       },
+       {
+        "not": [
+         "b == 3",
+         {
+          "not": [
+           "c == 4"
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Untitled",
+    "properties": {
+     "status": "todo",
+     "a": 2,
+     "c": 4
+    },
+    "body": ""
+   }
+  },
+  {
+   "name": "a negated rule is skipped",
+   "args": [
+    {
+     "baseFilters": {
+      "and": [
+       "!file.hasTag(\"x\")"
+      ]
+     },
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Untitled",
+    "properties": {},
+    "body": ""
+   }
+  },
+  {
+   "name": "comparison operators: only ==, >= and <= set a value",
+   "args": [
+    {
+     "baseFilters": {
+      "and": [
+       "rating >= 3",
+       "pages <= 300",
+       "year > 2000",
+       "kind != \"y\""
+      ]
+     },
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Untitled",
+    "properties": {
+     "rating": 3,
+     "pages": 300
+    },
+    "body": ""
+   }
+  },
+  {
+   "name": "file.folder equality sets the folder",
+   "args": [
+    {
+     "baseFilters": {
+      "and": [
+       "file.folder == \"Inbox\""
+      ]
+     },
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "Inbox",
+    "name": "Untitled",
+    "properties": {},
+    "body": ""
+   }
+  },
+  {
+   "name": "the folder setting wins over the filter folder",
+   "args": [
+    {
+     "baseFilters": {
+      "and": [
+       "file.inFolder(\"Tasks\")"
+      ]
+     },
+     "folder": "Projects/Active",
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "Projects/Active",
+    "name": "Untitled",
+    "properties": {},
+    "body": ""
+   }
+  },
+  {
+   "name": "template variables title, date with a format, time, and unknown variables",
+   "args": [
+    {
+     "template": "# {{title}}\nCreated {{date:DD MMM YYYY}} at {{time}}\n{{unknown}}",
+     "pattern": "Meeting {{date:YYYY-MM-DD}}",
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Meeting 2026-10-10",
+    "properties": {},
+    "body": "# Meeting 2026-10-10\nCreated 10 Oct 2026 at 09:30\n{{unknown}}"
+   }
+  },
+  {
+   "name": "variables inside template properties",
+   "args": [
+    {
+     "template": "---\ncreated: '{{date}}'\nheading: '{{title}}'\n---\n",
+     "now": "2026-10-10T09:30:00"
+    },
+    {
+     "created": "{{date}}",
+     "heading": "{{title}}"
+    }
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Untitled",
+    "properties": {
+     "created": "2026-10-10",
+     "heading": "Untitled"
+    },
+    "body": ""
+   }
+  },
+  {
+   "name": "unsafe characters are removed from names",
+   "args": [
+    {
+     "baseFilters": {
+      "and": [
+       "client == \"ACME|Corp\""
+      ]
+     },
+     "pattern": "{{client}}: a/b?",
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "ACME Corp a b",
+    "properties": {
+     "client": "ACME|Corp"
+    },
+    "body": ""
+   }
+  },
+  {
+   "name": "an empty pattern result falls back to Untitled",
+   "args": [
+    {
+     "pattern": "{{missing}}",
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Untitled",
+    "properties": {},
+    "body": ""
+   }
+  },
+  {
+   "name": "link(), date() and today() values",
+   "args": [
+    {
+     "baseFilters": {
+      "and": [
+       "project == link(\"Projects/Apollo\")",
+       "due == date(\"2026-12-01\")",
+       "start == today()"
+      ]
+     },
+     "pattern": "{{project}} {{due}}",
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Apollo 2026-12-01",
+    "properties": {
+     "project": "[[Projects/Apollo]]",
+     "due": "2026-12-01",
+     "start": "2026-10-10"
+    },
+    "body": ""
+   }
+  },
+  {
+   "name": "note prefix and bracket names",
+   "args": [
+    {
+     "baseFilters": {
+      "and": [
+       "note.status == \"open\"",
+       "note[\"due date\"] == \"2026-11-01\""
+      ]
+     },
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Untitled",
+    "properties": {
+     "status": "open",
+     "due date": "2026-11-01"
+    },
+    "body": ""
+   }
+  },
+  {
+   "name": "isEmpty sets nothing, !isEmpty adds an empty property, hasProperty adds null",
+   "args": [
+    {
+     "baseFilters": {
+      "and": [
+       "reviewer.isEmpty()",
+       "!summary.isEmpty()",
+       "file.hasProperty(\"score\")"
+      ]
+     },
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Untitled",
+    "properties": {
+     "summary": "",
+     "score": null
+    },
+    "body": ""
+   }
+  },
+  {
+   "name": "containsAll and containsAny lists",
+   "args": [
+    {
+     "baseFilters": {
+      "and": [
+       "authors.containsAll(\"Ann\", \"Bob\")",
+       "topic.containsAny(\"a\", \"b\")"
+      ]
+     },
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Untitled",
+    "properties": {
+     "authors": [
+      "Ann",
+      "Bob"
+     ],
+     "topic": [
+      "a"
+     ]
+    },
+    "body": ""
+   }
+  },
+  {
+   "name": "view columns add empty properties but not file or formula columns",
+   "args": [
+    {
+     "order": [
+      "file.name",
+      "note.rating",
+      "formula.x",
+      "author"
+     ],
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Untitled",
+    "properties": {
+     "rating": null,
+     "author": null
+    },
+    "body": ""
+   }
+  },
+  {
+   "name": "filter values win over template values but blank column values do not",
+   "args": [
+    {
+     "baseFilters": {
+      "and": [
+       "status == \"todo\""
+      ]
+     },
+     "order": [
+      "status",
+      "due"
+     ],
+     "now": "2026-10-10T09:30:00"
+    },
+    {
+     "status": "draft",
+     "due": "2026-10-31"
+    }
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Untitled",
+    "properties": {
+     "status": "todo",
+     "due": "2026-10-31"
+    },
+    "body": ""
+   }
+  },
+  {
+   "name": "tags from the template and the filters are joined",
+   "args": [
+    {
+     "baseFilters": {
+      "and": [
+       "file.hasTag(\"work\")"
+      ]
+     },
+     "now": "2026-10-10T09:30:00"
+    },
+    {
+     "tags": [
+      "task"
+     ]
+    }
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Untitled",
+    "properties": {
+     "tags": [
+      "task",
+      "work"
+     ]
+    },
+    "body": ""
+   }
+  },
+  {
+   "name": "no filters and no template",
+   "args": [
+    {
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Untitled",
+    "properties": {},
+    "body": ""
+   }
+  },
+  {
+   "name": "a single string filter instead of an and group",
+   "args": [
+    {
+     "baseFilters": "status == \"todo\"",
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Untitled",
+    "properties": {
+     "status": "todo"
+    },
+    "body": ""
+   }
+  },
+  {
+   "name": "file.tags.contains sets tags",
+   "args": [
+    {
+     "baseFilters": {
+      "and": [
+       "file.tags.contains(\"x\")"
+      ]
+     },
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Untitled",
+    "properties": {
+     "tags": [
+      "x"
+     ]
+    },
+    "body": ""
+   }
+  },
+  {
+   "name": "numbers and booleans",
+   "args": [
+    {
+     "baseFilters": {
+      "and": [
+       "done == false",
+       "priority == 2"
+      ]
+     },
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Untitled",
+    "properties": {
+     "done": false,
+     "priority": 2
+    },
+    "body": ""
+   }
+  },
+  {
+   "name": "this references and formulas are skipped",
+   "args": [
+    {
+     "baseFilters": {
+      "and": [
+       "project == this.file.name",
+       "this.status == \"x\"",
+       "formula.total == 3",
+       "score == number(\"4\")"
+      ]
+     },
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Untitled",
+    "properties": {},
+    "body": ""
+   }
+  },
+  {
+   "name": "view name, base name and template name in the pattern",
+   "args": [
+    {
+     "pattern": "{{base}} - {{view}} - {{template}}",
+     "base": "Tasks",
+     "view": "Apollo",
+     "templateName": "Task",
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Tasks - Apollo - Task",
+    "properties": {},
+    "body": ""
+   }
+  },
+  {
+   "name": "12-hour time and weekday names",
+   "args": [
+    {
+     "pattern": "{{date:dddd h.mm a}}",
+     "now": "2026-10-10T09:30:00"
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Saturday 9.30 am",
+    "properties": {},
+    "body": ""
+   }
+  },
+  {
+   "name": "extra properties merge with filter and template precedence",
+   "args": [
+    {
+     "baseFilters": [],
+     "viewFilters": [],
+     "order": [],
+     "template": "---\nstatus: from-template\n---\nBody",
+     "templateName": "Task",
+     "pattern": "{{base}} note",
+     "folder": "Notes",
+     "base": "Book",
+     "view": "",
+     "now": "2026-10-12T09:30:00",
+     "dateFormat": "YYYY-MM-DD",
+     "timeFormat": "HH:mm",
+     "types": {},
+     "extraProps": {
+      "status": "from-extra",
+      "source": "inbox",
+      "created": "{{date:YYYY-MM-DD}}"
+     }
+    },
+    {
+     "status": "from-template"
+    }
+   ],
+   "expected": {
+    "folder": "Notes",
+    "name": "Book note",
+    "properties": {
+     "status": "from-template",
+     "source": "inbox",
+     "created": "2026-10-12"
+    },
+    "body": "Body"
+   }
+  },
+  {
+   "name": "extra properties without template",
+   "args": [
+    {
+     "baseFilters": [],
+     "viewFilters": [],
+     "order": [],
+     "template": null,
+     "templateName": null,
+     "pattern": "",
+     "folder": "",
+     "base": "Book",
+     "view": "",
+     "now": "2026-10-12T09:30:00",
+     "dateFormat": "YYYY-MM-DD",
+     "timeFormat": "HH:mm",
+     "types": {},
+     "extraProps": {
+      "source": "inbox"
+     }
+    },
+    {}
+   ],
+   "expected": {
+    "folder": "",
+    "name": "Untitled",
+    "properties": {
+     "source": "inbox"
+    },
+    "body": ""
+   }
+  },
+  {
+   "name": "nested template variables and Unicode properties",
+   "args": [
+    {
+     "baseFilters": {
+      "and": [
+       "note.状態 == \"進行中\""
+      ]
+     },
+     "pattern": "日本語",
+     "base": "研究",
+     "now": "2026-10-18T09:00:00"
+    },
+    {
+     "meta": {
+      "title": "{{title}}",
+      "items": [
+       "{{base}}"
+      ]
+     },
+     "aliases": [
+      "{{title}} 別名"
+     ]
+    }
+   ],
+   "expected": {
+    "folder": "",
+    "name": "日本語",
+    "properties": {
+     "meta": {
+      "title": "日本語",
+      "items": [
+       "研究"
+      ]
+     },
+     "aliases": [
+      "日本語 別名"
+     ],
+     "状態": "進行中"
+    },
+    "body": ""
+   }
+  }
+ ]
+}
