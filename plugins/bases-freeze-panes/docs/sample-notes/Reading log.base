@@ -1,0 +1,25 @@
+filters:
+  and:
+    - file.inFolder("Bases Freeze Panes/Books")
+views:
+  - type: table
+    name: All books
+    order:
+      - file.name
+      - author
+      - year
+      - type
+      - genre
+      - pages
+      - status
+      - rating
+      - started
+      - finished
+      - format
+      - publisher
+      - country
+      - language
+      - shelf
+    sort:
+      - property: author
+        direction: ASC
