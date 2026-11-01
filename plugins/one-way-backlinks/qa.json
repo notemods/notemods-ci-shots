@@ -1,0 +1,63 @@
+[
+	{
+		"feature": "one-way-list",
+		"caption": "The pane lists the notes that link to Recipes, and that Recipes does not link to.",
+		"note": "Recipes.md",
+		"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); await app.commands.executeCommandById('one-way-backlinks:open'); const v=app.workspace.getLeavesOfType('one-way-backlinks')[0].view; v.setMode('one-way'); for (let i=0;i<60 && document.querySelectorAll('.owb-view .owb-row').length!==4;i++) await new Promise(r=>setTimeout(r,100)); const n=document.querySelectorAll('.owb-view .owb-row').length; if (n!==4) throw new Error('rows '+n+' want 4'); return 'ok'; })()",
+		"wait": 700
+	},
+	{
+		"feature": "paired-list",
+		"caption": "The Paired button lists the notes that link to Recipes, and that Recipes links to.",
+		"note": "Recipes.md",
+		"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); await app.commands.executeCommandById('one-way-backlinks:open'); const v=app.workspace.getLeavesOfType('one-way-backlinks')[0].view; v.setMode('paired'); for (let i=0;i<60 && document.querySelectorAll('.owb-view .owb-row').length!==2;i++) await new Promise(r=>setTimeout(r,100)); const n=document.querySelectorAll('.owb-view .owb-row').length; if (n!==2) throw new Error('rows '+n+' want 2'); return 'ok'; })()",
+		"after": "(async () => { app.workspace.getLeavesOfType('one-way-backlinks')[0].view.setMode('one-way'); return 'ok'; })()",
+		"wait": 700
+	},
+	{
+		"feature": "link-back",
+		"caption": "Pro: Link back adds a link to Banana bread at the end of Recipes, and the row moves to Paired.",
+		"note": "Recipes.md",
+		"eval": "(async () => { const p=app.plugins.plugins['one-way-backlinks']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('one-way-backlinks-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); if (!p.pro.isPro()) throw new Error('pro off'); document.querySelectorAll('.modal-container').forEach(el => el.remove()); await app.commands.executeCommandById('one-way-backlinks:open'); const v=app.workspace.getLeavesOfType('one-way-backlinks')[0].view; v.setMode('one-way'); for (let i=0;i<60 && document.querySelectorAll('.owb-view .owb-row').length!==4;i++) await new Promise(r=>setTimeout(r,100)); const n=document.querySelectorAll('.owb-view .owb-row').length; if (n!==4) throw new Error('rows '+n+' want 4'); const row=[...document.querySelectorAll('.owb-view .owb-row')].find(r=>r.querySelector('.owb-name').textContent==='Banana bread'); row.querySelector('.owb-link-back').click(); for (let i=0;i<150 && document.querySelectorAll('.owb-view .owb-row').length!==3;i++) await new Promise(r=>setTimeout(r,100)); const n=document.querySelectorAll('.owb-view .owb-row').length; if (n!==3) throw new Error('rows '+n+' want 3'); return 'ok'; })()",
+		"after": "(async () => { const p=app.plugins.plugins['one-way-backlinks']; p.settings.hiddenFolders=''; p.pro.signOut(); p.refreshViews(); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "hidden-folders",
+		"caption": "Pro: with One-way Backlinks/Archive in Hidden folders, Old menu does not show in the list.",
+		"note": "Recipes.md",
+		"eval": "(async () => { const p=app.plugins.plugins['one-way-backlinks']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('one-way-backlinks-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); if (!p.pro.isPro()) throw new Error('pro off'); p.settings.hiddenFolders='One-way Backlinks/Archive'; document.querySelectorAll('.modal-container').forEach(el => el.remove()); await app.commands.executeCommandById('one-way-backlinks:open'); const v=app.workspace.getLeavesOfType('one-way-backlinks')[0].view; v.setMode('one-way'); p.refreshViews(); for (let i=0;i<60 && document.querySelectorAll('.owb-view .owb-row').length!==3;i++) await new Promise(r=>setTimeout(r,100)); const n=document.querySelectorAll('.owb-view .owb-row').length; if (n!==3) throw new Error('rows '+n+' want 3'); return 'ok'; })()",
+		"after": "(async () => { const p=app.plugins.plugins['one-way-backlinks']; p.settings.hiddenFolders=''; p.pro.signOut(); p.refreshViews(); return 'ok'; })()",
+		"wait": 700
+	},
+	{
+		"feature": "settings",
+		"caption": "The settings: the default list and the hidden folders (Pro).",
+		"eval": "(async () => { app.setting.open(); app.setting.openTabById('one-way-backlinks'); await new Promise(r => setTimeout(r, 800)); return 'ok'; })()",
+		"after": "(async () => { app.setting.close(); return 'ok'; })()",
+		"wait": 700
+	},
+	{
+		"feature": "one-way-backlinks",
+		"caption": "Recipes gets a link to Banana bread. Banana bread leaves the One-way list and shows in Paired.",
+		"frames": [
+			{
+				"note": "Recipes.md",
+				"eval": "(async () => { document.querySelectorAll('.modal-container').forEach(el => el.remove()); await app.commands.executeCommandById('one-way-backlinks:open'); const v=app.workspace.getLeavesOfType('one-way-backlinks')[0].view; v.setMode('one-way'); for (let i=0;i<60 && document.querySelectorAll('.owb-view .owb-row').length!==4;i++) await new Promise(r=>setTimeout(r,100)); const n=document.querySelectorAll('.owb-view .owb-row').length; if (n!==4) throw new Error('rows '+n+' want 4'); return 'ok'; })()",
+				"wait": 500,
+				"hold": 1800
+			},
+			{
+				"eval": "(async () => { const f=app.vault.getFileByPath('One-way Backlinks/Recipes.md'); await app.vault.process(f, t => t.replace('- [[Shopping list]]', '- [[Shopping list]]\\n- [[Banana bread]]')); for (let i=0;i<150 && document.querySelectorAll('.owb-view .owb-row').length!==3;i++) await new Promise(r=>setTimeout(r,100)); const n=document.querySelectorAll('.owb-view .owb-row').length; if (n!==3) throw new Error('rows '+n+' want 3'); return 'ok'; })()",
+				"wait": 400,
+				"hold": 1800
+			},
+			{
+				"eval": "(async () => { app.workspace.getLeavesOfType('one-way-backlinks')[0].view.setMode('paired'); for (let i=0;i<60 && document.querySelectorAll('.owb-view .owb-row').length!==3;i++) await new Promise(r=>setTimeout(r,100)); const n=document.querySelectorAll('.owb-view .owb-row').length; if (n!==3) throw new Error('rows '+n+' want 3'); return 'ok'; })()",
+				"wait": 400,
+				"hold": 2200
+			}
+		],
+		"after": "(async () => { app.workspace.getLeavesOfType('one-way-backlinks')[0].view.setMode('one-way'); return 'ok'; })()"
+	}
+]
