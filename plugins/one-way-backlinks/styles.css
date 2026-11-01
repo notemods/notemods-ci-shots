@@ -1,0 +1,103 @@
+/* Styles for One-way Backlinks. Obsidian loads this file while the plugin is enabled. */
+
+/* The pane: a header, the One-way and Paired buttons, then the list. */
+.owb-view {
+	padding: var(--size-4-2);
+}
+
+.owb-header {
+	margin-bottom: var(--size-4-2);
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+}
+
+.owb-note {
+	color: var(--text-normal);
+	font-weight: var(--font-semibold);
+}
+
+.owb-toggle {
+	display: flex;
+	gap: var(--size-4-1);
+	margin-bottom: var(--size-4-2);
+}
+
+.owb-mode {
+	display: flex;
+	flex: 1;
+	gap: var(--size-4-2);
+	justify-content: center;
+	font-size: var(--font-ui-small);
+}
+
+.owb-mode.is-active {
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+}
+
+.owb-mode-count {
+	font-variant-numeric: tabular-nums;
+}
+
+.owb-row {
+	display: flex;
+	gap: var(--size-4-2);
+	align-items: center;
+	padding: var(--size-4-1) var(--size-4-2);
+	border-radius: var(--radius-s);
+	cursor: var(--cursor);
+}
+
+.owb-row:hover,
+.owb-row:focus-visible {
+	background-color: var(--background-modifier-hover);
+}
+
+.owb-row-text {
+	flex: 1;
+	min-width: 0;
+}
+
+.owb-name,
+.owb-folder {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.owb-folder,
+.owb-count {
+	color: var(--text-faint);
+	font-size: var(--font-ui-smaller);
+}
+
+.owb-link-back {
+	font-size: var(--font-ui-smaller);
+}
+
+.owb-empty {
+	padding: var(--size-4-2);
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+}
+
+/* NoteMods What's new tab and settings card */
+.notemods-hello {
+	overflow-y: auto;
+}
+
+.notemods-hello-page {
+	max-width: var(--file-line-width);
+	margin: 0 auto;
+	padding: var(--size-4-6) var(--size-4-4);
+}
+
+.notemods-hello-sub,
+.notemods-hello-blurb {
+	color: var(--text-muted);
+}
+
+.notemods-hello-buttons .setting-item-control {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
