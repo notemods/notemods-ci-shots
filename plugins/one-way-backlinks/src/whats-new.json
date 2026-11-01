@@ -1,0 +1,25 @@
+{
+	"id": "one-way-backlinks",
+	"name": "One-way Backlinks",
+	"version": "1.0.0",
+	"changes": [],
+	"tip": "Select Paired at the top of the pane to see the notes that link here and that this note links to. Hold Ctrl or Cmd over a row to see the page preview.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. One-way Backlinks is one of over 100 small plugins that I make. Thank you for trusting it with your notes.",
+	"related": [
+		{
+			"id": "search-operators",
+			"name": "Search Operators",
+			"blurb": "Search notes by date, by links to and from a note, by tag and by path."
+		},
+		{
+			"id": "context-trees",
+			"name": "Context Trees",
+			"blurb": "Show backlinks and search results as an outline with their headings."
+		},
+		{
+			"id": "heading-link-sync",
+			"name": "Heading Link Sync",
+			"blurb": "Keep links to a heading working when you edit the heading."
+		}
+	]
+}
