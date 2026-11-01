@@ -1,0 +1,901 @@
+{
+ "slug": "wikilink-alias-markup",
+ "module": "wikilink-alias-markup/src/markup",
+ "function": "parseAlias",
+ "note": "Each case names its function in fn. parseAlias(alias, {math}) gives the inline nodes of one alias with offsets in the alias: text, escape, code (open and close backtick counts), math (Pro), and strong, em, del, mark with children. planLine(line, {math}) gives for each aliased wikilink with markup the ranges that Live Preview hides, styles (value = markup type) or draws as math. findAliasLinks(line) gives each aliased wikilink, without embeds and empty aliases. isDefaultText(text, href) is true when the text of a Reading view link is the core text of a link without alias. Names start with the acceptance criterion of lanes/NEW-A/SPEC.md. Reviewed by hand against each input.",
+ "cases": [
+  {
+   "name": "A1 post 1 alias in backticks is inline code",
+   "fn": "parseAlias",
+   "args": [
+    "`obsidian`"
+   ],
+   "expected": [
+    {
+     "type": "code",
+     "from": 0,
+     "to": 10,
+     "open": 1,
+     "close": 1,
+     "text": "obsidian"
+    }
+   ]
+  },
+  {
+   "name": "A1 post 1 line plans hidden backticks and a code mark",
+   "fn": "planLine",
+   "args": [
+    "[[Obsidian|`obsidian`]]"
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "to": 23,
+     "target": "Obsidian",
+     "decos": [
+      {
+       "kind": "hide",
+       "from": 11,
+       "to": 12
+      },
+      {
+       "kind": "mark",
+       "from": 12,
+       "to": 20,
+       "value": "code"
+      },
+      {
+       "kind": "hide",
+       "from": 20,
+       "to": 21
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "A1 markup inside code stays text",
+   "fn": "parseAlias",
+   "args": [
+    "`a *b* c`"
+   ],
+   "expected": [
+    {
+     "type": "code",
+     "from": 0,
+     "to": 9,
+     "open": 1,
+     "close": 1,
+     "text": "a *b* c"
+    }
+   ]
+  },
+  {
+   "name": "A1 double backtick code keeps a single backtick",
+   "fn": "parseAlias",
+   "args": [
+    "`` a`b ``"
+   ],
+   "expected": [
+    {
+     "type": "code",
+     "from": 0,
+     "to": 9,
+     "open": 2,
+     "close": 2,
+     "text": "a`b"
+    }
+   ]
+  },
+  {
+   "name": "A1 unclosed backtick is text",
+   "fn": "parseAlias",
+   "args": [
+    "`open"
+   ],
+   "expected": [
+    {
+     "type": "text",
+     "from": 0,
+     "to": 5,
+     "text": "`open"
+    }
+   ]
+  },
+  {
+   "name": "A3 post 4 underscore italic on part of the alias",
+   "fn": "parseAlias",
+   "args": [
+    "Knuth's _The TeXbook_"
+   ],
+   "expected": [
+    {
+     "type": "text",
+     "from": 0,
+     "to": 8,
+     "text": "Knuth's "
+    },
+    {
+     "type": "em",
+     "from": 8,
+     "to": 21,
+     "open": 1,
+     "close": 1,
+     "children": [
+      {
+       "type": "text",
+       "from": 9,
+       "to": 20,
+       "text": "The TeXbook"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "A3 bold and italic with stars",
+   "fn": "parseAlias",
+   "args": [
+    "**bold** and *it*"
+   ],
+   "expected": [
+    {
+     "type": "strong",
+     "from": 0,
+     "to": 8,
+     "open": 2,
+     "close": 2,
+     "children": [
+      {
+       "type": "text",
+       "from": 2,
+       "to": 6,
+       "text": "bold"
+      }
+     ]
+    },
+    {
+     "type": "text",
+     "from": 8,
+     "to": 13,
+     "text": " and "
+    },
+    {
+     "type": "em",
+     "from": 13,
+     "to": 17,
+     "open": 1,
+     "close": 1,
+     "children": [
+      {
+       "type": "text",
+       "from": 14,
+       "to": 16,
+       "text": "it"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "A3 bold with underscores",
+   "fn": "parseAlias",
+   "args": [
+    "__x__"
+   ],
+   "expected": [
+    {
+     "type": "strong",
+     "from": 0,
+     "to": 5,
+     "open": 2,
+     "close": 2,
+     "children": [
+      {
+       "type": "text",
+       "from": 2,
+       "to": 3,
+       "text": "x"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "A3 triple stars give italic around bold",
+   "fn": "parseAlias",
+   "args": [
+    "***x***"
+   ],
+   "expected": [
+    {
+     "type": "em",
+     "from": 0,
+     "to": 7,
+     "open": 1,
+     "close": 1,
+     "children": [
+      {
+       "type": "strong",
+       "from": 1,
+       "to": 6,
+       "open": 2,
+       "close": 2,
+       "children": [
+        {
+         "type": "text",
+         "from": 3,
+         "to": 4,
+         "text": "x"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "A3 italic inside bold",
+   "fn": "parseAlias",
+   "args": [
+    "**a *b* c**"
+   ],
+   "expected": [
+    {
+     "type": "strong",
+     "from": 0,
+     "to": 11,
+     "open": 2,
+     "close": 2,
+     "children": [
+      {
+       "type": "text",
+       "from": 2,
+       "to": 4,
+       "text": "a "
+      },
+      {
+       "type": "em",
+       "from": 4,
+       "to": 7,
+       "open": 1,
+       "close": 1,
+       "children": [
+        {
+         "type": "text",
+         "from": 5,
+         "to": 6,
+         "text": "b"
+        }
+       ]
+      },
+      {
+       "type": "text",
+       "from": 7,
+       "to": 9,
+       "text": " c"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "A3 strikethrough and highlight",
+   "fn": "parseAlias",
+   "args": [
+    "~~gone~~ ==hi=="
+   ],
+   "expected": [
+    {
+     "type": "del",
+     "from": 0,
+     "to": 8,
+     "open": 2,
+     "close": 2,
+     "children": [
+      {
+       "type": "text",
+       "from": 2,
+       "to": 6,
+       "text": "gone"
+      }
+     ]
+    },
+    {
+     "type": "text",
+     "from": 8,
+     "to": 9,
+     "text": " "
+    },
+    {
+     "type": "mark",
+     "from": 9,
+     "to": 15,
+     "open": 2,
+     "close": 2,
+     "children": [
+      {
+       "type": "text",
+       "from": 11,
+       "to": 13,
+       "text": "hi"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "A3 single tilde is text",
+   "fn": "parseAlias",
+   "args": [
+    "~one~"
+   ],
+   "expected": [
+    {
+     "type": "text",
+     "from": 0,
+     "to": 5,
+     "text": "~one~"
+    }
+   ]
+  },
+  {
+   "name": "A3 star inside a word is italic",
+   "fn": "parseAlias",
+   "args": [
+    "foo*bar*"
+   ],
+   "expected": [
+    {
+     "type": "text",
+     "from": 0,
+     "to": 3,
+     "text": "foo"
+    },
+    {
+     "type": "em",
+     "from": 3,
+     "to": 8,
+     "open": 1,
+     "close": 1,
+     "children": [
+      {
+       "type": "text",
+       "from": 4,
+       "to": 7,
+       "text": "bar"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "A3 escaped stars are text",
+   "fn": "parseAlias",
+   "args": [
+    "\\*lit\\*"
+   ],
+   "expected": [
+    {
+     "type": "escape",
+     "from": 0,
+     "to": 2,
+     "text": "*"
+    },
+    {
+     "type": "text",
+     "from": 2,
+     "to": 5,
+     "text": "lit"
+    },
+    {
+     "type": "escape",
+     "from": 5,
+     "to": 7,
+     "text": "*"
+    }
+   ]
+  },
+  {
+   "name": "A3 unclosed bold is text",
+   "fn": "parseAlias",
+   "args": [
+    "**unclosed"
+   ],
+   "expected": [
+    {
+     "type": "text",
+     "from": 0,
+     "to": 10,
+     "text": "**unclosed"
+    }
+   ]
+  },
+  {
+   "name": "A3 star with spaces on both sides is text",
+   "fn": "parseAlias",
+   "args": [
+    "a * b * c"
+   ],
+   "expected": [
+    {
+     "type": "text",
+     "from": 0,
+     "to": 9,
+     "text": "a * b * c"
+    }
+   ]
+  },
+  {
+   "name": "A3 plan for nested bold and italic",
+   "fn": "planLine",
+   "args": [
+    "x [[N|**a *b***]] y"
+   ],
+   "expected": [
+    {
+     "from": 2,
+     "to": 17,
+     "target": "N",
+     "decos": [
+      {
+       "kind": "hide",
+       "from": 6,
+       "to": 8
+      },
+      {
+       "kind": "mark",
+       "from": 8,
+       "to": 13,
+       "value": "strong"
+      },
+      {
+       "kind": "hide",
+       "from": 10,
+       "to": 11
+      },
+      {
+       "kind": "mark",
+       "from": 11,
+       "to": 12,
+       "value": "em"
+      },
+      {
+       "kind": "hide",
+       "from": 12,
+       "to": 13
+      },
+      {
+       "kind": "hide",
+       "from": 13,
+       "to": 15
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "A3 plan for an escape hides only the backslash",
+   "fn": "planLine",
+   "args": [
+    "[[N|\\*a\\* `c`]]"
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "to": 15,
+     "target": "N",
+     "decos": [
+      {
+       "kind": "hide",
+       "from": 4,
+       "to": 5
+      },
+      {
+       "kind": "hide",
+       "from": 7,
+       "to": 8
+      },
+      {
+       "kind": "hide",
+       "from": 10,
+       "to": 11
+      },
+      {
+       "kind": "mark",
+       "from": 11,
+       "to": 12,
+       "value": "code"
+      },
+      {
+       "kind": "hide",
+       "from": 12,
+       "to": 13
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "A9 underscores inside a word are text",
+   "fn": "parseAlias",
+   "args": [
+    "snake_case_name"
+   ],
+   "expected": [
+    {
+     "type": "text",
+     "from": 0,
+     "to": 15,
+     "text": "snake_case_name"
+    }
+   ]
+  },
+  {
+   "name": "A9 plain alias has no plan",
+   "fn": "planLine",
+   "args": [
+    "See [[Note|plain words]]."
+   ],
+   "expected": []
+  },
+  {
+   "name": "A9 link without alias has no plan",
+   "fn": "planLine",
+   "args": [
+    "See [[my_note_name]] and [[a*b*]]."
+   ],
+   "expected": []
+  },
+  {
+   "name": "A9 embed with alias is left out",
+   "fn": "findAliasLinks",
+   "args": [
+    "![[image.png|`300`]] and ![[Note|*x*]]"
+   ],
+   "expected": []
+  },
+  {
+   "name": "A9 empty alias is left out",
+   "fn": "findAliasLinks",
+   "args": [
+    "[[Note|]] [[Note| ]]"
+   ],
+   "expected": []
+  },
+  {
+   "name": "A8 table cell link with escaped pipe",
+   "fn": "findAliasLinks",
+   "args": [
+    "| [[Note\\|`x`]] | [[B\\|**y**]] |"
+   ],
+   "expected": [
+    {
+     "from": 2,
+     "to": 15,
+     "target": "Note",
+     "aliasFrom": 10,
+     "aliasTo": 13,
+     "alias": "`x`"
+    },
+    {
+     "from": 18,
+     "to": 30,
+     "target": "B",
+     "aliasFrom": 23,
+     "aliasTo": 28,
+     "alias": "**y**"
+    }
+   ]
+  },
+  {
+   "name": "A8 table cell plan",
+   "fn": "planLine",
+   "args": [
+    "| [[Note\\|`x`]] | b |"
+   ],
+   "expected": [
+    {
+     "from": 2,
+     "to": 15,
+     "target": "Note",
+     "decos": [
+      {
+       "kind": "hide",
+       "from": 10,
+       "to": 11
+      },
+      {
+       "kind": "mark",
+       "from": 11,
+       "to": 12,
+       "value": "code"
+      },
+      {
+       "kind": "hide",
+       "from": 12,
+       "to": 13
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "A8 callout line link",
+   "fn": "planLine",
+   "args": [
+    "> > See [[Note|*deep*]] here"
+   ],
+   "expected": [
+    {
+     "from": 8,
+     "to": 23,
+     "target": "Note",
+     "decos": [
+      {
+       "kind": "hide",
+       "from": 15,
+       "to": 16
+      },
+      {
+       "kind": "mark",
+       "from": 16,
+       "to": 20,
+       "value": "em"
+      },
+      {
+       "kind": "hide",
+       "from": 20,
+       "to": 21
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "A8 heading target and alias",
+   "fn": "findAliasLinks",
+   "args": [
+    "[[Note#Heading 2|`h2`]] and [[#^abc|**b**]]"
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "to": 23,
+     "target": "Note#Heading 2",
+     "aliasFrom": 17,
+     "aliasTo": 21,
+     "alias": "`h2`"
+    },
+    {
+     "from": 28,
+     "to": 43,
+     "target": "#^abc",
+     "aliasFrom": 36,
+     "aliasTo": 41,
+     "alias": "**b**"
+    }
+   ]
+  },
+  {
+   "name": "A8 two links in one line",
+   "fn": "findAliasLinks",
+   "args": [
+    "[[A|`a`]] [[B]] [[C|*c*]]"
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "to": 9,
+     "target": "A",
+     "aliasFrom": 4,
+     "aliasTo": 7,
+     "alias": "`a`"
+    },
+    {
+     "from": 16,
+     "to": 25,
+     "target": "C",
+     "aliasFrom": 20,
+     "aliasTo": 23,
+     "alias": "*c*"
+    }
+   ]
+  },
+  {
+   "name": "A12 free keeps math as text",
+   "fn": "parseAlias",
+   "args": [
+    "$NH_3$"
+   ],
+   "expected": [
+    {
+     "type": "text",
+     "from": 0,
+     "to": 6,
+     "text": "$NH_3$"
+    }
+   ]
+  },
+  {
+   "name": "A12 Pro parses math",
+   "fn": "parseAlias",
+   "args": [
+    "$NH_3$ and $x$",
+    {
+     "math": true
+    }
+   ],
+   "expected": [
+    {
+     "type": "math",
+     "from": 0,
+     "to": 6,
+     "text": "NH_3"
+    },
+    {
+     "type": "text",
+     "from": 6,
+     "to": 11,
+     "text": " and "
+    },
+    {
+     "type": "math",
+     "from": 11,
+     "to": 14,
+     "text": "x"
+    }
+   ]
+  },
+  {
+   "name": "A12 Pro dollar amounts are not math",
+   "fn": "parseAlias",
+   "args": [
+    "cost $5 and $6",
+    {
+     "math": true
+    }
+   ],
+   "expected": [
+    {
+     "type": "text",
+     "from": 0,
+     "to": 14,
+     "text": "cost $5 and $6"
+    }
+   ]
+  },
+  {
+   "name": "A12 Pro dollar with a space after is text",
+   "fn": "parseAlias",
+   "args": [
+    "$ x$",
+    {
+     "math": true
+    }
+   ],
+   "expected": [
+    {
+     "type": "text",
+     "from": 0,
+     "to": 4,
+     "text": "$ x$"
+    }
+   ]
+  },
+  {
+   "name": "A12 Pro plan replaces math",
+   "fn": "planLine",
+   "args": [
+    "[[#^fftest|$x$]]",
+    {
+     "math": true
+    }
+   ],
+   "expected": [
+    {
+     "from": 0,
+     "to": 16,
+     "target": "#^fftest",
+     "decos": [
+      {
+       "kind": "math",
+       "from": 11,
+       "to": 14,
+       "value": "x"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "A12 Pro escaped dollar is text",
+   "fn": "parseAlias",
+   "args": [
+    "\\$x$",
+    {
+     "math": true
+    }
+   ],
+   "expected": [
+    {
+     "type": "escape",
+     "from": 0,
+     "to": 2,
+     "text": "$"
+    },
+    {
+     "type": "text",
+     "from": 2,
+     "to": 4,
+     "text": "x$"
+    }
+   ]
+  },
+  {
+   "name": "A12 Pro math inside code stays code",
+   "fn": "parseAlias",
+   "args": [
+    "`$x$`",
+    {
+     "math": true
+    }
+   ],
+   "expected": [
+    {
+     "type": "code",
+     "from": 0,
+     "to": 5,
+     "open": 1,
+     "close": 1,
+     "text": "$x$"
+    }
+   ]
+  },
+  {
+   "name": "A9 default text of a link without alias",
+   "fn": "isDefaultText",
+   "args": [
+    "Note",
+    "Note"
+   ],
+   "expected": true
+  },
+  {
+   "name": "A9 default text with a heading",
+   "fn": "isDefaultText",
+   "args": [
+    "Note > Heading",
+    "Note#Heading"
+   ],
+   "expected": true
+  },
+  {
+   "name": "A9 default text with a folder",
+   "fn": "isDefaultText",
+   "args": [
+    "Note",
+    "folder/Note"
+   ],
+   "expected": true
+  },
+  {
+   "name": "A9 alias text is not default",
+   "fn": "isDefaultText",
+   "args": [
+    "`code`",
+    "Note"
+   ],
+   "expected": false
+  },
+  {
+   "name": "A9 empty text counts as default",
+   "fn": "isDefaultText",
+   "args": [
+    "",
+    "Note"
+   ],
+   "expected": true
+  }
+ ]
+}
