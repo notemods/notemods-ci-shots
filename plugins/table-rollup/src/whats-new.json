@@ -1,0 +1,27 @@
+{
+	"id": "table-rollup",
+	"name": "Table Rollup",
+	"version": "1.2.3",
+	"changes": [
+		"In the free version, a view that sets Summary row, Group by column or Filter column shows a line in the bar that names these Pro options and says that the view does not use them. Click the line to see how to get Pro."
+	],
+	"tip": "Click a column header twice to sort the rows in the other direction.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Table Rollup is one of over 100 small plugins that I make. Thank you for trusting it with your tables.",
+	"related": [
+		{
+			"id": "flatten-table",
+			"name": "Flatten Table",
+			"blurb": "Show each item of a Bases list property as a separate row."
+		},
+		{
+			"id": "table-row-links",
+			"name": "Table Row Links",
+			"blurb": "Copy a link to a marked table row in your note."
+		},
+		{
+			"id": "csv-schema-linter",
+			"name": "CSV Rule Check",
+			"blurb": "Check CSV values, types and duplicates before you use an export."
+		}
+	]
+}

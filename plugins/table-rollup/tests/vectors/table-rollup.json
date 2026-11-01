@@ -1,0 +1,847 @@
+{
+ "slug": "table-rollup",
+ "module": "table-rollup/src/table",
+ "function": "rollup",
+ "note": "args = [notes as [{path, markdown}] in base order, options {mode, heading, which, columns, sort, filter, summary, groupBy, maxSources}]; expected = the fields to compare: columns, align, rows as [source path, ...cells], sources, skippedSources, summary (one value per column, null when not a number column), groups as [{key, count, summary}]. Only the fields present are compared.",
+ "cases": [
+  {
+   "name": "two notes merge under one heading",
+   "args": [
+    [
+     {
+      "path": "Daily/2026-10-01.md",
+      "markdown": "# Day\n\n## Expenses\n\n| Item | Amount |\n| --- | --- |\n| Coffee | 3.50 |\n| Lunch | 12 |\n"
+     },
+     {
+      "path": "Daily/2026-10-02.md",
+      "markdown": "## Expenses\n\n| Item | Amount |\n|---|---|\n| Bus | 2.75 |\n"
+     }
+    ],
+    {
+     "heading": "Expenses"
+    }
+   ],
+   "expected": {
+    "columns": [
+     "Item",
+     "Amount"
+    ],
+    "rows": [
+     [
+      "Daily/2026-10-01.md",
+      "Coffee",
+      "3.50"
+     ],
+     [
+      "Daily/2026-10-01.md",
+      "Lunch",
+      "12"
+     ],
+     [
+      "Daily/2026-10-02.md",
+      "Bus",
+      "2.75"
+     ]
+    ],
+    "sources": 2,
+    "skippedSources": 0,
+    "summary": null
+   }
+  },
+  {
+   "name": "headers match by name in any order and case",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "markdown": "| Item | Amount |\n|-|-|\n| Tea | 2 |\n"
+     },
+     {
+      "path": "b.md",
+      "markdown": "| amount | ITEM |\n|-|-|\n| 5 | Cake |\n"
+     }
+    ],
+    {}
+   ],
+   "expected": {
+    "columns": [
+     "Item",
+     "Amount"
+    ],
+    "rows": [
+     [
+      "a.md",
+      "Tea",
+      "2"
+     ],
+     [
+      "b.md",
+      "Cake",
+      "5"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "columns are the union of all headers",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "markdown": "| Item | Amount |\n|-|-|\n| Tea | 2 |\n"
+     },
+     {
+      "path": "b.md",
+      "markdown": "| Item | Amount | Payer |\n|-|-|-|\n| Cake | 5 | Ana |\n"
+     }
+    ],
+    {}
+   ],
+   "expected": {
+    "columns": [
+     "Item",
+     "Amount",
+     "Payer"
+    ],
+    "rows": [
+     [
+      "a.md",
+      "Tea",
+      "2",
+      ""
+     ],
+     [
+      "b.md",
+      "Cake",
+      "5",
+      "Ana"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "escaped pipes and pipes in inline code do not split cells",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "markdown": "| Expr | Code |\n| --- | --- |\n| a \\| b | `x|y` |\n| c | `p \\| q` |\n"
+     }
+    ],
+    {}
+   ],
+   "expected": {
+    "columns": [
+     "Expr",
+     "Code"
+    ],
+    "rows": [
+     [
+      "a.md",
+      "a | b",
+      "`x|y`"
+     ],
+     [
+      "a.md",
+      "c",
+      "`p | q`"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "alignment row without outer pipes",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "markdown": "Item | Amount | Note\n:--- | ---: | :-:\nTea | 3 | ok\n"
+     }
+    ],
+    {}
+   ],
+   "expected": {
+    "columns": [
+     "Item",
+     "Amount",
+     "Note"
+    ],
+    "align": [
+     "left",
+     "right",
+     "center"
+    ],
+    "rows": [
+     [
+      "a.md",
+      "Tea",
+      "3",
+      "ok"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "only the table under the chosen heading",
+   "args": [
+    [
+     {
+      "path": "m.md",
+      "markdown": "## Notes\n\n| Topic | Owner |\n|---|---|\n| Budget | Ana |\n\n## Action items\n\n| Task | Owner |\n|---|---|\n| Send deck | Bo |\n"
+     }
+    ],
+    {
+     "heading": "Action items"
+    }
+   ],
+   "expected": {
+    "columns": [
+     "Task",
+     "Owner"
+    ],
+    "rows": [
+     [
+      "m.md",
+      "Send deck",
+      "Bo"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "heading option ignores # marks, case and emphasis",
+   "args": [
+    [
+     {
+      "path": "m.md",
+      "markdown": "## **Action Items**\n\n| Task |\n|---|\n| Call |\n"
+     }
+    ],
+    {
+     "heading": "## action items"
+    }
+   ],
+   "expected": {
+    "columns": [
+     "Task"
+    ],
+    "rows": [
+     [
+      "m.md",
+      "Call"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "a table in a sub-section counts as under the heading",
+   "args": [
+    [
+     {
+      "path": "m.md",
+      "markdown": "## Expenses\n\n### Week 1\n\n| Item | Amount |\n|---|---|\n| Rent | 900 |\n\n## Other\n\n| Item | Amount |\n|---|---|\n| Gift | 20 |\n"
+     }
+    ],
+    {
+     "heading": "Expenses"
+    }
+   ],
+   "expected": {
+    "columns": [
+     "Item",
+     "Amount"
+    ],
+    "rows": [
+     [
+      "m.md",
+      "Rent",
+      "900"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "tables in code blocks and front matter are ignored",
+   "args": [
+    [
+     {
+      "path": "m.md",
+      "markdown": "---\ntitle: x\n---\n```\n| A | B |\n|---|---|\n| no | no |\n```\n\n| A | B |\n|---|---|\n| yes | yes |\n"
+     }
+    ],
+    {}
+   ],
+   "expected": {
+    "columns": [
+     "A",
+     "B"
+    ],
+    "rows": [
+     [
+      "m.md",
+      "yes",
+      "yes"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "a table inside a callout is found",
+   "args": [
+    [
+     {
+      "path": "m.md",
+      "markdown": "> [!note] Budget\n> | Item | Amount |\n> | --- | --- |\n> | Tea | 4 |\n"
+     }
+    ],
+    {}
+   ],
+   "expected": {
+    "columns": [
+     "Item",
+     "Amount"
+    ],
+    "rows": [
+     [
+      "m.md",
+      "Tea",
+      "4"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "wikilink with an alias stays in one cell",
+   "args": [
+    [
+     {
+      "path": "m.md",
+      "markdown": "| Who | Note |\n|---|---|\n| [[People/Ana|Ana]] | [[Plan\\|the plan]] |\n"
+     }
+    ],
+    {}
+   ],
+   "expected": {
+    "columns": [
+     "Who",
+     "Note"
+    ],
+    "rows": [
+     [
+      "m.md",
+      "[[People/Ana|Ana]]",
+      "[[Plan|the plan]]"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "short rows are padded and long rows cut",
+   "args": [
+    [
+     {
+      "path": "m.md",
+      "markdown": "| A | B | C |\n|---|---|---|\n| 1 |\n| 1 | 2 | 3 | 4 |\n"
+     }
+    ],
+    {}
+   ],
+   "expected": {
+    "columns": [
+     "A",
+     "B",
+     "C"
+    ],
+    "rows": [
+     [
+      "m.md",
+      "1",
+      "",
+      ""
+     ],
+     [
+      "m.md",
+      "1",
+      "2",
+      "3"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "sum of a number column with currency and thousands",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "markdown": "| Item | Amount |\n|---|---|\n| Rent | $1,200.50 |\n| Tea | 3 |\n"
+     },
+     {
+      "path": "b.md",
+      "markdown": "| Item | Amount |\n|---|---|\n| Bus | |\n| Gift | 296.5 |\n"
+     }
+    ],
+    {
+     "summary": "sum"
+    }
+   ],
+   "expected": {
+    "columns": [
+     "Item",
+     "Amount"
+    ],
+    "summary": [
+     null,
+     "1500"
+    ]
+   }
+  },
+  {
+   "name": "average and count",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "markdown": "| Name | Score |\n|---|---|\n| A | 1 |\n| B | 2 |\n| C | 2 |\n| D |  |\n"
+     }
+    ],
+    {
+     "summary": "avg"
+    }
+   ],
+   "expected": {
+    "summary": [
+     null,
+     "1.67"
+    ]
+   }
+  },
+  {
+   "name": "count counts non-empty cells in every column",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "markdown": "| Name | Score |\n|---|---|\n| A | 1 |\n| B | x |\n|  | 2 |\n"
+     }
+    ],
+    {
+     "summary": "count"
+    }
+   ],
+   "expected": {
+    "summary": [
+     "2",
+     "3"
+    ]
+   }
+  },
+  {
+   "name": "sort descending by a number column, empty cells last",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "markdown": "| Item | Amount |\n|---|---|\n| a | 10 |\n| b |  |\n| c | 9 |\n| d | 100 |\n"
+     }
+    ],
+    {
+     "sort": {
+      "column": "amount",
+      "dir": "desc"
+     }
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "a.md",
+      "d",
+      "100"
+     ],
+     [
+      "a.md",
+      "a",
+      "10"
+     ],
+     [
+      "a.md",
+      "c",
+      "9"
+     ],
+     [
+      "a.md",
+      "b",
+      ""
+     ]
+    ]
+   }
+  },
+  {
+   "name": "sort by the source column uses the note name",
+   "args": [
+    [
+     {
+      "path": "x/b.md",
+      "markdown": "| A |\n|---|\n| 1 |\n"
+     },
+     {
+      "path": "y/a.md",
+      "markdown": "| A |\n|---|\n| 2 |\n"
+     }
+    ],
+    {
+     "sort": {
+      "column": "Source",
+      "dir": "asc"
+     }
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "y/a.md",
+      "2"
+     ],
+     [
+      "x/b.md",
+      "1"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "filter rows greater than a number",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "markdown": "| Item | Amount |\n|---|---|\n| a | 5 |\n| b | 50 |\n| c | n/a |\n"
+     }
+    ],
+    {
+     "filter": {
+      "column": "Amount",
+      "op": "gt",
+      "value": "10"
+     }
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "a.md",
+      "b",
+      "50"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "filter rows that contain text, any case",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "markdown": "| Task | Owner |\n|---|---|\n| x | Ana |\n| y | bo |\n| z | ANA K |\n"
+     }
+    ],
+    {
+     "filter": {
+      "column": "owner",
+      "op": "contains",
+      "value": "ana"
+     }
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "a.md",
+      "x",
+      "Ana"
+     ],
+     [
+      "a.md",
+      "z",
+      "ANA K"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "free limit keeps the first notes with rows",
+   "args": [
+    [
+     {
+      "path": "1.md",
+      "markdown": "| A |\n|---|\n| 1 |\n"
+     },
+     {
+      "path": "2.md",
+      "markdown": "no table here"
+     },
+     {
+      "path": "3.md",
+      "markdown": "| A |\n|---|\n| 3 |\n"
+     },
+     {
+      "path": "4.md",
+      "markdown": "| A |\n|---|\n| 4 |\n"
+     }
+    ],
+    {
+     "maxSources": 2
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "1.md",
+      "1"
+     ],
+     [
+      "3.md",
+      "3"
+     ]
+    ],
+    "sources": 2,
+    "skippedSources": 1
+   }
+  },
+  {
+   "name": "second table under the heading",
+   "args": [
+    [
+     {
+      "path": "m.md",
+      "markdown": "## Log\n\n| A |\n|---|\n| first |\n\n| A |\n|---|\n| second |\n"
+     }
+    ],
+    {
+     "heading": "Log",
+     "which": "second"
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "m.md",
+      "second"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "all tables under the heading",
+   "args": [
+    [
+     {
+      "path": "m.md",
+      "markdown": "## Log\n\n| A |\n|---|\n| first |\n\n| A |\n|---|\n| second |\n"
+     }
+    ],
+    {
+     "heading": "Log",
+     "which": "all"
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "m.md",
+      "first"
+     ],
+     [
+      "m.md",
+      "second"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "columns option picks and orders columns",
+   "args": [
+    [
+     {
+      "path": "m.md",
+      "markdown": "| Item | Amount | Payer |\n|---|---|---|\n| Tea | 2 | Ana |\n"
+     }
+    ],
+    {
+     "columns": [
+      "payer",
+      "Item",
+      "Missing"
+     ]
+    }
+   ],
+   "expected": {
+    "columns": [
+     "payer",
+     "Item",
+     "Missing"
+    ],
+    "rows": [
+     [
+      "m.md",
+      "Ana",
+      "Tea",
+      ""
+     ]
+    ]
+   }
+  },
+  {
+   "name": "repeated header names get a number",
+   "args": [
+    [
+     {
+      "path": "m.md",
+      "markdown": "| Amount | Amount |\n|---|---|\n| 1 | 2 |\n"
+     }
+    ],
+    {}
+   ],
+   "expected": {
+    "columns": [
+     "Amount",
+     "Amount (2)"
+    ],
+    "rows": [
+     [
+      "m.md",
+      "1",
+      "2"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "task list rollup under a heading",
+   "args": [
+    [
+     {
+      "path": "m.md",
+      "markdown": "## Action items\n\n- [ ] Send deck 📅 2026-10-12\n- [x] Book room ^b1\n\n## Later\n\n- [ ] Not this\n"
+     }
+    ],
+    {
+     "mode": "tasks",
+     "heading": "Action items"
+    }
+   ],
+   "expected": {
+    "columns": [
+     "Task",
+     "Done",
+     "Due"
+    ],
+    "rows": [
+     [
+      "m.md",
+      "Send deck",
+      "no",
+      "2026-10-12"
+     ],
+     [
+      "m.md",
+      "Book room",
+      "yes",
+      ""
+     ]
+    ]
+   }
+  },
+  {
+   "name": "group by source with sum subtotals",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "markdown": "| Item | Amount |\n|---|---|\n| x | 1 |\n| y | 2 |\n"
+     },
+     {
+      "path": "b.md",
+      "markdown": "| Item | Amount |\n|---|---|\n| z | 4 |\n"
+     }
+    ],
+    {
+     "groupBy": "Source",
+     "summary": "sum"
+    }
+   ],
+   "expected": {
+    "summary": [
+     null,
+     "7"
+    ],
+    "groups": [
+     {
+      "key": "a",
+      "count": 2,
+      "summary": [
+       null,
+       "3"
+      ]
+     },
+     {
+      "key": "b",
+      "count": 1,
+      "summary": [
+       null,
+       "4"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "repeated headers keep authored numeric suffixes",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "markdown": "| Amount | Amount | Amount (2) |\n|---|---|---|\n|1|2|3|"
+     }
+    ],
+    {}
+   ],
+   "expected": {
+    "columns": [
+     "Amount",
+     "Amount (3)",
+     "Amount (2)"
+    ],
+    "rows": [
+     [
+      "a.md",
+      "1",
+      "2",
+      "3"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "Unicode currencies and exponent precision in sums",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "markdown": "| Amount | Small |\n|---|---|\n|₫1,000|1e-3|\n|₩2,000|2e-3|"
+     }
+    ],
+    {
+     "summary": "sum"
+    }
+   ],
+   "expected": {
+    "summary": [
+     "3000",
+     "0.003"
+    ]
+   }
+  }
+ ]
+}

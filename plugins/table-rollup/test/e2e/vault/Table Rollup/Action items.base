@@ -1,0 +1,33 @@
+filters:
+  and:
+    - file.hasTag("meeting")
+views:
+  - type: table-rollup
+    name: Action items
+    heading: Action items
+    order:
+      - file.name
+  - type: table-rollup
+    name: Hours by owner
+    heading: Action items
+    summary: sum
+    groupColumn: Owner
+    rollupSort:
+      column: Hours
+      dir: desc
+  - type: table-rollup
+    name: Open items
+    heading: Action items
+    summary: sum
+    filterColumn: Status
+    filterOp: not-equals
+    filterValue: done
+  - type: table-rollup
+    name: Follow-up tasks
+    mode: tasks
+    heading: Follow-ups
+  - type: table
+    name: Meetings
+    order:
+      - file.name
+      - date
