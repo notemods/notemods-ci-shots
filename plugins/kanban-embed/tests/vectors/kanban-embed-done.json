@@ -1,0 +1,510 @@
+{
+ "slug": "kanban-embed-done",
+ "module": "kanban-embed/src/board",
+ "function": "applyEdit",
+ "note": "args = [board markdown, op, tasks]. tasks = null (the Tasks plugin is off) or a fake Tasks {today, done?, preDone?, setDoneDate?, recurrenceOnNextLine?, refuse?} that tests/fake-tasks.ts builds. It writes what Tasks writes with its default settings: the done date as an emoji date before a block link, the new copy of a recurring task above the finished one. Kanban 2.0.51 (main.js, functions Au, Ro, Zn, Iu) does the same: it hands the card line to Tasks apiV1.executeToggleTaskDoneCommand and writes a plain check mark when Tasks is off. Expected values are written by hand line by line from the fixture.",
+ "cases": [
+  {
+   "name": "toggle with Tasks adds the done date",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 0
+    },
+    {
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [x] Write brief #docs ✅ 2026-10-10\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "toggle a done card with Tasks removes the done date",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 2,
+     "card": 0
+    },
+    {
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [ ] Set up repo\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "toggle without Tasks writes a plain check mark and no date",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 0
+    },
+    null
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [x] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "toggle keeps the block link behind the done date",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 1,
+     "card": 1
+    },
+    {
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [x] Review budget ✅ 2026-10-10 ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "toggle a multi-line card puts the done date on the first line only",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 2
+    },
+    {
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [x] Draft homepage ✅ 2026-10-10\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "toggle a recurring task writes the new copy above the finished one",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 1
+    },
+    {
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-11\n- [x] Water plants 🔁 every day 📅 2026-10-10 ✅ 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "recurrenceOnNextLine writes the new copy below the finished one",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 1
+    },
+    {
+     "today": "2026-10-10",
+     "recurrenceOnNextLine": true
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [x] Water plants 🔁 every day 📅 2026-10-10 ✅ 2026-10-10\n- [ ] Water plants 🔁 every day 📅 2026-10-11\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "move into the Complete lane adds the done date",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "move",
+     "lane": 1,
+     "card": 0,
+     "toLane": 2,
+     "index": 0
+    },
+    {
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Fix login bug ✅ 2026-10-10\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "move into the Complete lane without Tasks writes a plain check mark",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "move",
+     "lane": 1,
+     "card": 0,
+     "toLane": 2,
+     "index": 0
+    },
+    null
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Fix login bug\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "move out of the Complete lane removes the done date",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "move",
+     "lane": 2,
+     "card": 0,
+     "toLane": 1,
+     "index": 0
+    },
+    {
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Set up repo\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "a card moved inside the Complete lane is finished when it was not",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "move",
+     "lane": 2,
+     "card": 1,
+     "toLane": 2,
+     "index": 0
+    },
+    {
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Late addition ✅ 2026-10-10\n- [x] Set up repo ✅ 2026-10-01\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "a recurring task moved into the Complete lane leaves its new copy in the old place",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "move",
+     "lane": 0,
+     "card": 1,
+     "toLane": 2,
+     "index": 0
+    },
+    {
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-11\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Water plants 🔁 every day 📅 2026-10-10 ✅ 2026-10-10\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "a custom DONE symbol of Tasks is written",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 0
+    },
+    {
+     "today": "2026-10-10",
+     "done": "X"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [X] Write brief #docs ✅ 2026-10-10\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "a card with the custom DONE symbol is unchecked and loses its date",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [X] Write brief #docs ✅ 2026-10-10\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 0
+    },
+    {
+     "today": "2026-10-10",
+     "done": "X"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "Tasks set to write no done date gives a plain check mark",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 0
+    },
+    {
+     "today": "2026-10-10",
+     "setDoneDate": false
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [x] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "a line Tasks does not know gets a plain check mark",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 0
+    },
+    {
+     "today": "2026-10-10",
+     "refuse": true
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [x] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "add to the Complete lane with Tasks writes a finished card with the done date",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "add",
+     "lane": 2,
+     "text": "Ship it"
+    },
+    {
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n- [x] Ship it ✅ 2026-10-10\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "add to the Complete lane without Tasks writes a plain finished card",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "add",
+     "lane": 2,
+     "text": "Ship it"
+    },
+    null
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n- [x] Ship it\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "add to a normal lane with Tasks writes an open card",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "add",
+     "lane": 1,
+     "text": "Ship it"
+    },
+    {
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n- [ ] Ship it\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "a stale toggle is refused with Tasks too",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 0,
+     "expect": "- [ ] Somebody changed this"
+    },
+    {
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "ok": false,
+    "reason": "stale"
+   }
+  },
+  {
+   "name": "Windows line endings stay when the done date is written",
+   "args": [
+    "---\r\n\r\nkanban-plugin: board\r\n\r\n---\r\n\r\n## Todo\r\n\r\n- [ ] Write brief #docs\r\n- [ ] Water plants 🔁 every day 📅 2026-10-10\r\n- [ ] Draft homepage\r\n\tSecond line of the card\r\n\r\n\r\n## Doing\r\n\r\n- [ ] Fix login bug\r\n- [ ] Review budget ^b1\r\n\r\n\r\n## Done\r\n\r\n**Complete**\r\n- [x] Set up repo ✅ 2026-10-01\r\n- [ ] Late addition\r\n\r\n\r\n***\r\n\r\n## Archive\r\n\r\n- [x] Old card\r\n\r\n%% kanban:settings\r\n```\r\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\r\n```\r\n%%\r\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 0
+    },
+    {
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\r\n\r\nkanban-plugin: board\r\n\r\n---\r\n\r\n## Todo\r\n\r\n- [x] Write brief #docs ✅ 2026-10-10\r\n- [ ] Water plants 🔁 every day 📅 2026-10-10\r\n- [ ] Draft homepage\r\n\tSecond line of the card\r\n\r\n\r\n## Doing\r\n\r\n- [ ] Fix login bug\r\n- [ ] Review budget ^b1\r\n\r\n\r\n## Done\r\n\r\n**Complete**\r\n- [x] Set up repo ✅ 2026-10-01\r\n- [ ] Late addition\r\n\r\n\r\n***\r\n\r\n## Archive\r\n\r\n- [x] Old card\r\n\r\n%% kanban:settings\r\n```\r\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\r\n```\r\n%%\r\n"
+   }
+  },
+  {
+   "name": "a star bullet stays when the done date is written",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n* [ ] Star card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 0
+    },
+    {
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n* [x] Star card ✅ 2026-10-10\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "a move between two normal lanes leaves the card as it is",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "move",
+     "lane": 0,
+     "card": 0,
+     "toLane": 1,
+     "index": 0
+    },
+    {
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Write brief #docs\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "an in-progress card is unchecked with a plain space",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [/] In flight\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 0,
+     "checked": false
+    },
+    {
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] In flight\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "an in-progress card is finished through Tasks",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [/] In flight\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 0,
+     "checked": true
+    },
+    {
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [x] In flight ✅ 2026-10-10\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "checking a card that is already done leaves the line as it is",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 2,
+     "card": 0,
+     "checked": true
+    },
+    {
+     "today": "2026-10-10"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "a card in the status before DONE is finished through Tasks",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 0
+    },
+    {
+     "today": "2026-10-10",
+     "preDone": " "
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [x] Write brief #docs ✅ 2026-10-10\n- [ ] Water plants 🔁 every day 📅 2026-10-10\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing\n\n- [ ] Fix login bug\n- [ ] Review budget ^b1\n\n\n## Done\n\n**Complete**\n- [x] Set up repo ✅ 2026-10-01\n- [ ] Late addition\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  }
+ ]
+}

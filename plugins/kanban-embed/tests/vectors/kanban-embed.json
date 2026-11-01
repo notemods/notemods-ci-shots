@@ -1,0 +1,503 @@
+{
+ "slug": "kanban-embed",
+ "module": "kanban-embed/src/board",
+ "function": "applyEdit",
+ "note": "args = [board markdown, op]; op = {type: toggle, lane, card, checked?, expect?} | {type: move, lane, card, toLane, index, expect?} | {type: add, lane, text}. lane and card count lanes and cards of the board file, the archive excluded. expected = {ok: true, md} with the whole new file, or {ok: false, reason: stale|missing|no-checkbox|empty}. Expected values come from hand line edits of the fixtures (gen script), not from the code under test.",
+ "cases": [
+  {
+   "name": "toggle checks an open card",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 0
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [x] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "toggle unchecks a done card",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 2,
+     "card": 0
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [ ] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "toggle with checked true on a checked card keeps it checked",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 2,
+     "card": 0,
+     "checked": true
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "toggle with the expected first line passes",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 1,
+     "expect": "- [ ] Call Ana @{2026-10-12}"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [x] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "toggle refuses when the card line changed elsewhere",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 0,
+     "expect": "- [ ] Write the brief"
+    }
+   ],
+   "expected": {
+    "ok": false,
+    "reason": "stale"
+   }
+  },
+  {
+   "name": "toggle of a lane that does not exist",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 7,
+     "card": 0
+    }
+   ],
+   "expected": {
+    "ok": false,
+    "reason": "missing"
+   }
+  },
+  {
+   "name": "archive cards are not a lane",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "toggle",
+     "lane": 3,
+     "card": 0
+    }
+   ],
+   "expected": {
+    "ok": false,
+    "reason": "missing"
+   }
+  },
+  {
+   "name": "toggle of a list item without a checkbox",
+   "args": [
+    "---\nkanban-plugin: board\n---\n\n## Ideas\n\n- plain item\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 0
+    }
+   ],
+   "expected": {
+    "ok": false,
+    "reason": "no-checkbox"
+   }
+  },
+  {
+   "name": "move to the top of the next lane",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "move",
+     "lane": 0,
+     "card": 0,
+     "toLane": 1,
+     "index": 0
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Write brief #docs\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "move to the end of the next lane",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "move",
+     "lane": 0,
+     "card": 0,
+     "toLane": 1,
+     "index": 2
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n- [ ] Write brief #docs\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "an index past the end appends",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "move",
+     "lane": 0,
+     "card": 0,
+     "toLane": 1,
+     "index": 99
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n- [ ] Write brief #docs\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "a two line card moves with its second line",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "move",
+     "lane": 1,
+     "card": 0,
+     "toLane": 0,
+     "index": 2
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Doing (2)\n\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "a card moved into a Complete lane is checked",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "move",
+     "lane": 1,
+     "card": 1,
+     "toLane": 2,
+     "index": 1
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n- [x] Fix login bug\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "a card moved out of a Complete lane is unchecked",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "move",
+     "lane": 2,
+     "card": 0,
+     "toLane": 0,
+     "index": 0
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Set up repo\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "move up inside one lane",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "move",
+     "lane": 0,
+     "card": 1,
+     "toLane": 0,
+     "index": 0
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Call Ana @{2026-10-12}\n- [ ] Write brief #docs\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "move down inside one lane",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "move",
+     "lane": 0,
+     "card": 0,
+     "toLane": 0,
+     "index": 2
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Call Ana @{2026-10-12}\n- [ ] Write brief #docs\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "drop on its own place changes nothing",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "move",
+     "lane": 0,
+     "card": 0,
+     "toLane": 0,
+     "index": 1
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "move refuses a stale card",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "move",
+     "lane": 0,
+     "card": 0,
+     "toLane": 1,
+     "index": 0,
+     "expect": "- [x] Write brief #docs"
+    }
+   ],
+   "expected": {
+    "ok": false,
+    "reason": "stale"
+   }
+  },
+  {
+   "name": "move to a lane that does not exist",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "move",
+     "lane": 0,
+     "card": 0,
+     "toLane": 9,
+     "index": 0
+    }
+   ],
+   "expected": {
+    "ok": false,
+    "reason": "missing"
+   }
+  },
+  {
+   "name": "move into an empty lane keeps a blank line under the heading",
+   "args": [
+    "---\nkanban-plugin: board\n---\n\n## Backlog\n\n- [ ] One\n- [/] Two ^card2\n\n## Empty\n\n\n\n## Last\n",
+    {
+     "type": "move",
+     "lane": 0,
+     "card": 0,
+     "toLane": 1,
+     "index": 0
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\nkanban-plugin: board\n---\n\n## Backlog\n\n- [/] Two ^card2\n\n## Empty\n\n- [ ] One\n\n\n## Last\n"
+   }
+  },
+  {
+   "name": "a block id and a custom check state move unchanged between normal lanes",
+   "args": [
+    "---\nkanban-plugin: board\n---\n\n## Backlog\n\n- [ ] One\n- [/] Two ^card2\n\n## Empty\n\n\n\n## Last\n",
+    {
+     "type": "move",
+     "lane": 0,
+     "card": 1,
+     "toLane": 2,
+     "index": 0
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\nkanban-plugin: board\n---\n\n## Backlog\n\n- [ ] One\n\n## Empty\n\n\n\n## Last\n- [/] Two ^card2\n"
+   }
+  },
+  {
+   "name": "add appends to the end of a lane",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "add",
+     "lane": 1,
+     "text": "Review copy"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n- [ ] Review copy\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "add to a Complete lane adds a checked card",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "add",
+     "lane": 2,
+     "text": "Ship it"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n- [x] Ship it\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "add joins several lines into one",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "add",
+     "lane": 0,
+     "text": "  First\nsecond  "
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n- [ ] First second\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n"
+   }
+  },
+  {
+   "name": "add with only spaces is refused",
+   "args": [
+    "---\n\nkanban-plugin: board\n\n---\n\n## Todo\n\n- [ ] Write brief #docs\n- [ ] Call Ana @{2026-10-12}\n\n\n## Doing (2)\n\n- [ ] Draft homepage\n\tSecond line of the card\n- [ ] Fix login bug\n\n\n## Done\n\n**Complete**\n- [x] Set up repo\n\n\n***\n\n## Archive\n\n- [x] Old card\n\n%% kanban:settings\n```\n{\"kanban-plugin\":\"board\",\"list-collapse\":[false,false,false]}\n```\n%%\n",
+    {
+     "type": "add",
+     "lane": 0,
+     "text": "  \n "
+    }
+   ],
+   "expected": {
+    "ok": false,
+    "reason": "empty"
+   }
+  },
+  {
+   "name": "add to a last empty lane goes before the final newline",
+   "args": [
+    "---\nkanban-plugin: board\n---\n\n## Backlog\n\n- [ ] One\n- [/] Two ^card2\n\n## Empty\n\n\n\n## Last\n",
+    {
+     "type": "add",
+     "lane": 2,
+     "text": "Tail"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\nkanban-plugin: board\n---\n\n## Backlog\n\n- [ ] One\n- [/] Two ^card2\n\n## Empty\n\n\n\n## Last\n- [ ] Tail\n"
+   }
+  },
+  {
+   "name": "add to an empty lane",
+   "args": [
+    "---\nkanban-plugin: board\n---\n\n## Backlog\n\n- [ ] One\n- [/] Two ^card2\n\n## Empty\n\n\n\n## Last\n",
+    {
+     "type": "add",
+     "lane": 1,
+     "text": "New"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\nkanban-plugin: board\n---\n\n## Backlog\n\n- [ ] One\n- [/] Two ^card2\n\n## Empty\n\n- [ ] New\n\n\n## Last\n"
+   }
+  },
+  {
+   "name": "add to the last lane when the file ends at the heading",
+   "args": [
+    "## Only",
+    {
+     "type": "add",
+     "lane": 0,
+     "text": "X"
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "## Only\n- [ ] X"
+   }
+  },
+  {
+   "name": "Windows line endings stay",
+   "args": [
+    "---\r\nkanban-plugin: board\r\n---\r\n\r\n## A\r\n\r\n- [ ] one\r\n- [ ] two\r\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 1
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "---\r\nkanban-plugin: board\r\n---\r\n\r\n## A\r\n\r\n- [ ] one\r\n- [x] two\r\n"
+   }
+  },
+  {
+   "name": "a heading named Archive without a break before it is a lane",
+   "args": [
+    "## Archive\n\n- [ ] still a lane\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 0
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "## Archive\n\n- [x] still a lane\n"
+   }
+  },
+  {
+   "name": "list items in a fenced block are not cards",
+   "args": [
+    "## Notes\n\n```\n- [ ] not a card\n```\n- [ ] card\n",
+    {
+     "type": "toggle",
+     "lane": 0,
+     "card": 0
+    }
+   ],
+   "expected": {
+    "ok": true,
+    "md": "## Notes\n\n```\n- [ ] not a card\n```\n- [x] card\n"
+   }
+  }
+ ]
+}
