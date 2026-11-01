@@ -1,0 +1,561 @@
+{
+ "slug": "one-way-backlinks",
+ "module": "one-way-backlinks/src/links",
+ "function": "splitBacklinks",
+ "note": "Each case names its function in fn. splitBacklinks(resolvedLinks, current, hiddenFolders = []) gives {oneWay, paired}, each a list of {path, name, folder, count} sorted by name without case, then by path. resolvedLinks has the shape of MetadataCache.resolvedLinks, where Obsidian has already resolved alias, heading, block, embed and property links to a file path. appendLinkLine and linkBackSuffix give the Pro link back text. parseFolders and inFolder give the Pro hidden folders. Names that start with a number are acceptance cases A1 to A8 of the spec. Expected values are written by hand.",
+ "cases": [
+  {
+   "name": "1 post 3 example: notes 1, 3 and 5 are one-way, notes 2 and 4 are paired",
+   "fn": "splitBacklinks",
+   "args": [
+    {
+     "Tech features.md": {
+      "Note 2.md": 1,
+      "Note 4.md": 1
+     },
+     "Note 1.md": {
+      "Tech features.md": 1
+     },
+     "Note 2.md": {
+      "Tech features.md": 1
+     },
+     "Note 3.md": {
+      "Tech features.md": 2
+     },
+     "Note 4.md": {
+      "Tech features.md": 1
+     },
+     "Note 5.md": {
+      "Tech features.md": 1
+     },
+     "Unrelated.md": {
+      "Note 1.md": 1
+     }
+    },
+    "Tech features.md"
+   ],
+   "expected": {
+    "oneWay": [
+     {
+      "path": "Note 1.md",
+      "name": "Note 1",
+      "folder": "",
+      "count": 1
+     },
+     {
+      "path": "Note 3.md",
+      "name": "Note 3",
+      "folder": "",
+      "count": 2
+     },
+     {
+      "path": "Note 5.md",
+      "name": "Note 5",
+      "folder": "",
+      "count": 1
+     }
+    ],
+    "paired": [
+     {
+      "path": "Note 2.md",
+      "name": "Note 2",
+      "folder": "",
+      "count": 1
+     },
+     {
+      "path": "Note 4.md",
+      "name": "Note 4",
+      "folder": "",
+      "count": 1
+     }
+    ]
+   }
+  },
+  {
+   "name": "1 a note that links only outward is in no list",
+   "fn": "splitBacklinks",
+   "args": [
+    {
+     "C.md": {
+      "T.md": 1
+     },
+     "T.md": {}
+    },
+    "C.md"
+   ],
+   "expected": {
+    "oneWay": [],
+    "paired": []
+   }
+  },
+  {
+   "name": "2 alias, heading and block links to one note are one row with their count",
+   "fn": "splitBacklinks",
+   "args": [
+    {
+     "Projects/A.md": {
+      "C.md": 3
+     },
+     "C.md": {}
+    },
+    "C.md"
+   ],
+   "expected": {
+    "oneWay": [
+     {
+      "path": "Projects/A.md",
+      "name": "A",
+      "folder": "Projects",
+      "count": 3
+     }
+    ],
+    "paired": []
+   }
+  },
+  {
+   "name": "2 a heading link from the current note pairs the row",
+   "fn": "splitBacklinks",
+   "args": [
+    {
+     "A.md": {
+      "C.md": 1
+     },
+     "C.md": {
+      "A.md": 1
+     }
+    },
+    "C.md"
+   ],
+   "expected": {
+    "oneWay": [],
+    "paired": [
+     {
+      "path": "A.md",
+      "name": "A",
+      "folder": "",
+      "count": 1
+     }
+    ]
+   }
+  },
+  {
+   "name": "3 an embed in the current note pairs the row",
+   "fn": "splitBacklinks",
+   "args": [
+    {
+     "Img note.md": {
+      "C.md": 1
+     },
+     "C.md": {
+      "Img note.md": 1,
+      "pic.png": 1
+     }
+    },
+    "C.md"
+   ],
+   "expected": {
+    "oneWay": [],
+    "paired": [
+     {
+      "path": "Img note.md",
+      "name": "Img note",
+      "folder": "",
+      "count": 1
+     }
+    ]
+   }
+  },
+  {
+   "name": "3 a canvas or other file that links here keeps its extension",
+   "fn": "splitBacklinks",
+   "args": [
+    {
+     "Boards/Plan.canvas": {
+      "C.md": 1
+     },
+     "C.md": {}
+    },
+    "C.md"
+   ],
+   "expected": {
+    "oneWay": [
+     {
+      "path": "Boards/Plan.canvas",
+      "name": "Plan.canvas",
+      "folder": "Boards",
+      "count": 1
+     }
+    ],
+    "paired": []
+   }
+  },
+  {
+   "name": "4 a self link is not a backlink",
+   "fn": "splitBacklinks",
+   "args": [
+    {
+     "C.md": {
+      "C.md": 2,
+      "A.md": 1
+     },
+     "A.md": {
+      "C.md": 1
+     }
+    },
+    "C.md"
+   ],
+   "expected": {
+    "oneWay": [],
+    "paired": [
+     {
+      "path": "A.md",
+      "name": "A",
+      "folder": "",
+      "count": 1
+     }
+    ]
+   }
+  },
+  {
+   "name": "4 a note that only links to itself has no backlinks",
+   "fn": "splitBacklinks",
+   "args": [
+    {
+     "C.md": {
+      "C.md": 1
+     }
+    },
+    "C.md"
+   ],
+   "expected": {
+    "oneWay": [],
+    "paired": []
+   }
+  },
+  {
+   "name": "4 a zero count is not a link",
+   "fn": "splitBacklinks",
+   "args": [
+    {
+     "A.md": {
+      "C.md": 0
+     },
+     "C.md": {
+      "A.md": 0
+     }
+    },
+    "C.md"
+   ],
+   "expected": {
+    "oneWay": [],
+    "paired": []
+   }
+  },
+  {
+   "name": "5 rows sort by name without case, then by path",
+   "fn": "splitBacklinks",
+   "args": [
+    {
+     "b/Zeta.md": {
+      "C.md": 1
+     },
+     "a/alpha.md": {
+      "C.md": 1
+     },
+     "x/Alpha.md": {
+      "C.md": 4
+     },
+     "Alpha.md": {
+      "C.md": 1
+     },
+     "C.md": {}
+    },
+    "C.md"
+   ],
+   "expected": {
+    "oneWay": [
+     {
+      "path": "Alpha.md",
+      "name": "Alpha",
+      "folder": "",
+      "count": 1
+     },
+     {
+      "path": "a/alpha.md",
+      "name": "alpha",
+      "folder": "a",
+      "count": 1
+     },
+     {
+      "path": "x/Alpha.md",
+      "name": "Alpha",
+      "folder": "x",
+      "count": 4
+     },
+     {
+      "path": "b/Zeta.md",
+      "name": "Zeta",
+      "folder": "b",
+      "count": 1
+     }
+    ],
+    "paired": []
+   }
+  },
+  {
+   "name": "5 two notes with the same name in two folders are two rows",
+   "fn": "splitBacklinks",
+   "args": [
+    {
+     "Work/Plan.md": {
+      "C.md": 1
+     },
+     "Home/Plan.md": {
+      "C.md": 1
+     },
+     "C.md": {
+      "Work/Plan.md": 1
+     }
+    },
+    "C.md"
+   ],
+   "expected": {
+    "oneWay": [
+     {
+      "path": "Home/Plan.md",
+      "name": "Plan",
+      "folder": "Home",
+      "count": 1
+     }
+    ],
+    "paired": [
+     {
+      "path": "Work/Plan.md",
+      "name": "Plan",
+      "folder": "Work",
+      "count": 1
+     }
+    ]
+   }
+  },
+  {
+   "name": "6 hidden folders hide sources in the folder and its subfolders only",
+   "fn": "splitBacklinks",
+   "args": [
+    {
+     "Daily/2026-11-01.md": {
+      "C.md": 1
+     },
+     "Daily/2026/x.md": {
+      "C.md": 1
+     },
+     "Daily notes/y.md": {
+      "C.md": 1
+     },
+     "Other.md": {
+      "C.md": 1
+     },
+     "C.md": {}
+    },
+    "C.md",
+    [
+     "Daily"
+    ]
+   ],
+   "expected": {
+    "oneWay": [
+     {
+      "path": "Other.md",
+      "name": "Other",
+      "folder": "",
+      "count": 1
+     },
+     {
+      "path": "Daily notes/y.md",
+      "name": "y",
+      "folder": "Daily notes",
+      "count": 1
+     }
+    ],
+    "paired": []
+   }
+  },
+  {
+   "name": "6 a hidden folder also hides paired rows",
+   "fn": "splitBacklinks",
+   "args": [
+    {
+     "Daily/d.md": {
+      "C.md": 1
+     },
+     "C.md": {
+      "Daily/d.md": 1
+     }
+    },
+    "C.md",
+    [
+     "Daily"
+    ]
+   ],
+   "expected": {
+    "oneWay": [],
+    "paired": []
+   }
+  },
+  {
+   "name": "6 parseFolders trims slashes and spaces and drops empty and repeated lines",
+   "fn": "parseFolders",
+   "args": [
+    "  /Daily/ \n\nDaily\r\nArchive/old/\n"
+   ],
+   "expected": [
+    "Daily",
+    "Archive/old"
+   ]
+  },
+  {
+   "name": "6 inFolder matches whole folder names",
+   "fn": "inFolder",
+   "args": [
+    "Daily notes/y.md",
+    "Daily"
+   ],
+   "expected": false
+  },
+  {
+   "name": "6 inFolder matches subfolders",
+   "fn": "inFolder",
+   "args": [
+    "Daily/2026/x.md",
+    "Daily/"
+   ],
+   "expected": true
+  },
+  {
+   "name": "6 an empty folder hides nothing",
+   "fn": "inFolder",
+   "args": [
+    "x.md",
+    "/"
+   ],
+   "expected": false
+  },
+  {
+   "name": "7 link back adds a new line when the note has no final newline",
+   "fn": "appendLinkLine",
+   "args": [
+    "Text",
+    "[[A]]"
+   ],
+   "expected": "Text\n- [[A]]\n"
+  },
+  {
+   "name": "7 link back adds no blank line after a final newline",
+   "fn": "appendLinkLine",
+   "args": [
+    "Text\n",
+    "[[A]]"
+   ],
+   "expected": "Text\n- [[A]]\n"
+  },
+  {
+   "name": "7 link back into an empty note",
+   "fn": "appendLinkLine",
+   "args": [
+    "",
+    "[[Projects/A|A]]"
+   ],
+   "expected": "- [[Projects/A|A]]\n"
+  },
+  {
+   "name": "7 the editor suffix is the same text",
+   "fn": "linkBackSuffix",
+   "args": [
+    "# Title",
+    "[A](A.md)"
+   ],
+   "expected": "\n- [A](A.md)\n"
+  },
+  {
+   "name": "8 no active note gives two empty lists",
+   "fn": "splitBacklinks",
+   "args": [
+    {
+     "Tech features.md": {
+      "Note 2.md": 1,
+      "Note 4.md": 1
+     },
+     "Note 1.md": {
+      "Tech features.md": 1
+     },
+     "Note 2.md": {
+      "Tech features.md": 1
+     },
+     "Note 3.md": {
+      "Tech features.md": 2
+     },
+     "Note 4.md": {
+      "Tech features.md": 1
+     },
+     "Note 5.md": {
+      "Tech features.md": 1
+     },
+     "Unrelated.md": {
+      "Note 1.md": 1
+     }
+    },
+    null
+   ],
+   "expected": {
+    "oneWay": [],
+    "paired": []
+   }
+  },
+  {
+   "name": "8 a note that is not in the cache gives two empty lists",
+   "fn": "splitBacklinks",
+   "args": [
+    {
+     "Tech features.md": {
+      "Note 2.md": 1,
+      "Note 4.md": 1
+     },
+     "Note 1.md": {
+      "Tech features.md": 1
+     },
+     "Note 2.md": {
+      "Tech features.md": 1
+     },
+     "Note 3.md": {
+      "Tech features.md": 2
+     },
+     "Note 4.md": {
+      "Tech features.md": 1
+     },
+     "Note 5.md": {
+      "Tech features.md": 1
+     },
+     "Unrelated.md": {
+      "Note 1.md": 1
+     }
+    },
+    "New.md"
+   ],
+   "expected": {
+    "oneWay": [],
+    "paired": []
+   }
+  },
+  {
+   "name": "8 nameAndFolder of a root note",
+   "fn": "nameAndFolder",
+   "args": [
+    "Inbox.MD"
+   ],
+   "expected": {
+    "name": "Inbox",
+    "folder": ""
+   }
+  }
+ ]
+}
