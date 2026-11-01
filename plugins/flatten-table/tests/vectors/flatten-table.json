@@ -1,0 +1,1802 @@
+{
+ "slug": "flatten-table",
+ "module": "flatten-table/src/flatten",
+ "function": "flatten",
+ "note": "args = [notes as [{path, frontmatter}] in base order, options {property, columns, keepEmpty, sort, filter, groupBy, maxSources}]; expected = fields to compare: valueColumn, columns, rows as [source path, item number, ...cells], sources, skippedSources, emptyNotes, groups as [{key, count}]. Only the fields present are compared.",
+ "cases": [
+  {
+   "name": "forum 105425 example: two people give five role rows",
+   "args": [
+    [
+     {
+      "path": "People/Trump.md",
+      "frontmatter": {
+       "Roles": [
+        {
+         "Role": "President",
+         "Start": "2025-01-20"
+        },
+        {
+         "Role": "President",
+         "Start": "2017-01-20",
+         "End": "2021-01-20"
+        }
+       ]
+      }
+     },
+     {
+      "path": "People/Biden.md",
+      "frontmatter": {
+       "Roles": [
+        {
+         "Role": "Vice President",
+         "Start": "2009-01-20",
+         "End": "2013-01-20"
+        },
+        {
+         "Role": "Vice President",
+         "Start": "2013-01-20",
+         "End": "2017-01-20"
+        },
+        {
+         "Role": "President",
+         "Start": "2021-01-20",
+         "End": "2025-01-20"
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "Roles"
+    }
+   ],
+   "expected": {
+    "columns": [
+     "Role",
+     "Start",
+     "End"
+    ],
+    "rows": [
+     [
+      "People/Trump.md",
+      1,
+      "President",
+      "2025-01-20",
+      ""
+     ],
+     [
+      "People/Trump.md",
+      2,
+      "President",
+      "2017-01-20",
+      "2021-01-20"
+     ],
+     [
+      "People/Biden.md",
+      1,
+      "Vice President",
+      "2009-01-20",
+      "2013-01-20"
+     ],
+     [
+      "People/Biden.md",
+      2,
+      "Vice President",
+      "2013-01-20",
+      "2017-01-20"
+     ],
+     [
+      "People/Biden.md",
+      3,
+      "President",
+      "2021-01-20",
+      "2025-01-20"
+     ]
+    ],
+    "sources": 2,
+    "emptyNotes": 0
+   }
+  },
+  {
+   "name": "property name matches without case",
+   "args": [
+    [
+     {
+      "path": "People/Trump.md",
+      "frontmatter": {
+       "Roles": [
+        {
+         "Role": "President",
+         "Start": "2025-01-20"
+        },
+        {
+         "Role": "President",
+         "Start": "2017-01-20",
+         "End": "2021-01-20"
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "roles"
+    }
+   ],
+   "expected": {
+    "columns": [
+     "Role",
+     "Start",
+     "End"
+    ],
+    "sources": 1
+   }
+  },
+  {
+   "name": "sort by Start ascending puts dates in order",
+   "args": [
+    [
+     {
+      "path": "People/Trump.md",
+      "frontmatter": {
+       "Roles": [
+        {
+         "Role": "President",
+         "Start": "2025-01-20"
+        },
+        {
+         "Role": "President",
+         "Start": "2017-01-20",
+         "End": "2021-01-20"
+        }
+       ]
+      }
+     },
+     {
+      "path": "People/Biden.md",
+      "frontmatter": {
+       "Roles": [
+        {
+         "Role": "Vice President",
+         "Start": "2009-01-20",
+         "End": "2013-01-20"
+        },
+        {
+         "Role": "Vice President",
+         "Start": "2013-01-20",
+         "End": "2017-01-20"
+        },
+        {
+         "Role": "President",
+         "Start": "2021-01-20",
+         "End": "2025-01-20"
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "Roles",
+     "sort": {
+      "column": "Start",
+      "dir": "asc"
+     }
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "People/Biden.md",
+      1,
+      "Vice President",
+      "2009-01-20",
+      "2013-01-20"
+     ],
+     [
+      "People/Biden.md",
+      2,
+      "Vice President",
+      "2013-01-20",
+      "2017-01-20"
+     ],
+     [
+      "People/Trump.md",
+      2,
+      "President",
+      "2017-01-20",
+      "2021-01-20"
+     ],
+     [
+      "People/Biden.md",
+      3,
+      "President",
+      "2021-01-20",
+      "2025-01-20"
+     ],
+     [
+      "People/Trump.md",
+      1,
+      "President",
+      "2025-01-20",
+      ""
+     ]
+    ]
+   }
+  },
+  {
+   "name": "sort by End descending keeps the empty cell last",
+   "args": [
+    [
+     {
+      "path": "People/Trump.md",
+      "frontmatter": {
+       "Roles": [
+        {
+         "Role": "President",
+         "Start": "2025-01-20"
+        },
+        {
+         "Role": "President",
+         "Start": "2017-01-20",
+         "End": "2021-01-20"
+        }
+       ]
+      }
+     },
+     {
+      "path": "People/Biden.md",
+      "frontmatter": {
+       "Roles": [
+        {
+         "Role": "Vice President",
+         "Start": "2009-01-20",
+         "End": "2013-01-20"
+        },
+        {
+         "Role": "Vice President",
+         "Start": "2013-01-20",
+         "End": "2017-01-20"
+        },
+        {
+         "Role": "President",
+         "Start": "2021-01-20",
+         "End": "2025-01-20"
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "Roles",
+     "sort": {
+      "column": "End",
+      "dir": "desc"
+     },
+     "columns": [
+      "End"
+     ]
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "People/Biden.md",
+      3,
+      "2025-01-20"
+     ],
+     [
+      "People/Trump.md",
+      2,
+      "2021-01-20"
+     ],
+     [
+      "People/Biden.md",
+      2,
+      "2017-01-20"
+     ],
+     [
+      "People/Biden.md",
+      1,
+      "2013-01-20"
+     ],
+     [
+      "People/Trump.md",
+      1,
+      ""
+     ]
+    ]
+   }
+  },
+  {
+   "name": "list of plain values gives one column named after the property",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "frontmatter": {
+       "aliases": [
+        "One",
+        "Two"
+       ]
+      }
+     }
+    ],
+    {
+     "property": "aliases"
+    }
+   ],
+   "expected": {
+    "valueColumn": "aliases",
+    "columns": [
+     "aliases"
+    ],
+    "rows": [
+     [
+      "a.md",
+      1,
+      "One"
+     ],
+     [
+      "a.md",
+      2,
+      "Two"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "one plain value gives one row",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "frontmatter": {
+       "author": "Ana"
+      }
+     }
+    ],
+    {
+     "property": "author"
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "a.md",
+      1,
+      "Ana"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "missing and empty lists give no rows and count as empty notes",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "frontmatter": {
+       "x": []
+      }
+     },
+     {
+      "path": "b.md",
+      "frontmatter": null
+     },
+     {
+      "path": "c.md",
+      "frontmatter": {
+       "x": null
+      }
+     }
+    ],
+    {
+     "property": "x"
+    }
+   ],
+   "expected": {
+    "columns": [],
+    "rows": [],
+    "sources": 0,
+    "emptyNotes": 3
+   }
+  },
+  {
+   "name": "keepEmpty gives one empty row for a note without items",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "frontmatter": {
+       "x": [
+        {
+         "k": "1"
+        }
+       ]
+      }
+     },
+     {
+      "path": "b.md",
+      "frontmatter": {}
+     }
+    ],
+    {
+     "property": "x",
+     "keepEmpty": true
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "a.md",
+      1,
+      "1"
+     ],
+     [
+      "b.md",
+      0,
+      ""
+     ]
+    ],
+    "sources": 1,
+    "emptyNotes": 1
+   }
+  },
+  {
+   "name": "keys merge without case, first spelling wins",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "frontmatter": {
+       "x": [
+        {
+         "Owner": "Ana"
+        }
+       ]
+      }
+     },
+     {
+      "path": "b.md",
+      "frontmatter": {
+       "x": [
+        {
+         "owner": "Ben",
+         "Hours": 2
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "x"
+    }
+   ],
+   "expected": {
+    "columns": [
+     "Owner",
+     "Hours"
+    ],
+    "rows": [
+     [
+      "a.md",
+      1,
+      "Ana",
+      ""
+     ],
+     [
+      "b.md",
+      1,
+      "Ben",
+      "2"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "columns option picks and orders, unknown names stay as empty columns",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "frontmatter": {
+       "x": [
+        {
+         "a": 1,
+         "b": 2,
+         "c": 3
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "x",
+     "columns": [
+      "C",
+      "a",
+      "zz"
+     ]
+    }
+   ],
+   "expected": {
+    "columns": [
+     "c",
+     "a",
+     "zz"
+    ],
+    "rows": [
+     [
+      "a.md",
+      1,
+      "3",
+      "1",
+      ""
+     ]
+    ]
+   }
+  },
+  {
+   "name": "nested objects give dotted columns",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "frontmatter": {
+       "x": [
+        {
+         "who": {
+          "name": "Ana",
+          "team": "Web"
+         },
+         "n": 1
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "x"
+    }
+   ],
+   "expected": {
+    "columns": [
+     "who.name",
+     "who.team",
+     "n"
+    ],
+    "rows": [
+     [
+      "a.md",
+      1,
+      "Ana",
+      "Web",
+      "1"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "a list inside an item is joined with commas",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "frontmatter": {
+       "x": [
+        {
+         "tags": [
+          "a",
+          "b"
+         ],
+         "ok": true
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "x"
+    }
+   ],
+   "expected": {
+    "columns": [
+     "tags",
+     "ok"
+    ],
+    "rows": [
+     [
+      "a.md",
+      1,
+      "a, b",
+      "true"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "dotted property path reads inside an object",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "frontmatter": {
+       "project": {
+        "roles": [
+         {
+          "r": "Lead"
+         },
+         {
+          "r": "QA"
+         }
+        ]
+       }
+      }
+     }
+    ],
+    {
+     "property": "project.roles"
+    }
+   ],
+   "expected": {
+    "valueColumn": "roles",
+    "rows": [
+     [
+      "a.md",
+      1,
+      "Lead"
+     ],
+     [
+      "a.md",
+      2,
+      "QA"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "a key with a dot is read whole first",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "frontmatter": {
+       "v.1": [
+        "x"
+       ],
+       "v": {
+        "1": [
+         "y"
+        ]
+       }
+      }
+     }
+    ],
+    {
+     "property": "v.1"
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "a.md",
+      1,
+      "x"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "null and empty items are skipped",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "frontmatter": {
+       "x": [
+        "a",
+        null,
+        "",
+        "b"
+       ]
+      }
+     }
+    ],
+    {
+     "property": "x"
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "a.md",
+      1,
+      "a"
+     ],
+     [
+      "a.md",
+      2,
+      "b"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "free limit of 2 notes counts the notes left out",
+   "args": [
+    [
+     {
+      "path": "n0.md",
+      "frontmatter": {
+       "x": [
+        0,
+        10
+       ]
+      }
+     },
+     {
+      "path": "n1.md",
+      "frontmatter": {
+       "x": [
+        1,
+        11
+       ]
+      }
+     },
+     {
+      "path": "n2.md",
+      "frontmatter": {
+       "x": [
+        2,
+        12
+       ]
+      }
+     },
+     {
+      "path": "n3.md",
+      "frontmatter": {
+       "x": [
+        3,
+        13
+       ]
+      }
+     }
+    ],
+    {
+     "property": "x",
+     "maxSources": 2
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "n0.md",
+      1,
+      "0"
+     ],
+     [
+      "n0.md",
+      2,
+      "10"
+     ],
+     [
+      "n1.md",
+      1,
+      "1"
+     ],
+     [
+      "n1.md",
+      2,
+      "11"
+     ]
+    ],
+    "sources": 2,
+    "skippedSources": 2
+   }
+  },
+  {
+   "name": "notes without items do not use the note limit",
+   "args": [
+    [
+     {
+      "path": "e.md",
+      "frontmatter": {}
+     },
+     {
+      "path": "a.md",
+      "frontmatter": {
+       "x": [
+        1
+       ]
+      }
+     },
+     {
+      "path": "b.md",
+      "frontmatter": {
+       "x": [
+        2
+       ]
+      }
+     }
+    ],
+    {
+     "property": "x",
+     "maxSources": 1
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "a.md",
+      1,
+      "1"
+     ]
+    ],
+    "sources": 1,
+    "skippedSources": 1,
+    "emptyNotes": 1
+   }
+  },
+  {
+   "name": "filter equals ignores case",
+   "args": [
+    [
+     {
+      "path": "People/Trump.md",
+      "frontmatter": {
+       "Roles": [
+        {
+         "Role": "President",
+         "Start": "2025-01-20"
+        },
+        {
+         "Role": "President",
+         "Start": "2017-01-20",
+         "End": "2021-01-20"
+        }
+       ]
+      }
+     },
+     {
+      "path": "People/Biden.md",
+      "frontmatter": {
+       "Roles": [
+        {
+         "Role": "Vice President",
+         "Start": "2009-01-20",
+         "End": "2013-01-20"
+        },
+        {
+         "Role": "Vice President",
+         "Start": "2013-01-20",
+         "End": "2017-01-20"
+        },
+        {
+         "Role": "President",
+         "Start": "2021-01-20",
+         "End": "2025-01-20"
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "Roles",
+     "filter": {
+      "column": "role",
+      "op": "equals",
+      "value": "president"
+     },
+     "columns": [
+      "Start"
+     ]
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "People/Trump.md",
+      1,
+      "2025-01-20"
+     ],
+     [
+      "People/Trump.md",
+      2,
+      "2017-01-20"
+     ],
+     [
+      "People/Biden.md",
+      3,
+      "2021-01-20"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "filter gte on ISO dates",
+   "args": [
+    [
+     {
+      "path": "People/Trump.md",
+      "frontmatter": {
+       "Roles": [
+        {
+         "Role": "President",
+         "Start": "2025-01-20"
+        },
+        {
+         "Role": "President",
+         "Start": "2017-01-20",
+         "End": "2021-01-20"
+        }
+       ]
+      }
+     },
+     {
+      "path": "People/Biden.md",
+      "frontmatter": {
+       "Roles": [
+        {
+         "Role": "Vice President",
+         "Start": "2009-01-20",
+         "End": "2013-01-20"
+        },
+        {
+         "Role": "Vice President",
+         "Start": "2013-01-20",
+         "End": "2017-01-20"
+        },
+        {
+         "Role": "President",
+         "Start": "2021-01-20",
+         "End": "2025-01-20"
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "Roles",
+     "filter": {
+      "column": "Start",
+      "op": "gte",
+      "value": "2017-01-20"
+     },
+     "columns": [
+      "Start"
+     ]
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "People/Trump.md",
+      1,
+      "2025-01-20"
+     ],
+     [
+      "People/Trump.md",
+      2,
+      "2017-01-20"
+     ],
+     [
+      "People/Biden.md",
+      3,
+      "2021-01-20"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "filter empty finds the open term",
+   "args": [
+    [
+     {
+      "path": "People/Trump.md",
+      "frontmatter": {
+       "Roles": [
+        {
+         "Role": "President",
+         "Start": "2025-01-20"
+        },
+        {
+         "Role": "President",
+         "Start": "2017-01-20",
+         "End": "2021-01-20"
+        }
+       ]
+      }
+     },
+     {
+      "path": "People/Biden.md",
+      "frontmatter": {
+       "Roles": [
+        {
+         "Role": "Vice President",
+         "Start": "2009-01-20",
+         "End": "2013-01-20"
+        },
+        {
+         "Role": "Vice President",
+         "Start": "2013-01-20",
+         "End": "2017-01-20"
+        },
+        {
+         "Role": "President",
+         "Start": "2021-01-20",
+         "End": "2025-01-20"
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "Roles",
+     "filter": {
+      "column": "End",
+      "op": "empty",
+      "value": ""
+     },
+     "columns": [
+      "Role"
+     ]
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "People/Trump.md",
+      1,
+      "President"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "filter gt on numbers with a currency sign",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "frontmatter": {
+       "x": [
+        {
+         "cost": "$1,200.50"
+        },
+        {
+         "cost": "$99"
+        },
+        {
+         "cost": "n/a"
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "x",
+     "filter": {
+      "column": "cost",
+      "op": "gt",
+      "value": "100"
+     }
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "a.md",
+      1,
+      "$1,200.50"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "filter on a missing column keeps no row",
+   "args": [
+    [
+     {
+      "path": "People/Trump.md",
+      "frontmatter": {
+       "Roles": [
+        {
+         "Role": "President",
+         "Start": "2025-01-20"
+        },
+        {
+         "Role": "President",
+         "Start": "2017-01-20",
+         "End": "2021-01-20"
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "Roles",
+     "filter": {
+      "column": "Nope",
+      "op": "contains",
+      "value": ""
+     }
+    }
+   ],
+   "expected": {
+    "rows": []
+   }
+  },
+  {
+   "name": "filter and sort by Source",
+   "args": [
+    [
+     {
+      "path": "People/Trump.md",
+      "frontmatter": {
+       "Roles": [
+        {
+         "Role": "President",
+         "Start": "2025-01-20"
+        },
+        {
+         "Role": "President",
+         "Start": "2017-01-20",
+         "End": "2021-01-20"
+        }
+       ]
+      }
+     },
+     {
+      "path": "People/Biden.md",
+      "frontmatter": {
+       "Roles": [
+        {
+         "Role": "Vice President",
+         "Start": "2009-01-20",
+         "End": "2013-01-20"
+        },
+        {
+         "Role": "Vice President",
+         "Start": "2013-01-20",
+         "End": "2017-01-20"
+        },
+        {
+         "Role": "President",
+         "Start": "2021-01-20",
+         "End": "2025-01-20"
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "Roles",
+     "filter": {
+      "column": "Source",
+      "op": "equals",
+      "value": "Biden"
+     },
+     "sort": {
+      "column": "#",
+      "dir": "desc"
+     },
+     "columns": [
+      "Role"
+     ]
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "People/Biden.md",
+      3,
+      "President"
+     ],
+     [
+      "People/Biden.md",
+      2,
+      "Vice President"
+     ],
+     [
+      "People/Biden.md",
+      1,
+      "Vice President"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "numbers sort as numbers",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "frontmatter": {
+       "x": [
+        {
+         "h": 10
+        },
+        {
+         "h": 9
+        },
+        {
+         "h": "1.5"
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "x",
+     "sort": {
+      "column": "h",
+      "dir": "asc"
+     }
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "a.md",
+      3,
+      "1.5"
+     ],
+     [
+      "a.md",
+      2,
+      "9"
+     ],
+     [
+      "a.md",
+      1,
+      "10"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "group by Role in first-seen order",
+   "args": [
+    [
+     {
+      "path": "People/Trump.md",
+      "frontmatter": {
+       "Roles": [
+        {
+         "Role": "President",
+         "Start": "2025-01-20"
+        },
+        {
+         "Role": "President",
+         "Start": "2017-01-20",
+         "End": "2021-01-20"
+        }
+       ]
+      }
+     },
+     {
+      "path": "People/Biden.md",
+      "frontmatter": {
+       "Roles": [
+        {
+         "Role": "Vice President",
+         "Start": "2009-01-20",
+         "End": "2013-01-20"
+        },
+        {
+         "Role": "Vice President",
+         "Start": "2013-01-20",
+         "End": "2017-01-20"
+        },
+        {
+         "Role": "President",
+         "Start": "2021-01-20",
+         "End": "2025-01-20"
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "Roles",
+     "groupBy": "Role"
+    }
+   ],
+   "expected": {
+    "groups": [
+     {
+      "key": "President",
+      "count": 3
+     },
+     {
+      "key": "Vice President",
+      "count": 2
+     }
+    ]
+   }
+  },
+  {
+   "name": "empty property option gives no rows",
+   "args": [
+    [
+     {
+      "path": "People/Trump.md",
+      "frontmatter": {
+       "Roles": [
+        {
+         "Role": "President",
+         "Start": "2025-01-20"
+        },
+        {
+         "Role": "President",
+         "Start": "2017-01-20",
+         "End": "2021-01-20"
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "  "
+    }
+   ],
+   "expected": {
+    "rows": [],
+    "emptyNotes": 1
+   }
+  },
+  {
+   "name": "sort by owner then hours with mixed directions",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "frontmatter": {
+       "x": [
+        {
+         "owner": "Ben",
+         "hours": 2
+        },
+        {
+         "owner": "Ana",
+         "hours": 2
+        },
+        {
+         "owner": "Ana",
+         "hours": 10
+        },
+        {
+         "owner": "Ben",
+         "hours": 9
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "x",
+     "sort": [
+      {
+       "column": "owner",
+       "dir": "asc"
+      },
+      {
+       "column": "hours",
+       "dir": "desc"
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "a.md",
+      3,
+      "Ana",
+      "10"
+     ],
+     [
+      "a.md",
+      2,
+      "Ana",
+      "2"
+     ],
+     [
+      "a.md",
+      4,
+      "Ben",
+      "9"
+     ],
+     [
+      "a.md",
+      1,
+      "Ben",
+      "2"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "empty cells stay last for each sort rule",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "frontmatter": {
+       "x": [
+        {
+         "a": "",
+         "b": 1
+        },
+        {
+         "a": "x",
+         "b": ""
+        },
+        {
+         "a": "x",
+         "b": 2
+        },
+        {
+         "a": "x",
+         "b": 10
+        },
+        {
+         "a": "",
+         "b": 3
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "x",
+     "sort": [
+      {
+       "column": "a",
+       "dir": "desc"
+      },
+      {
+       "column": "b",
+       "dir": "desc"
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "a.md",
+      4,
+      "x",
+      "10"
+     ],
+     [
+      "a.md",
+      3,
+      "x",
+      "2"
+     ],
+     [
+      "a.md",
+      2,
+      "x",
+      ""
+     ],
+     [
+      "a.md",
+      5,
+      "",
+      "3"
+     ],
+     [
+      "a.md",
+      1,
+      "",
+      "1"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "equal rules keep item order",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "frontmatter": {
+       "x": [
+        {
+         "a": "Ana",
+         "b": 2,
+         "id": "first"
+        },
+        {
+         "a": "ana",
+         "b": 2,
+         "id": "second"
+        },
+        {
+         "a": "Ana",
+         "b": 1,
+         "id": "third"
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "x",
+     "sort": [
+      {
+       "column": "a",
+       "dir": "asc"
+      },
+      {
+       "column": "b",
+       "dir": "asc"
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "a.md",
+      3,
+      "Ana",
+      "1",
+      "third"
+     ],
+     [
+      "a.md",
+      1,
+      "Ana",
+      "2",
+      "first"
+     ],
+     [
+      "a.md",
+      2,
+      "ana",
+      "2",
+      "second"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "multiple rules can sort hidden columns",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "frontmatter": {
+       "x": [
+        {
+         "id": "one",
+         "a": "Ben",
+         "b": 1
+        },
+        {
+         "id": "two",
+         "a": "Ana",
+         "b": 10
+        },
+        {
+         "id": "three",
+         "a": "Ana",
+         "b": 2
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "x",
+     "sort": [
+      {
+       "column": "A",
+       "dir": "asc"
+      },
+      {
+       "column": "b",
+       "dir": "asc"
+      }
+     ],
+     "columns": [
+      "id"
+     ]
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "a.md",
+      3,
+      "three"
+     ],
+     [
+      "a.md",
+      2,
+      "two"
+     ],
+     [
+      "a.md",
+      1,
+      "one"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "dates sort inside primary values",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "frontmatter": {
+       "x": [
+        {
+         "a": "x",
+         "date": "2026-10-02"
+        },
+        {
+         "a": "x",
+         "date": "2026-09-01"
+        },
+        {
+         "a": "a",
+         "date": "2026-12-01"
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "x",
+     "sort": [
+      {
+       "column": "a",
+       "dir": "asc"
+      },
+      {
+       "column": "date",
+       "dir": "asc"
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "a.md",
+      3,
+      "a",
+      "2026-12-01"
+     ],
+     [
+      "a.md",
+      2,
+      "x",
+      "2026-09-01"
+     ],
+     [
+      "a.md",
+      1,
+      "x",
+      "2026-10-02"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "unknown sort rule lets the next rule sort",
+   "args": [
+    [
+     {
+      "path": "a.md",
+      "frontmatter": {
+       "x": [
+        {
+         "n": 10
+        },
+        {
+         "n": 2
+        }
+       ]
+      }
+     }
+    ],
+    {
+     "property": "x",
+     "sort": [
+      {
+       "column": "missing",
+       "dir": "asc"
+      },
+      {
+       "column": "n",
+       "dir": "asc"
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "a.md",
+      2,
+      "2"
+     ],
+     [
+      "a.md",
+      1,
+      "10"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "Source then item number sort",
+   "args": [
+    [
+     {
+      "path": "B.md",
+      "frontmatter": {
+       "x": [
+        1,
+        2
+       ]
+      }
+     },
+     {
+      "path": "A.md",
+      "frontmatter": {
+       "x": [
+        3,
+        4
+       ]
+      }
+     }
+    ],
+    {
+     "property": "x",
+     "sort": [
+      {
+       "column": "Source",
+       "dir": "asc"
+      },
+      {
+       "column": "#",
+       "dir": "desc"
+      }
+     ]
+    }
+   ],
+   "expected": {
+    "rows": [
+     [
+      "A.md",
+      2,
+      "4"
+     ],
+     [
+      "A.md",
+      1,
+      "3"
+     ],
+     [
+      "B.md",
+      2,
+      "2"
+     ],
+     [
+      "B.md",
+      1,
+      "1"
+     ]
+    ]
+   }
+  }
+ ]
+}

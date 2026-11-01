@@ -1,0 +1,103 @@
+[
+	{
+		"feature": "one-row-per-note",
+		"caption": "The problem: the core table view gives one row per note, so a list of milestones is one cell.",
+		"note": "Views/One row per note.md",
+		"eval": "(async () => { app.plugins.plugins['flatten-table'].pro.signOut(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "flatten",
+		"caption": "Flatten table: one row for each milestone of each project, with the milestone keys as columns and a link to the note.",
+		"note": "Projects.base",
+		"eval": "(async () => { app.plugins.plugins['flatten-table'].pro.signOut(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "sort",
+		"caption": "Click a column header to sort. Numbers sort as numbers and ISO dates in date order.",
+		"note": "Projects.base",
+		"eval": "(async () => { app.plugins.plugins['flatten-table'].pro.signOut(); await new Promise((r) => setTimeout(r, 700)); [...document.querySelectorAll('.workspace-leaf.mod-active .flatten-table th')].find((x) => x.textContent.trim() === 'due').click(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { [...document.querySelectorAll('.workspace-leaf.mod-active .flatten-table th')].find((x) => x.textContent.trim() === 'due').click(); await new Promise((r) => setTimeout(r, 700)); [...document.querySelectorAll('.workspace-leaf.mod-active .flatten-table th')].find((x) => x.textContent.trim() === 'due').click(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "multi-sort",
+		"caption": "Sort by owner first, then by due date. The header numbers show priority.",
+		"note": "Projects.base",
+		"eval": "(async () => { app.plugins.plugins['flatten-table'].pro.signOut(); await new Promise(r => setTimeout(r, 700)); const view = app.plugins.plugins['flatten-table'].targetView(); view.config.set('flattenSort', null); view.render(); const header = name => [...document.querySelectorAll('.workspace-leaf.mod-active .flatten-table th')].find(x => x.querySelector('button > span').textContent === name); header('owner').click(); await new Promise(r => setTimeout(r, 700)); header('due').dispatchEvent(new MouseEvent('click', { shiftKey: true, bubbles: true })); await new Promise(r => setTimeout(r, 700)); if (view.last.rows.length !== 43 || view.options().sort.length !== 2) throw new Error('Multi-column sort failed'); return 'ok'; })()",
+		"after": "(async () => { const view = app.plugins.plugins['flatten-table'].targetView(); view.config.set('flattenSort', null); view.render(); return 'ok'; })()",
+		"wait": 900
+	},
+	{
+		"feature": "embedded",
+		"caption": "The flat table embedded in a weekly review note.",
+		"note": "Weekly review.md",
+		"eval": "(async () => { app.plugins.plugins['flatten-table'].pro.signOut(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "group",
+		"caption": "Pro: milestones grouped by owner, with a row count per group.",
+		"note": "Views/By owner.md",
+		"eval": "(async () => { app.plugins.plugins['flatten-table'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('flatten-table-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['flatten-table'].pro.refreshNow(); await new Promise((r) => setTimeout(r, 700)); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { app.plugins.plugins['flatten-table'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "filter",
+		"caption": "Pro: only milestones whose status is not done, sorted by due date.",
+		"note": "Views/Open milestones.md",
+		"eval": "(async () => { app.plugins.plugins['flatten-table'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('flatten-table-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['flatten-table'].pro.refreshNow(); await new Promise((r) => setTimeout(r, 700)); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { app.plugins.plugins['flatten-table'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "export",
+		"caption": "Pro: the flat table exported to a new Markdown note, with links back to the source notes.",
+		"note": "Views/Open milestones.md",
+		"eval": "(async () => { app.plugins.plugins['flatten-table'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('flatten-table-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['flatten-table'].pro.refreshNow(); await new Promise((r) => setTimeout(r, 700)); await new Promise((r) => setTimeout(r, 700)); const f = await app.plugins.plugins['flatten-table'].exportView(app.plugins.plugins['flatten-table'].targetView(), 'markdown'); window.__ftExport = f && f.path; await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+		"after": "(async () => { const f = app.vault.getFileByPath(window.__ftExport || ''); app.workspace.getLeaf(false).detach(); if (f) await app.vault.delete(f); app.plugins.plugins['flatten-table'].pro.signOut(); return 'ok'; })()",
+		"wait": 1200
+	},
+	{
+		"feature": "settings",
+		"caption": "Settings after sign in: the Pro section with the GitHub account and status, and the live update delay.",
+		"eval": "(async () => { app.plugins.plugins['flatten-table'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('flatten-table-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['flatten-table'].pro.refreshNow(); await new Promise((r) => setTimeout(r, 700)); await new Promise((r) => setTimeout(r, 700)); app.setting.open(); app.setting.openTabById('flatten-table'); await new Promise((r) => setTimeout(r, 500)); return 'ok'; })()",
+		"after": "app.setting.close(); app.plugins.plugins['flatten-table'].pro.signOut(); 'ok'"
+	},
+	{
+		"feature": "flatten-table",
+		"caption": "One row per note in the core table, then one row per milestone, sorted by hours, then grouped by owner with Pro.",
+		"frames": [
+			{
+				"note": "Views/One row per note.md",
+				"eval": "(async () => { app.plugins.plugins['flatten-table'].pro.signOut(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 1800
+			},
+			{
+				"note": "Projects.base",
+				"eval": "(async () => { app.plugins.plugins['flatten-table'].pro.signOut(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 1800
+			},
+			{
+				"eval": "(async () => { [...document.querySelectorAll('.workspace-leaf.mod-active .flatten-table th')].find((x) => x.textContent.trim() === 'hours').click(); await new Promise((r) => setTimeout(r, 700)); [...document.querySelectorAll('.workspace-leaf.mod-active .flatten-table th')].find((x) => x.textContent.trim() === 'hours').click(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 1500
+			},
+			{
+				"eval": "(async () => { [...document.querySelectorAll('.workspace-leaf.mod-active .flatten-table th')].find((x) => x.textContent.trim() === 'hours').click(); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 600
+			},
+			{
+				"note": "Views/By owner.md",
+				"eval": "(async () => { app.plugins.plugins['flatten-table'].pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('flatten-table-github-token', 'gho_' + '0'.repeat(36)); await app.plugins.plugins['flatten-table'].pro.refreshNow(); await new Promise((r) => setTimeout(r, 700)); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 2000
+			},
+			{
+				"note": "Views/Open milestones.md",
+				"eval": "(async () => { await new Promise((r) => setTimeout(r, 700)); await new Promise((r) => setTimeout(r, 700)); return 'ok'; })()",
+				"hold": 2000
+			}
+		]
+	}
+]
