@@ -1,0 +1,25 @@
+{
+	"id": "wikilink-alias-markup",
+	"name": "Wikilink Alias Markup",
+	"version": "1.0.0",
+	"changes": [],
+	"tip": "Write markup in the alias of a link, for example [[Obsidian|`obsidian`]] or [[The TeXbook|*The TeXbook*]]. Put the cursor in the link to edit the source.",
+	"thanks": "Hi, I am Michael, a solo developer in Poland. Wikilink Alias Markup is one of over 100 small plugins that I make. Thank you for trusting it with your notes.",
+	"related": [
+		{
+			"id": "inline-block-embeds",
+			"name": "Inline Block Embeds",
+			"blurb": "Show a block embed inside a sentence as inline text."
+		},
+		{
+			"id": "callout-table-footnotes",
+			"name": "Footnotes in Callouts and Tables",
+			"blurb": "Show footnote references in callouts and tables as numbered links."
+		},
+		{
+			"id": "heading-link-sync",
+			"name": "Heading Link Sync",
+			"blurb": "Keep links to a heading working when you edit the heading."
+		}
+	]
+}
