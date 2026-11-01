@@ -1,0 +1,93 @@
+[
+	{
+		"feature": "without-plugin",
+		"caption": "Without the plugin, Obsidian shows the backticks, stars and tildes of an alias as text.",
+		"note": "Reading list.md",
+		"eval": "(async () => { const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); l.view.editor.setCursor({line:0,ch:0}); document.querySelectorAll('.modal-container').forEach(el => el.remove()); await app.plugins.disablePlugin('wikilink-alias-markup'); app.workspace.getMostRecentLeaf().rebuildView(); await new Promise(r => setTimeout(r, 1500)); return 'ok'; })()",
+		"after": "(async () => { await app.plugins.enablePlugin('wikilink-alias-markup'); await new Promise(r => setTimeout(r, 300)); app.workspace.getMostRecentLeaf().rebuildView(); await new Promise(r => setTimeout(r, 1200)); return 'ok'; })()",
+		"wait": 600,
+		"zoom": 1.2
+	},
+	{
+		"feature": "live-preview",
+		"caption": "With the plugin, Live Preview shows inline code, italic, bold, strikethrough and highlight in the alias.",
+		"note": "Reading list.md",
+		"eval": "(async () => { const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); l.view.editor.setCursor({line:0,ch:0}); for (let i=0;i<50 && document.querySelectorAll('.workspace-leaf.mod-active .cm-line [class*=\"wam-\"]').length<5;i++) await new Promise(r=>setTimeout(r,100)); const n=document.querySelectorAll('.workspace-leaf.mod-active .cm-line [class*=\"wam-\"]').length; if (n<5) throw new Error('live preview marks: '+n); return 'ok'; })()",
+		"wait": 900,
+		"zoom": 1.2
+	},
+	{
+		"feature": "reading-view",
+		"caption": "Reading view shows the same markup inside the link, also in a table and in a nested callout.",
+		"note": "Reading list.md",
+		"eval": "(async () => { const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'preview'}}); for (let i=0;i<50 && document.querySelectorAll('.workspace-leaf.mod-active .markdown-reading-view .wam-alias').length<6;i++) await new Promise(r=>setTimeout(r,100)); const n=document.querySelectorAll('.workspace-leaf.mod-active .markdown-reading-view .wam-alias').length; if (n<6) throw new Error('reading links: '+n); return 'ok'; })()",
+		"after": "(async () => { const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); l.view.editor.setCursor({line:0,ch:0}); return 'ok'; })()",
+		"wait": 900,
+		"zoom": 1.2
+	},
+	{
+		"feature": "cursor",
+		"caption": "Put the cursor in the link to see and edit the source, as for any link.",
+		"note": "Reading list.md",
+		"eval": "(async () => { const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); l.view.editor.setCursor({line:0,ch:0}); for (let i=0;i<50 && document.querySelectorAll('.workspace-leaf.mod-active .cm-line [class*=\"wam-\"]').length<5;i++) await new Promise(r=>setTimeout(r,100)); const n=document.querySelectorAll('.workspace-leaf.mod-active .cm-line [class*=\"wam-\"]').length; if (n<5) throw new Error('live preview marks: '+n); const e=app.workspace.activeEditor.editor; e.focus(); e.setCursor({line:4,ch:22}); await new Promise(r=>setTimeout(r,500)); return 'ok'; })()",
+		"after": "(async () => { const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); l.view.editor.setCursor({line:0,ch:0}); return 'ok'; })()",
+		"wait": 600,
+		"zoom": 1.35
+	},
+	{
+		"feature": "hover",
+		"caption": "The page preview works on the formatted alias.",
+		"note": "Reading list.md",
+		"eval": "(async () => { const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'preview'}}); for (let i=0;i<50 && document.querySelectorAll('.workspace-leaf.mod-active .markdown-reading-view .wam-alias').length<6;i++) await new Promise(r=>setTimeout(r,100)); const n=document.querySelectorAll('.workspace-leaf.mod-active .markdown-reading-view .wam-alias').length; if (n<6) throw new Error('reading links: '+n); const el=document.querySelector('.workspace-leaf.mod-active .markdown-reading-view a.internal-link code'); const r=el.getBoundingClientRect(); el.dispatchEvent(new MouseEvent('mouseover',{bubbles:true,clientX:r.left+5,clientY:r.top+5})); for (let i=0;i<30 && !document.querySelector('.hover-popover');i++) await new Promise(r=>setTimeout(r,100)); if (!document.querySelector('.hover-popover')) throw new Error('no page preview'); return 'ok'; })()",
+		"after": "(async () => { document.querySelectorAll('.hover-popover').forEach(p => p.remove()); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); l.view.editor.setCursor({line:0,ch:0}); return 'ok'; })()",
+		"wait": 900,
+		"zoom": 1.2
+	},
+	{
+		"feature": "math",
+		"caption": "Pro: math in an alias, here in Live Preview.",
+		"note": "Reading list.md",
+		"eval": "(async () => { const p=app.plugins.plugins['wikilink-alias-markup']; p.pro.opts.http = async () => ({ status: 200, json: { data: { viewer: { login: 'demo-reader' }, user: { sponsorshipForViewerAsSponsor: { isActive: true, isOneTimePayment: false, tier: { name: '$5 a month', monthlyPriceInCents: 500 } } } } } }); app.secretStorage.setSecret('wikilink-alias-markup-github-token', 'gho_' + '0'.repeat(36)); await p.pro.refreshNow(); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); l.view.editor.setCursor({line:0,ch:0}); for (let i=0;i<80 && document.querySelectorAll('.workspace-leaf.mod-active .wam-math mjx-container').length<2;i++) await new Promise(r=>setTimeout(r,100)); if (document.querySelectorAll('.workspace-leaf.mod-active .wam-math mjx-container').length<2) throw new Error('no math'); document.querySelector('.workspace-leaf.mod-active .wam-math').scrollIntoView({block:'center'}); await new Promise(r=>setTimeout(r,400)); return 'ok'; })()",
+		"after": "(async () => { const p=app.plugins.plugins['wikilink-alias-markup']; p.pro.signOut(); p.redrawAll(); return 'ok'; })()",
+		"wait": 900,
+		"zoom": 1.35
+	},
+	{
+		"feature": "settings",
+		"caption": "The settings: Live Preview on or off, and math in aliases (Pro).",
+		"eval": "(async () => { app.setting.open(); app.setting.openTabById('wikilink-alias-markup'); await new Promise(r => setTimeout(r, 800)); return 'ok'; })()",
+		"after": "(async () => { app.setting.close(); return 'ok'; })()",
+		"wait": 700
+	},
+	{
+		"feature": "wikilink-alias-markup",
+		"caption": "The same note without and with the plugin, then the cursor in a link shows its source.",
+		"frames": [
+			{
+				"note": "Reading list.md",
+				"eval": "(async () => { const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); l.view.editor.setCursor({line:0,ch:0}); document.querySelectorAll('.modal-container').forEach(el => el.remove()); await app.plugins.disablePlugin('wikilink-alias-markup'); app.workspace.getMostRecentLeaf().rebuildView(); await new Promise(r => setTimeout(r, 1500)); return 'ok'; })()",
+				"wait": 500,
+				"hold": 2200,
+				"zoom": 1.2
+			},
+			{
+				"eval": "(async () => { await app.plugins.enablePlugin('wikilink-alias-markup'); await new Promise(r => setTimeout(r, 300)); app.workspace.getMostRecentLeaf().rebuildView(); await new Promise(r => setTimeout(r, 1200)); const l=app.workspace.getLeaf(false); const s=l.getViewState(); await l.setViewState({...s,state:{...s.state,mode:'source',source:false}}); l.view.editor.setCursor({line:0,ch:0}); for (let i=0;i<50 && document.querySelectorAll('.workspace-leaf.mod-active .cm-line [class*=\"wam-\"]').length<5;i++) await new Promise(r=>setTimeout(r,100)); const n=document.querySelectorAll('.workspace-leaf.mod-active .cm-line [class*=\"wam-\"]').length; if (n<5) throw new Error('live preview marks: '+n); return 'ok'; })()",
+				"wait": 500,
+				"hold": 2600,
+				"zoom": 1.2
+			},
+			{
+				"eval": "(async () => { const e=app.workspace.activeEditor.editor; e.focus(); e.setCursor({line:4,ch:22}); await new Promise(r => setTimeout(r, 500)); return 'ok'; })()",
+				"wait": 400,
+				"hold": 2000,
+				"zoom": 1.2
+			},
+			{
+				"eval": "(async () => { const e=app.workspace.activeEditor.editor; e.setCursor({line:0,ch:0}); await new Promise(r => setTimeout(r, 500)); return 'ok'; })()",
+				"wait": 400,
+				"hold": 1800,
+				"zoom": 1.2
+			}
+		]
+	}
+]
